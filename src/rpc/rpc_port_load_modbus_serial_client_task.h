@@ -13,8 +13,11 @@ public:
     TRPCDeviceParametersCache& ParametersCache;
     uint8_t SlaveId;
     uint16_t Address;
-    size_t Count;
+    uint16_t Count = 1;
+    uint16_t WriteAddress;
+    uint16_t WriteCount = 1;
     Modbus::EFunction Function;
+    std::string Protocol;
 };
 
 typedef std::shared_ptr<TRPCPortLoadModbusRequest> PRPCPortLoadModbusRequest;

@@ -1,8 +1,57 @@
-wb-mqtt-serial (2.178.0) stable; urgency=medium
+wb-mqtt-serial (2.182.0) stable; urgency=medium
 
   * Add publish sporadic registers data on every read feature
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 10 Jul 2025 09:50:33 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 04 Aug 2025 11:21:48 +0300
+
+wb-mqtt-serial (2.181.0) stable; urgency=medium
+
+  * Add Modbus TCP protocol support to Port/Load RPC
+
+ -- Evgeny Boger <boger@wirenboard.com>  Fri, 25 Jul 2025 18:01:51 +0300
+
+wb-mqtt-serial (2.180.2) stable; urgency=medium
+
+  * Fix Port/Load RPC device nullptr bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Jul 2025 15:25:53 +0300
+
+wb-mqtt-serial (2.180.1) stable; urgency=medium
+
+  * Revert master branch, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Jul 2025 14:39:27 +0300
+
+wb-mqtt-serial (2.180.0) stable; urgency=medium
+
+  * Add modbus function 0x17 (23) support for Port/Load RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 24 Jul 2025 12:26:26 +0300
+
+wb-mqtt-serial (2.179.0) stable; urgency=medium
+
+  * Add device/Load RPC for modbus device channels and parameters reading
+  * Add device/Set RPC for modbus device channels and parameters writing
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 15 Jul 2025 09:38:58 +0300
+
+wb-mqtt-serial (2.178.2) stable; urgency=medium
+
+  * Fix channel settings negative hex value parsing
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 15 Jul 2025 07:52:04 +0300
+
+wb-mqtt-serial (2.178.1) stable; urgency=medium
+
+  * Add warning logs if device template data updated
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 14 Jul 2025 11:46:27 +0000
+
+wb-mqtt-serial (2.178.0) stable; urgency=medium
+
+  * Update ONOKOM templates
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Thu, 10 Jul 2025 11:06:00 +0400
 
 wb-mqtt-serial (2.177.3) stable; urgency=medium
 

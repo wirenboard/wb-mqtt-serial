@@ -224,7 +224,7 @@ TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig
     : TIEC61107Device(config, protocol)
 {}
 
-void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(TPort& port, PRegisterRange abstract_range)
+void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(TPort& port, PRegisterRange abstract_range, bool breakOnError)
 {
     auto range = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
@@ -251,6 +251,9 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(TPort& port, PRegisterR
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
         SetTransferResult(false);
+        if (breakOnError) {
+            throw;
+        }
     }
 }
 

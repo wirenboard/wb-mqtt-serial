@@ -50,6 +50,10 @@ const auto RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-scan-request.schema.json";
 const auto RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-load-config-request.schema.json";
+const auto RPC_DEVICE_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-load-request.schema.json";
+const auto RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-set-request.schema.json";
 const auto RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-probe-request.schema.json";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
@@ -340,6 +344,8 @@ int main(int argc, char* argv[])
                                                                 rpcServer);
         auto rpcDeviceHandler =
             std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                RPC_DEVICE_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
                                                 templates,

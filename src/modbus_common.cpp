@@ -380,11 +380,6 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    inline EFunction GetFunction(const TRegisterConfig& reg, OperationType op)
-    {
-        return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
-    }
-
     // returns number of requests needed to write register
     size_t InferWriteRequestsCount(const TRegisterConfig& reg)
     {
@@ -689,9 +684,15 @@ namespace Modbus // modbus protocol common utilities
         LOG(Debug) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << " write "
                    << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress();
 
+        EFunction fn;
+        try {
+            fn = GetFunctionImpl(reg.Type, OperationType::OP_WRITE, reg.TypeName, IsPacking(reg));
+        } catch (const TSerialDeviceException& e) {
+            throw TSerialDeviceException("failed to write register <" + reg.ToString() + ">: " + e.what());
+        }
+
         std::vector<uint8_t> data;
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress()) + shift;
-        auto fn = GetFunction(reg, OperationType::OP_WRITE);
         if (IsPacking(reg)) {
             size_t regCount = ComposeRawMultipleWriteRequestData(data, reg, value, cache, tmpCache);
             WriteTransaction(traits,
@@ -756,6 +757,7 @@ namespace Modbus // modbus protocol common utilities
                            uint8_t slaveId,
                            TModbusRegisterRange& range,
                            Modbus::TRegisterCache& cache,
+                           bool breakOnError,
                            int shift)
     {
         if (range.RegisterList().empty()) {
@@ -773,8 +775,14 @@ namespace Modbus // modbus protocol common utilities
                 }
             }
             ProcessRangeException(range, e.what());
+            if (breakOnError) {
+                throw;
+            }
         } catch (const TSerialDeviceException& e) {
             ProcessRangeException(range, e.what());
+            if (breakOnError) {
+                throw;
+            }
         }
     }
 
@@ -834,18 +842,21 @@ namespace Modbus // modbus protocol common utilities
                                                             std::chrono::microseconds requestDelay,
                                                             std::chrono::milliseconds responseTimeout,
                                                             std::chrono::milliseconds frameTimeout,
+                                                            bool breakOnError,
                                                             int shift)
     {
         Modbus::TRegisterCache tmpCache;
         std::vector<uint8_t> data;
+        PDeviceSetupItem first = *startIt;
         PDeviceSetupItem last = nullptr;
-        auto start = GetUint32RegisterAddress((*startIt)->RegisterConfig->GetWriteAddress());
+        auto start = GetUint32RegisterAddress(first->RegisterConfig->GetWriteAddress());
         auto count = 0;
         while (startIt != endIt) {
             auto item = *startIt;
             if (item->RegisterConfig->IsPartial()) {
                 return startIt;
             }
+
             auto address = GetUint32RegisterAddress(item->RegisterConfig->GetWriteAddress());
             if (last) {
                 auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetWriteAddress());
@@ -882,8 +893,12 @@ namespace Modbus // modbus protocol common utilities
                 cache.insert_or_assign(item.first, item.second);
             }
         } catch (const TSerialDevicePermanentRegisterException& e) {
-            LOG(Warn) << "Failed to write " << count << " setup items starting from register address " << start << ": "
-                      << e.what();
+            std::string error = "Failed to write " + std::to_string(count) + " registers starting from <" +
+                                first->RegisterConfig->ToString() + ">: " + e.what();
+            LOG(Warn) << error;
+            if (breakOnError) {
+                throw TSerialDeviceException(error);
+            }
         }
         return startIt;
     }
@@ -896,20 +911,27 @@ namespace Modbus // modbus protocol common utilities
                              std::chrono::microseconds requestDelay,
                              std::chrono::milliseconds responseTimeout,
                              std::chrono::milliseconds frameTimeout,
+                             bool breakOnError,
                              int shift)
     {
+        if (setupItems.empty()) {
+            return;
+        }
         if (!FillSetupRegistersCache(traits, port, slaveId, setupItems, cache, shift)) {
-            throw TSerialDeviceException("unable to write setup registers because unable to read data needed to set "
-                                         "values of \"partial\" setup registers");
+            throw TSerialDeviceException("unable to write setup items because unable to read data needed to set values "
+                                         "of \"partial\" setup registers");
         }
         auto it = setupItems.begin();
-        while (it != setupItems.end()) {
-            auto item = *it;
-            auto config = item->Device->DeviceConfig();
-            size_t maxRegs = MAX_WRITE_REGISTERS;
+        auto device = (*it)->Device;
+        size_t maxRegs = MAX_WRITE_REGISTERS;
+        if (device) {
+            auto config = device->DeviceConfig();
             if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
                 maxRegs = config->MaxWriteRegisters;
             }
+        }
+        while (it != setupItems.end()) {
+            auto item = *it;
             if (maxRegs > 1 && item->RegisterConfig->Type == REG_HOLDING && !item->RegisterConfig->IsPartial()) {
                 it = WriteMultipleSetupRegisters(traits,
                                                  port,
@@ -921,6 +943,7 @@ namespace Modbus // modbus protocol common utilities
                                                  requestDelay,
                                                  responseTimeout,
                                                  frameTimeout,
+                                                 breakOnError,
                                                  shift);
             } else {
                 try {
@@ -936,7 +959,12 @@ namespace Modbus // modbus protocol common utilities
                                   shift);
                     LOG(Info) << item->ToString();
                 } catch (const TSerialDevicePermanentRegisterException& e) {
-                    LOG(Warn) << "Failed to write setup item \"" << item->Name << "\": " << e.what();
+                    std::string error =
+                        "Failed to write register <" + item->RegisterConfig->ToString() + ">: " + e.what();
+                    LOG(Warn) << error;
+                    if (breakOnError) {
+                        throw TSerialDeviceException(error);
+                    }
                 }
                 ++it;
             }

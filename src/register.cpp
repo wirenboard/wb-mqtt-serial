@@ -167,8 +167,8 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
     if (GetConfig()->ErrorValue && GetConfig()->ErrorValue.value() == value) {
+        SetError(TRegister::TError::ReadError);
         LOG(Debug) << ToString() << " contains error value";
-        SetError(TError::ReadError);
     } else {
         if (clearReadError) {
             ClearError(TError::ReadError);

@@ -21,13 +21,14 @@ public:
                     PProtocol protocol);
 
     PRegisterRange CreateRegisterRange() const override;
-    void ReadRegisterRange(TPort& port, PRegisterRange range) override;
-    static void Register(TSerialDeviceFactory& factory);
+    void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false) override;
+    void WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
 
     std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
+
+    static void Register(TSerialDeviceFactory& factory);
 
 protected:
     void PrepareImpl(TPort& port) override;
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
-    void WriteSetupRegisters(TPort& port) override;
 };

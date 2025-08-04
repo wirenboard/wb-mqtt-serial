@@ -1,7 +1,11 @@
 #include "rpc_device_handler.h"
 #include "rpc_device_load_config_task.h"
+#include "rpc_device_load_task.h"
 #include "rpc_device_probe_task.h"
+#include "rpc_device_set_task.h"
 #include "rpc_helpers.h"
+
+#define LOG(logger) ::logger.Log() << "[RPC] "
 
 void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
 {
@@ -53,10 +57,6 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
                                    TSerialClientTaskRunner& serialClientTaskRunner)
 {
     auto params = serialClientTaskRunner.GetSerialClientParams(request);
-    SerialClient = params.SerialClient;
-    if (SerialClient == nullptr) {
-        TaskExecutor = serialClientTaskRunner.GetTaskExecutor(request);
-    }
     if (params.Device == nullptr) {
         DeviceTemplate = templates->GetTemplate(request["device_type"].asString());
         auto config = std::make_shared<TDeviceConfig>("RPC Device",
@@ -81,16 +81,41 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
     }
 }
 
-void TRPCDeviceHelper::RunTask(PSerialClientTask task)
+TRPCDeviceRequest::TRPCDeviceRequest(const TDeviceProtocolParams& protocolParams,
+                                     PSerialDevice device,
+                                     PDeviceTemplate deviceTemplate,
+                                     bool deviceFromConfig)
+    : ProtocolParams(protocolParams),
+      Device(device),
+      DeviceTemplate(deviceTemplate),
+      DeviceFromConfig(deviceFromConfig)
 {
-    if (SerialClient) {
-        SerialClient->AddTask(task);
-    } else {
-        TaskExecutor->AddTask(task);
+    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
+    if (responseTimeout.isInt()) {
+        ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
+    }
+
+    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
+    if (frameTimeout.isInt()) {
+        FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
     }
 }
 
+void TRPCDeviceRequest::ParseSettings(const Json::Value& request,
+                                      WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                      WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    SerialPortSettings = ParseRPCSerialPortSettings(request);
+    WBMQTT::JSON::Get(request, "response_timeout", ResponseTimeout);
+    WBMQTT::JSON::Get(request, "frame_timeout", FrameTimeout);
+    WBMQTT::JSON::Get(request, "total_timeout", TotalTimeout);
+    OnResult = onResult;
+    OnError = onError;
+}
+
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                                     const std::string& requestDeviceLoadSchemaFilePath,
+                                     const std::string& requestDeviceSetSchemaFilePath,
                                      const std::string& requestDeviceProbeSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
@@ -99,6 +124,8 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                      WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       RequestDeviceLoadConfigSchema(LoadRPCRequestSchema(requestDeviceLoadConfigSchemaFilePath, "device/LoadConfig")),
+      RequestDeviceLoadSchema(LoadRPCRequestSchema(requestDeviceLoadSchemaFilePath, "device/Load")),
+      RequestDeviceSetSchema(LoadRPCRequestSchema(requestDeviceSetSchemaFilePath, "device/Set")),
       RequestDeviceProbeSchema(LoadRPCRequestSchema(requestDeviceProbeSchemaFilePath, "device/Probe")),
       Templates(templates),
       SerialClientTaskRunner(serialClientTaskRunner),
@@ -107,6 +134,20 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
     rpcServer->RegisterAsyncMethod("device",
                                    "LoadConfig",
                                    std::bind(&TRPCDeviceHandler::LoadConfig,
+                                             this,
+                                             std::placeholders::_1,
+                                             std::placeholders::_2,
+                                             std::placeholders::_3));
+    rpcServer->RegisterAsyncMethod("device",
+                                   "Load",
+                                   std::bind(&TRPCDeviceHandler::Load, //
+                                             this,
+                                             std::placeholders::_1,
+                                             std::placeholders::_2,
+                                             std::placeholders::_3));
+    rpcServer->RegisterAsyncMethod("device",
+                                   "Set",
+                                   std::bind(&TRPCDeviceHandler::Set, //
                                              this,
                                              std::placeholders::_1,
                                              std::placeholders::_2,
@@ -135,7 +176,47 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
                                                           ParametersCache,
                                                           onResult,
                                                           onError);
-        helper.RunTask(std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
+    } catch (const TRPCException& e) {
+        ProcessException(e, onError);
+    }
+}
+
+void TRPCDeviceHandler::Load(const Json::Value& request,
+                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    ValidateRPCRequest(request, RequestDeviceLoadSchema);
+    try {
+        auto helper = TRPCDeviceHelper(request, DeviceFactory, Templates, SerialClientTaskRunner);
+        auto rpcRequest = ParseRPCDeviceLoadRequest(request,
+                                                    helper.ProtocolParams,
+                                                    helper.Device,
+                                                    helper.DeviceTemplate,
+                                                    helper.DeviceFromConfig,
+                                                    onResult,
+                                                    onError);
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadSerialClientTask>(rpcRequest));
+    } catch (const TRPCException& e) {
+        ProcessException(e, onError);
+    }
+}
+
+void TRPCDeviceHandler::Set(const Json::Value& request,
+                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                            WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    ValidateRPCRequest(request, RequestDeviceSetSchema);
+    try {
+        auto helper = TRPCDeviceHelper(request, DeviceFactory, Templates, SerialClientTaskRunner);
+        auto rpcRequest = ParseRPCDeviceSetRequest(request,
+                                                   helper.ProtocolParams,
+                                                   helper.Device,
+                                                   helper.DeviceTemplate,
+                                                   helper.DeviceFromConfig,
+                                                   onResult,
+                                                   onError);
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceSetSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
@@ -151,5 +232,113 @@ void TRPCDeviceHandler::Probe(const Json::Value& request,
                                        std::make_shared<TRPCDeviceProbeSerialClientTask>(request, onResult, onError));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
+    }
+}
+
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& templateItems,
+                                    const Json::Value& knownItems,
+                                    const std::string& fwVersion)
+{
+    TRPCRegisterList registerList;
+    for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
+        const auto& item = *it;
+        auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
+        bool duplicate = false;
+        for (const auto& item: registerList) {
+            if (item.first == id) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (duplicate || item["address"].isNull() || item["readonly"].asBool() || !knownItems[id].isNull()) {
+            continue;
+        }
+        if (!fwVersion.empty()) {
+            std::string fw = item["fw"].asString();
+            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+                continue;
+            }
+        }
+        auto config = LoadRegisterConfig(item,
+                                         *protocolParams.protocol->GetRegTypes(),
+                                         std::string(),
+                                         *protocolParams.factory,
+                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                                         0);
+        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
+        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+        registerList.push_back(std::make_pair(id, reg));
+    }
+    return registerList;
+}
+
+void ReadRegisterList(TPort& port,
+                      PSerialDevice device,
+                      TRPCRegisterList& registerList,
+                      Json::Value& result,
+                      int maxRetries)
+{
+    if (registerList.size() == 0) {
+        return;
+    }
+    TRegisterComparePredicate compare;
+    std::sort(registerList.begin(),
+              registerList.end(),
+              [compare](std::pair<std::string, PRegister>& a, std::pair<std::string, PRegister>& b) {
+                  return compare(b.second, a.second);
+              });
+
+    std::string error;
+    for (int i = 0; i <= maxRetries; i++) {
+        try {
+            device->Prepare(port, TDevicePrepareMode::WITHOUT_SETUP);
+            break;
+        } catch (const TSerialDeviceException& e) {
+            if (i == maxRetries) {
+                error = std::string("Failed to prepare session: ") + e.what();
+                LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
+                throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
+        }
+    }
+
+    size_t index = 0;
+    while (index < registerList.size() && error.empty()) {
+        auto first = registerList[index].second;
+        auto range = device->CreateRegisterRange();
+        while (index < registerList.size() &&
+               range->Add(port, registerList[index].second, std::chrono::milliseconds::max()))
+        {
+            ++index;
+        }
+        for (int i = 0; i <= maxRetries; ++i) {
+            try {
+                device->ReadRegisterRange(port, range, true);
+                break;
+            } catch (const TSerialDeviceException& e) {
+                if (i == maxRetries) {
+                    error = "Failed to read " + std::to_string(range->RegisterList().size()) +
+                            " registers starting from <" + first->GetConfig()->ToString() + ">: " + e.what();
+                }
+            }
+        }
+    }
+
+    try {
+        device->EndSession(port);
+    } catch (const TSerialDeviceException& e) {
+        LOG(Warn) << port.GetDescription() << " " << device->ToString() << " unable to end session: " << e.what();
+    }
+
+    if (!error.empty()) {
+        LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
+        throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
+    for (size_t i = 0; i < registerList.size(); ++i) {
+        auto& reg = registerList[i];
+        result[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
     }
 }

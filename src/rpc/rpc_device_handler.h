@@ -2,6 +2,8 @@
 #include "rpc_port_driver_list.h"
 #include "templates_map.h"
 
+const std::chrono::seconds DefaultRPCTotalTimeout(10);
+
 class TRPCDeviceParametersCache
 {
 public:
@@ -55,21 +57,45 @@ public:
                      PTemplateMap templates,
                      TSerialClientTaskRunner& serialClientTaskRunner);
 
-    PSerialClient SerialClient;
-    PSerialClientTaskExecutor TaskExecutor;
-
     TDeviceProtocolParams ProtocolParams;
     PSerialDevice Device;
     PDeviceTemplate DeviceTemplate;
     bool DeviceFromConfig = false;
+};
 
-    void RunTask(PSerialClientTask task);
+class TRPCDeviceRequest
+{
+public:
+    TRPCDeviceRequest(const TDeviceProtocolParams& protocolParams,
+                      PSerialDevice device,
+                      PDeviceTemplate deviceTemplate,
+                      bool deviceFromConfig);
+
+    TDeviceProtocolParams ProtocolParams;
+    PSerialDevice Device;
+    PDeviceTemplate DeviceTemplate;
+    bool DeviceFromConfig;
+
+    TSerialPortConnectionSettings SerialPortSettings;
+
+    std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
+    std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
+    std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
+
+    WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
+    WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
+
+    void ParseSettings(const Json::Value& request,
+                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                       WBMQTT::TMqttRpcServer::TErrorCallback onError);
 };
 
 class TRPCDeviceHandler
 {
 public:
     TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                      const std::string& requestDeviceLoadSchemaFilePath,
+                      const std::string& requestDeviceLSetSchemaFilePath,
                       const std::string& requestDeviceProbeSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
@@ -81,6 +107,8 @@ private:
     const TSerialDeviceFactory& DeviceFactory;
 
     Json::Value RequestDeviceLoadConfigSchema;
+    Json::Value RequestDeviceLoadSchema;
+    Json::Value RequestDeviceSetSchema;
     Json::Value RequestDeviceProbeSchema;
     PTemplateMap Templates;
     TSerialClientTaskRunner& SerialClientTaskRunner;
@@ -90,9 +118,52 @@ private:
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,
                     WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
+    void Load(const Json::Value& request,
+              WBMQTT::TMqttRpcServer::TResultCallback onResult,
+              WBMQTT::TMqttRpcServer::TErrorCallback onError);
+
+    void Set(const Json::Value& request,
+             WBMQTT::TMqttRpcServer::TResultCallback onResult,
+             WBMQTT::TMqttRpcServer::TErrorCallback onError);
+
     void Probe(const Json::Value& request,
                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                WBMQTT::TMqttRpcServer::TErrorCallback onError);
 };
 
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;
+typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
+
+/**
+ * @brief Creates named PRegister map based on template items (channels/parameters) JSON array or object.
+ *
+ * @param protocolParams - device protocol params for LoadRegisterConfig call
+ * @param device - serial device object pointer for TRegister object creation
+ * @param templateItems - device template items JSON array or object
+ * @param knownItems - known items JSON object, where the key is the item id and the value is the known
+ *                     item value, for example: {"baudrate": 96, "in1_mode": 2},
+ *                     used to exclule known items from regiter list
+ * @param fwVersion - device firmvare version string, used to exclude items unsupporterd by firmware
+ *
+ * @return TRPCRegisterList - named PRegister list
+ */
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& templateItems,
+                                    const Json::Value& knownItems = Json::Value(),
+                                    const std::string& fwVersion = std::string());
+
+/**
+ * @brief Reads TRPCRegisterList registers and puts valuet to JSON object.
+ *
+ * @param port - serial port refrence
+ * @param device - serial device object pointer
+ * @param registerList - named PRegister map
+ * @param result - result JSON object reference
+ * @param maxRetries - number of request retries in case of error
+ */
+void ReadRegisterList(TPort& port,
+                      PSerialDevice device,
+                      TRPCRegisterList& registerList,
+                      Json::Value& result,
+                      int maxRetries = 0);
