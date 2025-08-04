@@ -1142,6 +1142,11 @@ TEST_F(TModbusLittleEndianRegisterTest, Write)
 class TModbusPublishTest: public TSerialDeviceIntegrationTest
 {
 protected:
+    void SetUp() override
+    {
+        SetMode(E_Normal);
+        TSerialDeviceIntegrationTest::SetUp();
+    }
     const char* ConfigPath() const override
     {
         return "configs/config-modbus-publish-test.json";
