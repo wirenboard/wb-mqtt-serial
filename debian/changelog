@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.182.0) stable; urgency=medium
+
+  * Add publish sporadic registers data on every read feature
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 04 Aug 2025 11:21:48 +0300
+
 wb-mqtt-serial (2.181.0) stable; urgency=medium
 
   * Add Modbus TCP protocol support to Port/Load RPC

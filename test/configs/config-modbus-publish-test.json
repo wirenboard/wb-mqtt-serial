@@ -1,0 +1,39 @@
+{
+    "debug": true,
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "enabled": true,
+            "devices": [
+                {
+                    "slave_id": 1,
+                    "enabled": true,
+                    "name": "Modbus-sample",
+                    "id": "modbus-sample",
+                    "channels": [
+                        {
+                            "name": "Normal Channel",
+                            "reg_type": "input",
+                            "address": 23,
+                            "type": "value",
+                            "format": "u16",
+                            "sporadic": false
+                        },
+                        {
+                            "name": "Sporadic Channel",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u16",
+                            "sporadic": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
