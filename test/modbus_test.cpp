@@ -1153,6 +1153,8 @@ protected:
     }
 };
 
+// Check that "sporadic" register data pubished on every OnValueRead call, even if value has not changed,
+// and "normal" register data published only if value changed.
 TEST_F(TModbusPublishTest, DuplicateValues)
 {
     auto driver = SerialDriver->GetPortDrivers().front();
