@@ -1144,8 +1144,8 @@ class TModbusPublishTest: public TSerialDeviceIntegrationTest
 protected:
     void SetUp() override
     {
-        SetMode(E_Normal);
         TSerialDeviceIntegrationTest::SetUp();
+        SetMode(E_Normal);
     }
     const char* ConfigPath() const override
     {
