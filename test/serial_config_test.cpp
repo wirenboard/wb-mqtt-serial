@@ -42,7 +42,10 @@ protected:
                 Emit() << "ReadRateLimit: " << port_config->ReadRateLimit->count();
             }
             Emit() << "GuardInterval: " << port_config->RequestDelay.count();
-            Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
+            Emit() << "Response timeout: "
+                   << std::chrono::duration_cast<std::chrono::milliseconds>(
+                          port_config->Port->GetMinimalResponseTimeout())
+                          .count();
 
             if (port_config->Devices.empty()) {
                 Emit() << "No device configs.";

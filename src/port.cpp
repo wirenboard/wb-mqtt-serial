@@ -35,6 +35,25 @@ void TPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& setting
 void TPort::ResetSerialPortSettings()
 {}
 
+void TPort::SetMinimalResponseTimeout(const std::chrono::microseconds& value)
+{
+    MinimalResponseTimeout = value;
+}
+
+const std::chrono::microseconds& TPort::GetMinimalResponseTimeout() const
+{
+    return MinimalResponseTimeout;
+}
+
+std::chrono::microseconds TPort::CalcResponseTimeout(const std::chrono::microseconds& timeoutFromCall) const
+{
+    auto responseTimeout = std::max(GetMinimalResponseTimeout(), timeoutFromCall);
+    if (responseTimeout.count() < 0) {
+        return DEFAULT_RESPONSE_TIMEOUT;
+    }
+    return responseTimeout;
+}
+
 TPortOpenCloseLogic::TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings, util::TGetNowFn nowFn)
     : Settings(settings),
       NowFn(nowFn)

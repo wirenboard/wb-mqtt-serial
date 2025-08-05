@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.183.0) stable; urgency=medium
+
+  * Use response_timeout_ms from port settings for RPC requests
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 05 Aug 2025 09:18:05 +0500
+
 wb-mqtt-serial (2.182.0) stable; urgency=medium
 
   * Add publish sporadic registers data on every read feature
