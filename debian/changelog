@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.184.0) stable; urgency=medium
+
+  * WB-UPS v.3 template: add parallel mode support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 06 Aug 2025 12:30:41 +0300
+
 wb-mqtt-serial (2.183.0) stable; urgency=medium
 
   * Use response_timeout_ms from port settings for RPC requests

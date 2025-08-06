@@ -27393,7 +27393,8 @@ wb_ups_v3
 	Charger Vbus Real  =>  charger_vbus_real
 	Charging Current Setpoint  =>  charging_current_setpoint
 	Charging Input Current  =>  charging_input_current
-	Discharge Voltage Setpoint  =>  discharge_voltage_setpoint
+	Discharge Voltage Desired Setpoint  =>  discharge_voltage_setpoint
+	Discharge Voltage Real Setpoint  =>  discharge_voltage_real_setpoint
 	Discharger Ibat Raw  =>  discharger_ibat_raw
 	Discharger Ibat Real  =>  discharger_ibat_real
 	Discharger Ibus Raw  =>  discharger_ibus_raw
