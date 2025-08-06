@@ -33,6 +33,12 @@
                 "group": "g_ups"
             },
             {
+                "title": "Parallel Mode",
+                "description": "parallel_mode_description",
+                "id": "gg_parallel_mode",
+                "group": "g_ups"
+            },
+            {
                 "title": "UPS Channels",
                 "id": "gg_ups_channels",
                 "group": "g_ups",
@@ -114,6 +120,16 @@
                 "max": 2000,
                 "default": 600,
                 "group": "g_ups"
+            },
+            {
+                "id": "parallel_mode",
+                "title": "Parallel Mode",
+                "address": 19,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["enum_parallel_disabled", "enum_parallel_enabled"],
+                "default": 1,
+                "group": "gg_parallel_mode"
             },
             {
                 "id": "baud_rate",
@@ -485,11 +501,14 @@
                 "g_output_voltage_description": "When powered up via button, the output voltage is fixed at 11.5 V.<br><br>In automatic mode, the output voltage is set 0.7 V below the input, provided the input remains stable and within range for 10 seconds.<br>In manual mode, the output voltage is fixed and configured via the setpoint.<br><br>Backup mode is activated if input voltage drops below the output voltage.",
                 "g_button_description": "The WB-UPS v.3 button can be used as a trigger for automation rules.<br><br>When external power is available, the button has no effect.<br>Without external power, holding the button powers down the module.<br><br>Button behavior is fixed:<br>- Long press: 2000 ms<br>- Second press waiting time: 300 ms",
                 "output_voltage_setpoint_description": "Must be at least 0.7 V below the input voltage.",
+                "parallel_mode_description": "The parallel mode allows connecting multiple WB-UPS v.3 modules to increase output power.<br>In this mode, the output voltage may vary by up to 10% from the setpoint, enabling balanced power distribution across modules.<br><br>It is recommended to use manual output voltage mode and set the same values on all parallel-connected WB-UPS modules.",
 
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "enum_led_enabled": "Enabled",
-                "enum_led_disabled": "Disabled"
+                "enum_led_disabled": "Disabled",
+                "enum_parallel_disabled": "Disabled",
+                "enum_parallel_enabled": "Enabled"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -504,11 +523,13 @@
                 "g_button_description": "Кнопка на модуле WB-UPS v.3 может использоваться для управления другими устройствами через правила.<br><br>При наличии внешнего питания кнопка не выполняет никаких действий на модуле WB-UPS v.3.<br>При отсутствии внешнего питания длинное нажатие отключает WB-UPS v.3.<br><br>Параметры нажатий фиксированы:<br>- время длинного нажатия: 2000 мс<br>- время ожидания второго нажатия: 300 мс",
                 "g_output_voltage_description": "Выходное напряжение при включении кнопкой всегда 11.5 В.<br><br>В автоматическом режиме выходное напряжение устанавливается на 0.7 В ниже входного, если оно находится в рабочем диапазоне и остается стабильным в течение 10 секунд.<br>В ручном режиме выходное напряжение фиксировано и задается через параметр.<br><br>При понижении входного напряжения ниже выходного включается резервное питание.",
                 "output_voltage_setpoint_description": "Должно быть как минимум на 0.7 В ниже входного напряжения.",
+                "parallel_mode_description": "Режим параллельного подключения позволяет использовать несколько модулей WB-UPS v.3 для увеличения выходной мощности.<br>В этом режиме выходное напряжение может отличаться на 10% от установленного, что позволяет равномерно распределять отдаваемую мощность между модулями WB-UPS.<br><br>Рекомендуется использовать ручной режим задания выходного напряжения и установить одинаковые значения на всех модулях, включенных параллельно.",
 
                 "UPS": "Резервное питание",
                 "Mode": "Режим",
                 "Automatic": "Автоматический",
                 "Manual": "Ручной",
+                "Parallel Mode": "Параллельный режим",
                 "Output Voltage (V)": "Выходное напряжение (В)",
                 "Charging Current (mA)": "Ток заряда (мА)",
 
@@ -562,7 +583,9 @@
                 "Status LED": "Индикатор состояния",
 
                 "enum_led_enabled": "Включен",
-                "enum_led_disabled": "Выключен"
+                "enum_led_disabled": "Выключен",
+                "enum_parallel_disabled": "Выключен",
+                "enum_parallel_enabled": "Включен"
             }
         }
     }
