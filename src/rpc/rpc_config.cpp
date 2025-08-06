@@ -20,6 +20,15 @@ void TRPCConfig::AddTCPPort(const TTcpPortSettings& settings)
     PortConfigs.append(std::move(item));
 }
 
+void TRPCConfig::AddModbusTCPPort(const TTcpPortSettings& settings)
+{
+    Json::Value item;
+    item["address"] = settings.Address;
+    item["port"] = settings.Port;
+    item["protocol"] = "modbus-tcp";
+    PortConfigs.append(std::move(item));
+}
+
 Json::Value TRPCConfig::GetPortConfigs() const
 {
     return PortConfigs;

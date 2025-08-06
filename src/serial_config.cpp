@@ -609,6 +609,17 @@ namespace
         return port;
     }
 
+    PPort OpenModbusTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    {
+        TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
+
+        PPort port = std::make_shared<TTcpPort>(settings);
+
+        rpcConfig->AddModbusTCPPort(settings);
+
+        return port;
+    }
+
     void LoadPort(PHandlerConfig handlerConfig,
                   const Json::Value& port_data,
                   const std::string& id_prefix,
@@ -669,7 +680,7 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConf
         return {OpenTcpPort(port_data, rpcConfig), false};
     }
     if (port_type == "modbus tcp") {
-        return {OpenTcpPort(port_data, rpcConfig), true};
+        return {OpenModbusTcpPort(port_data, rpcConfig), true};
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }

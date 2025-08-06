@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.183.1) stable; urgency=medium
+
+  * Add protocol to Modbus TCP port information in ports/Load RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 06 Aug 2025 09:46:47 +0500
+
 wb-mqtt-serial (2.183.0) stable; urgency=medium
 
   * Use response_timeout_ms from port settings for RPC requests
