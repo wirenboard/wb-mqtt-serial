@@ -362,11 +362,21 @@
             },
             {
                 "id": "discharge_voltage_setpoint",
-                "name": "Discharge Voltage Setpoint",
+                "name": "Discharge Voltage Desired Setpoint",
                 "units": "V",
                 "reg_type": "input",
                 "scale": 0.001,
                 "address": 11,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "discharge_voltage_real_setpoint",
+                "name": "Discharge Voltage Real Setpoint",
+                "units": "V",
+                "reg_type": "input",
+                "scale": 0.001,
+                "address": 13,
                 "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
@@ -558,7 +568,8 @@
                 "Overheat, Not Working": "Высокая, работа запрещена",
                 "Temperature Hardware Protection": "Аппаратная защита по температуре",
                 "Charging Current Setpoint": "Уставка тока заряда",
-                "Discharge Voltage Setpoint": "Уставка выходного напряжения",
+                "Discharge Voltage Desired Setpoint": "Желаемая уставка выходного напряжения",
+                "Discharge Voltage Real Setpoint": "Фактическая уставка выходного напряжения",
                 "Max Discharge Current": "Максимальный ток разряда",
                 "VINREG Setpoint": "Уставка VINREG",
                 "Charge/Discharge": "Заряд/Разряд",
