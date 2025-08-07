@@ -39,6 +39,9 @@ public:
 
     PSerialClientEventsReader GetEventsReader() const;
 
+    bool SuspendPoll(PSerialDevice device);
+    bool ResumePoll(PSerialDevice device);
+
 private:
     PSerialClientEventsReader EventsReader;
     TSerialClientRegisterPoller RegisterPoller;
@@ -97,6 +100,9 @@ public:
     std::list<PSerialDevice> GetDevices();
 
     void AddTask(PSerialClientTask task);
+
+    bool SuspendPoll(PSerialDevice device);
+    bool ResumePoll(PSerialDevice device);
 
 private:
     void Activate();

@@ -48,12 +48,16 @@ public:
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                               TRegisterCallback callback);
 
+    bool SuspendPoll(PSerialDevice device);
+    bool ResumePoll(PSerialDevice device);
+
 private:
     void ScheduleNextPoll(PPollableDevice device);
     std::chrono::steady_clock::time_point GetDeadline(bool lowPriorityRateLimitIsExceeded,
                                                       const util::TSpentTimeMeter& spentTime) const;
     void OnDeviceConnectionStateChanged(PSerialDevice device);
     void RescheduleDisconnectedDevices();
+    void RescheduleDevicesWithSpendedPoll();
 
     std::multimap<PSerialDevice, PPollableDevice> Devices;
 
@@ -64,4 +68,6 @@ private:
     TRateLimiter LowPriorityRateLimiter;
 
     std::vector<PSerialDevice> DisconnectedDevicesWaitingForReschedule;
+
+    std::unordered_map<PSerialDevice, std::chrono::steady_clock::time_point> DevicesWithSpendedPoll;
 };

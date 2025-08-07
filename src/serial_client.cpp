@@ -221,6 +221,16 @@ void TSerialClient::AddTask(PSerialClientTask task)
     TasksCv.notify_all();
 }
 
+bool TSerialClient::SuspendPoll(PSerialDevice device)
+{
+    return RegReader->SuspendPoll(device);
+}
+
+bool TSerialClient::ResumePoll(PSerialDevice device)
+{
+    return RegReader->ResumePoll(device);
+}
+
 TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,
                                                                            std::chrono::milliseconds readEventsPeriod,
                                                                            util::TGetNowFn nowFn,
@@ -335,4 +345,14 @@ std::chrono::steady_clock::time_point TSerialClientRegisterAndEventsReader::GetD
 PSerialClientEventsReader TSerialClientRegisterAndEventsReader::GetEventsReader() const
 {
     return EventsReader;
+}
+
+bool TSerialClientRegisterAndEventsReader::SuspendPoll(PSerialDevice device)
+{
+    return RegisterPoller.SuspendPoll(device);
+}
+
+bool TSerialClientRegisterAndEventsReader::ResumePoll(PSerialDevice device)
+{
+    return RegisterPoller.ResumePoll(device);
 }
