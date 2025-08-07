@@ -150,7 +150,9 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
             auto slaveId = request["slave_id"].asString();
             auto deviceType = request["device_type"].asString();
             for (auto device: (*portDriver)->GetSerialClient()->GetDevices()) {
-                if (device->DeviceConfig()->SlaveId == slaveId && device->DeviceConfig()->DeviceType == deviceType) {
+                if (device->DeviceConfig()->SlaveId == slaveId &&
+                    (deviceType.empty() || device->DeviceConfig()->DeviceType == deviceType))
+                {
                     params.Device = device;
                     break;
                 }
