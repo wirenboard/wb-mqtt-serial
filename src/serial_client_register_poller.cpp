@@ -284,6 +284,8 @@ void TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
 
     DevicesWithSpendedPoll.erase(device);
     LOG(Info) << "Device " << device->ToString() << " poll resumed";
+
+    device->SetDisconnected();
 }
 
 void TSerialClientRegisterPoller::OnDeviceConnectionStateChanged(PSerialDevice device)
