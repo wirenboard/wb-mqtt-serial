@@ -59,6 +59,8 @@ private:
     void RescheduleDisconnectedDevices();
     void RescheduleDevicesWithSpendedPoll();
 
+    std::mutex Mutex;
+
     std::multimap<PSerialDevice, PPollableDevice> Devices;
 
     TScheduler<PPollableDevice, TPollableDeviceComparePredicate> Scheduler;

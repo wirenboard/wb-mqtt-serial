@@ -114,6 +114,8 @@ TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateL
 void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& devices,
                                              steady_clock::time_point currentTime)
 {
+    std::unique_lock lock(Mutex);
+
     for (const auto& dev: devices) {
         auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High);
         if (pollableDevice->HasRegisters()) {
@@ -142,6 +144,9 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
     Scheduler.ResetLoadBalancing();
 
     RescheduleDisconnectedDevices();
+    RescheduleDevicesWithSpendedPoll();
+
+    std::unique_lock lock(Mutex);
 
     TClosedPortDeviceReader reader(currentTime);
     do {
@@ -188,6 +193,8 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 {
     RescheduleDisconnectedDevices();
     RescheduleDevicesWithSpendedPoll();
+
+    std::unique_lock lock(Mutex);
 
     TPollResult res;
 
@@ -245,6 +252,8 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
 bool TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
 {
+    std::unique_lock lock(Mutex);
+
     if (DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end()) {
         auto range = Devices.equal_range(device);
         if (range.first == range.second) {
@@ -263,6 +272,8 @@ bool TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
 
 bool TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
 {
+    std::unique_lock lock(Mutex);
+
     if (DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end()) {
         LOG(Debug) << "Device " << device->ToString() << " poll is not suspended";
         return false;
@@ -308,6 +319,7 @@ std::string TThrottlingStateLogger::GetMessage()
 
 void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
 {
+    std::unique_lock lock(Mutex);
     for (auto& device: DisconnectedDevicesWaitingForReschedule) {
         auto range = Devices.equal_range(device);
         for (auto it = range.first; it != range.second; ++it) {
@@ -322,9 +334,12 @@ void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
 void TSerialClientRegisterPoller::RescheduleDevicesWithSpendedPoll()
 {
     std::list<PSerialDevice> list;
-    for (auto it = DevicesWithSpendedPoll.begin(); it != DevicesWithSpendedPoll.end(); ++it) {
-        if (it->second <= std::chrono::steady_clock::now()) {
-            list.push_back(it->first);
+    {
+        std::unique_lock lock(Mutex);
+        for (auto it = DevicesWithSpendedPoll.begin(); it != DevicesWithSpendedPoll.end(); ++it) {
+            if (it->second <= std::chrono::steady_clock::now()) {
+                list.push_back(it->first);
+            }
         }
     }
     for (auto device: list) {
