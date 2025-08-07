@@ -248,7 +248,7 @@ Json::Value TRPCDeviceHandler::SetPoll(const Json::Value& request)
     }
     try {
         if (!request["poll"].asBool()) {
-            params.SerialClient->SuspendPoll(params.Device);
+            params.SerialClient->SuspendPoll(params.Device, std::chrono::steady_clock::now());
         } else {
             params.SerialClient->ResumePoll(params.Device);
         }

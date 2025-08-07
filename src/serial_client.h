@@ -39,7 +39,7 @@ public:
 
     PSerialClientEventsReader GetEventsReader() const;
 
-    void SuspendPoll(PSerialDevice device);
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
     void ResumePoll(PSerialDevice device);
 
 private:
@@ -101,7 +101,7 @@ public:
 
     void AddTask(PSerialClientTask task);
 
-    void SuspendPoll(PSerialDevice device);
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
     void ResumePoll(PSerialDevice device);
 
 private:

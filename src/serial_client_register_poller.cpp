@@ -144,7 +144,7 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
     Scheduler.ResetLoadBalancing();
 
     RescheduleDisconnectedDevices();
-    RescheduleDevicesWithSpendedPoll();
+    RescheduleDevicesWithSpendedPoll(currentTime);
 
     std::unique_lock lock(Mutex);
 
@@ -192,7 +192,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
                                                        TRegisterCallback callback)
 {
     RescheduleDisconnectedDevices();
-    RescheduleDevicesWithSpendedPoll();
+    RescheduleDevicesWithSpendedPoll(spentTime.GetStartTime());
 
     std::unique_lock lock(Mutex);
 
@@ -250,7 +250,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     return res;
 }
 
-void TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
+void TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime)
 {
     std::unique_lock lock(Mutex);
 
@@ -264,7 +264,7 @@ void TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
         }
     }
 
-    DevicesWithSpendedPoll[device] = std::chrono::steady_clock::now() + SUSPEND_POLL_TIMEOUT;
+    DevicesWithSpendedPoll[device] = currentTime + SUSPEND_POLL_TIMEOUT;
     LOG(Info) << "Device " << device->ToString() << " poll suspended";
 }
 
@@ -327,13 +327,13 @@ void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
     DisconnectedDevicesWaitingForReschedule.clear();
 }
 
-void TSerialClientRegisterPoller::RescheduleDevicesWithSpendedPoll()
+void TSerialClientRegisterPoller::RescheduleDevicesWithSpendedPoll(std::chrono::steady_clock::time_point currentTime)
 {
     std::list<PSerialDevice> list;
     {
         std::unique_lock lock(Mutex);
         for (auto it = DevicesWithSpendedPoll.begin(); it != DevicesWithSpendedPoll.end(); ++it) {
-            if (it->second <= std::chrono::steady_clock::now()) {
+            if (it->second <= currentTime) {
                 list.push_back(it->first);
             }
         }

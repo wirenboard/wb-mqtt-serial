@@ -48,7 +48,7 @@ public:
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                               TRegisterCallback callback);
 
-    void SuspendPoll(PSerialDevice device);
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
     void ResumePoll(PSerialDevice device);
 
 private:
@@ -57,7 +57,7 @@ private:
                                                       const util::TSpentTimeMeter& spentTime) const;
     void OnDeviceConnectionStateChanged(PSerialDevice device);
     void RescheduleDisconnectedDevices();
-    void RescheduleDevicesWithSpendedPoll();
+    void RescheduleDevicesWithSpendedPoll(std::chrono::steady_clock::time_point currentTime);
 
     std::mutex Mutex;
 
