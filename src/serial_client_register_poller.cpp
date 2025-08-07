@@ -250,15 +250,14 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     return res;
 }
 
-bool TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
+void TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
 {
     std::unique_lock lock(Mutex);
 
     if (DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end()) {
         auto range = Devices.equal_range(device);
         if (range.first == range.second) {
-            LOG(Debug) << "Device " << device->ToString() << " is not included to poll";
-            return false;
+            throw std::runtime_error("Device " + device->ToString() + " is not included to poll");
         }
         for (auto it = range.first; it != range.second; ++it) {
             Scheduler.Remove(it->second);
@@ -267,16 +266,14 @@ bool TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device)
 
     DevicesWithSpendedPoll[device] = std::chrono::steady_clock::now() + SUSPEND_POLL_TIMEOUT;
     LOG(Info) << "Device " << device->ToString() << " poll suspended";
-    return true;
 }
 
-bool TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
+void TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
 {
     std::unique_lock lock(Mutex);
 
     if (DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end()) {
-        LOG(Debug) << "Device " << device->ToString() << " poll is not suspended";
-        return false;
+        throw std::runtime_error("Device " + device->ToString() + " poll is not suspended");
     }
 
     auto range = Devices.equal_range(device);
@@ -287,7 +284,6 @@ bool TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
 
     DevicesWithSpendedPoll.erase(device);
     LOG(Info) << "Device " << device->ToString() << " poll resumed";
-    return true;
 }
 
 void TSerialClientRegisterPoller::OnDeviceConnectionStateChanged(PSerialDevice device)

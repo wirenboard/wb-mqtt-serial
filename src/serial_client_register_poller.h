@@ -48,8 +48,8 @@ public:
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                               TRegisterCallback callback);
 
-    bool SuspendPoll(PSerialDevice device);
-    bool ResumePoll(PSerialDevice device);
+    void SuspendPoll(PSerialDevice device);
+    void ResumePoll(PSerialDevice device);
 
 private:
     void ScheduleNextPoll(PPollableDevice device);
