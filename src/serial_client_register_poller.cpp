@@ -266,6 +266,10 @@ void TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device, std::chrono:
 
     DevicesWithSpendedPoll[device] = currentTime + SUSPEND_POLL_TIMEOUT;
     LOG(Info) << "Device " << device->ToString() << " poll suspended";
+
+    if (device->GetConnectionState() != TDeviceConnectionState::DISCONNECTED) {
+        device->SetDisconnected();
+    }
 }
 
 void TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
@@ -284,13 +288,13 @@ void TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
 
     DevicesWithSpendedPoll.erase(device);
     LOG(Info) << "Device " << device->ToString() << " poll resumed";
-
-    device->SetDisconnected();
 }
 
 void TSerialClientRegisterPoller::OnDeviceConnectionStateChanged(PSerialDevice device)
 {
-    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED &&
+        DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end())
+    {
         DisconnectedDevicesWaitingForReschedule.push_back(device);
     }
 }
