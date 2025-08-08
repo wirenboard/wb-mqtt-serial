@@ -305,9 +305,9 @@ TReadFrameResult Modbus::TModbusTCPTraits::ReadFrame(TPort& port,
                                                      std::vector<uint8_t>& response) const
 {
     auto startTime = chrono::steady_clock::now();
-    while (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - startTime) <
-           responseTimeout + frameTimeout)
-    {
+    // Timeout for reading packet with expected transaction ID
+    auto packetTimeout = port.CalcResponseTimeout(responseTimeout + frameTimeout);
+    while (chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - startTime) < packetTimeout) {
         if (response.size() < MBAP_SIZE) {
             response.resize(MBAP_SIZE);
         }

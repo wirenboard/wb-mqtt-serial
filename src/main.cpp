@@ -253,6 +253,8 @@ namespace
 
 int main(int argc, char* argv[])
 {
+    signal(SIGPIPE, SIG_IGN);
+
     WBMQTT::TMosquittoMqttConfig mqttConfig;
     string configFilename(CONFIG_FULL_FILE_PATH);
 

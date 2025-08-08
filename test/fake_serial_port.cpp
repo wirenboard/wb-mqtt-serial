@@ -272,6 +272,12 @@ std::chrono::microseconds TFakeSerialPort::GetSendTimeBytes(double bytesNumber) 
     return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
 
+std::chrono::microseconds TFakeSerialPort::GetSendTimeBits(size_t bitsNumber) const
+{
+    auto us = std::ceil((1000000.0 * bitsNumber) / double(BaudRate));
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
+}
+
 std::string TFakeSerialPort::GetDescription(bool verbose) const
 {
     return EmptyDescription ? "" : PortName;

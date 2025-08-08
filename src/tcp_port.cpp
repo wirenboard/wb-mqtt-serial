@@ -1,6 +1,7 @@
 #include "tcp_port.h"
 #include "serial_exc.h"
 
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
@@ -11,6 +12,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
@@ -59,6 +61,14 @@ void TTcpPort::Open()
     auto arg = fcntl(Fd, F_GETFL, NULL);
     arg |= O_NONBLOCK;
     fcntl(Fd, F_SETFL, arg);
+
+    // Send packets immediately without waiting for the buffer to fill
+    // This is useful for protocols that require immediate response
+    // and do not tolerate delays, such as Modbus RTU over TCP.
+    int one = 1;
+    if (setsockopt(Fd, SOL_TCP, TCP_NODELAY, &one, sizeof(one)) < 0) {
+        LOG(Debug) << "Can't enable TCP_NODELAY for " << GetDescription() << ": " << FormatErrno(errno);
+    }
 
     try {
         if (connect(Fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
@@ -140,4 +150,26 @@ std::string TTcpPort::GetDescription(bool verbose) const
         return Settings.ToString();
     }
     return Settings.Address + ":" + std::to_string(Settings.Port);
+}
+
+std::chrono::microseconds TTcpPort::GetSendTimeBytes(double bytesNumber) const
+{
+    // TCP ports are mostly used to communicate with gateways.
+    // Devices behind gateways usually use serial protocols.
+    // Assume that the default speed is 9600 bps.
+    // and calculate the time for sending bytes as if they were sent in serial mode.
+    // This is a simplification, but it works for most cases.
+    // 1 byte = 11 bits (1 start bit, 8 data bits, 2 stop bit)
+    return GetSendTimeBits(std::ceil(bytesNumber * 11));
+}
+
+std::chrono::microseconds TTcpPort::GetSendTimeBits(size_t bitsNumber) const
+{
+    // TCP ports are mostly used to communicate with gateways.
+    // Devices behind gateways usually use serial protocols.
+    // Assume that the default speed is 9600 bps.
+    // and calculate the time for sending bits as if they were sent in serial mode.
+    // This is a simplification, but it works for most cases.
+    auto us = std::ceil(bitsNumber * 1000000.0 / 9600.0);
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }

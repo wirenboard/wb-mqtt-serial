@@ -12,6 +12,7 @@ class TRPCConfig
 public:
     void AddSerialPort(const TSerialPortSettings& settings);
     void AddTCPPort(const TTcpPortSettings& settings);
+    void AddModbusTCPPort(const TTcpPortSettings& settings);
     Json::Value GetPortConfigs() const;
 
 private:

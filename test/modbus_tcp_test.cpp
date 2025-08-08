@@ -66,6 +66,20 @@ namespace
         {
             return LastRequest;
         }
+
+        std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override
+        {
+            // 8-N-2
+            auto bits = std::ceil(11 * bytesNumber);
+            return GetSendTimeBits(bits);
+        }
+
+        std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override
+        {
+            // 115200 bps
+            auto us = std::ceil((1000000.0 * bitsNumber) / 115200.0);
+            return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
+        }
     };
 }
 
