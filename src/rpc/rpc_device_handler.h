@@ -97,6 +97,7 @@ public:
                       const std::string& requestDeviceLoadSchemaFilePath,
                       const std::string& requestDeviceLSetSchemaFilePath,
                       const std::string& requestDeviceProbeSchemaFilePath,
+                      const std::string& requestDeviceSetPollSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
                       TSerialClientTaskRunner& serialClientTaskRunner,
@@ -110,6 +111,8 @@ private:
     Json::Value RequestDeviceLoadSchema;
     Json::Value RequestDeviceSetSchema;
     Json::Value RequestDeviceProbeSchema;
+    Json::Value RequestDeviceSetPollSchema;
+
     PTemplateMap Templates;
     TSerialClientTaskRunner& SerialClientTaskRunner;
     TRPCDeviceParametersCache& ParametersCache;
@@ -129,6 +132,8 @@ private:
     void Probe(const Json::Value& request,
                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                WBMQTT::TMqttRpcServer::TErrorCallback onError);
+
+    Json::Value SetPoll(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;

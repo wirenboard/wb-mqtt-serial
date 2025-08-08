@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.184.0) stable; urgency=medium
+
+  * Add device/SetPoll RPC for device poll suspending and resuming
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 08 Aug 2025 15:33:57 +0300
+
 wb-mqtt-serial (2.183.0) stable; urgency=medium
 
   * Use response_timeout_ms from port settings for RPC requests

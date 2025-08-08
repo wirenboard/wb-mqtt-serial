@@ -115,6 +115,27 @@ public:
         Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": Cycle end\n";
     }
 
+    void EnqueueEnableContinuousRead(uint8_t slaveId, microseconds readTime)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        Port->Expect(WrapPDU({
+                         0x06, // function code
+                         0x00, // starting address Hi
+                         0x72, // starting address Lo
+                         0x00, // value Hi
+                         0x01  // value Lo
+                     }),
+                     WrapPDU({
+                         0x06, // function code
+                         0x00, // starting address Hi
+                         0x72, // starting address Lo
+                         0x00, // value Hi
+                         0x01  // value Lo
+                     }),
+                     __func__,
+                     readTime);
+    }
+
     void EnqueueReadHolding(uint8_t slaveId, uint16_t addr, uint16_t count, microseconds readTime)
     {
         SetModbusRTUSlaveId(slaveId);
@@ -776,4 +797,142 @@ TEST_F(TPollTest, OnlyEventsPollError)
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+}
+
+TEST_F(TPollTest, SuspendAndResume)
+{
+    // One register without events
+    // 1. Continuous read must be enabled
+    // 2. Poll register (3 times)
+    // 3. Suspend poll
+    // 4. Wait a "minute" (3 times)
+    // 5. Resume poll "manually"
+    // 6. Reenable continuous read
+    // 7. Poll register (3 times)
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.EnableWbContinuousRead = true;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueEnableContinuousRead(1, 10ms);
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    serialClient.SuspendPoll(device, TimeMock.GetTime());
+
+    for (size_t i = 0; i < 3; ++i) {
+        Cycle(serialClient, lastAccessedDevice);
+        TimeMock.AddTime(1min);
+    }
+
+    serialClient.ResumePoll(device);
+
+    EnqueueEnableContinuousRead(1, 10ms);
+    for (size_t i = 0; i < 10; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+}
+
+TEST_F(TPollTest, SuspendAndResumeByTimeout)
+{
+    // One register without events
+    // 1. Continuous read must be enabled
+    // 2. Poll register (3 times)
+    // 3. Suspend poll
+    // 4. Wait a "minute" (10 times)
+    // 5. Poll must be resumed by timeout
+    // 6. Reenable continuous read
+    // 7. Poll register (3 times)
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.EnableWbContinuousRead = true;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueEnableContinuousRead(1, 10ms);
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    serialClient.SuspendPoll(device, TimeMock.GetTime());
+
+    for (size_t i = 0; i < 10; ++i) {
+        Cycle(serialClient, lastAccessedDevice);
+        TimeMock.AddTime(1min);
+    }
+
+    EnqueueEnableContinuousRead(1, 10ms);
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+}
+
+TEST_F(TPollTest, SuspendAndResumeWithEvents)
+{
+    // One register with events
+    // 1. Events must be enabled
+    // 2. Read once by normal request
+    // 3. Events read requests are sent every 50ms (3 times)
+    // 4. Suspend poll
+    // 4. Wait a "minute" (3 times)
+    // 6. Resume poll "manually"
+    // 7. Reenable events
+    // 8. Read once by normal request
+    // 9. Events read requests are sent every 50ms (10 times)
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    serialClient.SuspendPoll(device, TimeMock.GetTime());
+
+    for (size_t i = 0; i < 3; ++i) {
+        Cycle(serialClient, lastAccessedDevice);
+        TimeMock.AddTime(1min);
+    }
+
+    serialClient.ResumePoll(device);
+
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
 }
