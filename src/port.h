@@ -73,14 +73,14 @@ public:
      *
      * @param bytesCount number of bytes
      */
-    virtual std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const;
+    virtual std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const = 0;
 
     /**
      * @brief Calculate sending time for bitsNumber bits
      *
      * @param bitsCount number of bits
      */
-    virtual std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const;
+    virtual std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const = 0;
 
     /**
      * @brief Retrieves a description of the port. The string uniquely defines the port.

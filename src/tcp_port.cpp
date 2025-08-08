@@ -1,6 +1,7 @@
 #include "tcp_port.h"
 #include "serial_exc.h"
 
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
@@ -149,4 +150,26 @@ std::string TTcpPort::GetDescription(bool verbose) const
         return Settings.ToString();
     }
     return Settings.Address + ":" + std::to_string(Settings.Port);
+}
+
+std::chrono::microseconds TTcpPort::GetSendTimeBytes(double bytesNumber) const
+{
+    // TCP ports are mostly used to communicate with gateways.
+    // Devices behind gateways usually use serial protocols.
+    // Assume that the default speed is 9600 bps.
+    // and calculate the time for sending bytes as if they were sent in serial mode.
+    // This is a simplification, but it works for most cases.
+    // 1 byte = 11 bits (1 start bit, 8 data bits, 2 stop bit)
+    return GetSendTimeBits(std::ceil(bytesNumber * 11));
+}
+
+std::chrono::microseconds TTcpPort::GetSendTimeBits(size_t bitsNumber) const
+{
+    // TCP ports are mostly used to communicate with gateways.
+    // Devices behind gateways usually use serial protocols.
+    // Assume that the default speed is 9600 bps.
+    // and calculate the time for sending bits as if they were sent in serial mode.
+    // This is a simplification, but it works for most cases.
+    auto us = std::ceil(bitsNumber * 1000000.0 / 9600.0);
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
