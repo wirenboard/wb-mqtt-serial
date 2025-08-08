@@ -151,7 +151,8 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
             auto deviceType = request["device_type"].asString();
             for (auto device: (*portDriver)->GetSerialClient()->GetDevices()) {
                 if (device->DeviceConfig()->SlaveId == slaveId &&
-                    (deviceType.empty() || device->DeviceConfig()->DeviceType == deviceType))
+                    (device->DeviceConfig()->DeviceType == deviceType ||
+                     (deviceType.empty() && WBMQTT::StringStartsWith(device->Protocol()->GetName(), "modbus"))))
                 {
                     params.Device = device;
                     break;

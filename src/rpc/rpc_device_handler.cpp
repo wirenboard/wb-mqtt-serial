@@ -243,7 +243,7 @@ Json::Value TRPCDeviceHandler::SetPoll(const Json::Value& request)
 {
     ValidateRPCRequest(request, RequestDeviceSetPollSchema);
     auto params = SerialClientTaskRunner.GetSerialClientParams(request);
-    if (params.SerialClient == nullptr || params.Device == nullptr) {
+    if (!params.SerialClient || !params.Device) {
         throw TRPCException("Port or device not found", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
     try {
