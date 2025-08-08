@@ -1,4 +1,7 @@
 #include "port.h"
+
+#include <cmath>
+
 #include "log.h"
 
 void TPort::Reopen()
@@ -21,12 +24,14 @@ void TPort::WriteBytes(const std::string& buf)
 
 std::chrono::microseconds TPort::GetSendTimeBytes(double bytesNumber) const
 {
-    return std::chrono::microseconds::zero();
+    return GetSendTimeBits(bytesNumber * 8);
 }
 
 std::chrono::microseconds TPort::GetSendTimeBits(size_t bitsNumber) const
 {
-    return std::chrono::microseconds::zero();
+    // Defaults to serial port 9600
+    auto us = std::ceil(bitsNumber * 1000000.0 / 9600.0);
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
 
 void TPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)

@@ -114,7 +114,6 @@ public:
 
     const std::chrono::microseconds& GetMinimalResponseTimeout() const;
 
-protected:
     /**
      * @brief Calculates the actual response timeout based on the requested timeout.
      *        If the requested timeout is less than the minimal response timeout,
