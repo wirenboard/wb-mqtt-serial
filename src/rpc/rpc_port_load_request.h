@@ -17,7 +17,7 @@ class TRPCPortLoadRequest
 {
 public:
     std::vector<uint8_t> Message;
-    std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
+    std::chrono::milliseconds ResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
     TRPCMessageFormat Format;

@@ -1,10 +1,30 @@
-wb-mqtt-serial (2.181.1) stable; urgency=medium
+wb-mqtt-serial (2.184.1) stable; urgency=medium
 
   * config-wb-mwac2_ver2.json.jinja:
     - Add support for normally closed sensors
     - Add buzzer conrol
+  * config-wb-mwac.json.jinja:
+    - Add support for normally closed sensors
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 30 Jul 2025 09:47:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 11 Aug 2025 13:23:00 +0300
+
+wb-mqtt-serial (2.184.0) stable; urgency=medium
+
+  * Add device/SetPoll RPC for device poll suspending and resuming
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 08 Aug 2025 15:33:57 +0300
+
+wb-mqtt-serial (2.183.0) stable; urgency=medium
+
+  * Use response_timeout_ms from port settings for RPC requests
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 05 Aug 2025 09:18:05 +0500
+
+wb-mqtt-serial (2.182.0) stable; urgency=medium
+
+  * Add publish sporadic registers data on every read feature
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 04 Aug 2025 11:21:48 +0300
 
 wb-mqtt-serial (2.181.0) stable; urgency=medium
 

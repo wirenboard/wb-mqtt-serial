@@ -56,6 +56,8 @@ const auto RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-set-request.schema.json";
 const auto RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-probe-request.schema.json";
+const auto RPC_DEVICE_SET_POLL_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-set-poll-request.schema.json";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
@@ -316,24 +318,12 @@ int main(int argc, char* argv[])
             }
 
             auto backend = WBMQTT::NewDriverBackend(mqtt);
-
-            // Publishing strategy is implemented both in libwbmqtt1 and in the application
-            // This results to a race condition with WBMQTT::TPublishParameters::PublishSomeUnchanged policy
-            // The application and libwbmqtt1 has own timers that are not in sync
-            // A timer in the application allow publishing, but lib's timer can be not expired and can reject it.
-            // Real publish will occur only on next application's timer expiration
-            // Set publish policy in libwbmqtt1 to PublishAll to disable its timer
-            auto driverPublishParameters = handlerConfig->PublishParameters;
-            if (driverPublishParameters.Policy == WBMQTT::TPublishParameters::PublishSomeUnchanged) {
-                driverPublishParameters.Policy = WBMQTT::TPublishParameters::PublishAll;
-            }
             auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
                                                 .SetId(driverName)
                                                 .SetBackend(backend)
                                                 .SetUseStorage(true)
                                                 .SetReownUnknownDevices(true)
-                                                .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
-                                            driverPublishParameters);
+                                                .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH));
 
             driver->StartLoop();
             WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
@@ -359,6 +349,7 @@ int main(int argc, char* argv[])
                                                 RPC_DEVICE_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                RPC_DEVICE_SET_POLL_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
                                                 templates,
                                                 serialClientTaskRunner,

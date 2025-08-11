@@ -18,7 +18,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -103,7 +103,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 111
         DeviceChannels:
             ------
@@ -141,7 +141,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -305,7 +305,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 1000
         DeviceTimeout: 2000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -414,7 +414,7 @@ Ports:
         MinReadRegisters: 2
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -499,7 +499,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -536,7 +536,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -573,7 +573,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -658,7 +658,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 111
         DeviceChannels:
             ------
@@ -696,7 +696,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
