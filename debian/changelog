@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.184.1) stable; urgency=medium
+
+  * Add Modbus TCP protocol support for device/Load, device/Set and device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 11 Aug 2025 08:45:57 +0300
+
 wb-mqtt-serial (2.184.0) stable; urgency=medium
 
   * Add device/SetPoll RPC for device poll suspending and resuming
