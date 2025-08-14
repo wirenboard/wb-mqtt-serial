@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.184.2ubuntu1) UNRELEASED; urgency=medium
+
+  * Fix changelog, no functional changes
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 14 Aug 2025 14:54:50 +0300
+
 wb-mqtt-serial (2.184.2) stable; urgency=medium
 
   * Fix wrong illuminance coefficient for MTDX62-MB presence sensor template
