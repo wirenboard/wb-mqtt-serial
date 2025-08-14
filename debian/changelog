@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.184.2ubuntu1) UNRELEASED; urgency=medium
+wb-mqtt-serial (2.184.3) stable; urgency=medium
 
   * Fix changelog, no functional changes
 
