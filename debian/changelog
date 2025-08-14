@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.184.1) stable; urgency=medium
+wb-mqtt-serial (2.184.2) stable; urgency=medium
 
   * Fix wrong illuminance coefficient for MTDX62-MB presence sensor template
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Wed, 13 Aug 2025 17:57:37 +0300
+ 
+wb-mqtt-serial (2.184.1) stable; urgency=medium
+
+* Fix device/SetPoll RPC reply format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 14 Aug 2025 14:03:17 +0300
 
 wb-mqtt-serial (2.184.0) stable; urgency=medium
 
