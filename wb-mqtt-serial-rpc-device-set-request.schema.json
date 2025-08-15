@@ -42,6 +42,10 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 65535
+        },
+        "modbus_mode": {
+          "type": "string",
+          "enum": ["RTU", "TCP"]
         }
       },
       "required": [ "ip", "port" ]
