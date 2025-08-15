@@ -258,7 +258,7 @@ Json::Value TRPCDeviceHandler::SetPoll(const Json::Value& request)
         LOG(Warn) << e.what();
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
-    return Json::Value();
+    return Json::Value(Json::objectValue);
 }
 
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,

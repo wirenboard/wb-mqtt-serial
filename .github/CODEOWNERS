@@ -1,4 +1,4 @@
 # See https://docs.github.com/ for more info about CODEOWNERS syntax
-* @KraPete @sikmir
+* @KraPete @sikmir @u236
 
 templates/ @wirenboard/wb-templates

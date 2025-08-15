@@ -96,7 +96,7 @@
         "reg_type": "holding",
         "address": "0x0B",
         "unit": "lux",
-        "scale": 1,
+        "scale": 0.1,
         "min": 0,
         "max": 4200,
         "default": 0,
