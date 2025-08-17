@@ -3,6 +3,7 @@ wb-mqtt-serial (2.184.1) stable; urgency=medium
   * config-wb-mwac2_ver2.json.jinja:
     - Add support for normally closed sensors
     - Add buzzer conrol
+
   * config-wb-mwac.json.jinja:
     - Add support for normally closed sensors
 
