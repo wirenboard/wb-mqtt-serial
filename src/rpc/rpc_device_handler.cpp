@@ -59,15 +59,17 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
     auto params = serialClientTaskRunner.GetSerialClientParams(request);
     if (params.Device == nullptr) {
         DeviceTemplate = templates->GetTemplate(request["device_type"].asString());
-        auto config = std::make_shared<TDeviceConfig>("RPC Device",
-                                                      request["slave_id"].asString(),
-                                                      DeviceTemplate->GetProtocol());
-        if (DeviceTemplate->GetProtocol() == "modbus") {
+        auto protocolName = DeviceTemplate->GetProtocol();
+        if (protocolName == "modbus" && request["modbus_mode"].asString() == "TCP") {
+            protocolName += "-tcp";
+        }
+        ProtocolParams = deviceFactory.GetProtocolParams(protocolName);
+        auto config = std::make_shared<TDeviceConfig>("RPC Device", request["slave_id"].asString(), protocolName);
+        if (ProtocolParams.protocol->IsModbus()) {
             config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
-        ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
         Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
     } else {
         Device = params.Device;
