@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.184.4) stable; urgency=medium
+wb-mqtt-serial (2.184.5) stable; urgency=medium
 
   * config-wb-mwac2_ver2.json.jinja:
     - Add support for normally closed sensors
@@ -7,7 +7,13 @@ wb-mqtt-serial (2.184.4) stable; urgency=medium
   * config-wb-mwac.json.jinja:
     - Add support for normally closed sensors
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Sun, 17 Aug 2025 19:34:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 21 Aug 2025 10:54:00 +0300
+
+wb-mqtt-serial (2.184.4) stable; urgency=medium
+
+  * Add Modbus TCP protocol support for device/Load, device/Set and device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 15 Aug 2025 09:00:57 +0300
 
 wb-mqtt-serial (2.184.3) stable; urgency=medium
 
