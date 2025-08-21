@@ -23677,6 +23677,7 @@ WB-MWAC-v2
 	iVout Overloaded  =>  iVout Overloaded
 WB-MWAC-v2 ver2
 	Battery State, measured at module startup  =>  Battery State
+	Buzzer  =>  Buzzer
 	Cleaning Mode  =>  Cleaning Mode
 	FW Version  =>  FW Version
 	Input F1  =>  Input F1
