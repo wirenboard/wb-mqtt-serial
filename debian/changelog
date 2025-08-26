@@ -5,7 +5,7 @@ wb-mqtt-serial (2.185.0) stable; urgency=medium
   * Set TCP_NODELAY for TCP ports
   * Handle TCP port closing by remote
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 06 Aug 2025 09:46:47 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 26 Aug 2025 18:49:53 +0500
 
 wb-mqtt-serial (2.184.4) stable; urgency=medium
 
