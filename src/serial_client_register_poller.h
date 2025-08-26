@@ -52,7 +52,7 @@ public:
     void ResumePoll(PSerialDevice device);
 
 private:
-    void ScheduleNextPoll(PPollableDevice device);
+    void ScheduleNextPoll(PPollableDevice device, std::chrono::steady_clock::time_point currentTime);
     std::chrono::steady_clock::time_point GetDeadline(bool lowPriorityRateLimitIsExceeded,
                                                       const util::TSpentTimeMeter& spentTime) const;
     void OnDeviceConnectionStateChanged(PSerialDevice device);

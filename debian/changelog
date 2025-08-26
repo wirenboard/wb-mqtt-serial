@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.185.0) stable; urgency=medium
+
+  * Add increase poll interval for disconnected devices feature
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 26 Aug 2025 15:09:57 +0300
+
 wb-mqtt-serial (2.184.4) stable; urgency=medium
 
   * Add Modbus TCP protocol support for device/Load, device/Set and device/LoadConfig RPC
