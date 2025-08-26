@@ -19,6 +19,7 @@ private:
     TSerialPortConnectionSettings SerialPortSettings;
     std::chrono::steady_clock::time_point ExpireTime;
     uint8_t SlaveId;
+    std::unique_ptr<Modbus::IModbusTraits> ModbusTraits;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;
