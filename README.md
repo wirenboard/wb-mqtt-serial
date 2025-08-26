@@ -1018,7 +1018,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
 |Параметр          |Тип          |Значение по умолчанию |Описание |
 |------------------|-------------|----------------------|---------|
-|`protocol`        |обязательный |`modbus`, `modbus-tcp`|протокол. При указании значения `modbus` совместо с `ip` и `port` в сокет отправляется Modbus RTU сообщение, что используется при работе через прозрачные шлюзы Modbus RTU-over-TCP. Для работы по Modbus TCP укажите `modbus-tcp`.
+|`protocol`        |обязательный |`modbus`, `modbus-tcp`|протокол. При указании значения `modbus` совместно с `ip` и `port` в сокет отправляется Modbus RTU сообщение, что используется при работе через прозрачные шлюзы Modbus RTU-over-TCP. Для работы по Modbus TCP укажите `modbus-tcp`.
 |`slave_id`        |обязательный |                      |адрес устройства
 |`function`        |обязательный |                      |код Modbus-команды
 |`address`         |обязательный |                      |адрес первого Modbus-регистра
@@ -1274,7 +1274,12 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     "port": 1234,
 
     // Модбас адрес устройства
-    "slave_id": 100
+    "slave_id": 100,
+
+    // При указании значения `modbus` в сокет отправляется Modbus RTU сообщение, что используется при работе через прозрачные шлюзы Modbus RTU-over-TCP.
+    // Для работы по Modbus TCP укажите `modbus-tcp`.
+    // Необязательный параметр. Если не указан, используется "modbus"
+    "protocol": "modbus-tcp"
 }
 ```
 
