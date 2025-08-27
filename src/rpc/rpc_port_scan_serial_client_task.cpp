@@ -202,7 +202,26 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest, const s
     Json::Value replyJSON;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
     try {
-        ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, scannedDevices);
+        switch (rpcRequest->Mode) {
+            case TRPCPortScanRequest::START: {
+                auto device = ModbusExt::ScanStart(port, rpcRequest->ModbusExtCommand);
+                if (device) {
+                    scannedDevices.push_back(*device);
+                }
+                break;
+            }
+            case TRPCPortScanRequest::NEXT: {
+                auto device = ModbusExt::ScanNext(port, rpcRequest->ModbusExtCommand);
+                if (device) {
+                    scannedDevices.push_back(*device);
+                }
+                break;
+            }
+            case TRPCPortScanRequest::ALL: {
+                ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, scannedDevices);
+                break;
+            }
+        }
     } catch (const std::exception& e) {
         replyJSON["error"] = e.what();
     }
@@ -222,6 +241,13 @@ TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(const Json::Value& re
 {
     Request->OnResult = onResult;
     Request->OnError = onError;
+    std::string mode;
+    WBMQTT::JSON::Get(request, "mode", mode);
+    if (mode == "start") {
+        Request->Mode = TRPCPortScanRequest::START;
+    } else if (mode == "next") {
+        Request->Mode = TRPCPortScanRequest::NEXT;
+    }
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
