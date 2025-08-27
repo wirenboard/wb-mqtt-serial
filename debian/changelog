@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.186.0) stable; urgency=medium
+
+  * Add mode to port/Scan RPC for starting and continuing device scan
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 27 Aug 2025 16:40:33 +0500
+
 wb-mqtt-serial (2.185.0) stable; urgency=medium
 
   * Add protocol to Modbus TCP port information in ports/Load RPC

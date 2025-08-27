@@ -601,9 +601,9 @@ namespace ModbusExt // modbus extension protocol declarations
         ModbusExtCommand = command;
     }
 
-    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices)
+    std::optional<TScannedDevice> SendScanRequest(TPort& port, TModbusExtCommand modbusExtCommand, uint8_t scanCommand)
     {
-        auto req = MakeScanRequest(modbusExtCommand, START_SCAN_COMMAND);
+        auto req = MakeScanRequest(modbusExtCommand, scanCommand);
         const auto standardFrameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
         port.SleepSinceLastInteraction(standardFrameTimeout);
         port.WriteBytes(req);
@@ -611,44 +611,58 @@ namespace ModbusExt // modbus extension protocol declarations
         const auto scanFrameTimeout = GetTimeoutForScan(port, modbusExtCommand);
         const auto responseTimeout = scanFrameTimeout + port.GetSendTimeBytes(1);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> response;
-        size_t rc;
+        size_t rc =
+            port.ReadFrame(response.data(), response.size(), responseTimeout, scanFrameTimeout, ExpectFastModbus())
+                .Count;
+
+        const uint8_t* packet = GetPacketStart(response.data(), rc);
+        if (packet == nullptr) {
+            throw Modbus::TMalformedResponseError("invalid packet");
+        }
+
+        switch (packet[SUB_COMMAND_POS]) {
+            case DEVICE_FOUND_RESPONSE_SCAN_COMMAND: {
+                return std::optional<TScannedDevice>{
+                    TScannedDevice{packet[SCAN_SLAVE_ID_POS], GetFromBigEndian<uint32_t>(packet + SCAN_SN_POS)}};
+            }
+            case NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND: {
+                return std::nullopt;
+            }
+            default: {
+                throw Modbus::TMalformedResponseError("invalid sub command");
+            }
+        }
+    }
+
+    std::optional<TScannedDevice> ScanStart(TPort& port, TModbusExtCommand modbusExtCommand)
+    {
         try {
-            rc = port.ReadFrame(response.data(), response.size(), responseTimeout, scanFrameTimeout, ExpectFastModbus())
-                     .Count;
+            return SendScanRequest(port, modbusExtCommand, START_SCAN_COMMAND);
         } catch (const TResponseTimeoutException& ex) {
             // It is ok. No Fast Modbus capable devices on port.
             LOG(Debug) << "No Fast Modbus capable devices on port " << port.GetDescription();
+            return std::nullopt;
+        }
+    }
+
+    std::optional<TScannedDevice> ScanNext(TPort& port, TModbusExtCommand modbusExtCommand)
+    {
+        return SendScanRequest(port, modbusExtCommand, CONTINUE_SCAN_COMMAND);
+    }
+
+    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices)
+    {
+        auto res = ScanStart(port, modbusExtCommand);
+        if (!res) {
             return;
         }
-
-        req = MakeScanRequest(modbusExtCommand, CONTINUE_SCAN_COMMAND);
+        scannedDevices.push_back(*res);
         while (true) {
-            const uint8_t* packet = GetPacketStart(response.data(), rc);
-            if (packet == nullptr) {
-                throw Modbus::TMalformedResponseError("invalid packet");
+            res = ScanNext(port, modbusExtCommand);
+            if (!res) {
+                return;
             }
-
-            switch (packet[SUB_COMMAND_POS]) {
-                case DEVICE_FOUND_RESPONSE_SCAN_COMMAND: {
-                    scannedDevices.emplace_back(
-                        TScannedDevice{packet[SCAN_SLAVE_ID_POS], GetFromBigEndian<uint32_t>(packet + SCAN_SN_POS)});
-                    port.SleepSinceLastInteraction(standardFrameTimeout);
-                    port.WriteBytes(req);
-                    rc = port.ReadFrame(response.data(),
-                                        response.size(),
-                                        responseTimeout,
-                                        scanFrameTimeout,
-                                        ExpectFastModbus())
-                             .Count;
-                    break;
-                }
-                case NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND: {
-                    return;
-                }
-                default: {
-                    throw Modbus::TMalformedResponseError("invalid sub command");
-                }
-            }
+            scannedDevices.push_back(*res);
         }
     }
 }
