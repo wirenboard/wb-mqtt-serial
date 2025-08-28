@@ -156,6 +156,21 @@
                 "group": "input_f{{ in_num }}",
                 "order": 1
             },
+            "in{{ in_num }}_sensor_type": {
+                "title": "Sensor Type",
+                "description": "sensor_type_description",
+                "address": {{ 521 + in_num }},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Normally Open (NO)",
+                    "Normally Closed (NC)"
+                ],
+                "default": 0,
+                "group": "input_f{{ in_num }}",
+                "order": 2,
+                "condition": "in{{ in_num }}_mode==5"
+            },
             "in{{ in_num }}_debounce_ms": {
                 "title": "Debounce (ms)",
                 "description": "debounce_description",
@@ -165,7 +180,7 @@
                 "max": 2000,
                 "default": 50,
                 "group": "input_f{{ in_num }}",
-                "order": 2,
+                "order": 3,
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_debounce_ms_no_buttons": {
@@ -177,7 +192,7 @@
                 "max": 2000,
                 "default": 50,
                 "group": "input_f{{ in_num }}",
-                "order": 2,
+                "order": 3,
                 "condition": "in{{ in_num }}_mode!={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_lp_hold_time": {
@@ -613,7 +628,7 @@
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
-                
+
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs and \"Leak\" mode in case of connection loss. For this purpose, there is a safety mode.",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
@@ -621,6 +636,8 @@
                 "mapping_matrix_actions_description": "Assignment of action for \"Wet cleaning\" mode is available starting from firmware version 1.21.0",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
                 "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
+
+                "sensor_type_description": "Supported since firmware 1.22.0",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
                 "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
@@ -651,6 +668,12 @@
 
                 "mode_description": "Для детектирования нажатий требуется прошивка версии 1.21.0 или новее",
                 "Debounce (ms)": "Время подавления дребезга (мс)",
+
+                "Sensor Type": "Тип датчика",
+                "Normally Open (NO)": "Нормально открытый (NO)",
+                "Normally Closed (NC)": "Нормально закрытый (NC)",
+
+                "sensor_type_description": "Поддерживается с версии прошивки 1.22.0",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "S" if in_num < 4 else "F" -%}
