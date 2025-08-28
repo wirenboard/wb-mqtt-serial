@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/ddl24/meta: '{"driver":"serial-client-integration-test","title":{"en":"DDL24"}}' (QoS 1, retained)
 Publish: /devices/ddl24/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/ddl24/meta/error: '' (QoS 1, retained)
 Publish: /devices/ddl24/meta/name: 'DDL24' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta: '{"order":1,"readonly":false,"type":"rgb"}' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 1, retained)
@@ -73,6 +74,8 @@ Open()
 Sleep(100000)
 fake_serial_device '23': write address '1' failed: 'Serial protocol error: write blocked'
 fake_serial_device '23': transfer FAIL
+Publish: /devices/ddl24/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '23': disconnected
 Publish: /devices/ddl24/controls/RGB/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
@@ -85,70 +88,45 @@ Sleep(100000)
 fake_serial_device '23': write to address '1' value '42'
 fake_serial_device '23': write address '2' failed: 'Serial protocol error: write blocked'
 fake_serial_device '23': transfer FAIL
-fake_serial_device '23': disconnected
-Publish: /devices/ddl24/meta/error: 'r' (QoS 1, retained)
 fake_serial_device: unblock address '2' for writing
 >>> LoopOnce()
-Sleep(100000)
-fake_serial_device '23': write to address '1' value '42'
-fake_serial_device '23': write to address '2' value '24'
-fake_serial_device '23': transfer OK
-fake_serial_device '23': reconnected
-fake_serial_device '23': read address '4' value '0'
-fake_serial_device '23': read address '5' value '0'
-fake_serial_device '23': read address '6' value '0'
-Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 1, retained)
-Publish: /devices/ddl24/controls/RGB: '0;0;0' (QoS 1, retained)
-fake_serial_device '23': read address '7' value '0'
-Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 1, retained)
-Publish: /devices/ddl24/controls/White: '0' (QoS 1, retained)
-fake_serial_device '23': read address '8' value '0'
-Publish: /devices/ddl24/controls/RGB_All/meta/error: '' (QoS 1, retained)
-Publish: /devices/ddl24/controls/RGB_All: '0' (QoS 1, retained)
-fake_serial_device '23': read address '9' value '0'
-Publish: /devices/ddl24/controls/White1/meta/error: '' (QoS 1, retained)
-Publish: /devices/ddl24/controls/White1: '0' (QoS 1, retained)
-fake_serial_device '23': read address '18' value '0'
-Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 1, retained)
-Publish: /devices/ddl24/controls/Voltage: '0' (QoS 1, retained)
-Publish: /devices/ddl24/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/Voltage/on
-Publish: /devices/ddl24/controls/Voltage: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/type: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/Voltage: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/White1/on
-Publish: /devices/ddl24/controls/White1: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta/max: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta/order: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta/type: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/White1: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/RGB_All/on
-Publish: /devices/ddl24/controls/RGB_All: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/max: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/order: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/type: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/RGB_All: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/White/on
-Publish: /devices/ddl24/controls/White: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/max: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/order: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/type: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/White: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/RGB/on
-Publish: /devices/ddl24/controls/RGB: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/order: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/type: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/RGB: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 1, retained)
 Publish: /devices/ddl24/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/meta/driver: '' (QoS 1, retained)

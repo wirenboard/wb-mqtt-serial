@@ -1868,6 +1868,9 @@ void TSerialClientIntegrationTest::ReconnectTest1Device(function<void()>&& thunk
         Note() << "SimulateDisconnect(false)";
         device->SetIsConnected(true);
 
+        // Disconnected device poll delayed for 500ms on every poll retry
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
         Note() << "LoopOnce()";
         observer->LoopOnce();
 
@@ -1896,9 +1899,13 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()>&& thun
         observer->LoopOnce();
         observer->LoopOnce();
     }
+
     { // Device is connected back
         Note() << "SimulateDisconnect(false)";
         dev1->SetIsConnected(true);
+
+        // Disconnected device poll delayed for 500ms on every poll retry
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         Note() << "LoopOnce()";
         auto future = MqttBroker->WaitForPublish("/devices/reconnect-test-1/controls/I2/meta/error");
