@@ -803,7 +803,7 @@ TEST_F(TPollTest, OnlyEventsPollError)
 
 TEST_F(TPollTest, DisconnectedPollDelay)
 {
-    // One register with events
+    // One register without events
     // 1. Read once
     // 2. Simulate read response timeout and check for device is now disconnected'
     // 3. Check for poll interval is increased
