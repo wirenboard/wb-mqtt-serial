@@ -798,7 +798,7 @@ TEST_F(TPollTest, OnlyEventsPollError)
     EnqueueEnableEvents(1, 1, 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
-    EXPECT_EQ(device->Get ConnectionState(), TDeviceConnectionState::CONNECTED);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }
 
 TEST_F(TPollTest, DisconnectedPollDelay)
