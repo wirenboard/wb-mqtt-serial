@@ -1,0 +1,219 @@
+Open()
+0: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+21000: <modbus:1:(type 0): 1>
+21000: Cycle end
+
+21000: Cycle
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+41000: <modbus:1:(type 0): 1> with errors: 001
+41000: Cycle end
+
+41000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+62000: <modbus:1:(type 0): 1> with errors: 001
+541000: Cycle end
+
+541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+562000: <modbus:1:(type 0): 1> with errors: 001
+1541000: Cycle end
+
+1541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+1562000: <modbus:1:(type 0): 1> with errors: 001
+3041000: Cycle end
+
+3041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+3062000: <modbus:1:(type 0): 1> with errors: 001
+5041000: Cycle end
+
+5041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+5062000: <modbus:1:(type 0): 1> with errors: 001
+7541000: Cycle end
+
+7541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+7562000: <modbus:1:(type 0): 1> with errors: 001
+10541000: Cycle end
+
+10541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+10562000: <modbus:1:(type 0): 1> with errors: 001
+14041000: Cycle end
+
+14041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+14062000: <modbus:1:(type 0): 1> with errors: 001
+18041000: Cycle end
+
+18041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+18062000: <modbus:1:(type 0): 1> with errors: 001
+22541000: Cycle end
+
+22541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+22562000: <modbus:1:(type 0): 1> with errors: 001
+27541000: Cycle end
+
+27541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+27562000: <modbus:1:(type 0): 1> with errors: 001
+33041000: Cycle end
+
+33041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+33062000: <modbus:1:(type 0): 1> with errors: 001
+39041000: Cycle end
+
+39041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+39062000: <modbus:1:(type 0): 1> with errors: 001
+45541000: Cycle end
+
+45541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+45562000: <modbus:1:(type 0): 1> with errors: 001
+52541000: Cycle end
+
+52541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+52562000: <modbus:1:(type 0): 1> with errors: 001
+60041000: Cycle end
+
+60041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+60062000: <modbus:1:(type 0): 1> with errors: 001
+68041000: Cycle end
+
+68041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+68062000: <modbus:1:(type 0): 1> with errors: 001
+76541000: Cycle end
+
+76541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+76562000: <modbus:1:(type 0): 1> with errors: 001
+85541000: Cycle end
+
+85541000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+85562000: <modbus:1:(type 0): 1> with errors: 001
+95041000: Cycle end
+
+95041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+95062000: <modbus:1:(type 0): 1> with errors: 001
+105041000: Cycle end
+
+105041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+105062000: <modbus:1:(type 0): 1> with errors: 001
+115041000: Cycle end
+
+115041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+115062000: <modbus:1:(type 0): 1> with errors: 001
+125041000: Cycle end
+
+125041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+125062000: <modbus:1:(type 0): 1> with errors: 001
+135041000: Cycle end
+
+135041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+135062000: <modbus:1:(type 0): 1> with errors: 001
+145041000: Cycle end
+
+145041000: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+145062000: <modbus:1:(type 0): 1>
+145062000: Cycle end
+
+Close()
