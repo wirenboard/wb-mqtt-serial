@@ -57,6 +57,10 @@ void TFileDescriptorPort::WriteBytes(const uint8_t* buf, int count)
     auto res = write(Fd, buf, count);
     if (res < count) {
         if (res < 0) {
+            if (errno == EPIPE) {
+                LOG(Warn) << GetDescription(false) << ": Port closed by remote side";
+                Close();
+            }
             throw TSerialDeviceErrnoException("serial write failed: ", errno);
         }
         stringstream ss;

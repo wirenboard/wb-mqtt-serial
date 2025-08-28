@@ -55,6 +55,10 @@
         "command": {
           "type": "integer",
           "enum":[ 70, 96 ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["all", "start", "next"]
         }
       }
     },

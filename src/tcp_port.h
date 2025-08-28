@@ -22,6 +22,9 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
+    std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override;
+
 private:
     void OnReadyEmptyFd() override;
 

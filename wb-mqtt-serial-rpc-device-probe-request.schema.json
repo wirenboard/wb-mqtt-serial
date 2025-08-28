@@ -42,6 +42,10 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 65535
+        },
+        "protocol": {
+          "type": "string",
+          "enum": ["modbus", "modbus-tcp"]
         }
       },
       "required": [ "ip", "port" ]

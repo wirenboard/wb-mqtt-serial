@@ -66,9 +66,17 @@ namespace RpcPortScan
 class TRPCPortScanRequest
 {
 public:
+    enum EMode
+    {
+        ALL,
+        START,
+        NEXT
+    };
+
     TSerialPortConnectionSettings SerialPortSettings;
     ModbusExt::TModbusExtCommand ModbusExtCommand = ModbusExt::TModbusExtCommand::ACTUAL;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
+    EMode Mode = ALL;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
