@@ -193,6 +193,9 @@ TEST_F(TSerialClientTest, PortOpenError)
 
     Port->SetAllowOpen(true);
 
+    // Disconnected device poll delayed for 500ms on every poll retry
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
     Note() << "Cycle() [successful port open]";
     SerialClient->Cycle();
 }
@@ -1422,6 +1425,9 @@ TEST_F(TSerialClientIntegrationTest, SetupErrors)
     SerialDriver->LoopOnce();
 
     device->BlockWriteFor(2, false);
+
+    // Disconnected device poll delayed for 500ms on every poll retry
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();

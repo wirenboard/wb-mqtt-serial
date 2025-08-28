@@ -90,6 +90,29 @@ fake_serial_device '23': write address '2' failed: 'Serial protocol error: write
 fake_serial_device '23': transfer FAIL
 fake_serial_device: unblock address '2' for writing
 >>> LoopOnce()
+Sleep(100000)
+fake_serial_device '23': write to address '1' value '42'
+fake_serial_device '23': write to address '2' value '24'
+fake_serial_device '23': transfer OK
+Publish: /devices/ddl24/meta/error: '' (QoS 1, retained)
+fake_serial_device '23': reconnected
+fake_serial_device '23': read address '4' value '0'
+fake_serial_device '23': read address '5' value '0'
+fake_serial_device '23': read address '6' value '0'
+fake_serial_device '23': read address '7' value '0'
+fake_serial_device '23': read address '8' value '0'
+fake_serial_device '23': read address '9' value '0'
+fake_serial_device '23': read address '18' value '0'
+Publish: /devices/ddl24/controls/RGB: '0;0;0' (QoS 1, retained)
+Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/White: '0' (QoS 1, retained)
+Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/RGB_All: '0' (QoS 1, retained)
+Publish: /devices/ddl24/controls/RGB_All/meta/error: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/White1: '0' (QoS 1, retained)
+Publish: /devices/ddl24/controls/White1/meta/error: '' (QoS 1, retained)
+Publish: /devices/ddl24/controls/Voltage: '0' (QoS 1, retained)
+Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/Voltage/on
 Publish: /devices/ddl24/controls/Voltage/meta: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '' (QoS 1, retained)
