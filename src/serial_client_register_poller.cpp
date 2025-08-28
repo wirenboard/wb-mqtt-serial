@@ -142,8 +142,8 @@ void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device, stead
         auto deadline = device->GetDeadline();
         if (device->GetDevice()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
             delay = device->GetDisconnectedPollDelay();
-            deadline = currentTime + delay;
             if (delay.count()) {
+                deadline = currentTime + delay;
                 LOG(Debug) << "Device " << device->GetDevice()->ToString() << " poll delayed for " << delay.count()
                            << " ms";
             }
