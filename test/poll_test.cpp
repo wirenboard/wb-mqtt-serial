@@ -9,8 +9,10 @@ using namespace std::chrono;
 
 namespace
 {
-
     const uint8_t MAX_EVENT_RESPONSE_SIZE = 0xF8;
+
+    const auto DISCONNECTED_POLL_DELAY_STEP = 500ms;
+    const auto DISCONNECTED_POLL_DELAY_LIMIT = 10s;
 
     class TTimeMock
     {
@@ -794,6 +796,54 @@ TEST_F(TPollTest, OnlyEventsPollError)
 
     // Reenable events and read register
     EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->Get ConnectionState(), TDeviceConnectionState::CONNECTED);
+}
+
+TEST_F(TPollTest, DisconnectedPollDelay)
+{
+    // One register with events
+    // 1. Read once
+    // 2. Simulate read response timeout and check for device is now disconnected'
+    // 3. Check for poll interval is increased
+    // 4. Repeat steps 2 and 3 another 24 times
+    // 5. Read once and check for device is reconnected
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    config.CommonConfig->DeviceTimeout = std::chrono::milliseconds(0);
+    config.CommonConfig->DeviceMaxFailCycles = 1;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    // Read register
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    auto time = TimeMock.GetTime() + 20ms; // 20ms added by read cycle
+    auto delay = milliseconds(0);
+    for (int i = 0; i < 25; ++i) {
+        // Read register with no response
+        EnqueueReadHoldingError(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
+        // Check for poll interval is increased
+        EXPECT_EQ(ceil<milliseconds>(TimeMock.GetTime().time_since_epoch()).count(),
+                  ceil<milliseconds>(time.time_since_epoch()).count());
+        if (delay < DISCONNECTED_POLL_DELAY_LIMIT) {
+            delay += DISCONNECTED_POLL_DELAY_STEP;
+        }
+        time += delay;
+    }
+
+    // Read register
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
