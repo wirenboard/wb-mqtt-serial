@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.187.0) stable; urgency=medium
+
+  * Add increase poll interval for disconnected devices feature
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 29 Aug 2025 10:08:57 +0300
+
 wb-mqtt-serial (2.186.1) stable; urgency=medium
 
   * config-wb-mwac2_ver2.json.jinja:

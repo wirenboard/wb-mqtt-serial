@@ -14,7 +14,10 @@ using namespace std::chrono;
 namespace
 {
     const auto MAX_LOW_PRIORITY_LAG = 1s;
-    const auto SUSPEND_POLL_TIMEOUT = std::chrono::minutes(10);
+    const auto SUSPEND_POLL_TIMEOUT = 10min;
+
+    const auto DISCONNECTED_POLL_DELAY_STEP = 500ms;
+    const auto DISCONNECTED_POLL_DELAY_LIMIT = 10s;
 
     class TDeviceReader
     {
@@ -132,10 +135,24 @@ void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& dev
     }
 }
 
-void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device)
+void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device, steady_clock::time_point currentTime)
 {
     if (device->HasRegisters()) {
-        Scheduler.AddEntry(device, device->GetDeadline(), device->GetPriority());
+        auto delay = milliseconds(0);
+        auto deadline = device->GetDeadline();
+        if (device->GetDevice()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+            delay = device->GetDisconnectedPollDelay();
+            if (delay.count()) {
+                deadline = currentTime + delay;
+                LOG(Debug) << "Device " << device->GetDevice()->ToString() << " poll delayed for " << delay.count()
+                           << " ms";
+            }
+            if (delay < DISCONNECTED_POLL_DELAY_LIMIT) {
+                delay += DISCONNECTED_POLL_DELAY_STEP;
+            }
+        }
+        device->SetDisconnectedPollDelay(delay);
+        Scheduler.AddEntry(device, deadline, device->GetPriority());
     }
 }
 
@@ -161,7 +178,7 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
             device->SetTransferResult(false);
         }
         if (reader.GetDevice()) {
-            ScheduleNextPoll(reader.GetDevice());
+            ScheduleNextPoll(reader.GetDevice(), currentTime);
         }
     } while (!reader.GetRegisters().empty());
 }
@@ -243,7 +260,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
             LowPriorityRateLimiter.NewItem(spentTime.GetStartTime());
         }
     }
-    ScheduleNextPoll(reader.GetDevice());
+    ScheduleNextPoll(reader.GetDevice(), spentTime.GetStartTime());
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetDevice()->GetPriority());
     res.Deadline = GetDeadline(lowPriorityRateLimitIsExceeded, spentTime);

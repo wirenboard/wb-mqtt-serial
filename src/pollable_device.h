@@ -15,6 +15,7 @@ class TPollableDevice
     PSerialDevice Device;
     TPriorityQueueSchedule<PRegister, TRegisterComparePredicate> Registers;
     TPriority Priority;
+    std::chrono::milliseconds DisconnectedPollDelay;
 
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point currentTime);
 
@@ -31,6 +32,9 @@ public:
         std::chrono::steady_clock::time_point currentTime);
 
     std::chrono::steady_clock::time_point GetDeadline() const;
+
+    std::chrono::milliseconds GetDisconnectedPollDelay() const;
+    void SetDisconnectedPollDelay(const std::chrono::milliseconds& delay);
 
     TPriority GetPriority() const;
 

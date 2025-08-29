@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "modbus_base.h"
 #include "port.h"
 
