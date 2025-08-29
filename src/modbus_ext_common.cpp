@@ -5,6 +5,7 @@
 #include "log.h"
 #include "serial_exc.h"
 #include <algorithm>
+#include <optional>
 #include <stddef.h>
 #include <stdint.h>
 #include <vector>
