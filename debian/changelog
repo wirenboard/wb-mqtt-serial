@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.184.0) stable; urgency=medium
+wb-mqtt-serial (2.188.0) stable; urgency=medium
 
   * WB-UPS v.3 template: add parallel mode support
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 06 Aug 2025 12:30:41 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 02 Sep 2025 15:03:12 +0300
 
 wb-mqtt-serial (2.187.0) stable; urgency=medium
 
