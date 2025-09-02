@@ -17,7 +17,8 @@ TPollableDevice::TPollableDevice(PSerialDevice device,
                                  std::chrono::steady_clock::time_point currentTime,
                                  TPriority priority)
     : Device(device),
-      Priority(priority)
+      Priority(priority),
+      DisconnectedPollDelay(0)
 {
     for (const auto& reg: Device->GetRegisters()) {
         if ((Priority == TPriority::High && reg->GetConfig()->IsHighPriority()) ||
@@ -95,6 +96,16 @@ std::chrono::steady_clock::time_point TPollableDevice::GetDeadline() const
         return minNextReadTime > deadline ? minNextReadTime : deadline;
     }
     return Registers.GetDeadline();
+}
+
+std::chrono::milliseconds TPollableDevice::GetDisconnectedPollDelay() const
+{
+    return DisconnectedPollDelay;
+}
+
+void TPollableDevice::SetDisconnectedPollDelay(const std::chrono::milliseconds& delay)
+{
+    DisconnectedPollDelay = delay;
 }
 
 TPriority TPollableDevice::GetPriority() const

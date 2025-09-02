@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "modbus_base.h"
 #include "port.h"
 
@@ -169,5 +171,25 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @param scannedDevices A vector to store the scanned devices.
      */
     void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices);
+
+    /**
+     * Starts scan on specified port for devices using Fast Modbus.
+     * Throws an exception if an error occurs.
+     *
+     * @param port The port to scan.
+     * @param modbusExtCommand The Fast Modbus command to use for scanning.
+     * @return The scanned device or std::nullopt if no devices found.
+     */
+    std::optional<TScannedDevice> ScanStart(TPort& port, TModbusExtCommand modbusExtCommand);
+
+    /**
+     * Continues scan on specified port for devices using Fast Modbus.
+     * Throws an exception if an error occurs.
+     *
+     * @param port The port to scan.
+     * @param modbusExtCommand The Fast Modbus command to use for scanning.
+     * @return The scanned device or std::nullopt if no more devices found.
+     */
+    std::optional<TScannedDevice> ScanNext(TPort& port, TModbusExtCommand modbusExtCommand);
 
 } // modbus extension protocol common utilities

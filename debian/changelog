@@ -4,6 +4,68 @@ wb-mqtt-serial (2.184.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 06 Aug 2025 12:30:41 +0300
 
+wb-mqtt-serial (2.187.0) stable; urgency=medium
+
+  * Add increase poll interval for disconnected devices feature
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 29 Aug 2025 10:08:57 +0300
+
+wb-mqtt-serial (2.186.1) stable; urgency=medium
+
+  * config-wb-mwac2_ver2.json.jinja:
+    - Add support for normally closed sensors
+    - Add buzzer conrol
+
+  * config-wb-mwac.json.jinja:
+    - Add support for normally closed sensors
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 28 Aug 2025 10:54:00 +0300
+
+wb-mqtt-serial (2.186.0) stable; urgency=medium
+
+  * Add mode to port/Scan RPC for starting and continuing device scan
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 27 Aug 2025 16:40:33 +0500
+
+wb-mqtt-serial (2.185.0) stable; urgency=medium
+
+  * Add protocol to Modbus TCP port information in ports/Load RPC
+  * Add protocol parameter to device/Probe RPC
+  * Set TCP_NODELAY for TCP ports
+  * Handle TCP port closing by remote
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 06 Aug 2025 09:46:47 +0500
+
+wb-mqtt-serial (2.184.4) stable; urgency=medium
+
+  * Add Modbus TCP protocol support for device/Load, device/Set and device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 15 Aug 2025 09:00:57 +0300
+
+wb-mqtt-serial (2.184.3) stable; urgency=medium
+
+  * Fix changelog, no functional changes
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 14 Aug 2025 14:54:50 +0300
+
+wb-mqtt-serial (2.184.2) stable; urgency=medium
+
+  * Fix wrong illuminance coefficient for MTDX62-MB presence sensor template
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Wed, 14 Aug 2025 14:50:37 +0300
+
+wb-mqtt-serial (2.184.1) stable; urgency=medium
+
+  * Fix device/SetPoll RPC reply format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 14 Aug 2025 14:03:17 +0300
+
+wb-mqtt-serial (2.184.0) stable; urgency=medium
+
+  * Add device/SetPoll RPC for device poll suspending and resuming
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 08 Aug 2025 15:33:57 +0300
+
 wb-mqtt-serial (2.183.0) stable; urgency=medium
 
   * Use response_timeout_ms from port settings for RPC requests

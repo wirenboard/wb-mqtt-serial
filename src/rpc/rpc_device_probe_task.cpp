@@ -25,6 +25,13 @@ TRPCDeviceProbeSerialClientTask::TRPCDeviceProbeSerialClientTask(const Json::Val
       OnError(onError)
 {
     WBMQTT::JSON::Get(request, "slave_id", SlaveId);
+    std::string protocol;
+    WBMQTT::JSON::Get(request, "protocol", protocol);
+    if (protocol == "modbus-tcp") {
+        ModbusTraits = std::make_unique<Modbus::TModbusTCPTraits>();
+    } else {
+        ModbusTraits = std::make_unique<Modbus::TModbusRTUTraits>();
+    }
 }
 
 ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PPort port,
@@ -44,8 +51,7 @@ ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PPort port,
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
         TSerialPortSettingsGuard settingsGuard(port, SerialPortSettings);
-        Modbus::TModbusRTUTraits modbusTraits;
-        RpcPortScan::TRegisterReader reader(*port, modbusTraits, SlaveId);
+        RpcPortScan::TRegisterReader reader(*port, *ModbusTraits, SlaveId);
         OnResult(RpcPortScan::GetDeviceDetails(reader, SlaveId, polledDevices));
     } catch (const std::exception& error) {
         if (OnError) {

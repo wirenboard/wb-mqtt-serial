@@ -39,6 +39,9 @@ public:
 
     PSerialClientEventsReader GetEventsReader() const;
 
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
+    void ResumePoll(PSerialDevice device);
+
 private:
     PSerialClientEventsReader EventsReader;
     TSerialClientRegisterPoller RegisterPoller;
@@ -97,6 +100,9 @@ public:
     std::list<PSerialDevice> GetDevices();
 
     void AddTask(PSerialClientTask task);
+
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
+    void ResumePoll(PSerialDevice device);
 
 private:
     void Activate();

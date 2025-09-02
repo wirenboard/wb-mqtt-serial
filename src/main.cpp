@@ -56,6 +56,8 @@ const auto RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-set-request.schema.json";
 const auto RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-probe-request.schema.json";
+const auto RPC_DEVICE_SET_POLL_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-set-poll-request.schema.json";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
@@ -253,6 +255,8 @@ namespace
 
 int main(int argc, char* argv[])
 {
+    signal(SIGPIPE, SIG_IGN);
+
     WBMQTT::TMosquittoMqttConfig mqttConfig;
     string configFilename(CONFIG_FULL_FILE_PATH);
 
@@ -347,6 +351,7 @@ int main(int argc, char* argv[])
                                                 RPC_DEVICE_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                RPC_DEVICE_SET_POLL_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
                                                 templates,
                                                 serialClientTaskRunner,

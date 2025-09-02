@@ -59,15 +59,17 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
     auto params = serialClientTaskRunner.GetSerialClientParams(request);
     if (params.Device == nullptr) {
         DeviceTemplate = templates->GetTemplate(request["device_type"].asString());
-        auto config = std::make_shared<TDeviceConfig>("RPC Device",
-                                                      request["slave_id"].asString(),
-                                                      DeviceTemplate->GetProtocol());
-        if (DeviceTemplate->GetProtocol() == "modbus") {
+        auto protocolName = DeviceTemplate->GetProtocol();
+        if (protocolName == "modbus" && request["modbus_mode"].asString() == "TCP") {
+            protocolName += "-tcp";
+        }
+        ProtocolParams = deviceFactory.GetProtocolParams(protocolName);
+        auto config = std::make_shared<TDeviceConfig>("RPC Device", request["slave_id"].asString(), protocolName);
+        if (ProtocolParams.protocol->IsModbus()) {
             config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
-        ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
         Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
     } else {
         Device = params.Device;
@@ -117,6 +119,7 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                      const std::string& requestDeviceLoadSchemaFilePath,
                                      const std::string& requestDeviceSetSchemaFilePath,
                                      const std::string& requestDeviceProbeSchemaFilePath,
+                                     const std::string& requestDeviceSetPollSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
                                      TSerialClientTaskRunner& serialClientTaskRunner,
@@ -127,6 +130,7 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
       RequestDeviceLoadSchema(LoadRPCRequestSchema(requestDeviceLoadSchemaFilePath, "device/Load")),
       RequestDeviceSetSchema(LoadRPCRequestSchema(requestDeviceSetSchemaFilePath, "device/Set")),
       RequestDeviceProbeSchema(LoadRPCRequestSchema(requestDeviceProbeSchemaFilePath, "device/Probe")),
+      RequestDeviceSetPollSchema(LoadRPCRequestSchema(requestDeviceSetPollSchemaFilePath, "device/SetPoll")),
       Templates(templates),
       SerialClientTaskRunner(serialClientTaskRunner),
       ParametersCache(parametersCache)
@@ -159,6 +163,8 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                              std::placeholders::_1,
                                              std::placeholders::_2,
                                              std::placeholders::_3));
+
+    rpcServer->RegisterMethod("device", "SetPoll", std::bind(&TRPCDeviceHandler::SetPoll, this, std::placeholders::_1));
 }
 
 void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
@@ -233,6 +239,26 @@ void TRPCDeviceHandler::Probe(const Json::Value& request,
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
+}
+
+Json::Value TRPCDeviceHandler::SetPoll(const Json::Value& request)
+{
+    ValidateRPCRequest(request, RequestDeviceSetPollSchema);
+    auto params = SerialClientTaskRunner.GetSerialClientParams(request);
+    if (!params.SerialClient || !params.Device) {
+        throw TRPCException("Port or device not found", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+    try {
+        if (!request["poll"].asBool()) {
+            params.SerialClient->SuspendPoll(params.Device, std::chrono::steady_clock::now());
+        } else {
+            params.SerialClient->ResumePoll(params.Device);
+        }
+    } catch (const std::runtime_error& e) {
+        LOG(Warn) << e.what();
+        throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+    return Json::Value(Json::objectValue);
 }
 
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,

@@ -14,6 +14,10 @@ using namespace std::chrono;
 namespace
 {
     const auto MAX_LOW_PRIORITY_LAG = 1s;
+    const auto SUSPEND_POLL_TIMEOUT = 10min;
+
+    const auto DISCONNECTED_POLL_DELAY_STEP = 500ms;
+    const auto DISCONNECTED_POLL_DELAY_LIMIT = 10s;
 
     class TDeviceReader
     {
@@ -113,6 +117,8 @@ TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateL
 void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& devices,
                                              steady_clock::time_point currentTime)
 {
+    std::unique_lock lock(Mutex);
+
     for (const auto& dev: devices) {
         auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High);
         if (pollableDevice->HasRegisters()) {
@@ -129,10 +135,24 @@ void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& dev
     }
 }
 
-void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device)
+void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device, steady_clock::time_point currentTime)
 {
     if (device->HasRegisters()) {
-        Scheduler.AddEntry(device, device->GetDeadline(), device->GetPriority());
+        auto delay = milliseconds(0);
+        auto deadline = device->GetDeadline();
+        if (device->GetDevice()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+            delay = device->GetDisconnectedPollDelay();
+            if (delay.count()) {
+                deadline = currentTime + delay;
+                LOG(Debug) << "Device " << device->GetDevice()->ToString() << " poll delayed for " << delay.count()
+                           << " ms";
+            }
+            if (delay < DISCONNECTED_POLL_DELAY_LIMIT) {
+                delay += DISCONNECTED_POLL_DELAY_STEP;
+            }
+        }
+        device->SetDisconnectedPollDelay(delay);
+        Scheduler.AddEntry(device, deadline, device->GetPriority());
     }
 }
 
@@ -141,6 +161,9 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
     Scheduler.ResetLoadBalancing();
 
     RescheduleDisconnectedDevices();
+    RescheduleDevicesWithSpendedPoll(currentTime);
+
+    std::unique_lock lock(Mutex);
 
     TClosedPortDeviceReader reader(currentTime);
     do {
@@ -155,7 +178,7 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
             device->SetTransferResult(false);
         }
         if (reader.GetDevice()) {
-            ScheduleNextPoll(reader.GetDevice());
+            ScheduleNextPoll(reader.GetDevice(), currentTime);
         }
     } while (!reader.GetRegisters().empty());
 }
@@ -186,6 +209,9 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
                                                        TRegisterCallback callback)
 {
     RescheduleDisconnectedDevices();
+    RescheduleDevicesWithSpendedPoll(spentTime.GetStartTime());
+
+    std::unique_lock lock(Mutex);
 
     TPollResult res;
 
@@ -234,16 +260,58 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
             LowPriorityRateLimiter.NewItem(spentTime.GetStartTime());
         }
     }
-    ScheduleNextPoll(reader.GetDevice());
+    ScheduleNextPoll(reader.GetDevice(), spentTime.GetStartTime());
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetDevice()->GetPriority());
     res.Deadline = GetDeadline(lowPriorityRateLimitIsExceeded, spentTime);
     return res;
 }
 
+void TSerialClientRegisterPoller::SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime)
+{
+    std::unique_lock lock(Mutex);
+
+    if (DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end()) {
+        auto range = Devices.equal_range(device);
+        if (range.first == range.second) {
+            throw std::runtime_error("Device " + device->ToString() + " is not included to poll");
+        }
+        for (auto it = range.first; it != range.second; ++it) {
+            Scheduler.Remove(it->second);
+        }
+    }
+
+    DevicesWithSpendedPoll[device] = currentTime + SUSPEND_POLL_TIMEOUT;
+    LOG(Info) << "Device " << device->ToString() << " poll suspended";
+
+    if (device->GetConnectionState() != TDeviceConnectionState::DISCONNECTED) {
+        device->SetDisconnected();
+    }
+}
+
+void TSerialClientRegisterPoller::ResumePoll(PSerialDevice device)
+{
+    std::unique_lock lock(Mutex);
+
+    if (DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end()) {
+        throw std::runtime_error("Device " + device->ToString() + " poll is not suspended");
+    }
+
+    auto range = Devices.equal_range(device);
+    for (auto it = range.first; it != range.second; ++it) {
+        it->second->RescheduleAllRegisters();
+        Scheduler.AddEntry(it->second, it->second->GetDeadline(), it->second->GetPriority());
+    }
+
+    DevicesWithSpendedPoll.erase(device);
+    LOG(Info) << "Device " << device->ToString() << " poll resumed";
+}
+
 void TSerialClientRegisterPoller::OnDeviceConnectionStateChanged(PSerialDevice device)
 {
-    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED &&
+        DevicesWithSpendedPoll.find(device) == DevicesWithSpendedPoll.end())
+    {
         DisconnectedDevicesWaitingForReschedule.push_back(device);
     }
 }
@@ -270,6 +338,7 @@ std::string TThrottlingStateLogger::GetMessage()
 
 void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
 {
+    std::unique_lock lock(Mutex);
     for (auto& device: DisconnectedDevicesWaitingForReschedule) {
         auto range = Devices.equal_range(device);
         for (auto it = range.first; it != range.second; ++it) {
@@ -279,4 +348,20 @@ void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
         }
     }
     DisconnectedDevicesWaitingForReschedule.clear();
+}
+
+void TSerialClientRegisterPoller::RescheduleDevicesWithSpendedPoll(std::chrono::steady_clock::time_point currentTime)
+{
+    std::list<PSerialDevice> list;
+    {
+        std::unique_lock lock(Mutex);
+        for (auto it = DevicesWithSpendedPoll.begin(); it != DevicesWithSpendedPoll.end(); ++it) {
+            if (it->second <= currentTime) {
+                list.push_back(it->first);
+            }
+        }
+    }
+    for (auto device: list) {
+        ResumePoll(device);
+    }
 }
