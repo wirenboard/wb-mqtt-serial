@@ -531,11 +531,7 @@ namespace ModbusExt // modbus extension protocol declarations
                                               const milliseconds& frameTimeout,
                                               std::vector<uint8_t>& res) const
     {
-        auto rc = port.ReadFrame(res.data(),
-                                 res.size(),
-                                 responseTimeout,
-                                 frameTimeout,
-                                 ExpectNBytes(res.size()));
+        auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout, frameTimeout, ExpectNBytes(res.size()));
 
         if (rc.Count < MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE) {
             throw Modbus::TMalformedResponseError("invalid data size");
