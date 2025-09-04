@@ -183,11 +183,8 @@ TReadFrameResult Modbus::TModbusRTUTraits::ReadFrame(TPort& port,
                                                      const std::chrono::milliseconds& frameTimeout,
                                                      std::vector<uint8_t>& response) const
 {
-    auto rc = port.ReadFrame(response.data(),
-                             response.size(),
-                             responseTimeout + frameTimeout,
-                             frameTimeout,
-                             ExpectNBytes(response.size()));
+    auto rc =
+        port.ReadFrame(response.data(), response.size(), responseTimeout, frameTimeout, ExpectNBytes(response.size()));
     // RTU response should be at least 3 bytes: 1 byte slave_id, 2 bytes CRC
     if (rc.Count < DATA_SIZE) {
         throw Modbus::TMalformedResponseError("invalid data size");
@@ -311,7 +308,7 @@ TReadFrameResult Modbus::TModbusTCPTraits::ReadFrame(TPort& port,
         if (response.size() < MBAP_SIZE) {
             response.resize(MBAP_SIZE);
         }
-        auto rc = port.ReadFrame(response.data(), MBAP_SIZE, responseTimeout + frameTimeout, frameTimeout);
+        auto rc = port.ReadFrame(response.data(), MBAP_SIZE, responseTimeout, frameTimeout);
 
         if (rc.Count < MBAP_SIZE) {
             throw Modbus::TMalformedResponseError("Can't read full MBAP");
