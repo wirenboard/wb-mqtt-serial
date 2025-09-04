@@ -533,7 +533,7 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         auto rc = port.ReadFrame(res.data(),
                                  res.size(),
-                                 responseTimeout + frameTimeout,
+                                 responseTimeout,
                                  frameTimeout,
                                  ExpectNBytes(res.size()));
 

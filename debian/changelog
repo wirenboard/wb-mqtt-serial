@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.188.1) stable; urgency=medium
+
+  * Fix default response timeout calculation for Modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 04 Sep 2025 17:40:51 +0500
+
 wb-mqtt-serial (2.188.0) stable; urgency=medium
 
   * WB-UPS v.3 template: add parallel mode support
