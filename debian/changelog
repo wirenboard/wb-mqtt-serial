@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.188.2) stable; urgency=medium
+
+  * Fix WB-MAP SN reading
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 05 Sep 2025 17:25:48 +0500
+
 wb-mqtt-serial (2.188.1) stable; urgency=medium
 
   * Fix default response timeout calculation for Modbus devices
