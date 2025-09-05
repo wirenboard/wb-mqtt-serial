@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.180.2-wb100) stable; urgency=medium
+
+  * Fix WB-MAP SN reading
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 05 Sep 2025 18:05:36 +0500
+
 wb-mqtt-serial (2.180.2) stable; urgency=medium
 
   * Fix Port/Load RPC device nullptr bug
