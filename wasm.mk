@@ -1,21 +1,27 @@
+
 SRC_DIR = src
+WBLIB_DIR = wblib
 DST_DIR = wasm
 
-JSONCPP_DIR = $(SRC_DIR)/wblib/thirdparty/valijson/thirdparty/jsoncpp-1.9.4
+JSONCPP_DIR = $(WBLIB_DIR)/thirdparty/valijson/thirdparty/jsoncpp-1.9.4
+JSONCPP_SRC = $(JSONCPP_DIR)/src/lib_json
+
+VALIJSON_DIR = $(WBLIB_DIR)/thirdparty/valijson
 
 INC = \
 	.                      \
 	$(SRC_DIR)             \
-	$(JSONCPP_DIR)/include \
+	$(JSONCPP_DIR)/include  \
+	$(VALIJSON_DIR)/include \
 
 SRC = \
-    $(SRC_DIR)/bcd_utils.cpp                            \
-    $(SRC_DIR)/bin_utils.cpp                            \
-    $(SRC_DIR)/crc16.cpp                                \
-    $(SRC_DIR)/common_utils.cpp                         \
-    $(SRC_DIR)/config_merge_template.cpp                \
-    $(SRC_DIR)/expression_evaluator.cpp                 \
-    $(SRC_DIR)/file_utils.cpp                           \
+	$(SRC_DIR)/bcd_utils.cpp                            \
+	$(SRC_DIR)/bin_utils.cpp                            \
+	$(SRC_DIR)/crc16.cpp                                \
+	$(SRC_DIR)/common_utils.cpp                         \
+	$(SRC_DIR)/config_merge_template.cpp                \
+	$(SRC_DIR)/expression_evaluator.cpp                 \
+	$(SRC_DIR)/file_utils.cpp                           \
 	$(SRC_DIR)/json_common.cpp                          \
 	$(SRC_DIR)/log.cpp                                  \
 	$(SRC_DIR)/modbus_base.cpp                          \
@@ -48,14 +54,38 @@ SRC = \
 	$(SRC_DIR)/rpc/rpc_exception.cpp                    \
 	$(SRC_DIR)/rpc/rpc_helpers.cpp                      \
 	$(SRC_DIR)/rpc/rpc_port_scan_serial_client_task.cpp \
+	$(WBLIB_DIR)/base_lock_object.cpp                   \
+	$(WBLIB_DIR)/exceptions.cpp                         \
+	$(WBLIB_DIR)/json_utils.cpp                         \
+	$(WBLIB_DIR)/log.cpp                                \
+	$(WBLIB_DIR)/wasm_utils.cpp                         \
+	$(JSONCPP_SRC)/json_value.cpp                       \
+	$(JSONCPP_SRC)/json_reader.cpp                      \
+	$(JSONCPP_SRC)/json_writer.cpp                      \
+
+FILE = \
+	wb-mqtt-serial-confed-common.schema.json   \
+	wb-mqtt-serial-device-template.schema.json \
+	wasm/templates                             \
 
 OPT = \
-	-fexceptions  \
-	-lembind      \
-	-sMAIN_MODULE=1 \
-	-sEXPORT_ALL=1 \
-	-sERROR_ON_UNDEFINED_SYMBOLS=0 \
+	-fexceptions                                    \
+	-lembind                                        \
+	-sASYNCIFY                                      \
+	-sASYNCIFY_STACK_SIZE=1mb                       \
+	-sASYNCIFY_IMPORTS=["emscripten_asm_const_int"] \
 
 all:
-	mkdir -p $(DST_DIR)
-	emcc -O3 $(addprefix -I, $(INC)) $(SRC) wblib.wasm -o $(DST_DIR)/module.js $(OPT)
+
+# copy templates
+	mkdir -p $(DST_DIR)/templates
+	cp templates/config-map*.json $(DST_DIR)/templates
+	cp templates/config-wb-*.json $(DST_DIR)/templates
+	cp build/templates/config-map*.json $(DST_DIR)/templates
+	cp build/templates/config-wb-*.json $(DST_DIR)/templates
+
+# fix include
+	cp -r $(JSONCPP_DIR)/include/json wblib/
+
+# build module
+	emcc -v -O3 $(addprefix -I, $(INC)) $(SRC) -o $(DST_DIR)/module.js $(addprefix --preload-file , $(FILE)) $(OPT)

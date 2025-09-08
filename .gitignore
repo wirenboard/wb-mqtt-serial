@@ -40,5 +40,6 @@ compile_commands.json
 
 # wasm
 cache
-wasm
-*.wasm
+wasm/module*
+wasm/templates
+wblib

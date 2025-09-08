@@ -9,6 +9,8 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/val.h>
 
+#include <unistd.h>
+
 std::string HexDump(const uint8_t* buf, int count)
 {
     std::stringstream stream;
@@ -44,6 +46,8 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
                                       TFrameCompletePred frame_complete)
 {
     TReadFrameResult res;
+
+    usleep(100 * 1000);
 
     // clang-format off
     auto success = EM_ASM_INT(
