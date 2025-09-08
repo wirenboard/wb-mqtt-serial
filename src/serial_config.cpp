@@ -11,14 +11,15 @@
 #include <string>
 #include <sys/sysinfo.h>
 
+#include "config_merge_template.h"
+#include "config_schema_generator.h"
+
+#ifndef __EMSCRIPTEN__
 #include "tcp_port.h"
 #include "tcp_port_settings.h"
 
 #include "serial_port.h"
 #include "serial_port_settings.h"
-
-#include "config_merge_template.h"
-#include "config_schema_generator.h"
 
 #include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
@@ -34,12 +35,14 @@
 #include "devices/mercury200_device.h"
 #include "devices/mercury230_device.h"
 #include "devices/milur_device.h"
-#include "devices/modbus_device.h"
 #include "devices/modbus_io_device.h"
 #include "devices/neva_device.h"
 #include "devices/pulsar_device.h"
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
+#endif
+
+#include "devices/modbus_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
@@ -579,6 +582,7 @@ namespace
         port_config->AddDevice(deviceFactory.CreateDevice(device_data, params, templates));
     }
 
+#ifndef __EMSCRIPTEN__
     PPort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
         TSerialPortSettings settings(port_data["path"].asString());
@@ -619,6 +623,7 @@ namespace
 
         return port;
     }
+#endif
 
     void LoadPort(PHandlerConfig handlerConfig,
                   const Json::Value& port_data,
@@ -670,6 +675,7 @@ void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value&
     }
 }
 
+#ifndef __EMSCRIPTEN__
 std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig)
 {
     auto port_type = port_data.get("port_type", "serial").asString();
@@ -684,6 +690,7 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConf
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
+#endif
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema)
 {
@@ -721,6 +728,7 @@ void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
     }
 }
 
+#ifndef __EMSCRIPTEN__
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& commonDeviceSchema,
@@ -772,6 +780,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
     return handlerConfig;
 }
+#endif
 
 void TPortConfig::AddDevice(PSerialDeviceWithChannels device)
 {
@@ -1159,6 +1168,7 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 {
+#ifndef __EMSCRIPTEN__
     TEnergomeraIecWithFastReadDevice::Register(deviceFactory);
     TEnergomeraIecModeCDevice::Register(deviceFactory);
     TIVTMDevice::Register(deviceFactory);
@@ -1166,7 +1176,6 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     TMercury200Device::Register(deviceFactory);
     TMercury230Device::Register(deviceFactory);
     TMilurDevice::Register(deviceFactory);
-    TModbusDevice::Register(deviceFactory);
     TModbusIODevice::Register(deviceFactory);
     TNevaDevice::Register(deviceFactory);
     TPulsarDevice::Register(deviceFactory);
@@ -1179,6 +1188,9 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Aok::TDevice::Register(deviceFactory);
     TIecModeCDevice::Register(deviceFactory);
     TEnergomeraCeDevice::Register(deviceFactory);
+#endif
+
+    TModbusDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)
