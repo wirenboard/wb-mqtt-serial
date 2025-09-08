@@ -1,14 +1,27 @@
 #ifdef __EMSCRIPTEN__
 
+#include "log.h"
 #include "rpc/rpc_device_load_config_task.h"
 #include "wasm_port.h"
 
 #include <emscripten/bind.h>
 
+#define LOG(logger) logger.Log() << "[wasm] "
+
 using namespace std::chrono_literals;
 using namespace std::chrono;
 
-int LoadConfigRequest(const Json::Value& request)
+void OnResult(const Json::Value& result)
+{
+    LOG(Info) << "on result: " << result;
+}
+
+void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& errorString)
+{
+    LOG(Warn) << "on error: " << static_cast<int>(errorCode) << " - " << errorString;
+}
+
+void LoadConfigRequest(const Json::Value& request)
 {
     Json::Value deviceTemplate; // TODO: use real template
 
@@ -36,8 +49,8 @@ int LoadConfigRequest(const Json::Value& request)
                                                       nullptr, // helper.DeviceTemplate,
                                                       false,
                                                       parametersCache,
-                                                      nullptr,  // onResult,
-                                                      nullptr); // onError);
+                                                      OnResult,
+                                                      OnError);
 
     TRPCDeviceLoadConfigSerialClientTask task(rpcRequest);
     std::list<PSerialDevice> polledDevices;
@@ -45,10 +58,8 @@ int LoadConfigRequest(const Json::Value& request)
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, []() { return steady_clock::now(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
+    LOG(Info) << "Hello from LoadConfigRequest";
     task.Run(port, lastAccessedDevice, polledDevices);
-
-    printf("hello, world!\n");
-    return 0;
 }
 
 EMSCRIPTEN_BINDINGS(module)
