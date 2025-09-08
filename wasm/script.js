@@ -123,7 +123,7 @@ window.onload = function()
         {
             device_type: "WB-MR6C v.3",
             slave_id: 25,
-            group: "g_in0"
+            // group: "g_in0"
         };
 
         Module.loadConfigRequest(JSON.stringify(request));

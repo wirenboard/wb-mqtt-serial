@@ -35,12 +35,12 @@ namespace
 
 void OnResult(const Json::Value& result)
 {
-    LOG(Info) << "on result: " << result;
+    LOG(Info) << "result: " << result;
 }
 
 void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& errorString)
 {
-    LOG(Warn) << "on error: " << static_cast<int>(errorCode) << " - " << errorString;
+    LOG(Warn) << "error: " << static_cast<int>(errorCode) << " - " << errorString;
 }
 
 void LoadConfigRequest(const std::string& requestString)
@@ -63,7 +63,7 @@ void LoadConfigRequest(const std::string& requestString)
         auto config = std::make_shared<TDeviceConfig>("WASM Device", request["slave_id"].asString(), "modbus");
         config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
         config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-        config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+        config->MaxReadRegisters = 10; // Modbus::MAX_READ_REGISTERS;
 
         auto device =
             protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);

@@ -1,25 +1,18 @@
 #ifdef __EMSCRIPTEN__
 
 #include "wasm_port.h"
+#include "log.h"
 
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
+#include <wblib/utils.h>
 
 #include <emscripten/emscripten.h>
 #include <emscripten/val.h>
 
-#include <unistd.h>
-
-std::string HexDump(const uint8_t* buf, int count)
-{
-    std::stringstream stream;
-    stream << std::hex << std::setfill('0');
-    for (int i = 0; i < count; ++i) {
-        stream << std::setw(2) << static_cast<int>(buf[i]) << " ";
-    }
-    return stream.str();
-}
+#define LOG(logger) logger.Log() << "[port] "
 
 void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
 {
@@ -36,7 +29,7 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
     );
     // clang-format on
 
-    std::cout << ">>> " << HexDump(buffer, count) << "\r\n";
+    // LOG(Info) << ">>> " << WBMQTT::HexDump(buffer, count) << "\r\n";
 }
 
 TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
@@ -77,7 +70,7 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
     );
     // clang-format on
 
-    std::cout << "<<< " << HexDump(buffer, res.Count) << "\r\n";
+    // LOG(Info) << "<<< " << WBMQTT::HexDump(buffer, res.Count) << "\r\n";
     return res;
 }
 
