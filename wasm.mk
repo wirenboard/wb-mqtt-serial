@@ -58,9 +58,9 @@ SRC = \
 	$(WBLIB_DIR)/exceptions.cpp                         \
 	$(WBLIB_DIR)/json_utils.cpp                         \
 	$(WBLIB_DIR)/log.cpp                                \
-	$(WBLIB_DIR)/wasm_utils.cpp                         \
-	$(JSONCPP_SRC)/json_value.cpp                       \
+	$(WBLIB_DIR)/utils.cpp                              \
 	$(JSONCPP_SRC)/json_reader.cpp                      \
+	$(JSONCPP_SRC)/json_value.cpp                       \
 	$(JSONCPP_SRC)/json_writer.cpp                      \
 
 FILE = \
