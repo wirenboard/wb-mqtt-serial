@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.188.3) stable; urgency=medium
+
+  * Fix formatting in WBE2-I-EBUS template. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 09 Sep 2025 11:08:28 +0500
+
 wb-mqtt-serial (2.188.2) stable; urgency=medium
 
   * Fix WB-MAP SN reading
