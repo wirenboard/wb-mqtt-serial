@@ -19,20 +19,12 @@ namespace
     const auto TEMPLATES_SCHEMA_FILE = "wb-mqtt-serial-device-template.schema.json";
     const auto TEMPLATES_DIR = "wasm/templates";
 
-    PTemplateMap Templates = nullptr;
+    PTemplateMap TemplateMap = nullptr;
     auto Port = std::make_shared<TWASMPort>();
     std::list<PSerialDevice> PolledDevices;
 
     class THelper
     {
-        Json::Value Request;
-
-        TDeviceProtocolParams ProtocolParams;
-        TSerialDeviceFactory DeviceFactory;
-
-        PDeviceTemplate DeviceTemplate = nullptr;
-        PSerialDevice Device = nullptr;
-
         void ParseRequest(const std::string& string)
         {
             std::istringstream stream(string);
@@ -40,68 +32,42 @@ namespace
             Json::String errors;
 
             if (!Json::parseFromStream(builder, stream, &Request, &errors)) {
-                throw std::runtime_error("Failed to parse JSON:" + errors);
+                throw std::runtime_error("Failed to parse request:" + errors);
             }
         }
 
     public:
+        Json::Value Request;
+        TDeviceProtocolParams Params;
+        PDeviceTemplate Template = nullptr;
+        PSerialDevice Device = nullptr;
+
         THelper(const std::string& request)
         {
-            ParseRequest(request);
-            RegisterProtocols(DeviceFactory);
-            ProtocolParams = DeviceFactory.GetProtocolParams("modbus");
-
-            if (!Templates) {
+            if (!TemplateMap) {
                 auto schema = WBMQTT::JSON::Parse(COMMON_SCHEMA_FILE);
-                Templates = std::make_shared<TTemplateMap>(LoadConfigTemplatesSchema(TEMPLATES_SCHEMA_FILE, schema));
-                Templates->AddTemplatesDir(TEMPLATES_DIR);
-            }
-        }
-
-        Json::Value GetRequest() const
-        {
-            return Request;
-        }
-
-        TDeviceProtocolParams GetProtocolParams() const
-        {
-            return ProtocolParams;
-        }
-
-        PDeviceTemplate GetDeviceTemplate()
-        {
-            auto deviceType = Request["device_type"].asString();
-
-            if (!DeviceTemplate || DeviceTemplate->Type != deviceType) {
-                DeviceTemplate = Templates->GetTemplate(deviceType);
+                TemplateMap = std::make_shared<TTemplateMap>(LoadConfigTemplatesSchema(TEMPLATES_SCHEMA_FILE, schema));
+                TemplateMap->AddTemplatesDir(TEMPLATES_DIR);
             }
 
-            return DeviceTemplate;
-        }
+            ParseRequest(request);
 
-        PSerialDevice GetDevice()
-        {
-            auto deviceType = Request["device_type"].asString();
-            auto slaveId = Request["slave_id"].asString();
+            TSerialDeviceFactory deviceFactory;
+            RegisterProtocols(deviceFactory);
+            Params = deviceFactory.GetProtocolParams("modbus");
 
-            if (!Device || Device->DeviceConfig()->SlaveId != slaveId ||
-                Device->DeviceConfig()->DeviceType != deviceType)
-            {
-                auto config = std::make_shared<TDeviceConfig>("WASM Device", slaveId, "modbus");
-                config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-                config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-                config->MaxReadRegisters = 10; // Modbus::MAX_READ_REGISTERS;
-                Device = ProtocolParams.factory->CreateDevice(GetDeviceTemplate()->GetTemplate(),
-                                                              config,
-                                                              ProtocolParams.protocol);
-            }
+            auto config = std::make_shared<TDeviceConfig>("WASM Device", Request["slave_id"].asString(), "modbus");
+            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+            config->MaxReadRegisters = 10; // Modbus::MAX_READ_REGISTERS;
 
-            return Device;
+            Template = TemplateMap->GetTemplate(Request["device_type"].asString());
+            Device = Params.factory->CreateDevice(Template->GetTemplate(), config, Params.protocol);
         }
 
         TSerialClientDeviceAccessHandler GetAccessHandler()
         {
-            TSerialClientRegisterAndEventsReader client({GetDevice()}, 50ms, []() { return steady_clock::now(); });
+            TSerialClientRegisterAndEventsReader client({Device}, 50ms, []() { return steady_clock::now(); });
             return TSerialClientDeviceAccessHandler(client.GetEventsReader());
         }
     };
@@ -122,10 +88,10 @@ void DeviceLoadConfig(const std::string& request)
     try {
         THelper helper(request);
         TRPCDeviceParametersCache parametersCache;
-        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(helper.GetRequest(),
-                                                          helper.GetProtocolParams(),
-                                                          helper.GetDevice(),
-                                                          helper.GetDeviceTemplate(),
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(helper.Request,
+                                                          helper.Params,
+                                                          helper.Device,
+                                                          helper.Template,
                                                           false,
                                                           parametersCache,
                                                           OnResult,
@@ -141,10 +107,10 @@ void DeviceSet(const std::string& request)
 {
     try {
         THelper helper(request);
-        auto rpcRequest = ParseRPCDeviceSetRequest(helper.GetRequest(),
-                                                   helper.GetProtocolParams(),
-                                                   helper.GetDevice(),
-                                                   helper.GetDeviceTemplate(),
+        auto rpcRequest = ParseRPCDeviceSetRequest(helper.Request,
+                                                   helper.Params,
+                                                   helper.Device,
+                                                   helper.Template,
                                                    false,
                                                    OnResult,
                                                    OnError);

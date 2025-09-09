@@ -29,7 +29,7 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
     );
     // clang-format on
 
-    // LOG(Info) << ">>> " << WBMQTT::HexDump(buffer, count) << "\r\n";
+    LOG(Debug) << ">>> " << WBMQTT::HexDump(buffer, count) << "\r\n";
 }
 
 TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
@@ -70,7 +70,7 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
     );
     // clang-format on
 
-    // LOG(Info) << "<<< " << WBMQTT::HexDump(buffer, res.Count) << "\r\n";
+    LOG(Debug) << "<<< " << WBMQTT::HexDump(buffer, res.Count) << "\r\n";
     return res;
 }
 
