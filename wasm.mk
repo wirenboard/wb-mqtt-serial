@@ -89,7 +89,3 @@ all:
 
 # build module
 	emcc -v -O3 $(addprefix -I, $(INC)) $(SRC) -o $(DST_DIR)/module.js $(addprefix --preload-file , $(FILE)) $(OPT)
-
-# fix logger
-
-	sed -i -e 's/err(UTF8ArrayToString(tty.output))/out(UTF8ArrayToString(tty.output))/g' wasm/module.js
