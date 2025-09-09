@@ -1,8 +1,10 @@
 #ifdef __EMSCRIPTEN__
 
 #include "log.h"
-#include "rpc/rpc_device_load_config_task.h"
 #include "wasm_port.h"
+
+#include "rpc/rpc_device_load_config_task.h"
+#include "rpc/rpc_device_set_task.h"
 
 #include <emscripten/bind.h>
 
@@ -13,24 +15,96 @@ using namespace std::chrono;
 
 namespace
 {
-    const auto CONFED_COMMON_JSON_SCHEMA_FILE = "wb-mqtt-serial-confed-common.schema.json";
-    const auto TEMPLATES_JSON_SCHEMA_FILE = "wb-mqtt-serial-device-template.schema.json";
+    const auto COMMON_SCHEMA_FILE = "wb-mqtt-serial-confed-common.schema.json";
+    const auto TEMPLATES_SCHEMA_FILE = "wb-mqtt-serial-device-template.schema.json";
     const auto TEMPLATES_DIR = "wasm/templates";
 
-    Json::Value parseRequest(const std::string& string)
+    PTemplateMap Templates = nullptr;
+    auto Port = std::make_shared<TWASMPort>();
+    std::list<PSerialDevice> PolledDevices;
+
+    class THelper
     {
-        std::istringstream stream(string);
+        Json::Value Request;
 
-        Json::Value root;
-        Json::CharReaderBuilder builder;
-        Json::String errs;
+        TDeviceProtocolParams ProtocolParams;
+        TSerialDeviceFactory DeviceFactory;
 
-        if (!Json::parseFromStream(builder, stream, &root, &errs)) {
-            throw std::runtime_error("Failed to parse JSON:" + errs);
+        PDeviceTemplate DeviceTemplate = nullptr;
+        PSerialDevice Device = nullptr;
+
+        void ParseRequest(const std::string& string)
+        {
+            std::istringstream stream(string);
+            Json::CharReaderBuilder builder;
+            Json::String errors;
+
+            if (!Json::parseFromStream(builder, stream, &Request, &errors)) {
+                throw std::runtime_error("Failed to parse JSON:" + errors);
+            }
         }
 
-        return root;
-    }
+    public:
+        THelper(const std::string& request)
+        {
+            ParseRequest(request);
+            RegisterProtocols(DeviceFactory);
+            ProtocolParams = DeviceFactory.GetProtocolParams("modbus");
+
+            if (!Templates) {
+                auto schema = WBMQTT::JSON::Parse(COMMON_SCHEMA_FILE);
+                Templates = std::make_shared<TTemplateMap>(LoadConfigTemplatesSchema(TEMPLATES_SCHEMA_FILE, schema));
+                Templates->AddTemplatesDir(TEMPLATES_DIR);
+            }
+        }
+
+        Json::Value GetRequest() const
+        {
+            return Request;
+        }
+
+        TDeviceProtocolParams GetProtocolParams() const
+        {
+            return ProtocolParams;
+        }
+
+        PDeviceTemplate GetDeviceTemplate()
+        {
+            auto deviceType = Request["device_type"].asString();
+
+            if (!DeviceTemplate || DeviceTemplate->Type != deviceType) {
+                DeviceTemplate = Templates->GetTemplate(deviceType);
+            }
+
+            return DeviceTemplate;
+        }
+
+        PSerialDevice GetDevice()
+        {
+            auto deviceType = Request["device_type"].asString();
+            auto slaveId = Request["slave_id"].asString();
+
+            if (!Device || Device->DeviceConfig()->SlaveId != slaveId ||
+                Device->DeviceConfig()->DeviceType != deviceType)
+            {
+                auto config = std::make_shared<TDeviceConfig>("WASM Device", slaveId, "modbus");
+                config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+                config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+                config->MaxReadRegisters = 10; // Modbus::MAX_READ_REGISTERS;
+                Device = ProtocolParams.factory->CreateDevice(GetDeviceTemplate()->GetTemplate(),
+                                                              config,
+                                                              ProtocolParams.protocol);
+            }
+
+            return Device;
+        }
+
+        TSerialClientDeviceAccessHandler GetAccessHandler()
+        {
+            TSerialClientRegisterAndEventsReader client({GetDevice()}, 50ms, []() { return steady_clock::now(); });
+            return TSerialClientDeviceAccessHandler(client.GetEventsReader());
+        }
+    };
 }
 
 void OnResult(const Json::Value& result)
@@ -43,56 +117,48 @@ void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& erro
     LOG(Warn) << "error: " << static_cast<int>(errorCode) << " - " << errorString;
 }
 
-void LoadConfigRequest(const std::string& requestString)
+void DeviceLoadConfig(const std::string& request)
 {
-    Json::Value request = parseRequest(requestString);
-    TRPCDeviceParametersCache parametersCache;
-    TSerialDeviceFactory deviceFactory;
-
-    LOG(Info) << "Hello from LoadConfigRequest!";
-    RegisterProtocols(deviceFactory);
-
     try {
-        auto commonDeviceSchema = std::make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FILE));
-        auto templates =
-            std::make_shared<TTemplateMap>(LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FILE, *commonDeviceSchema));
-        templates->AddTemplatesDir(TEMPLATES_DIR);
-
-        auto deviceTemplate = templates->GetTemplate(request["device_type"].asString());
-        auto protocolParams = deviceFactory.GetProtocolParams("modbus");
-        auto config = std::make_shared<TDeviceConfig>("WASM Device", request["slave_id"].asString(), "modbus");
-        config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-        config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-        config->MaxReadRegisters = 10; // Modbus::MAX_READ_REGISTERS;
-
-        auto device =
-            protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
-
-        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request,
-                                                          protocolParams,
-                                                          device,
-                                                          deviceTemplate,
+        THelper helper(request);
+        TRPCDeviceParametersCache parametersCache;
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(helper.GetRequest(),
+                                                          helper.GetProtocolParams(),
+                                                          helper.GetDevice(),
+                                                          helper.GetDeviceTemplate(),
                                                           false,
                                                           parametersCache,
                                                           OnResult,
                                                           OnError);
-
-        TRPCDeviceLoadConfigSerialClientTask task(rpcRequest);
-        std::list<PSerialDevice> polledDevices;
-
-        TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, []() { return steady_clock::now(); });
-        TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
-
-        auto port = std::make_shared<TWASMPort>();
-        task.Run(port, lastAccessedDevice, polledDevices);
+        auto accessHandler = helper.GetAccessHandler();
+        TRPCDeviceLoadConfigSerialClientTask(rpcRequest).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "Exception: " << e.what();
+        LOG(Error) << "DeviceLoadConfig exception: " << e.what();
+    }
+}
+
+void DeviceSet(const std::string& request)
+{
+    try {
+        THelper helper(request);
+        auto rpcRequest = ParseRPCDeviceSetRequest(helper.GetRequest(),
+                                                   helper.GetProtocolParams(),
+                                                   helper.GetDevice(),
+                                                   helper.GetDeviceTemplate(),
+                                                   false,
+                                                   OnResult,
+                                                   OnError);
+        auto accessHandler = helper.GetAccessHandler();
+        TRPCDeviceSetSerialClientTask(rpcRequest).Run(Port, accessHandler, PolledDevices);
+    } catch (const std::runtime_error& e) {
+        LOG(Error) << "DeviceSet exception: " << e.what();
     }
 }
 
 EMSCRIPTEN_BINDINGS(module)
 {
-    emscripten::function("loadConfigRequest", &LoadConfigRequest);
+    emscripten::function("deviceLoadConfig", &DeviceLoadConfig);
+    emscripten::function("deviceSet", &DeviceSet);
 }
 
 #endif

@@ -99,6 +99,8 @@ class SerialPort
     }
 }
 
+let state = 0;
+
 window.onload = function()
 {
     Port = new SerialPort();
@@ -126,6 +128,20 @@ window.onload = function()
             // group: "g_in0"
         };
 
-        Module.loadConfigRequest(JSON.stringify(request));
+        Module.deviceLoadConfig(JSON.stringify(request));
+    });
+
+    document.querySelector('#testButton').addEventListener('click', async function()
+    {
+        state = state ? 0 : 1;
+
+        let request =
+        {
+            device_type: "WB-MR6C v.3",
+            slave_id: 25,
+            channels: {K1: state}
+        };
+
+        Module.deviceSet(JSON.stringify(request));
     });
 }
