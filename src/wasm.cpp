@@ -59,7 +59,8 @@ namespace
             auto config = std::make_shared<TDeviceConfig>("WASM Device", Request["slave_id"].asString(), "modbus");
             config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-            config->MaxReadRegisters = 10; // Modbus::MAX_READ_REGISTERS;
+            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+            config->ResponseTimeout = std::chrono::milliseconds(100);
 
             Template = TemplateMap->GetTemplate(Request["device_type"].asString());
             Device = Params.factory->CreateDevice(Template->GetTemplate(), config, Params.protocol);

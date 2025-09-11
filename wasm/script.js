@@ -1,3 +1,4 @@
+var Relay = 0;
 var Port;
 
 var PortOptions = {
@@ -26,6 +27,8 @@ var Module =
 
 class SerialPort
 {
+    replyTimeout = 1000; // is 1 second enough?
+
     constructor()
     {
         if (navigator.serial)
@@ -69,37 +72,53 @@ class SerialPort
         writer.releaseLock();
     }
 
-    async read(timeout)
+    async read(length)
     {
+        let read = true;
         const reader = this.port.readable.getReader();
-        let success = false;
 
         async function receive()
         {
-            const { value } = await reader.read();
-            return value;
+            let data = new Uint8Array(length);
+            let offset = 0;
+
+            while (read)
+            {
+                let {value} = await reader.read();
+
+                if (!read)
+                    break;
+
+                value = value.subarray(0, length - offset);
+                data.set(value, offset);
+                offset += value.length;
+
+                if (length > offset)
+                    continue;
+
+                read = false;
+                reader.releaseLock();
+            }
+
+            return data;
         }
 
         async function wait(timeout)
         {
             await new Promise(resolve => setTimeout(resolve, timeout));
-            return "Request timed out";
+
+            if (read)
+            {
+                read = false;
+                reader.cancel();
+            }
+
+            return false;
         }
 
-        let result = await Promise.race([receive(), wait(timeout)]);
-
-        if (result instanceof Uint8Array)
-        {
-            this.data = result;
-            success = true;
-        }
-
-        reader.releaseLock();
-        return success;
+        return await Promise.race([receive(), wait(this.replyTimeout)]);
     }
 }
-
-let state = 0;
 
 window.onload = function()
 {
@@ -124,8 +143,7 @@ window.onload = function()
         let request =
         {
             device_type: "WB-MR6C v.3",
-            slave_id: 25,
-            // group: "g_in0"
+            slave_id: 25
         };
 
         Module.deviceLoadConfig(JSON.stringify(request));
@@ -133,13 +151,13 @@ window.onload = function()
 
     document.querySelector('#testButton').addEventListener('click', async function()
     {
-        state = state ? 0 : 1;
+        Relay = Relay ? 0 : 1;
 
         let request =
         {
             device_type: "WB-MR6C v.3",
             slave_id: 25,
-            channels: {K1: state}
+            channels: {K1: Relay}
         };
 
         Module.deviceSet(JSON.stringify(request));

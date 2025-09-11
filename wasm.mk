@@ -72,20 +72,16 @@ OPT = \
 	-fexceptions                                    \
 	-lembind                                        \
 	-sASYNCIFY                                      \
-	-sASYNCIFY_STACK_SIZE=1mb                       \
 	-sASYNCIFY_IMPORTS=["emscripten_asm_const_int"] \
 
 all:
-
 # copy templates
 	mkdir -p $(DST_DIR)/templates
 	cp templates/config-map*.json $(DST_DIR)/templates
 	cp templates/config-wb-*.json $(DST_DIR)/templates
 	cp build/templates/config-map*.json $(DST_DIR)/templates
 	cp build/templates/config-wb-*.json $(DST_DIR)/templates
-
 # fix include
 	cp -r $(JSONCPP_DIR)/include/json wblib/
-
 # build module
 	emcc -v -O3 $(addprefix -I, $(INC)) $(SRC) -o $(DST_DIR)/module.js $(addprefix --preload-file , $(FILE)) $(OPT)

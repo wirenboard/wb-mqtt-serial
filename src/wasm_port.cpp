@@ -3,10 +3,6 @@
 #include "wasm_port.h"
 #include "log.h"
 
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <unistd.h>
 #include <wblib/utils.h>
 
 #include <emscripten/emscripten.h>
@@ -18,18 +14,19 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
 {
     // clang-format off
     EM_ASM(
-        {
-            let data = new Array();
-            for (let i = 0; i < $1; ++i) {
-                data.push(getValue($0 + i, 'i8'));
-            }
-            Asyncify.handleAsync(async() => { await Port.write(new Uint8Array(data)); });
-        },
-        buffer, count
-    );
+    {
+        let data = new Uint8Array($1);
+
+        for (let i = 0; i < $1; ++i) {
+            data[i] = (getValue($0 + i, 'i8'));
+        }
+
+        Asyncify.handleAsync(async() => { await Port.write(data); });
+    },
+    buffer, count);
     // clang-format on
 
-    LOG(Debug) << ">>> " << WBMQTT::HexDump(buffer, count) << "\r\n";
+    LOG(Debug) << ">>> " << WBMQTT::HexDump(buffer, count);
 }
 
 TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
@@ -38,39 +35,32 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
                                       const std::chrono::microseconds& frameTimeout,
                                       TFrameCompletePred frame_complete)
 {
-    TReadFrameResult res;
-
-    usleep(100 * 1000);
-
     // clang-format off
     auto success = EM_ASM_INT(
-        {
-            return Asyncify.handleAsync(async() => {
-                return await Port.read($0);
-            });
-        },
-        static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(responseTimeout).count())
-    );
+    {
+        let result = Asyncify.handleAsync(async() => { return await Port.read($1, $2); });
+
+        if (!(result instanceof Uint8Array)) {
+            return false;
+        }
+
+        for (let i = 0; i < result.length; ++i) {
+            setValue($0 + i, result[i], 'i8');
+        }
+
+        return true;
+    },
+    buffer, count);
     // clang-format on
 
     if (!success) {
         throw std::runtime_error("request timed out");
     }
 
-    // clang-format off
-    res.Count = EM_ASM_INT(
-        {
-            let length = Port.data?.byteLength ?? 0;
-            for (let i = 0; i < Math.min(length, $1); ++i) {
-                setValue($0 + i, Port.data[i], 'i8');
-            }
-            return length;
-        },
-        buffer, count
-    );
-    // clang-format on
+    TReadFrameResult res;
+    res.Count = count;
 
-    LOG(Debug) << "<<< " << WBMQTT::HexDump(buffer, res.Count) << "\r\n";
+    LOG(Debug) << "<<< " << WBMQTT::HexDump(buffer, res.Count);
     return res;
 }
 
