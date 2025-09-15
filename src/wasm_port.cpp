@@ -8,7 +8,7 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/val.h>
 
-#define LOG(logger) logger.Log() << "[port] "
+#define LOG(logger) logger.Log() << "[wasm port] "
 
 void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
 {
@@ -26,7 +26,7 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
     buffer, count);
     // clang-format on
 
-    LOG(Debug) << ">>> " << WBMQTT::HexDump(buffer, count);
+    LOG(Debug) << "write: " << WBMQTT::HexDump(buffer, count);
 }
 
 TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
@@ -60,8 +60,22 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
     TReadFrameResult res;
     res.Count = count;
 
-    LOG(Debug) << "<<< " << WBMQTT::HexDump(buffer, res.Count);
+    LOG(Debug) << "read: " << WBMQTT::HexDump(buffer, res.Count);
     return res;
+}
+
+void TWASMPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)
+{
+    // clang-format off
+    EM_ASM(
+    {
+        Asyncify.handleAsync(async() => { await Port.open($0, $1, $2, $3); });
+    },
+    settings.BaudRate, settings.DataBits, settings.Parity, settings.StopBits);
+    // clang-format on
+
+    LOG(Debug) << "settings: " << settings.BaudRate << " " << settings.DataBits << "-" << settings.Parity << "-"
+               << settings.StopBits;
 }
 
 #endif
