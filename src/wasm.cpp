@@ -5,6 +5,7 @@
 
 #include "rpc/rpc_device_load_config_task.h"
 #include "rpc/rpc_device_set_task.h"
+#include "rpc/rpc_helpers.h"
 
 #include <emscripten/bind.h>
 
@@ -15,9 +16,13 @@ using namespace std::chrono;
 
 namespace
 {
+    const auto TEMPLATES_DIR = "wasm/templates";
+
     const auto COMMON_SCHEMA_FILE = "wb-mqtt-serial-confed-common.schema.json";
     const auto TEMPLATES_SCHEMA_FILE = "wb-mqtt-serial-device-template.schema.json";
-    const auto TEMPLATES_DIR = "wasm/templates";
+
+    const auto DEVICE_LOAD_CONFIG_SCHEMA_FILE = "wb-mqtt-serial-rpc-device-load-config-request.wasm-schema.json";
+    const auto DEVICE_SET_SCHEMA_FILE = "wb-mqtt-serial-rpc-device-set-request.wasm-schema.json";
 
     PTemplateMap TemplateMap = nullptr;
     auto Port = std::make_shared<TWASMPort>();
@@ -25,9 +30,9 @@ namespace
 
     class THelper
     {
-        void ParseRequest(const std::string& string)
+        void ParseRequest(const std::string& requestString)
         {
-            std::istringstream stream(string);
+            std::istringstream stream(requestString);
             Json::CharReaderBuilder builder;
             Json::String errors;
 
@@ -42,7 +47,7 @@ namespace
         PDeviceTemplate Template = nullptr;
         PSerialDevice Device = nullptr;
 
-        THelper(const std::string& request)
+        THelper(const std::string& requestString, const std::string& schemaFilePath, const std::string& rpcName)
         {
             if (!TemplateMap) {
                 auto schema = WBMQTT::JSON::Parse(COMMON_SCHEMA_FILE);
@@ -50,7 +55,8 @@ namespace
                 TemplateMap->AddTemplatesDir(TEMPLATES_DIR);
             }
 
-            ParseRequest(request);
+            ParseRequest(requestString);
+            ValidateRPCRequest(Request, LoadRPCRequestSchema(schemaFilePath, rpcName));
 
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
@@ -84,10 +90,10 @@ void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& erro
     LOG(Warn) << "error: " << static_cast<int>(errorCode) << " - " << errorString;
 }
 
-void DeviceLoadConfig(const std::string& request)
+void DeviceLoadConfig(const std::string& requestString)
 {
     try {
-        THelper helper(request);
+        THelper helper(requestString, DEVICE_LOAD_CONFIG_SCHEMA_FILE, "device/LoadConfig");
         TRPCDeviceParametersCache parametersCache;
         auto rpcRequest = ParseRPCDeviceLoadConfigRequest(helper.Request,
                                                           helper.Params,
@@ -100,14 +106,14 @@ void DeviceLoadConfig(const std::string& request)
         auto accessHandler = helper.GetAccessHandler();
         TRPCDeviceLoadConfigSerialClientTask(rpcRequest).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "DeviceLoadConfig exception: " << e.what();
+        LOG(Error) << "device/LoadConfig RPC exception: " << e.what();
     }
 }
 
-void DeviceSet(const std::string& request)
+void DeviceSet(const std::string& requestString)
 {
     try {
-        THelper helper(request);
+        THelper helper(requestString, DEVICE_SET_SCHEMA_FILE, "device/Set");
         auto rpcRequest = ParseRPCDeviceSetRequest(helper.Request,
                                                    helper.Params,
                                                    helper.Device,
@@ -118,7 +124,7 @@ void DeviceSet(const std::string& request)
         auto accessHandler = helper.GetAccessHandler();
         TRPCDeviceSetSerialClientTask(rpcRequest).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "DeviceSet exception: " << e.what();
+        LOG(Error) << "device/Set RPC exception: " << e.what();
     }
 }
 

@@ -151,6 +151,10 @@ window.onload = function()
     {
         let request =
         {
+            baud_rate: 9600,
+            data_bits: 8,
+            parity: 'N',
+            stop_bits: 2,
             device_type: "WB-MR6C v.3",
             slave_id: 25
         };
@@ -164,6 +168,10 @@ window.onload = function()
 
         let request =
         {
+            baud_rate: 9600,
+            data_bits: 8,
+            parity: 'N',
+            stop_bits: 2,
             device_type: "WB-MR6C v.3",
             slave_id: 25,
             channels: {K1: Relay}
@@ -179,6 +187,9 @@ window.onload = function()
         let request =
         {
             baud_rate: 115200,
+            data_bits: 8,
+            parity: 'N',
+            stop_bits: 2,
             device_type: "WB-MR6C",
             slave_id: 221,
             channels: {K1: Relay}
