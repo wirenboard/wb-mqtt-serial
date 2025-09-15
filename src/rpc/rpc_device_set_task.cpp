@@ -2,10 +2,6 @@
 #include "config_merge_template.h"
 #include "rpc_helpers.h"
 
-#ifndef __EMSCRIPTEN__
-#include "serial_port.h"
-#endif
-
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
 namespace
@@ -158,11 +154,9 @@ ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PPort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
-#ifndef __EMSCRIPTEN__
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         }
-#endif
         ExecRPCRequest(port, Request);
     } catch (const std::exception& error) {
         if (Request->OnError) {

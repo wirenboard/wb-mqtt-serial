@@ -3,10 +3,6 @@
 #include "rpc_port_handler.h"
 #include "rpc_port_scan_serial_client_task.h"
 
-#ifndef __EMSCRIPTEN__
-#include "serial_port.h"
-#endif
-
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
 template<> bool inline WBMQTT::JSON::Is<uint8_t>(const Json::Value& value)
@@ -53,9 +49,7 @@ ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PPort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
-#ifndef __EMSCRIPTEN__
         TSerialPortSettingsGuard settingsGuard(port, SerialPortSettings);
-#endif
         RpcPortScan::TRegisterReader reader(*port, *ModbusTraits, SlaveId);
         OnResult(RpcPortScan::GetDeviceDetails(reader, SlaveId, polledDevices));
     } catch (const std::exception& error) {

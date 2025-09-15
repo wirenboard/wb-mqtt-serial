@@ -1,7 +1,6 @@
 #include "rpc_port_load_raw_serial_client_task.h"
 #include "rpc_port_handler.h"
 #include "serial_exc.h"
-#include "serial_port.h"
 
 PRPCPortLoadRawRequest ParseRPCPortLoadRawRequest(const Json::Value& request)
 {

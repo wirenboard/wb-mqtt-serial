@@ -2,7 +2,6 @@
 #include "modbus_base.h"
 #include "rpc_port_handler.h"
 #include "serial_exc.h"
-#include "serial_port.h"
 
 template<> bool inline WBMQTT::JSON::Is<uint8_t>(const Json::Value& value)
 {
