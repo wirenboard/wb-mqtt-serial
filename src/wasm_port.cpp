@@ -26,7 +26,7 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
     buffer, count);
     // clang-format on
 
-    LOG(Debug) << "write: " << WBMQTT::HexDump(buffer, count);
+    LOG(Debug) << "write " << count << " bytes: " << WBMQTT::HexDump(buffer, count);
 }
 
 TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
@@ -36,31 +36,31 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
                                       TFrameCompletePred frame_complete)
 {
     // clang-format off
-    auto success = EM_ASM_INT(
+    auto length = EM_ASM_INT(
     {
-        let result = Asyncify.handleAsync(async() => { return await Port.read($1, $2); });
+        let result = Asyncify.handleAsync(async() => { return await Port.read($1); });
 
         if (!(result instanceof Uint8Array)) {
-            return false;
+            return 0;
         }
 
         for (let i = 0; i < result.length; ++i) {
             setValue($0 + i, result[i], 'i8');
         }
 
-        return true;
+        return result.length;
     },
     buffer, count);
     // clang-format on
 
-    if (!success) {
+    if (!length) {
         throw std::runtime_error("request timed out");
     }
 
     TReadFrameResult res;
-    res.Count = count;
+    res.Count = length;
 
-    LOG(Debug) << "read: " << WBMQTT::HexDump(buffer, res.Count);
+    LOG(Debug) << "read " << length << " bytes: " << WBMQTT::HexDump(buffer, length);
     return res;
 }
 
@@ -69,12 +69,12 @@ void TWASMPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& set
     // clang-format off
     EM_ASM(
     {
-        Asyncify.handleAsync(async() => { await Port.open($0, $1, $2, $3); });
+        Port.setOptions($0, $1, $2, $3);
     },
     settings.BaudRate, settings.DataBits, settings.Parity, settings.StopBits);
     // clang-format on
 
-    LOG(Debug) << "settings: " << settings.BaudRate << " " << settings.DataBits << "-" << settings.Parity << "-"
+    LOG(Debug) << "set options: " << settings.BaudRate << " " << settings.DataBits << "-" << settings.Parity << "-"
                << settings.StopBits;
 }
 

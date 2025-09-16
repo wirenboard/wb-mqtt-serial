@@ -18,7 +18,8 @@ var Module =
 
 class SerialPort
 {
-    replyTimeout = 1000; // is 1 second enough?
+    replyTimeout = 500; // is 500 ms enough?
+    options = new Object();
     isOpen = false;
 
     constructor()
@@ -29,6 +30,20 @@ class SerialPort
         alert('Web Serial API is not supported by this browser :(');
     }
 
+    setOptions(baudRate, dataBits, parity, stopBits)
+    {
+        switch (String.fromCharCode(parity))
+        {
+            case 'E': this.options.parity = 'even'; break;
+            case 'O': this.options.parity = 'odd';  break;
+            default:  this.options.parity = 'none'; break;
+        }
+
+        this.options.baudRate = baudRate;
+        this.options.dataBits = dataBits;
+        this.options.stopBits = stopBits;
+    }
+
     async select(force)
     {
         if (this.serial && !force)
@@ -37,28 +52,21 @@ class SerialPort
         this.serial = await navigator.serial.requestPort();
     }
 
-    async open(baudRate, dataBits, parity, stopBits)
+    async open()
     {
-        switch (String.fromCharCode(parity))
-        {
-            case 'N': parity = 'none'; break;
-            case 'E': parity = 'even'; break;
-            case 'O': parity = 'odd'; break;
-            default: console.error("Invalid parity value: ", parity); return;
-        }
-
         if (this.isOpen)
             await this.close();
 
         try
         {
             await this.select(false);
-            await this.serial.open({baudRate: baudRate, dataBits: dataBits, parity: parity, stopBits: stopBits});
+            await this.serial.open(this.options);
             this.isOpen = true;
         }
         catch (error)
         {
             console.error("Can't open serial port: ", error);
+            delete this.serial;
         }
     }
 
@@ -73,6 +81,8 @@ class SerialPort
 
     async write(data)
     {
+        await this.open();
+
         if (!this.serial || !this.serial.writable)
         {
             console.error("Serial port is not open or not writable");
@@ -84,7 +94,7 @@ class SerialPort
         writer.releaseLock();
     }
 
-    async read(length)
+    async read(count)
     {
         if (!this.serial || !this.serial.readable)
         {
@@ -93,13 +103,11 @@ class SerialPort
         }
 
         const reader = this.serial.readable.getReader();
+        let data = new Uint8Array();
         let read = true;
 
         async function receive()
         {
-            let data = new Uint8Array(length);
-            let offset = 0;
-
             while (read)
             {
                 let {value} = await reader.read();
@@ -107,15 +115,15 @@ class SerialPort
                 if (!read)
                     break;
 
-                value = value.subarray(0, length - offset);
-                data.set(value, offset);
-                offset += value.length;
+                let buffer = new Uint8Array(data.length + value.length);
+                buffer.set(data, 0)
+                buffer.set(value, data.length);
+                data = buffer;
 
-                if (length > offset)
+                if (data.length < count)
                     continue;
 
                 read = false;
-                reader.releaseLock();
             }
 
             return data;
@@ -131,10 +139,12 @@ class SerialPort
                 reader.cancel();
             }
 
-            return false;
+            return data;
         }
 
-        return await Promise.race([receive(), wait(this.replyTimeout)]);
+        let result = await Promise.race([receive(), wait(this.replyTimeout)]);
+        reader.releaseLock();
+        return result;
     }
 }
 
