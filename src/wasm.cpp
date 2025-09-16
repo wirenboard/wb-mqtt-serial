@@ -6,6 +6,7 @@
 #include "rpc/rpc_device_load_config_task.h"
 #include "rpc/rpc_device_set_task.h"
 #include "rpc/rpc_helpers.h"
+#include "rpc/rpc_port_scan_serial_client_task.h"
 
 #include <emscripten/bind.h>
 
@@ -32,7 +33,7 @@ namespace
     {
         void ParseRequest(const std::string& requestString)
         {
-            std::istringstream stream(requestString);
+            std::stringstream stream(requestString);
             Json::CharReaderBuilder builder;
             Json::String errors;
 
@@ -47,7 +48,10 @@ namespace
         PDeviceTemplate Template = nullptr;
         PSerialDevice Device = nullptr;
 
-        THelper(const std::string& requestString, const std::string& schemaFilePath, const std::string& rpcName)
+        THelper(const std::string& requestString,
+                const std::string& schemaFilePath,
+                const std::string& rpcName,
+                bool deviceRequest = true)
         {
             if (!TemplateMap) {
                 auto schema = WBMQTT::JSON::Parse(COMMON_SCHEMA_FILE);
@@ -56,7 +60,13 @@ namespace
             }
 
             ParseRequest(requestString);
-            ValidateRPCRequest(Request, LoadRPCRequestSchema(schemaFilePath, rpcName));
+
+            // TODO: add validation for poerScat reuest
+            // ValidateRPCRequest(Request, LoadRPCRequestSchema(schemaFilePath, rpcName));
+
+            if (!deviceRequest) {
+                return;
+            }
 
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
@@ -66,7 +76,6 @@ namespace
             config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
-            config->ResponseTimeout = std::chrono::milliseconds(100);
 
             Template = TemplateMap->GetTemplate(Request["device_type"].asString());
             Device = Params.factory->CreateDevice(Template->GetTemplate(), config, Params.protocol);
@@ -74,7 +83,13 @@ namespace
 
         TSerialClientDeviceAccessHandler GetAccessHandler()
         {
-            TSerialClientRegisterAndEventsReader client({Device}, 50ms, []() { return steady_clock::now(); });
+            std::list<PSerialDevice> list;
+
+            if (Device) {
+                list.push_back(Device);
+            }
+
+            TSerialClientRegisterAndEventsReader client(list, 50ms, []() { return steady_clock::now(); });
             return TSerialClientDeviceAccessHandler(client.GetEventsReader());
         }
     };
@@ -82,12 +97,50 @@ namespace
 
 void OnResult(const Json::Value& result)
 {
-    LOG(Info) << "result: " << result;
+    std::stringstream stream;
+    WBMQTT::JSON::MakeWriter()->write(result, &stream);
+
+    // clang-format off
+    EM_ASM(
+    {
+        let data = new String();
+
+        for (let i = 0; i < $1; ++i) {
+            data += String.fromCharCode(getValue($0 + i, 'i8'));
+        }
+
+        OnResult(data);
+    },
+    stream.str().c_str(), stream.str().length());
+    // clang-format on
 }
 
 void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& errorString)
 {
-    LOG(Warn) << "error: " << static_cast<int>(errorCode) << " - " << errorString;
+    // clang-format off
+    EM_ASM(
+    {
+        let data = new String();
+
+        for (let i = 0; i < $1; ++i) {
+            data += String.fromCharCode(getValue($0 + i, 'i8'));
+        }
+
+        OnError(data);
+    },
+    errorString.c_str());
+    // clang-format on
+}
+
+void PortScan(const std::string& requestString)
+{
+    try {
+        THelper helper(requestString, std::string(), "port/Scan", false);
+        auto accessHandler = helper.GetAccessHandler();
+        TRPCPortScanSerialClientTask(helper.Request, OnResult, OnError).Run(Port, accessHandler, PolledDevices);
+    } catch (const std::runtime_error& e) {
+        LOG(Error) << "port/Scan RPC exception: " << e.what();
+    }
 }
 
 void DeviceLoadConfig(const std::string& requestString)
@@ -130,6 +183,7 @@ void DeviceSet(const std::string& requestString)
 
 EMSCRIPTEN_BINDINGS(module)
 {
+    emscripten::function("portScan", &PortScan);
     emscripten::function("deviceLoadConfig", &DeviceLoadConfig);
     emscripten::function("deviceSet", &DeviceSet);
 }

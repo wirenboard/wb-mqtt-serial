@@ -18,7 +18,7 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
         let data = new Uint8Array($1);
 
         for (let i = 0; i < $1; ++i) {
-            data[i] = (getValue($0 + i, 'i8'));
+            data[i] = getValue($0 + i, 'i8');
         }
 
         Asyncify.handleAsync(async() => { await Port.write(data); });
