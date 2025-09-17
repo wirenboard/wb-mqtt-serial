@@ -22,6 +22,7 @@ namespace
     const auto COMMON_SCHEMA_FILE = "wb-mqtt-serial-confed-common.schema.json";
     const auto TEMPLATES_SCHEMA_FILE = "wb-mqtt-serial-device-template.schema.json";
 
+    const auto PORT_SCAN_SCHEMA_FILE = "wb-mqtt-serial-rpc-port-scan-request.wasm-schema.json";
     const auto DEVICE_LOAD_CONFIG_SCHEMA_FILE = "wb-mqtt-serial-rpc-device-load-config-request.wasm-schema.json";
     const auto DEVICE_SET_SCHEMA_FILE = "wb-mqtt-serial-rpc-device-set-request.wasm-schema.json";
 
@@ -60,9 +61,7 @@ namespace
             }
 
             ParseRequest(requestString);
-
-            // TODO: add validation for poerScat reuest
-            // ValidateRPCRequest(Request, LoadRPCRequestSchema(schemaFilePath, rpcName));
+            ValidateRPCRequest(Request, LoadRPCRequestSchema(schemaFilePath, rpcName));
 
             if (!deviceRequest) {
                 return;
@@ -135,7 +134,7 @@ void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& erro
 void PortScan(const std::string& requestString)
 {
     try {
-        THelper helper(requestString, std::string(), "port/Scan", false);
+        THelper helper(requestString, PORT_SCAN_SCHEMA_FILE, "port/Scan", false);
         auto accessHandler = helper.GetAccessHandler();
         TRPCPortScanSerialClientTask(helper.Request, OnResult, OnError).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {

@@ -69,6 +69,7 @@ FILE = \
 	wb-mqtt-serial-device-template.schema.json                     \
 	wb-mqtt-serial-rpc-device-load-config-request.wasm-schema.json \
 	wb-mqtt-serial-rpc-device-set-request.wasm-schema.json         \
+	wb-mqtt-serial-rpc-port-scan-request.wasm-schema.json          \
 
 OPT = \
 	-fexceptions                                    \
