@@ -21,7 +21,7 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
             data[i] = getValue($0 + i, 'i8');
         }
 
-        Asyncify.handleAsync(async() => { await Port.write(data); });
+        Asyncify.handleAsync(async() => { await Module.serial.write(data); });
     },
     buffer, count);
     // clang-format on
@@ -38,7 +38,7 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
     // clang-format off
     auto length = EM_ASM_INT(
     {
-        let result = Asyncify.handleAsync(async() => { return await Port.read($1); });
+        let result = Asyncify.handleAsync(async() => { return await Module.serial.read($1); });
 
         if (!(result instanceof Uint8Array)) {
             return 0;
@@ -69,7 +69,7 @@ void TWASMPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& set
     // clang-format off
     EM_ASM(
     {
-        Port.setOptions($0, $1, $2, $3);
+        Module.serial.setOptions($0, $1, $2, $3);
     },
     settings.BaudRate, settings.DataBits, settings.Parity, settings.StopBits);
     // clang-format on

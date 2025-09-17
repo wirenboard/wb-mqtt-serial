@@ -109,7 +109,7 @@ void OnResult(const Json::Value& result)
             data += String.fromCharCode(getValue($0 + i, 'i8'));
         }
 
-        OnResult(data);
+        Module.onResult(data);
     },
     stream.str().c_str(), stream.str().length());
     // clang-format on
@@ -126,9 +126,9 @@ void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& erro
             data += String.fromCharCode(getValue($0 + i, 'i8'));
         }
 
-        OnError(data);
+        Module.onError(data);
     },
-    errorString.c_str());
+    errorString.c_str(), errorString.length());
     // clang-format on
 }
 
