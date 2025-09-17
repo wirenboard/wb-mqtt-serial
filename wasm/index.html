@@ -7,16 +7,35 @@
     <script async type="text/javascript" src="serial.js"></script>
     <script async type="text/javascript" src="script.js"></script>
     <script async type="text/javascript" src="module.js"></script>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        textarea {
+            font-family: monospace;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 5px 10px;
+            border: 1px solid black;
+        }
+    </style>
 </head>
 
 <body>
+    <textarea id="output" rows="25"></textarea>
     <button id="portButton">select port</button>
     <button id="scanButton">scan port</button>
-    <button id="requestButton">read params</button>
-    <button id="testButton1">togggle relay 1</button>
-    <button id="testButton2">togggle relay 2</button>
-    <textarea id="output" style="font-family: monospace; font-size: 13px; width: 100%;" rows="40"></textarea>
-    <div id="error" style="font-family: monospace; font-size: 13px; color: red;"></div>
+    <hr>
+    <table></table>
 </body>
 
 </html>

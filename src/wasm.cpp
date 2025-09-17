@@ -76,8 +76,12 @@ namespace
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
 
-            Template = TemplateMap->GetTemplate(Request["device_type"].asString());
-            Device = Params.factory->CreateDevice(Template->GetTemplate(), config, Params.protocol);
+            try {
+                Template = TemplateMap->GetTemplate(Request["device_type"].asString());
+                Device = Params.factory->CreateDevice(Template->GetTemplate(), config, Params.protocol);
+            } catch (const std::out_of_range& e) {
+                LOG(Error) << "helper exception: " << e.what();
+            }
         }
 
         TSerialClientDeviceAccessHandler GetAccessHandler()
