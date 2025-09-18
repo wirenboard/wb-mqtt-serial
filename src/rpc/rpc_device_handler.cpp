@@ -51,6 +51,7 @@ const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const J
     return it != DeviceParameters.end() ? it->second : defaultValue;
 };
 
+#ifndef __EMSCRIPTEN__
 TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
                                    const TSerialDeviceFactory& deviceFactory,
                                    PTemplateMap templates,
@@ -82,6 +83,7 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 }
+#endif
 
 TRPCDeviceRequest::TRPCDeviceRequest(const TDeviceProtocolParams& protocolParams,
                                      PSerialDevice device,
@@ -115,6 +117,7 @@ void TRPCDeviceRequest::ParseSettings(const Json::Value& request,
     OnError = onError;
 }
 
+#ifndef __EMSCRIPTEN__
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const std::string& requestDeviceLoadSchemaFilePath,
                                      const std::string& requestDeviceSetSchemaFilePath,
@@ -260,6 +263,7 @@ Json::Value TRPCDeviceHandler::SetPoll(const Json::Value& request)
     }
     return Json::Value(Json::objectValue);
 }
+#endif
 
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,

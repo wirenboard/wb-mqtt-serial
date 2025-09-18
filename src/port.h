@@ -154,3 +154,21 @@ private:
     std::chrono::steady_clock::time_point NextOpenTryTime;
     util::TGetNowFn NowFn;
 };
+
+// Scope guard for applying serial port settings passed in the constructor and
+// restoring them back to preconfigured on destructor
+class TSerialPortSettingsGuard
+{
+    PPort Port;
+
+public:
+    TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings): Port(port)
+    {
+        Port->ApplySerialPortSettings(settings);
+    }
+
+    ~TSerialPortSettingsGuard()
+    {
+        Port->ResetSerialPortSettings();
+    }
+};

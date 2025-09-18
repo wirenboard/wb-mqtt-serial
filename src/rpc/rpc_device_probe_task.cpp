@@ -2,7 +2,6 @@
 #include "rpc_helpers.h"
 #include "rpc_port_handler.h"
 #include "rpc_port_scan_serial_client_task.h"
-#include "serial_port.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 

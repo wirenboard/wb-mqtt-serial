@@ -1,8 +1,6 @@
 #include "rpc_device_set_task.h"
 #include "config_merge_template.h"
 #include "rpc_helpers.h"
-#include "serial_port.h"
-#include "wb_registers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 

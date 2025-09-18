@@ -2,7 +2,6 @@
 #include "modbus_base.h"
 #include "modbus_common.h"
 #include "rpc_helpers.h"
-#include "serial_port.h"
 #include "wb_registers.h"
 #include <regex>
 
