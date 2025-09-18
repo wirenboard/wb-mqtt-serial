@@ -4,12 +4,17 @@ var Module =
 
     async request(type, data)
     {
+        this.finished = false;
+
         function wait(resolve)
         {
-            if (this.result === undefined)
-                setTimeout(wait.bind(this, resolve), 10);
-            else
+            if (this.finished)
+            {
                 resolve();
+                return;
+            }
+
+            setTimeout(wait.bind(this, resolve), 1);
         }
 
         switch (type)
@@ -19,19 +24,18 @@ var Module =
             case 'deviceSet': this.deviceSet(JSON.stringify(data)); break;
         }
 
-        this.result = undefined;
         await new Promise(wait.bind(this));
-        return this.result;
+        return this.reply;
     },
 
-    onResult(result)
+    parseReply(reply)
     {
-        this.result = JSON.parse(result);
-    },
+        this.reply = JSON.parse(reply);
 
-    onError(error)
-    {
-        this.print('request error: ' + error);
+        if (this.reply.error)
+            this.print('request error ' + this.reply.error.code + ': ' + this.reply.error.message);
+
+        this.finished = true;
     },
 
     setStatus(text)
@@ -44,7 +48,6 @@ var Module =
         let output = document.querySelector('#output');
         output.value += text + '\n';
         output.scrollTop = output.scrollHeight;
-        console.log(text);
     }
 };
 
@@ -68,7 +71,7 @@ class PortScan
         'WB-UPS v.3': 'wb_ups_v3'
     }
 
-    async sentRequest(start)
+    async request(start)
     {
         Module.print('Scan ' + (start ? 'start' : 'next') + ': ' + this.baudRates[this.index]);
 
@@ -95,11 +98,11 @@ class PortScan
 
         while (this.index < this.baudRates.length)
         {
-            let data = await this.sentRequest(start);
+            let reply = await this.request(start);
 
-            if (data.devices?.length)
+            if (reply.result?.devices?.length)
             {
-                data.devices.forEach(device => devices.push(device));
+                reply.result.devices.forEach(device => devices.push(device));
                 start = false;
                 continue;
             }
@@ -112,6 +115,7 @@ class PortScan
 
         devices.forEach(device =>
         {
+            let deviceType = this.signatureMap[device.device_signature];
             let row = table.insertRow();
 
             for (let i = 0; i < 7; i++)
@@ -121,35 +125,26 @@ class PortScan
                 switch (i)
                 {
                     case 0: cell.innerHTML = device.device_signature; break;
-                    case 1: cell.innerHTML = device.fw_signature; break;
-                    case 2: cell.innerHTML = device.cfg.slave_id; break;
-                    case 3: cell.innerHTML = device.sn; break;
-                    case 4: cell.innerHTML = device.fw.version; break;
+                    case 1: cell.innerHTML = device.sn; break;
+                    case 2: cell.innerHTML = device.fw_signature; break;
+                    case 3: cell.innerHTML = device.fw.version; break;
+                    case 4: cell.innerHTML = device.cfg.slave_id; break;
+
                     case 5:
                     {
                         let select = document.createElement('select');
                         let button = document.createElement('button');
-                        let deviceType = this.signatureMap[device.device_signature];
 
-                        this.baudRates.forEach(baudRate => select.innerHTML += '<option' + (baudRate == device.cfg.baud_rate ? ' selected' : '') + '>' + baudRate + '</option>');
+                        this.baudRates.reverse().forEach(baudRate => select.innerHTML += '<option' + (baudRate == device.cfg.baud_rate ? ' selected' : '') + '>' + baudRate + '</option>');
 
                         button.innerHTML = 'set';
                         button.addEventListener('click', async function()
                         {
                             let value = parseInt(select.value);
+                            let request = {...device.cfg, device_type: deviceType ?? device.device_signature, parameters: {baud_rate: value / 100}};
+                            let reply = await Module.request('deviceSet', request);
 
-                            let request =
-                            {
-                                baud_rate: device.cfg.baud_rate,
-                                data_bits: 8,
-                                parity: 'N',
-                                stop_bits: 2,
-                                device_type: deviceType ?? device.device_signature,
-                                slave_id: device.cfg.slave_id,
-                                parameters: {baud_rate: value / 100}
-                            };
-
-                            if (await Module.request('deviceSet', request) !== null)
+                            if (reply.error)
                                 return;
 
                             device.cfg.baud_rate = value;
@@ -163,25 +158,17 @@ class PortScan
                     case 6:
                     {
                         let button = document.createElement('button');
-                        let deviceType = this.signatureMap[device.device_signature];
 
                         button.innerHTML = 'read params';
                         button.addEventListener('click', async function()
                         {
-                            let request =
-                            {
-                                baud_rate: device.cfg.baud_rate,
-                                data_bits: 8,
-                                parity: 'N',
-                                stop_bits: 2,
-                                device_type: deviceType ?? device.device_signature,
-                                slave_id: device.cfg.slave_id
-                            };
+                            let request = {...device.cfg, device_type: deviceType ?? device.device_signature};
+                            let reply = await Module.request('deviceLoadConfig', request);
 
-                            console.log(request);
+                            if (reply.error)
+                                return;
 
-                            let result = await Module.request('deviceLoadConfig', request);
-                            Module.print(JSON.stringify(result, 0, 2));
+                            Module.print(JSON.stringify(reply.result, null, 2));
                         });
 
                         cell.append(button);

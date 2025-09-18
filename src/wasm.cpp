@@ -96,43 +96,47 @@ namespace
             return TSerialClientDeviceAccessHandler(client.GetEventsReader());
         }
     };
-}
 
-void OnResult(const Json::Value& result)
-{
-    std::stringstream stream;
-    WBMQTT::JSON::MakeWriter()->write(result, &stream);
-
-    // clang-format off
-    EM_ASM(
+    void SendReply(const Json::Value& reply)
     {
-        let data = new String();
+        std::stringstream stream;
+        WBMQTT::JSON::MakeWriter()->write(reply, &stream);
 
-        for (let i = 0; i < $1; ++i) {
-            data += String.fromCharCode(getValue($0 + i, 'i8'));
-        }
+        // clang-format off
+        EM_ASM(
+        {
+            let data = new String();
 
-        Module.onResult(data);
-    },
-    stream.str().c_str(), stream.str().length());
-    // clang-format on
-}
+            for (let i = 0; i < $1; ++i) {
+                data += String.fromCharCode(getValue($0 + i, 'i8'));
+            }
 
-void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& errorString)
-{
-    // clang-format off
-    EM_ASM(
+            Module.parseReply(data);
+        },
+        stream.str().c_str(), stream.str().length());
+        // clang-format on
+    }
+
+    void OnResult(const Json::Value& result)
     {
-        let data = new String();
+        Json::Value reply;
+        reply["error"] = Json::nullValue;
+        reply["result"] = result;
 
-        for (let i = 0; i < $1; ++i) {
-            data += String.fromCharCode(getValue($0 + i, 'i8'));
-        }
+        SendReply(reply);
+    }
 
-        Module.onError(data);
-    },
-    errorString.c_str(), errorString.length());
-    // clang-format on
+    void OnError(const WBMQTT::TMqttRpcErrorCode& errorCode, const std::string& errorMessage)
+    {
+        Json::Value error;
+        error["code"] = static_cast<int>(errorCode);
+        error["message"] = errorMessage;
+
+        Json::Value reply;
+        reply["error"] = error;
+
+        SendReply(reply);
+    }
 }
 
 void PortScan(const std::string& requestString)
