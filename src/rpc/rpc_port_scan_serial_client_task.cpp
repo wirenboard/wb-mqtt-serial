@@ -28,7 +28,7 @@ namespace
 
     uint32_t GetSnFromRegister(const std::string& deviceModel, uint32_t sn)
     {
-        if (std::regex_match(deviceModel, std::regex("^MAP[0-9]{1,2}.*"))) {
+        if (std::regex_match(deviceModel, std::regex("\\S*MAP\\d+\\S*"))) {
             return sn & 0x01FFFFFF;
         }
         return sn;
