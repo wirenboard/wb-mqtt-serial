@@ -32,6 +32,7 @@ namespace
         res["type"] = dt->Type;
         res["protocol"] = dt->GetProtocol();
         res["mqtt-id"] = dt->GetMqttId();
+        res["with-subdevices"] = dt->WithSubdevices();
         if (!dt->GetHardware().empty()) {
             auto& hwJsonArray = MakeArray("hw", res);
             for (const auto& hw: dt->GetHardware()) {

@@ -1,3 +1,15 @@
+wb-mqtt-serial (2.189.0) stable; urgency=medium
+
+  * Update device templates for:
+      - Wb-MAI11;
+      - WM-MRGBDW-D (fw prior to version 3);
+      - WB-MS v.2;
+      - WBE2-I-EBUS;
+      - WBE2-I-OPENTHERM fw1.3 and fw1.4.
+    No functional change, only porting from old deprecated format.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 25 Sep 2025 11:36:36 +0500
+
 wb-mqtt-serial (2.188.4) stable; urgency=medium
 
   * Fix WB-MAP* SN reading on port/Scan
