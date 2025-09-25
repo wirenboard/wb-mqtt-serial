@@ -1,0 +1,1209 @@
+{% set CHANNELS_NUMBER = 11 -%}
+{% set TYPES_WITH_GAIN = [1, 2, 3, 4, 256, 257, 5888, 0] -%}
+{% set TYPES_WITH_MIN = [5376, 5120, 0, 256] -%}
+{% set TYPES_WITH_MAX_1000 = [5376, 5120, 0, 256, 4864, 4865, 4866] -%}
+{% set TYPES_WITH_MAX_10000 = [4864, 4865, 4866] -%}
+{% set TYPES_WITH_SINGLE_RESISTANCE =  [2, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 5632] -%}
+{% set TYPES_WITH_SINGLE_CURRENT = [4864, 4865, 4866, 3] -%}
+{% set ALL_TYPES = [4096, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4608, 4609, 4610, 4611, 4624, 4625, 4626, 4627, 4640, 4641, 4642, 4643, 4656, 4657, 4658, 4864, 4865, 4866, 5120, 5376, 5632, 5888, 0, 256, 2, 258, 3, 1, 257, 4] -%}
+{% macro format_list(index, types, format) -%}
+    {% set separator = joiner('||') -%}
+    {% for t in types -%}{{ separator() }}{{ format|format(index, t) }}{% endfor -%}
+{% endmacro -%}
+{
+    "title": "WB-MAI11_template_title",
+    "device_type": "tpl2_wb_mai11",
+    "group": "g-wb",
+    "device": {
+        "name": "WB-MAI11",
+        "id": "wb-mai11",
+        "max_read_registers": 4,
+        "frame_timeout_ms": 0,
+        "response_timeout_ms": 1,
+
+        "groups": [
+{%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}
+            {
+                "title": "IN {{ ch_num }}",
+                "id": "g_in{{ ch_num }}"
+            },
+            {
+                "title": "Channel P",
+                "id": "gg_in{{ ch_num }}_p",
+                "group": "g_in{{ ch_num }}"
+            },
+            {
+                "title": "Channel N",
+                "id": "gg_in{{ ch_num }}_n",
+                "group": "g_in{{ ch_num }}"
+            },
+            {
+                "title": "IN_P_channels",
+                "id": "gg_in{{ ch_num }}_p_channels",
+                "group": "gg_in{{ ch_num }}_p",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "IN_N_channels",
+                "id": "gg_in{{ ch_num }}_n_channels",
+                "group": "gg_in{{ ch_num }}_n",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+{%- endfor %}
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "debug"
+            }
+        ],
+
+        "setup": [
+{%- set separator = joiner(',') %}
+{%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}{{ separator() }}
+            {
+                "title": "Sampling time IN {{ ch_num }} P",
+                "address": "0x{{ "%x"|format(ch_num) }}402",
+                "value": 0,
+                "condition": "in{{ ch_num }}_type==20000"
+            },
+            {
+                "title": "Sampling time IN {{ ch_num }} N",
+                "address": "0x{{ "%x"|format(ch_num) }}403",
+                "value": 0,
+                "condition": "in{{ ch_num }}_n_type==20000"
+            }
+{%- for ch_type in ALL_TYPES %},
+            {
+                "title": "IN {{ ch_num }} P Type",
+                "address": "0x{{ "%x"|format(ch_num) }}400",
+                "value": {{ ch_type }},
+                "condition": "in{{ ch_num }}_type=={{ ch_type }}"
+            },
+            {
+                "title": "IN {{ ch_num }} N Type",
+                "address": "0x{{ "%x"|format(ch_num) }}401",
+                "value": {{ ch_type }},
+                "condition": "in{{ ch_num }}_n_type=={{ ch_type }}"
+            }
+{%- endfor %}
+{%- endfor %}
+        ],
+
+        "parameters": [
+{%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}
+            {
+                "id": "in{{ ch_num }}_type",
+                "title": "Mode",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 1,
+                "required": true,
+                "readonly": true,
+                "default": 20000,
+                "enum": [
+                    20000,
+
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888,
+
+                    0,
+                    256,
+                    2,
+                    258,
+                    3,
+                    1,
+                    257,
+                    4
+                ],
+                "enum_titles": [
+                    "Disabled",
+
+                    "Thermocouple type K (ТХА)",
+
+                    "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "P: 0-5 mA sensor",
+                    "P: 0-20 mA sensor",
+                    "P: 4-20 mA sensor",
+
+                    "P: 0-1 V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "P: dry contact sensor",
+                    "P: NTC thermistor 10k (B = 3988 K)",
+
+                    "P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "P: two-wire resistance measurement",
+                    "three-wire resistance measurement",
+                    "P: current measurement",
+                    "P: single-ended voltage measurement from 0 to 2 V",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "P: resistance measurement using current measurement"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_data_rate",
+                "title": "Sampling time",
+                "address": "0x{{ "%x"|format(ch_num) }}402",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 2,
+                "condition": "in{{ ch_num }}_type!=20000",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
+                "required": true
+            },
+            {
+                "id": "in{{ ch_num }}_measurements",
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 3,
+                "address": "0x{{ "%x"|format(ch_num) }}404",
+                "min": 1,
+                "max": 50,
+                "condition": "in{{ ch_num }}_type!=20000"
+            },
+            {
+                "id": "in{{ ch_num }}_lowpass",
+                "title": "Lowpass filter time, ms",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 4,
+                "address": "0x{{ "%x"|format(ch_num) }}406",
+                "min": 0,
+                "max": 65000,
+                "condition": "in{{ ch_num }}_type!=20000"
+            },
+            {
+                "id": "in{{ch_num}}_gain",
+                "title": "Gain",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 4,
+                "address": "0x{{ "%x"|format(ch_num) }}40C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_min",
+                "title": "minimum_value_title",
+                "group": "gg_in{{ ch_num }}_p_value",
+                "order": 2,
+                "address": "0x{{ "%x"|format(ch_num) }}408",
+                "default": 0,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_max",
+                "title": "maximum_value_title",
+                "group": "gg_in{{ ch_num }}_p_value",
+                "order": 3,
+                "address": "0x{{ "%x"|format(ch_num) }}40A",
+                "default": 10000,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_max",
+                "title": "maximum_value_title",
+                "group": "gg_in{{ ch_num }}_p_value",
+                "order": 3,
+                "address": "0x{{ "%x"|format(ch_num) }}40A",
+                "default": 1000,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_type==%s") }}"
+            },
+
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "readonly": true,
+                "default": 20000,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_RESISTANCE, "in%s_type==%s") }}",
+                "enum": [
+                    20000,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    5632,
+
+                    2
+                ],
+                "enum_titles": [
+                    "Disabled",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "dry contact sensor",
+
+                    "two-wire resistance measurement"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "readonly": true,
+                "default": 20000,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_CURRENT, "in%s_type==%s") }}",
+                "enum": [
+                    20000,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    3
+                ],
+                "enum_titles": [
+                    "Disabled",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "current measurement"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "readonly": true,
+                "default": 20000,
+                "condition": "in{{ ch_num }}_type==5120||in{{ ch_num }}_type==1",
+                "enum": [
+                    20000,
+                    5120,
+                    1
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "0-1 V sensor",
+                    "single-ended voltage measurement from 0 to 2 V"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "readonly": true,
+                "default": 20000,
+                "condition": "in{{ ch_num }}_type==5888||in{{ ch_num }}_type==4",
+                "enum": [
+                    20000,
+                    5888,
+                    4
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "resistance measurement using current measurement"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "readonly": true,
+                "default": 20000,
+                "condition": "in{{ ch_num }}_type==0",
+                "enum": [
+                    20000,
+                    0
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "voltage measurement from ratiometric sensor"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_data_rate",
+                "title": "Sampling time",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 2,
+                "address": "0x{{ "%x"|format(ch_num) }}403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
+                "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=20000"
+            },
+            {
+                "id": "in{{ ch_num }}_n_measurements",
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 3,
+                "address": "0x{{ "%x"|format(ch_num) }}405",
+                "min": 1,
+                "max": 50,
+                "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=20000"
+            },
+            {
+                "id": "in{{ ch_num }}_n_lowpass",
+                "title": "Lowpass filter time, ms",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 4,
+                "address": "0x{{ "%x"|format(ch_num) }}407",
+                "min": 0,
+                "max": 65000,
+                "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=20000"
+            },
+            {
+                "id": "in{{ch_num}}_n_gain",
+                "title": "Gain",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 4,
+                "address": "0x{{ "%x"|format(ch_num) }}40D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_n_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_n_min",
+                "title": "minimum_value_title",
+                "group": "gg_in{{ ch_num }}_n_value",
+                "order": 2,
+                "address": "0x{{ "%x"|format(ch_num) }}409",
+                "default": 0,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_n_max",
+                "title": "maximum_value_title",
+                "group": "gg_in{{ ch_num }}_n_value",
+                "order": 3,
+                "address": "0x{{ "%x"|format(ch_num) }}40B",
+                "default": 10000,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_n_max",
+                "title": "maximum_value_title",
+                "group": "gg_in{{ ch_num }}_n_value",
+                "order": 3,
+                "address": "0x{{ "%x"|format(ch_num) }}40B",
+                "default": 1000,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_type==%s") }}"
+            },
+{%- endfor %}
+            {
+                "id": "baud_rate",
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        ],
+
+        "channels": [
+{%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}
+            {
+                "name": "IN {{ch_num}} Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 0.01,
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==258||(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)"
+            },
+            {
+                "name": "IN {{ch_num}} P Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 0.01,
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==2||in{{ ch_num }}_type==5632||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)"
+            },
+            {
+                "name": "IN {{ch_num}} P Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 1,
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==5888||in{{ ch_num }}_type==4"
+            },
+            {
+                "name": "IN {{ch_num}} Voltage",
+                "type": "value",
+                "units": "V",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==257||in{{ ch_num }}_type==4096||in{{ ch_num }}_type==5376"
+            },
+            {
+                "name": "IN {{ch_num}} Temperature",
+                "type": "value",
+                "units": "deg C",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==4096||(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)"
+            },
+            {
+                "name": "IN {{ch_num}} P Temperature",
+                "type": "value",
+                "units": "deg C",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==5888||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)"
+            },
+            {
+                "name": "IN {{ch_num}} P Current",
+                "type": "value",
+                "units": "A",
+                "scale": 1e-9,
+                "reg_type": "input",
+                "error_value": "0x7FFFFFFF",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866"
+            },
+            {
+                "name": "IN {{ch_num}} P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866||in{{ ch_num }}_type==5120"
+            },
+            {
+                "name": "IN {{ch_num}} P Voltage",
+                "type": "value",
+                "units": "V",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==5120||in{{ ch_num }}_type==1"
+            },
+            {
+                "name": "IN {{ch_num}} Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==5376"
+            },
+            {
+                "name": "IN {{ch_num}} P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==5632"
+            },
+            {
+                "name": "IN {{ch_num}} P Percent",
+                "scale": 0.01,
+                "reg_type": "input",
+                "units": "%",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==0"
+            },
+            {
+                "name": "IN {{ch_num}} Percent",
+                "scale": 0.01,
+                "reg_type": "input",
+                "units": "%",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==256"
+            },
+            {
+                "name": "IN {{ch_num}} P Current",
+                "type": "value",
+                "units": "A",
+                "scale": 1e-9,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==3"
+            },
+
+            {
+                "name": "IN {{ch_num}} N Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "scale": 0.01,
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==2||in{{ ch_num }}_n_type==5632||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)"
+            },
+            {
+                "name": "IN {{ch_num}} N Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 1,
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==5888||in{{ ch_num }}_n_type==4"
+            },
+            {
+                "name": "IN {{ch_num}} N Temperature",
+                "type": "value",
+                "units": "deg C",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}505",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==5888||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)"
+            },
+            {
+                "name": "IN {{ch_num}} N Current",
+                "type": "value",
+                "units": "A",
+                "scale": 1e-9,
+                "reg_type": "input",
+                "error_value": "0x7FFFFFFF",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866"
+            },
+            {
+                "name": "IN {{ch_num}} N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x{{ "%x"|format(ch_num) }}505",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866||in{{ ch_num }}_n_type==5120"
+            },
+            {
+                "name": "IN {{ch_num}} N Voltage",
+                "type": "value",
+                "units": "V",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==5120||in{{ ch_num }}_n_type==1"
+            },
+            {
+                "name": "IN {{ch_num}} N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}505",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==5632"
+            },
+            {
+                "name": "IN {{ch_num}} N Percent",
+                "scale": 0.01,
+                "reg_type": "input",
+                "units": "%",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==0"
+            },
+            {
+                "name": "IN {{ch_num}} N Current",
+                "type": "value",
+                "units": "A",
+                "scale": 1e-9,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "in{{ ch_num }}_n_type==3"
+            },
+{%- endfor %}
+
+            {
+                "name": "5V Output",
+                "reg_type": "input",
+                "address": "0x0600",
+                "type": "voltage",
+                "scale": 0.001,
+                "format": "s16",
+                "group": "general"
+            },
+            {
+                "name": "Internal Temperature",
+                "reg_type": "input",
+                "address": "0x0601",
+                "type": "temperature",
+                "scale": 0.01,
+                "format": "s16",
+                "group": "general"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "ADC Loop Duration",
+                "reg_type": "input",
+                "address": 1552,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 1 P Read Interval",
+                "reg_type": "input",
+                "address": 1553,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 1 N Read Interval",
+                "reg_type": "input",
+                "address": 1554,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 2 P Read Interval",
+                "reg_type": "input",
+                "address": 1555,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 2 N Read Interval",
+                "reg_type": "input",
+                "address": 1556,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 3 P Read Interval",
+                "reg_type": "input",
+                "address": 1557,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 3 N Read Interval",
+                "reg_type": "input",
+                "address": 1558,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 4 P Read Interval",
+                "reg_type": "input",
+                "address": 1559,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 4 N Read Interval",
+                "reg_type": "input",
+                "address": 1560,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 5 P Read Interval",
+                "reg_type": "input",
+                "address": 1561,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 5 N Read Interval",
+                "reg_type": "input",
+                "address": 1562,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 6 P Read Interval",
+                "reg_type": "input",
+                "address": 1563,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 6 N Read Interval",
+                "reg_type": "input",
+                "address": 1564,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 7 P Read Interval",
+                "reg_type": "input",
+                "address": 1565,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 7 N Read Interval",
+                "reg_type": "input",
+                "address": 1566,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 8 P Read Interval",
+                "reg_type": "input",
+                "address": 1567,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 8 N Read Interval",
+                "reg_type": "input",
+                "address": 1568,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 9 P Read Interval",
+                "reg_type": "input",
+                "address": 1569,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 9 N Read Interval",
+                "reg_type": "input",
+                "address": 1570,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 10 P Read Interval",
+                "reg_type": "input",
+                "address": 1571,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 10 N Read Interval",
+                "reg_type": "input",
+                "address": 1572,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 11 P Read Interval",
+                "reg_type": "input",
+                "address": 1573,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 11 N Read Interval",
+                "reg_type": "input",
+                "address": 1573,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+{%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}
+                "Input {{ ch_num }}": "IN {{ ch_num }}",
+{%- endfor %}
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Disabled": "отключен",
+                "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
+                "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
+                "0-5 mA sensor": "измерение тока 0-5 мА",
+                "0-20 mA sensor": "измерение тока 0-20 мА",
+                "4-20 mA sensor": "измерение тока 4-20 мА",
+                "P: 4-20 mA sensor": "P: измерение тока 4-20 мА",
+                "P: 0-5 mA sensor": "P: измерение тока 0-5 мА",
+                "P: 0-20 mA sensor": "P: измерение тока 0-20 мА",
+                "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD 50P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 100P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 500P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 50M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 100M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 500M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "dry contact sensor": "датчик с выходом «сухой контакт»",
+                "two-wire resistance measurement": "двухпроводная схема измерения сопротивления",
+                "P: dry contact sensor": "P: датчик с выходом «сухой контакт»",
+                "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "P: two-wire resistance measurement": "P: двухпроводная схема измерения сопротивления",
+                "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD 50P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 100P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 500P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 1000P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 50M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 100M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 500M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 1000M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "voltage measurement from ratiometric sensor": "измерение напряжения с ратиометрического датчика",
+                "P: voltage measurement from ratiometric sensor": "P: измерение напряжения с ратиометрического датчика",
+                "differential voltage measurement from ratiometric sensor": "дифф. режим измерения напряжения с ратиометрического датчика",
+                "single-ended voltage measurement from 0 to 2 V": "измерение положительного напряжения 0-2 В",
+                "0-1 V sensor": "измерение напряжения 0-1 В",
+                "P: single-ended voltage measurement from 0 to 2 V": "P: измерение положительного напряжения 0-2 В",
+                "P: 0-1 V sensor": "P: измерение напряжения 0-1 В",
+                "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
+                "voltage measurement in differential mode from -2 to 2 V": "дифф. режим измерения напряжения от -2 до 2 В",
+                "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
+                "resistance measurement using current measurement": "измерение сопротивления через измерение тока",
+                "P: resistance measurement using current measurement": "P: измерение сопротивления через измерение тока",
+                "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
+                "P: current measurement": "P: измерение тока от 0 до 20 мА",
+                "Sampling time": "Время одного измерения",
+                "50 ms (20 SPS)": "50 мс (20 SPS)",
+                "22 ms (45 SPS)": "22 мс (45 SPS)",
+                "11 ms (90 SPS)": "11 мс (90 SPS)",
+                "5.7 ms (175 SPS)": "5.7 мс (175 SPS)",
+                "3.0 ms (330 SPS)": "3.0 мс (330 SPS)",
+                "1.7 ms (600 SPS)": "1.7 мс (600 SPS)",
+                "1.0 ms (1000 SPS)": "1.0 мс (1000 SPS)",
+                "Number of measurements": "Количество измерений подряд",
+                "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.": "Итоговое время измерения канала равно (Время одного измерения * Количество измерений подряд). Каналы опрашиваются последовательно.",
+                "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Gain": "Коэффициент усиления",
+                "Voltage": "Напряжение",
+                "Temperature": "Температура",
+                "Resistance": "Сопротивление",
+                "current measurement": "измерение тока",
+                "Current": "Ток",
+                "Percent": "Процент",
+                "State": "Состояние",
+                "Minimum value": "Минимальное пересчитанное значение",
+                "Maximum value": "Максимальное пересчитанное значение",
+                "Value": "Пересчитанное значение",
+                "5V Output": "Напряжение на клеммах 5V",
+                "Internal Temperature": "Температура внутри модуля",
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Uptime": "Время работы с момента включения (с)",
+{%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}
+                "IN {{ ch_num }} P Read Interval": "IN {{ ch_num }} P Период опроса",
+                "IN {{ ch_num }} N Read Interval": "IN {{ ch_num }} N Период опроса",
+                "IN {{ ch_num }} Resistance": "IN {{ ch_num }} Сопротивление",
+                "IN {{ ch_num }} P Resistance": "IN {{ ch_num }} P Сопротивление",
+                "IN {{ ch_num }} N Resistance": "IN {{ ch_num }} N Сопротивление",
+                "IN {{ ch_num }} Temperature": "IN {{ ch_num }} Температура",
+                "IN {{ ch_num }} P Temperature": "IN {{ ch_num }} P Температура",
+                "IN {{ ch_num }} N Temperature": "IN {{ ch_num }} N Температура",
+                "IN {{ ch_num }} Current": "IN {{ ch_num }} Ток",
+                "IN {{ ch_num }} P Current": "IN {{ ch_num }} P Ток",
+                "IN {{ ch_num }} N Current": "IN {{ ch_num }} N Ток",
+                "IN {{ ch_num }} Voltage": "IN {{ ch_num }} Напряжение",
+                "IN {{ ch_num }} P Voltage": "IN {{ ch_num }} P Напряжение",
+                "IN {{ ch_num }} N Voltage": "IN {{ ch_num }} N Напряжение",
+                "IN {{ ch_num}} State": "IN {{ ch_num }} Состояние",
+                "IN {{ ch_num }} P State": "IN {{ ch_num }} P Состояние",
+                "IN {{ ch_num }} N State": "IN {{ ch_num }} N Состояние",
+                "IN {{ ch_num }} Percent": "IN {{ ch_num }} Процент",
+                "IN {{ ch_num }} P Percent": "IN {{ ch_num }} P Процент",
+                "IN {{ ch_num }} N Percent": "IN {{ ch_num }} N Процент",
+                "IN {{ ch_num }} Value": "IN {{ ch_num }} Значение",
+                "IN {{ ch_num }} P Value": "IN {{ ch_num }} P Значение",
+                "IN {{ ch_num }} N Value": "IN {{ ch_num }} N Значение",
+{%- endfor %}
+                "ADC Loop Duration": "Время цикла опроса АЦП",
+                "Channel P": "Канал P",
+                "Channel N": "Канал N",
+                "Mode": "Режим"
+            }
+        }
+    }
+}

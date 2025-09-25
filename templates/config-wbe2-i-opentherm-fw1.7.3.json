@@ -289,7 +289,7 @@
                 "name": "Solar Storage temp",
                 "address": 220,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state"
@@ -298,7 +298,7 @@
                 "name": "CH2 Temperature",
                 "address": 222,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state"
@@ -307,7 +307,7 @@
                 "name": "Heating Temperature",
                 "address": 207,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state"
@@ -316,7 +316,7 @@
                 "name": "Heating Return Water Temperature",
                 "address": 216,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state",
@@ -347,7 +347,7 @@
                 "name": "Boiler Outdoor Temperature Sensor",
                 "address": 211,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
@@ -360,7 +360,7 @@
                 "name": "Hot Water Setpoint Max",
                 "address": 212,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state",
@@ -370,7 +370,7 @@
                 "name": "Hot Water Setpoint Min",
                 "address": 213,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state",
@@ -380,7 +380,7 @@
                 "name": "Heating Setpoint Max",
                 "address": 214,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state",
@@ -390,7 +390,7 @@
                 "name": "Heating Setpoint Min",
                 "address": 215,
                 "reg_type": "input",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state",
@@ -458,7 +458,7 @@
                 "format": "u16",
                 "group": "boiler_state"
             },
-			{
+            {
                 "name": "DHW Transfer",
                 "address": 219,
                 "reg_type": "input",
@@ -488,7 +488,7 @@
                 "name": "Calculated Heating Setpoint",
                 "address": 203,
                 "reg_type": "holding",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "min": 0,
@@ -501,7 +501,7 @@
                 "name": "Room Temperature",
                 "address": 208,
                 "reg_type": "holding",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
@@ -515,7 +515,7 @@
                 "name": "Outdoor Temperature",
                 "address": 208,
                 "reg_type": "holding",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
@@ -529,7 +529,7 @@
                 "name": "Room Temperature Setpoint",
                 "address": 205,
                 "reg_type": "holding",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "min": 0,
@@ -549,7 +549,7 @@
                 "name": "Heating Setpoint",
                 "write_address": 203,
                 "reg_type": "holding",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "min": 0,
@@ -561,7 +561,7 @@
                 "name": "Heating Setpoint",
                 "address": 203,
                 "reg_type": "holding",
-		"type": "value",
+                "type": "value",
                 "units": "deg C",
                 "format": "u16",
                 "min": 0,
@@ -569,7 +569,7 @@
                 "readonly": true,
                 "group": "heating_settings",
                 "condition": "heating_options==3"
-            }           
+            }
         ],
 
         "translations": {
@@ -599,7 +599,7 @@
                 "Solar Storage temp": "t° БКН",
                 "CH2 Temperature": "t° CH2", 
                 "Heating Temperature": "t° подачи отопления",
-                "Heating Return Water Temperature":	"t° обратной воды отопления",
+                "Heating Return Water Temperature": "t° обратной воды отопления",
                 "Burner Modulation Level (%)": "Модуляция горелки (%)",
                 "Water Pressure": "Давление воды",
                 "Boiler Outdoor Temperature Sensor": "Уличная t° - датчик котла",
@@ -644,4 +644,4 @@
             }
         }
     }
-} 
+}
