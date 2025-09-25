@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.188.4) stable; urgency=medium
+
+  * Fix WB-MAP* SN reading on port/Scan
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 23 Sep 2025 10:59:31 +0300
+
 wb-mqtt-serial (2.188.3) stable; urgency=medium
 
   * Fix formatting in WBE2-I-EBUS template. No functional changes
