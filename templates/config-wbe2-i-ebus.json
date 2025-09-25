@@ -53,7 +53,7 @@
                 "reg_type": "holding",
                 "value": 1,
                 "condition": "heating_options==2"
-            },
+            }
         ],
 
         "parameters": [
