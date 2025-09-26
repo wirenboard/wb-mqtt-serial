@@ -357,6 +357,19 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
+                "name": "Remote controller temperature",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 25,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": false,
+                "units": "deg C"
+            },
+            {
                 "name": "Target temperature",
                 "reg_type": "holding",
                 "address": 5,
@@ -473,9 +486,9 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -658,6 +671,7 @@
                 "Temperature control": "Контроль температуры",
                 "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
                 "Indoor air temperature": "Температура воздуха в помещении",
+                "Remote controller temperature": "Температура главного пульта",
                 "Target temperature": "Целевая температура",
                 "Show thermostat state as range": "Отображать состояние термостата как ползунок",
                 "Thermostat state": "Состояние термостата",
@@ -672,9 +686,9 @@
                 "Highest": "Самое высокое",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "1 Speed": "1 Скорость",
                 "2 Speed": "2 Скорость",

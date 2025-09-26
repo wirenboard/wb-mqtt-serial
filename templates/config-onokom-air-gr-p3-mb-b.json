@@ -264,7 +264,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 3,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -276,24 +276,20 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 3,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
                     0,
                     1,
                     2,
-                    3,
-                    4,
-                    5
+                    3
                 ],
                 "enum_titles": [
                     "Auto",
                     "1 Speed",
                     "2 Speed",
-                    "3 Speed",
-                    "4 Speed",
-                    "5 Speed"
+                    "3 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -304,7 +300,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 7,
+                "max": 4,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -316,7 +312,7 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 7,
+                "max": 4,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
@@ -324,20 +320,14 @@
                     1,
                     2,
                     3,
-                    4,
-                    5,
-                    6,
-                    7
+                    4
                 ],
                 "enum_titles": [
                     "Auto",
                     "Quiet mode",
                     "1 Speed",
                     "2 Speed",
-                    "3 Speed",
-                    "4 Speed",
-                    "5 Speed",
-                    "Turbo mode"
+                    "3 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -540,9 +530,9 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -1537,19 +1527,16 @@
                 "Vertical vanes": "Вертикальные жалюзи",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Additional": "Дополнительные режимы и функции",
                 "1 Speed": "1 Скорость",
                 "2 Speed": "2 Скорость",
                 "3 Speed": "3 Скорость",
-                "4 Speed": "4 Скорость",
-                "5 Speed": "5 Скорость",
                 "Quiet mode": "Режим тихий",
                 "Eco mode": "Режим эко",
-                "Turbo mode": "Режим турбо",
                 "Sleep mode": "Режим сна",
                 "Ionization": "Ионизация",
                 "Self cleaning": "Самоочистка",
