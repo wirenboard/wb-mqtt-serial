@@ -295,7 +295,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 4,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -430,8 +430,8 @@
                 "address": 9,
                 "type": "range",
                 "format": "u16",
-                "min": 1,
-                "max": 8,
+                "min": 0,
+                "max": 1,
                 "sporadic": true,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1"
@@ -484,9 +484,9 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -643,9 +643,9 @@
                 "Swing": "Качание",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Additional": "Дополнительные режимы и функции",
                 "1 Speed": "1 Скорость",

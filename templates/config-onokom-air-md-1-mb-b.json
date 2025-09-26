@@ -502,9 +502,9 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -681,9 +681,9 @@
                 "Vertical vanes": "Вертикальные жалюзи",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Additional": "Дополнительные режимы и функции",
                 "1 Speed": "1 Скорость",
