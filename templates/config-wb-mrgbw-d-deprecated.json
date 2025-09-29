@@ -1,12 +1,8 @@
 {
     "title": "WB-MRGBW-D_template_title",
-    "device_type": "tpl1_wb_mrgbw_d",
+    "device_type": "WB-MRGBW-D",
+    "deprecated": true,
     "group": "g-wb",
-    "hw": [
-        {
-            "signature": "WB-MRGBW-D"
-        }
-    ],
     "device": {
         "name": "WB-MRGBW-D",
         "id": "wb-mrgbw-d",
@@ -15,10 +11,6 @@
         "frame_timeout_ms": 8,
 
         "groups": [
-            {
-                "title": "Channels",
-                "id": "channels"
-            },
             {
                 "title": "Inputs",
                 "id": "inputs"
@@ -34,17 +26,6 @@
         ],
 
         "parameters": {
-            "dimmer_mode": {
-                "title": "Dimmer Mode",
-                "enum": [0, 1],
-                "default": 0,
-                "enum_titles": [
-                    "RGB + W",
-                    "Independent Channels"
-                ],
-                "readonly": true,
-                "required": true
-            },
             "inputs_mode": {
                 "title": "Inputs Mode",
                 "address": 5,
@@ -74,28 +55,6 @@
                 ],
                 "group": "general",
                 "order": 1
-            },
-            "pwm_frequency_factor": {
-                "title": "pwm_frequency_factor_title",
-                "description": "pwm_frequency_factor_description",
-                "address": 9,
-                "reg_type": "holding",
-                "min": 0,
-                "max": 239,
-                "default": 0,
-                "order": 2,
-                "group": "channels"
-            },
-            "on_off_time_ms": {
-                "title": "Soft On/Off Time (ms)",
-                "address": 13,
-                "reg_type": "holding",
-                "scale": 10,
-                "min": 20,
-                "max": 5000,
-                "default": 1000,
-                "order": 3,
-                "group": "channels"
             }
         },
 
@@ -141,6 +100,12 @@
                 "address": 34,
                 "type": "value",
                 "group": "inputs"
+            },
+            {
+                "name": "Channels",
+                "id": "",
+                "oneOf": ["rgb_w", "independent_channels"],
+                "device_type": "rgb_w"
             },
             {
                 "name": "Serial NO",
@@ -196,79 +161,129 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
-            },
-            {
-                "name": "RGB",
-                "type": "rgb",
-                "consists_of": [
-                    {
-                        "reg_type": "holding",
-                        "address": 1
-                    },
-                    {
-                        "reg_type": "holding",
-                        "address": 0
-                    },
-                    {
-                        "reg_type": "holding",
-                        "address": 2
-                    }
-                ],
-                "group": "channels",
-                "condition": "dimmer_mode==0"
-            },
-            {
-                "name": "White",
-                "reg_type": "holding",
-                "address": 3,
-                "type": "range",
-                "min": 0,
-                "max": 255,
-                "group": "channels",
-                "condition": "dimmer_mode==0"
-            },
-            {
-                "name": "Channel B",
-                "reg_type": "holding",
-                "address": 2,
-                "type": "range",
-                "min": 0,
-                "max": 255,
-                "group": "channels",
-                "condition": "dimmer_mode==1"
-            },
-            {
-                "name": "Channel R",
-                "reg_type": "holding",
-                "address": 1,
-                "type": "range",
-                "min": 0,
-                "max": 255,
-                "group": "channels",
-                "condition": "dimmer_mode==1"
-            },
-            {
-                "name": "Channel G",
-                "reg_type": "holding",
-                "address": 0,
-                "type": "range",
-                "min": 0,
-                "max": 255,
-                "group": "channels",
-                "condition": "dimmer_mode==1"
-            },
-            {
-                "name": "Channel W",
-                "reg_type": "holding",
-                "address": 3,
-                "type": "range",
-                "min": 0,
-                "max": 255,
-                "group": "channels",
-                "condition": "dimmer_mode==1"
             }
         ],
 
+        "subdevices": [
+            {
+                "title": "RGB+W",
+                "device_type": "rgb_w",
+                "device": {
+                    "parameters": {
+                        "pwm_frequency_factor": {
+                            "title": "pwm_frequency_factor_title",
+                            "description": "pwm_frequency_factor_description",
+                            "address": 9,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 239,
+                            "default": 0,
+                            "order": 1
+                        },
+                        "on_off_time_ms": {
+                            "title": "Soft On/Off Time (ms)",
+                            "address": 13,
+                            "reg_type": "holding",
+                            "scale": 10,
+                            "min": 20,
+                            "max": 5000,
+                            "default": 1000,
+                            "order": 2
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "RGB",
+                            "type": "rgb",
+                            "consists_of": [
+                                {
+                                    "reg_type": "holding",
+                                    "address": 1
+                                },
+                                {
+                                    "reg_type": "holding",
+                                    "address": 0
+                                },
+                                {
+                                    "reg_type": "holding",
+                                    "address": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "White",
+                            "reg_type": "holding",
+                            "address": 3,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Independent Channels",
+                "device_type": "independent_channels",
+                "device": {
+                    "parameters": {
+                        "pwm_frequency_factor": {
+                            "title": "pwm_frequency_factor_title",
+                            "description": "pwm_frequency_factor_description",
+                            "address": 9,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 239,
+                            "default": 0,
+                            "order": 1
+                        },
+                        "on_off_time_ms": {
+                            "title": "Soft On/Off Time (ms)",
+                            "address": 13,
+                            "reg_type": "holding",
+                            "scale": 10,
+                            "min": 20,
+                            "max": 5000,
+                            "default": 1000,
+                            "order": 2
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "Channel B",
+                            "reg_type": "holding",
+                            "address": 2,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel R",
+                            "reg_type": "holding",
+                            "address": 1,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel G",
+                            "reg_type": "holding",
+                            "address": 0,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel W",
+                            "reg_type": "holding",
+                            "address": 3,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        }
+                    ]
+                }
+            }
+        ],
         "translations": {
             "en": {
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
@@ -308,8 +323,7 @@
                 "Channel B": "Канал B",
                 "Channel R": "Канал R",
                 "Channel G": "Канал G",
-                "Channel W": "Канал W",
-                "Dimmer Mode": "Режим работы"
+                "Channel W": "Канал W"
             }
         }
     }
