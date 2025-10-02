@@ -1,7 +1,7 @@
 #include "rpc_device_set_task.h"
 #include "config_merge_template.h"
+#include "port/serial_port.h"
 #include "rpc_helpers.h"
-#include "serial_port.h"
 #include "wb_registers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
@@ -141,7 +141,7 @@ TRPCDeviceSetSerialClientTask::TRPCDeviceSetSerialClientTask(PRPCDeviceSetReques
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
-ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PFeaturePort port,
                                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                  const std::list<PSerialDevice>& polledDevices)
 {

@@ -4,7 +4,7 @@
 
 #include "poll_plan.h"
 #include "pollable_device.h"
-#include "port.h"
+#include "port/port.h"
 #include "serial_client_device_access_handler.h"
 
 class TSerialDevice;
@@ -41,7 +41,7 @@ public:
 
     void SetDevices(const std::list<PSerialDevice>& devices, std::chrono::steady_clock::time_point currentTime);
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback callback);
-    TPollResult OpenPortCycle(TPort& port,
+    TPollResult OpenPortCycle(TFeaturePort& port,
                               const util::TSpentTimeMeter& spentTime,
                               std::chrono::milliseconds maxPollingTime,
                               bool readAtLeastOneRegister,

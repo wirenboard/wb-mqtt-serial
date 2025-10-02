@@ -1,7 +1,7 @@
 #include "rpc_device_load_task.h"
 #include "config_merge_template.h"
+#include "port/serial_port.h"
 #include "rpc_helpers.h"
-#include "serial_port.h"
 #include "wb_registers.h"
 
 namespace
@@ -107,7 +107,7 @@ TRPCDeviceLoadSerialClientTask::TRPCDeviceLoadSerialClientTask(PRPCDeviceLoadReq
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
-ISerialClientTask::TRunResult TRPCDeviceLoadSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCDeviceLoadSerialClientTask::Run(PFeaturePort port,
                                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                   const std::list<PSerialDevice>& polledDevices)
 {

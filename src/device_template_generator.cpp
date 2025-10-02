@@ -5,7 +5,7 @@
 
 #include "devices/dlms_device.h"
 #include "log.h"
-#include "serial_port.h"
+#include "port/serial_port.h"
 
 using namespace std;
 

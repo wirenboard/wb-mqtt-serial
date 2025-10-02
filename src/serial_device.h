@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "port.h"
+#include "port/port.h"
 #include "register.h"
 #include "serial_exc.h"
 
@@ -81,7 +81,6 @@ typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 const int DEFAULT_ACCESS_LEVEL = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
-const std::chrono::milliseconds DefaultFrameTimeout(20);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);

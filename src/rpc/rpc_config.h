@@ -4,8 +4,8 @@
 
 #include <wblib/json_utils.h>
 
-#include "serial_port_settings.h"
-#include "tcp_port_settings.h"
+#include "port/serial_port_settings.h"
+#include "port/tcp_port_settings.h"
 
 class TRPCConfig
 {

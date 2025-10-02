@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.191.0) stable; urgency=medium
+
+  * Add support for WB-MGE v.3.
+    Allow to use Fast Modbus over TCP for device searching and events polling.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 02 Oct 2025 15:22:57 +0500
+
 wb-mqtt-serial (2.190.0) stable; urgency=medium
 
   * Generate default config on service start
