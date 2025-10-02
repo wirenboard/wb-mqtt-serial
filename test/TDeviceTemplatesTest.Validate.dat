@@ -4201,6 +4201,23 @@ VACON_10
 	V4.2 PI feedback value (%)  =>  V4.2 PI feedback value (%)
 	V4.3 PI error (%)  =>  V4.3 PI error (%)
 	V4.4 PI output (%)  =>  V4.4 PI output (%)
+Vakio City Air 250(500)
+	Air Damper  =>  air_damper_exists
+	Air Damper Position  =>  air_damper_position
+	Air Heater  =>  air_heater
+	Alarm: Fan  =>  alarm_fan
+	Alarm: Fire  =>  alarm_fire
+	Alarm: High Outlet Temperature  =>  alarm_high_outlet_temperature
+	Alarm: Low Inlet Temperature  =>  alarm_low_incoming_temperature
+	Alarm: Overheating  =>  alarm_overheating
+	Alarm: Temperature Sensor  =>  alarm_temperature_sensor
+	Alarm: Underheating  =>  alarm_underheating
+	Current Fan Speed  =>  fan_speed_current
+	Fan Speed Setpoint  =>  fan_speed_setpoint
+	Heating Temperature Setpoint  =>  heating_temperature_setpoint
+	Incoming Air Temperature  =>  incoming_air_temperature
+	Mode  =>  mode
+	State  =>  state
 WB-Domofon
 	Auto open  =>  Auto open
 	Auto open once  =>  Auto open once
@@ -27776,20 +27793,3 @@ wb_ups_v3
 	Temperature Status  =>  temperature_status
 	Uptime  =>  uptime
 	VINREG Setpoint  =>  vinreg_setpoint
-Vakio City Air 250(500)
-	State  =>  state
-	Mode  =>  mode
-	Air Heater  =>  air_heater
-	Fan Speed Setpoint  =>  fan_speed_setpoint
-	Current Fan Speed  =>  fan_speed_current
-	Incoming Air Temperature  =>  incoming_air_temperature
-	Heating Temperature Setpoint  =>  heating_temperature_setpoint
-	Air Damper Position  =>  air_damper_position
-	Alarm: Temperature Sensor  =>  alarm_temperature_sensor
-	Alarm: Fan  =>  alarm_fan
-	Alarm: Underheating  =>  alarm_underheating
-	Alarm: Overheating  =>  alarm_overheating
-	Alarm: Low Inlet Temperature  =>  alarm_low_incoming_temperature
-	Alarm: High Outlet Temperature  =>  alarm_high_outlet_temperature
-	Alarm: Fire  =>  alarm_fire
-	Air Damper  =>  air_damper_exists
