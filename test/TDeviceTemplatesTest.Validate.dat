@@ -4202,7 +4202,6 @@ VACON_10
 	V4.3 PI error (%)  =>  V4.3 PI error (%)
 	V4.4 PI output (%)  =>  V4.4 PI output (%)
 Vakio City Air 250(500)
-	Air Damper  =>  air_damper_exists
 	Air Damper Position  =>  air_damper_position
 	Air Heater  =>  air_heater
 	Alarm: Fan  =>  alarm_fan
