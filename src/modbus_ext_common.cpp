@@ -571,7 +571,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
         auto intermediateResponse =
             BaseTraits->Transaction(port,
-                                    slaveId,
+                                    BROADCAST_ADDRESS,
                                     request,
                                     expectedResponsePduSize + PDU_MODBUS_STANDARD_COMMAND_HEADER_SIZE,
                                     responseTimeout,
