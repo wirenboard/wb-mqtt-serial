@@ -119,7 +119,7 @@
                 ],
                 "readonly": true,
                 "group": "sensors",
-                "condition": "isDefined(air_damper_exists)&&(air_damper_exists==1)"
+                "condition": "air_damper_exists==1"
             },
             {
                 "id": "alarm_temperature_sensor",
