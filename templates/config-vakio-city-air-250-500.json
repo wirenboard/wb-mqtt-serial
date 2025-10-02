@@ -1,5 +1,5 @@
 {
-    "device_type": "vakio-city-air-500",
+    "device_type": "Vakio City Air 250(500)",
     "title": "vakio_city_air_title",
     "group": "g-climate-control",
     "device": {
@@ -94,7 +94,8 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["closed", "open", "opening", "closing"],
                 "readonly": true,
-                "group": "sensors"
+                "group": "sensors",
+                "condition": "isDefined(air_damper_exists)&&(air_damper_exists==1)"
             },
             {
                 "name": "alarm_temperature_sensor",
