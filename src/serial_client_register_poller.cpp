@@ -27,10 +27,10 @@ namespace
         bool ReadAtLeastOneRegister;
         const util::TSpentTimeMeter& SessionTime;
         TSerialClientDeviceAccessHandler& LastAccessedDevice;
-        TPort& Port;
+        TFeaturePort& Port;
 
     public:
-        TDeviceReader(TPort& port,
+        TDeviceReader(TFeaturePort& port,
                       const util::TSpentTimeMeter& sessionTime,
                       milliseconds maxPollTime,
                       bool readAtLeastOneRegister,
@@ -201,7 +201,7 @@ std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline(
     return Scheduler.GetDeadline();
 }
 
-TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
+TPollResult TSerialClientRegisterPoller::OpenPortCycle(TFeaturePort& port,
                                                        const util::TSpentTimeMeter& spentTime,
                                                        std::chrono::milliseconds maxPollingTime,
                                                        bool readAtLeastOneRegister,

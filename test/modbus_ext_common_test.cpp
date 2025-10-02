@@ -136,7 +136,8 @@ TEST(TModbusExtTest, EventsEnablerOneReg)
     port.AddResponse({0x0A, 0x46, 0x18, 0x01, 0x01, 0xE9, 0x1E});
 
     std::map<uint16_t, bool> response;
-    ModbusExt::TEventsEnabler ev(10, port, [&response](uint8_t type, uint16_t reg, bool enabled) {
+    Modbus::TModbusRTUTraits traits;
+    ModbusExt::TEventsEnabler ev(10, port, traits, [&response](uint8_t type, uint16_t reg, bool enabled) {
         response[reg] = enabled;
     });
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
@@ -171,7 +172,8 @@ TEST(TModbusExtTest, EventsEnablerIllegalFunction)
     TPortMock port;
     port.AddResponse({0x0A, 0xC6, 0x01, 0xC3, 0xA2});
 
-    ModbusExt::TEventsEnabler ev(10, port, [](uint8_t, uint16_t, bool) {});
+    Modbus::TModbusRTUTraits traits;
+    ModbusExt::TEventsEnabler ev(10, port, traits, [](uint8_t, uint16_t, bool) {});
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_THROW(ev.SendRequests(), Modbus::TModbusExceptionError);
@@ -186,7 +188,8 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
     port.AddResponse({0x0A, 0x46, 0x18, 0x03, 0x03, 0xFB, 0x02, 0xAD, 0x11});
 
     std::map<uint16_t, bool> response;
-    ModbusExt::TEventsEnabler ev(10, port, [&response](uint8_t type, uint16_t reg, bool enabled) {
+    Modbus::TModbusRTUTraits traits;
+    ModbusExt::TEventsEnabler ev(10, port, traits, [&response](uint8_t type, uint16_t reg, bool enabled) {
         response[reg] = enabled;
     });
 
@@ -266,9 +269,11 @@ TEST(TModbusExtTest, EventsEnablerRangesWithHoles)
     port.AddResponse({0x0A, 0x46, 0x18, 0x04, 0x03, 0xF3, 0x02, 0x03, 0xA4, 0xBE});
 
     std::map<uint16_t, bool> response;
+    Modbus::TModbusRTUTraits traits;
     ModbusExt::TEventsEnabler ev(
         10,
         port,
+        traits,
         [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; },
         ModbusExt::TEventsEnabler::DISABLE_EVENTS_IN_HOLES);
 
@@ -356,10 +361,11 @@ TEST(TModbusExtTest, ReadEventsNoEventsNoConfirmation)
     TPortMock port;
     TTestEventsVisitor visitor;
     ModbusExt::TEventConfirmationState state;
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
 
     port.AddResponse({0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D}); // No events
     bool ret = true;
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), 0, state, visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, traits, std::chrono::milliseconds(100), 0, state, visitor));
     EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Requests.size(), 1);
@@ -385,11 +391,12 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     TPortMock port;
     TTestEventsVisitor visitor;
     ModbusExt::TEventConfirmationState state;
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
 
     port.AddResponse(
         {0xFF, 0xFF, 0xFF, 0x05, 0x46, 0x11, 0x01, 0x01, 0x06, 0x02, 0x04, 0x01, 0xD0, 0x04, 0x00, 0x2B, 0xAC});
     bool ret = false;
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), 0, state, visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, traits, std::chrono::milliseconds(100), 0, state, visitor));
     EXPECT_TRUE(ret);
 
     EXPECT_EQ(port.Requests.size(), 1);
@@ -413,7 +420,7 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     port.AddResponse({0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D}); // No events
     visitor.Events.clear();
     port.Requests.clear();
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(5), 5, state, visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, traits, std::chrono::milliseconds(5), 5, state, visitor));
     EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Requests.size(), 1);
@@ -439,27 +446,29 @@ TEST(TModbusExtTest, ReadEventsReboot)
     TPortMock port;
     TTestEventsVisitor visitor;
     ModbusExt::TEventConfirmationState state;
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
 
     port.AddResponse(
         {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00, 0x00, 0xFF, 0x5E}); // Reboot event
     bool ret = false;
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), 0, state, visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, traits, std::chrono::milliseconds(100), 0, state, visitor));
     EXPECT_TRUE(ret);
 
     EXPECT_TRUE(visitor.Reboot);
 }
 
-TEST(TModbusExtTest, GetPacketStart)
+TEST(TModbusExtTest, GetRTUPacketStart)
 {
     uint8_t goodPacket[] = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00, 0x00, 0xFF, 0x5E};
     uint8_t goodPacketWithGlitch[] = {0xFF, 0xFF, 0xFE, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D};
-    EXPECT_EQ(ModbusExt::GetPacketStart(goodPacket, sizeof(goodPacket)), goodPacket + 3);
-    EXPECT_EQ(ModbusExt::GetPacketStart(goodPacketWithGlitch, sizeof(goodPacketWithGlitch)), goodPacketWithGlitch + 5);
+    EXPECT_EQ(ModbusExt::GetRTUPacketStart(goodPacket, sizeof(goodPacket)), goodPacket + 3);
+    EXPECT_EQ(ModbusExt::GetRTUPacketStart(goodPacketWithGlitch, sizeof(goodPacketWithGlitch)),
+              goodPacketWithGlitch + 5);
 
     uint8_t notEnoughDataPacket[] = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00};
     uint8_t badCrcPacket[] = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00, 0x00, 0x11, 0x5E};
-    EXPECT_EQ(ModbusExt::GetPacketStart(notEnoughDataPacket, sizeof(notEnoughDataPacket)), nullptr);
-    EXPECT_EQ(ModbusExt::GetPacketStart(badCrcPacket, sizeof(badCrcPacket)), nullptr);
+    EXPECT_EQ(ModbusExt::GetRTUPacketStart(notEnoughDataPacket, sizeof(notEnoughDataPacket)), nullptr);
+    EXPECT_EQ(ModbusExt::GetRTUPacketStart(badCrcPacket, sizeof(badCrcPacket)), nullptr);
 }
 
 class TModbusExtTraitsTest: public testing::Test
@@ -479,13 +488,13 @@ TEST_F(TModbusExtTraitsTest, ReadFrameGood)
 {
     TPortMock port;
     port.AddResponse({0xfd, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x1c, 0xef});
-    ModbusExt::TModbusTraits traits;
+    ModbusExt::TModbusTraits traits(std::make_unique<Modbus::TModbusRTUTraits>());
     traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {0x06, 0x00, 0x80, 0x00, 0x02};
 
-    auto resp = traits.Transaction(port, 0, req, req.size(), t, t);
+    auto resp = traits.Transaction(port, 0xfd, req, req.size(), t, t);
     ASSERT_EQ(resp.Pdu.size(), req.size());
 
     TestEqual(resp.Pdu, req);
@@ -495,20 +504,20 @@ TEST_F(TModbusExtTraitsTest, ReadFrameTooSmallError)
 {
     TPortMock port;
     port.AddResponse({0xfd, 0x46, 0x09, 0xfe, 0xca});
-    ModbusExt::TModbusTraits traits;
+    ModbusExt::TModbusTraits traits(std::make_unique<Modbus::TModbusRTUTraits>());
     traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {0x06, 0x00, 0x80, 0x00, 0x02};
 
-    ASSERT_THROW(traits.Transaction(port, 0, req, req.size(), t, t), Modbus::TMalformedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 0xfd, req, req.size(), t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusExtTraitsTest, ReadFrameInvalidCrc)
 {
     TPortMock port;
     port.AddResponse({0xfd, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x10, 0xef});
-    ModbusExt::TModbusTraits traits;
+    ModbusExt::TModbusTraits traits(std::make_unique<Modbus::TModbusRTUTraits>());
     traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
@@ -524,7 +533,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
         {0xfe, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x00, 0x00};
     port.AddResponse(badHeader);
 
-    ModbusExt::TModbusTraits traits;
+    ModbusExt::TModbusTraits traits(std::make_unique<Modbus::TModbusRTUTraits>());
     traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
@@ -535,7 +544,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
             try {
                 traits.Transaction(port, 0, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
-                EXPECT_STREQ("invalid response address", e.what());
+                EXPECT_STREQ("request and response slave id mismatch", e.what());
                 throw;
             }
         },
@@ -547,7 +556,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, req, req.size(), t, t);
+                traits.Transaction(port, 0xfd, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
                 EXPECT_STREQ("invalid response command", e.what());
                 throw;
@@ -561,9 +570,9 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, req, req.size(), t, t);
+                traits.Transaction(port, 0xfd, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
-                EXPECT_STREQ("invalid response subcommand", e.what());
+                EXPECT_STREQ("invalid response subcommand: 16", e.what());
                 throw;
             }
         },
@@ -575,7 +584,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, req, req.size(), t, t);
+                traits.Transaction(port, 0xfd, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
                 EXPECT_STREQ("SN mismatch: got 30074853, wait 4274710501", e.what());
                 throw;
@@ -592,8 +601,9 @@ TEST(TModbusExtTest, ScanStartDeviceFound)
     // NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND
     port.AddResponse({0xFD, 0x46, 0x04, 0x00, 0x00});
 
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
-    EXPECT_NO_THROW(ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
+    EXPECT_NO_THROW(ModbusExt::Scan(port, traits, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
     ASSERT_EQ(scannedDevices.size(), 1);
     EXPECT_EQ(scannedDevices[0].SlaveId, 5);
     EXPECT_EQ(scannedDevices[0].Sn, 0x12345678);
@@ -605,8 +615,9 @@ TEST(TModbusExtTest, ScanStartNoMoreDevices)
     // NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND (0x04)
     port.AddResponse({0xFD, 0x46, 0x04, 0x00, 0x00});
 
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
-    EXPECT_NO_THROW(ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
+    EXPECT_NO_THROW(ModbusExt::Scan(port, traits, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
     EXPECT_TRUE(scannedDevices.empty());
 }
 
@@ -619,8 +630,9 @@ TEST(TModbusExtTest, ScanMultipleDevices)
         {0xFD, 0x46, 0x03, 0x05, 0x06, 0x07, 0x08, 0x20, 0x00, 0x00}); // DEVICE_FOUND_RESPONSE_SCAN_COMMAND
     port.AddResponse({0xFD, 0x46, 0x04, 0x00, 0x00});                  // NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND
 
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
-    EXPECT_NO_THROW(ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
+    EXPECT_NO_THROW(ModbusExt::Scan(port, traits, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
     ASSERT_EQ(scannedDevices.size(), 2);
     EXPECT_EQ(scannedDevices[0].SlaveId, 0x10);
     EXPECT_EQ(scannedDevices[0].Sn, 0x01020304);
@@ -633,8 +645,9 @@ TEST(TModbusExtTest, ScanStartTimeout)
     TPortMock port;
     port.ThrowTimeout = true;
 
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
-    EXPECT_NO_THROW(ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
+    EXPECT_NO_THROW(ModbusExt::Scan(port, traits, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices));
     EXPECT_TRUE(scannedDevices.empty());
 }
 
@@ -643,7 +656,8 @@ TEST(TModbusExtTest, ScanInvalidSubCommand)
     TPortMock port;
     port.AddResponse({0xFD, 0x46, 0x12, 0x00, 0x00});
 
+    ModbusExt::TModbusRTUWithArbitrationTraits traits;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
-    EXPECT_THROW(ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices),
+    EXPECT_THROW(ModbusExt::Scan(port, traits, ModbusExt::TModbusExtCommand::ACTUAL, scannedDevices),
                  Modbus::TMalformedResponseError);
 }

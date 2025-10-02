@@ -11,11 +11,11 @@
 #include <string>
 #include <sys/sysinfo.h>
 
-#include "tcp_port.h"
-#include "tcp_port_settings.h"
+#include "port/tcp_port.h"
+#include "port/tcp_port_settings.h"
 
-#include "serial_port.h"
-#include "serial_port_settings.h"
+#include "port/serial_port.h"
+#include "port/serial_port_settings.h"
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
@@ -575,11 +575,11 @@ namespace
         params.Defaults.Id = default_id;
         params.Defaults.RequestDelay = port_config->RequestDelay;
         params.Defaults.ReadRateLimit = port_config->ReadRateLimit;
-        params.IsModbusTcp = port_config->IsModbusTcp;
+        params.IsModbusTcp = port_config->Port->IsModbusTcp();
         port_config->AddDevice(deviceFactory.CreateDevice(device_data, params, templates));
     }
 
-    PPort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
         TSerialPortSettings settings(port_data["path"].asString());
 
@@ -591,33 +591,33 @@ namespace
         Get(port_data, "data_bits", settings.DataBits);
         Get(port_data, "stop_bits", settings.StopBits);
 
-        PPort port = std::make_shared<TSerialPort>(settings);
+        auto port = std::make_shared<TSerialPort>(settings);
 
         rpcConfig->AddSerialPort(settings);
 
-        return port;
+        return std::make_shared<TFeaturePort>(port, false);
     }
 
-    PPort OpenTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
         TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
-        PPort port = std::make_shared<TTcpPort>(settings);
+        auto port = std::make_shared<TTcpPort>(settings);
 
         rpcConfig->AddTCPPort(settings);
 
-        return port;
+        return std::make_shared<TFeaturePort>(port, false);
     }
 
-    PPort OpenModbusTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenModbusTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
         TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
-        PPort port = std::make_shared<TTcpPort>(settings);
+        auto port = std::make_shared<TTcpPort>(settings);
 
         rpcConfig->AddModbusTCPPort(settings);
 
-        return port;
+        return std::make_shared<TFeaturePort>(port, true);
     }
 
     void LoadPort(PHandlerConfig handlerConfig,
@@ -641,7 +641,7 @@ namespace
         Get(port_data, "connection_timeout_ms", port_config->OpenCloseSettings.MaxFailTime);
         Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
-        std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data, rpcConfig);
+        port_config->Port = portFactory(port_data, rpcConfig);
 
         std::chrono::milliseconds responseTimeout = RESPONSE_TIMEOUT_NOT_SET;
         Get(port_data, "response_timeout_ms", responseTimeout);
@@ -670,17 +670,17 @@ void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value&
     }
 }
 
-std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig)
+PFeaturePort DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig)
 {
     auto port_type = port_data.get("port_type", "serial").asString();
     if (port_type == "serial") {
-        return {OpenSerialPort(port_data, rpcConfig), false};
+        return OpenSerialPort(port_data, rpcConfig);
     }
     if (port_type == "tcp") {
-        return {OpenTcpPort(port_data, rpcConfig), false};
+        return OpenTcpPort(port_data, rpcConfig);
     }
     if (port_type == "modbus tcp") {
-        return {OpenModbusTcpPort(port_data, rpcConfig), true};
+        return OpenModbusTcpPort(port_data, rpcConfig);
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }

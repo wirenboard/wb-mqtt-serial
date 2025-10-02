@@ -37,7 +37,7 @@ namespace
     }
 };
 
-TSerialClient::TSerialClient(PPort port,
+TSerialClient::TSerialClient(PFeaturePort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
                              util::TGetNowFn nowFn,
                              size_t lowPriorityRateLimit)
@@ -78,11 +78,6 @@ void TSerialClient::Activate()
                                                                            LowPriorityRateLimit);
         LastAccessedDevice = std::make_unique<TSerialClientDeviceAccessHandler>(RegReader->GetEventsReader());
     }
-}
-
-void TSerialClient::Connect()
-{
-    OpenCloseLogic.OpenIfAllowed(Port);
 }
 
 void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, steady_clock::time_point waitUntil)
@@ -202,7 +197,7 @@ void TSerialClient::OpenPortCycle()
     }
 }
 
-PPort TSerialClient::GetPort()
+PFeaturePort TSerialClient::GetPort()
 {
     return Port;
 }
@@ -274,7 +269,7 @@ public:
     }
 };
 
-PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
+PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TFeaturePort& port,
                                                                   TRegisterCallback regCallback,
                                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
 {

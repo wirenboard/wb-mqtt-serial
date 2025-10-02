@@ -8,7 +8,7 @@ TWriteChannelSerialClientTask::TWriteChannelSerialClientTask(PRegisterHandler ha
       ErrorCallback(errorCallback)
 {}
 
-ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort port,
                                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                  const std::list<PSerialDevice>& polledDevices)
 {

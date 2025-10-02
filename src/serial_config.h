@@ -12,7 +12,7 @@
 #include <wblib/json_utils.h>
 
 #include "confed_protocol_schemas_map.h"
-#include "port.h"
+#include "port/feature_port.h"
 #include "rpc/rpc_config.h"
 #include "serial_device.h"
 #include "templates_map.h"
@@ -27,13 +27,11 @@ typedef std::shared_ptr<TSerialDeviceWithChannels> PSerialDeviceWithChannels;
 
 struct TPortConfig
 {
-    PPort Port;
+    PFeaturePort Port;
     std::vector<PSerialDeviceWithChannels> Devices;
     std::optional<std::chrono::milliseconds> ReadRateLimit;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
-
-    bool IsModbusTcp = false;
 
     void AddDevice(PSerialDeviceWithChannels device);
 };
@@ -61,9 +59,9 @@ public:
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
-typedef std::function<std::pair<PPort, bool>(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
+typedef std::function<PFeaturePort(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
 
-std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
+PFeaturePort DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
 
 class IRegisterAddressFactory
 {

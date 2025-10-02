@@ -31,7 +31,7 @@ public:
                                          size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback regCallback);
-    PSerialDevice OpenPortCycle(TPort& port,
+    PSerialDevice OpenPortCycle(TFeaturePort& port,
                                 TRegisterCallback regCallback,
                                 TSerialClientDeviceAccessHandler& lastAccessedDevice);
 
@@ -72,7 +72,7 @@ public:
      * @param polledDevices A list of serial devices polled on this port.
      * @return The result of the task execution as a TRunResult.
      */
-    virtual ISerialClientTask::TRunResult Run(PPort port,
+    virtual ISerialClientTask::TRunResult Run(PFeaturePort port,
                                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                               const std::list<PSerialDevice>& polledDevices) = 0;
 };
@@ -84,7 +84,7 @@ class TSerialClient: public std::enable_shared_from_this<TSerialClient>, util::T
 public:
     typedef std::function<void(PRegister reg)> TRegisterCallback;
 
-    TSerialClient(PPort port,
+    TSerialClient(PFeaturePort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
                   util::TGetNowFn nowFn,
                   size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
@@ -96,7 +96,7 @@ public:
     void SetReadCallback(const TRegisterCallback& callback);
     void SetErrorCallback(const TRegisterCallback& callback);
 
-    PPort GetPort();
+    PFeaturePort GetPort();
     std::list<PSerialDevice> GetDevices();
 
     void AddTask(PSerialClientTask task);
@@ -106,7 +106,6 @@ public:
 
 private:
     void Activate();
-    void Connect();
     void WaitForPollAndFlush(std::chrono::steady_clock::time_point now,
                              std::chrono::steady_clock::time_point waitUntil);
     PRegisterHandler GetHandler(PRegister) const;
@@ -114,7 +113,7 @@ private:
     void OpenPortCycle();
     void ProcessPolledRegister(PRegister reg);
 
-    PPort Port;
+    PFeaturePort Port;
     std::list<PRegister> RegList;
     std::list<PSerialDevice> Devices;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;

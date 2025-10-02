@@ -8,8 +8,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "serial_port.h"
-#include "tcp_port.h"
+#include "port/serial_port.h"
+#include "port/tcp_port.h"
 
 using namespace std;
 using namespace WBMQTT;

@@ -4,9 +4,9 @@
 #include <sys/types.h>
 #include <thread>
 
+#include "port/serial_port.h"
 #include "pty_based_fake_serial.h"
 #include "serial_device.h"
-#include "serial_port.h"
 
 #include <wblib/promise.h>
 #include <wblib/testing/testlog.h>

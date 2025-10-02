@@ -31,7 +31,7 @@ TPollableDevice::TPollableDevice(PSerialDevice device,
     }
 }
 
-PRegisterRange TPollableDevice::ReadRegisterRange(TPort& port,
+PRegisterRange TPollableDevice::ReadRegisterRange(TFeaturePort& port,
                                                   std::chrono::milliseconds pollLimit,
                                                   bool readAtLeastOneRegister,
                                                   const util::TSpentTimeMeter& sessionTime,

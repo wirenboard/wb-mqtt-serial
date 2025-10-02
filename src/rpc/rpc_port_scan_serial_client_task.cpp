@@ -1,8 +1,8 @@
 #include "rpc_port_scan_serial_client_task.h"
 #include "modbus_base.h"
 #include "modbus_common.h"
+#include "port/serial_port.h"
 #include "rpc_helpers.h"
-#include "serial_port.h"
 #include "wb_registers.h"
 #include <regex>
 
@@ -145,9 +145,16 @@ namespace
     Json::Value GetScannedDeviceDetails(TPort& port,
                                         const ModbusExt::TScannedDevice& scannedDevice,
                                         ModbusExt::TModbusExtCommand modbusExtCommand,
-                                        const std::list<PSerialDevice>& polledDevices)
+                                        const std::list<PSerialDevice>& polledDevices,
+                                        bool modbusTcp)
     {
-        ModbusExt::TModbusTraits modbusTraits;
+        std::unique_ptr<Modbus::IModbusTraits> baseTraits;
+        if (modbusTcp) {
+            baseTraits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            baseTraits = std::make_unique<Modbus::TModbusRTUTraits>();
+        }
+        ModbusExt::TModbusTraits modbusTraits(std::move(baseTraits));
         modbusTraits.SetModbusExtCommand(modbusExtCommand);
         modbusTraits.SetSn(scannedDevice.Sn);
         RpcPortScan::TRegisterReader reader(port, modbusTraits, scannedDevice.SlaveId);
@@ -191,34 +198,41 @@ PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request)
     return res;
 }
 
-void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest, const std::list<PSerialDevice>& polledDevices)
+void ExecRPCPortScanRequest(TPort& port,
+                            PRPCPortScanRequest rpcRequest,
+                            const std::list<PSerialDevice>& polledDevices,
+                            bool modbusTcp)
 {
     if (!rpcRequest->OnResult) {
         return;
     }
 
-    port.SkipNoise();
-
     Json::Value replyJSON;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
+    std::shared_ptr<Modbus::IModbusTraits> traits;
+    if (modbusTcp) {
+        traits = std::make_shared<Modbus::TModbusTCPTraits>();
+    } else {
+        traits = std::make_shared<ModbusExt::TModbusRTUWithArbitrationTraits>();
+    }
     try {
         switch (rpcRequest->Mode) {
             case TRPCPortScanRequest::START: {
-                auto device = ModbusExt::ScanStart(port, rpcRequest->ModbusExtCommand);
+                auto device = ModbusExt::ScanStart(port, *traits, rpcRequest->ModbusExtCommand);
                 if (device) {
                     scannedDevices.push_back(*device);
                 }
                 break;
             }
             case TRPCPortScanRequest::NEXT: {
-                auto device = ModbusExt::ScanNext(port, rpcRequest->ModbusExtCommand);
+                auto device = ModbusExt::ScanNext(port, *traits, rpcRequest->ModbusExtCommand);
                 if (device) {
                     scannedDevices.push_back(*device);
                 }
                 break;
             }
             case TRPCPortScanRequest::ALL: {
-                ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, scannedDevices);
+                ModbusExt::Scan(port, *traits, rpcRequest->ModbusExtCommand, scannedDevices);
                 break;
             }
         }
@@ -228,7 +242,8 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest, const s
 
     replyJSON["devices"] = Json::Value(Json::arrayValue);
     for (const auto& device: scannedDevices) {
-        replyJSON["devices"].append(GetScannedDeviceDetails(port, device, rpcRequest->ModbusExtCommand, polledDevices));
+        replyJSON["devices"].append(
+            GetScannedDeviceDetails(port, device, rpcRequest->ModbusExtCommand, polledDevices, modbusTcp));
     }
 
     rpcRequest->OnResult(replyJSON);
@@ -251,7 +266,7 @@ TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(const Json::Value& re
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
-ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PFeaturePort port,
                                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                 const std::list<PSerialDevice>& polledDevices)
 {
@@ -262,13 +277,21 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PPort port,
         return ISerialClientTask::TRunResult::OK;
     }
 
+    if (!port->SupportsFastModbus() && port->IsModbusTcp()) {
+        if (Request->OnResult) {
+            Json::Value result;
+            Request->OnResult(result);
+        }
+        return ISerialClientTask::TRunResult::OK;
+    }
+
     try {
         if (!port->IsOpen()) {
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        ExecRPCPortScanRequest(*port, Request, polledDevices);
+        ExecRPCPortScanRequest(*port, Request, polledDevices, port->IsModbusTcp());
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());

@@ -1,8 +1,8 @@
 #include "rpc_port_load_modbus_serial_client_task.h"
 #include "modbus_base.h"
+#include "port/serial_port.h"
 #include "rpc_port_handler.h"
 #include "serial_exc.h"
-#include "serial_port.h"
 
 template<> bool inline WBMQTT::JSON::Is<uint8_t>(const Json::Value& value)
 {
@@ -133,7 +133,7 @@ TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(const Jso
 }
 
 ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
-    PPort port,
+    PFeaturePort port,
     TSerialClientDeviceAccessHandler& lastAccessedDevice,
     const std::list<PSerialDevice>& polledDevices)
 {

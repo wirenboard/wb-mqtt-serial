@@ -12,6 +12,7 @@
 
 const std::chrono::milliseconds RESPONSE_TIMEOUT_NOT_SET(-1);
 const std::chrono::milliseconds DEFAULT_RESPONSE_TIMEOUT(500);
+const std::chrono::milliseconds DefaultFrameTimeout(20);
 
 struct TReadFrameResult
 {

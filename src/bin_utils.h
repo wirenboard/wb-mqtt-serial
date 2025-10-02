@@ -150,4 +150,6 @@ namespace BinUtils
     }
 
     void DecodeByteStuffing(std::vector<uint8_t>& data, const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules);
+
+    void WriteAs2Bytes(uint8_t* dst, uint16_t val);
 }

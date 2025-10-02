@@ -22,7 +22,7 @@ class TPollableDevice
 public:
     TPollableDevice(PSerialDevice device, std::chrono::steady_clock::time_point currentTime, TPriority priority);
 
-    PRegisterRange ReadRegisterRange(TPort& port,
+    PRegisterRange ReadRegisterRange(TFeaturePort& port,
                                      std::chrono::milliseconds pollLimit,
                                      bool readAtLeastOneRegister,
                                      const util::TSpentTimeMeter& sessionTime,

@@ -1,7 +1,7 @@
 #include "rpc_port_load_raw_serial_client_task.h"
+#include "port/serial_port.h"
 #include "rpc_port_handler.h"
 #include "serial_exc.h"
-#include "serial_port.h"
 
 PRPCPortLoadRawRequest ParseRPCPortLoadRawRequest(const Json::Value& request)
 {
@@ -40,7 +40,7 @@ TRPCPortLoadRawSerialClientTask::TRPCPortLoadRawSerialClientTask(const Json::Val
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
-ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PFeaturePort port,
                                                                    TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                    const std::list<PSerialDevice>& polledDevices)
 {

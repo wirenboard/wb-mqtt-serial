@@ -32,7 +32,7 @@ class TRPCDeviceLoadSerialClientTask: public ISerialClientTask
 {
 public:
     TRPCDeviceLoadSerialClientTask(PRPCDeviceLoadRequest request);
-    ISerialClientTask::TRunResult Run(PPort port,
+    ISerialClientTask::TRunResult Run(PFeaturePort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                       const std::list<PSerialDevice>& polledDevices) override;
 
