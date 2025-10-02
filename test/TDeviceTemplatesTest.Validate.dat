@@ -27776,3 +27776,20 @@ wb_ups_v3
 	Temperature Status  =>  temperature_status
 	Uptime  =>  uptime
 	VINREG Setpoint  =>  vinreg_setpoint
+Vakio City Air 250(500)
+	State  =>  state
+	Mode  =>  mode
+	Air Heater  =>  air_heater
+	Fan Speed Setpoint  =>  fan_speed_setpoint
+	Current Fan Speed  =>  fan_speed_current
+	Incoming Air Temperature  =>  incoming_air_temperature
+	Heating Temperature Setpoint  =>  heating_temperature_setpoint
+	Air Damper Position  =>  air_damper_position
+	Alarm: Temperature Sensor  =>  alarm_temperature_sensor
+	Alarm: Fan  =>  alarm_fan
+	Alarm: Underheating  =>  alarm_underheating
+	Alarm: Overheating  =>  alarm_overheating
+	Alarm: Low Inlet Temperature  =>  alarm_low_incoming_temperature
+	Alarm: High Outlet Temperature  =>  alarm_high_outlet_temperature
+	Alarm: Fire  =>  alarm_fire
+	Air Damper  =>  air_damper_exists
