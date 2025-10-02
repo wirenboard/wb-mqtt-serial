@@ -123,3 +123,4 @@ install:
 	install -Dm0644 wb-mqtt-serial-dummy.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-confed/schemas
 
 	install -Dm0755 $(BUILD_DIR)/$(SERIAL_BIN) -t $(DESTDIR)$(PREFIX)/bin
+	install -Dm0755 generate-system-config.sh -t $(DESTDIR)$(PREFIX)/lib/wb-mqtt-serial
