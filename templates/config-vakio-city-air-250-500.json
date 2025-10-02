@@ -17,13 +17,13 @@
                 "order": 1
             },
             {
-                "title": "inputs",
-                "id": "inputs",
+                "title": "sensors",
+                "id": "sensors",
                 "order": 2
             },            
             {
-                "title": "errors",
-                "id": "errors",
+                "title": "alarms",
+                "id": "alarms",
                 "order": 3
             }
         ],        
@@ -53,7 +53,7 @@
                 "group": "general"
             },
             {
-                "name": "fan_speed_set",
+                "name": "fan_speed_setpoint",
                 "reg_type": "holding",
                 "address": 0,
                 "type": "range",
@@ -67,7 +67,7 @@
                 "address": 3,
                 "type": "value",
                 "readonly": true,
-                "group": "general"
+                "group": "sensors"
             },
             {
                 "name": "incoming_air_temperature",
@@ -75,10 +75,10 @@
                 "address": 4,
                 "type": "value",
                 "readonly": true,
-                "group": "inputs"
+                "group": "sensors"
             },
             {
-                "name": "heating_temperature_set",
+                "name": "heating_temperature_setpoint",
                 "reg_type": "holding",
                 "address": 1,
                 "type": "range",
@@ -92,79 +92,79 @@
                 "address": 2,
                 "type": "value",
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["close", "open", "opening", "closing"],
+                "enum_titles": ["closed", "open", "opening", "closing"],
                 "readonly": true,
-                "group": "general"
+                "group": "sensors"
             },
             {
-                "name": "error_temperature_sensor",
+                "name": "alarm_temperature_sensor",
                 "reg_type": "coil",
                 "address": 4,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "errors"
+                "group": "alarms"
             },
             {
-                "name": "error_fan",
+                "name": "alarm_fan",
                 "reg_type": "coil",
                 "address": 5,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "errors"
+                "group": "alarms"
             },
             {
-                "name": "error_underheating",
+                "name": "alarm_underheating",
                 "reg_type": "coil",
                 "address": 6,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "errors"
+                "group": "alarms"
             },
             {
-                "name": "error_overheating",
+                "name": "alarm_overheating",
                 "reg_type": "coil",
                 "address": 7,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "errors"
+                "group": "alarms"
             },
             {
-                "name": "error_low_incoming_temperature",
+                "name": "alarm_low_incoming_temperature",
                 "reg_type": "coil",
                 "address": 8,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "errors"
+                "group": "alarms"
             },
             {
-                "name": "high_outlet_temperature_error",
+                "name": "alarm_high_outlet_temperature",
                 "reg_type": "coil",
                 "address": 9,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "errors"
+                "group": "alarms"
             },
             {
-                "name": "fire_alarm",
+                "name": "alarm_fire",
                 "reg_type": "coil",
                 "address": 10,
                 "type": "value",
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "readonly": true,
-                "group": "inputs"
+                "group": "alarms"
             }           
         ],
         "parameters": [
@@ -191,66 +191,66 @@
             "en": {
                 "vakio_city_air_title":"Vakio City Air 250/500",
                 "general":"General",
-                "inputs":"Inputs",
+                "sensors":"Sensors",
                 "setpoints":"Setpoints",
-                "errors":"Errors",
+                "alarms":"Alarms",                
                 "state": "State",
                 "mode": "Mode",
                 "inflow": "Inflow",
                 "smart": "Smart",
                 "open": "Open",
-                "close": "Closed",
+                "closed": "Closed",
                 "opening": "Opening",
                 "closing": "Closing",
                 "air_damper_exists": "Air Damper",
                 "not_installed": "Not Installed",
                 "installed": "Installed",
                 "air_heater": "Air Heater",
-                "fan_speed_set": "Fan Speed Set",
-                "heating_temperature_set": "Heating Temperature",
+                "fan_speed_setpoint": "Fan Speed Setpoint",
+                "heating_temperature_setpoint": "Heating Temperature Setpoint",
                 "air_damper_position": "Air Damper Position",
-                "fan_speed_current": "Fan Speed Current",
+                "fan_speed_current": "Current Fan Speed",
                 "incoming_air_temperature": "Incoming Air Temperature",
-                "error_temperature_sensor": "Temperature Sensor Error",
-                "error_fan": "Fan Error",
-                "error_underheating": "Underheating Error",
-                "error_overheating": "Overheating Error",
-                "error_low_incoming_temperature": "Low Incoming Temperature Error",
-                "high_outlet_temperature_error": "High Outlet Temperature Error",
-                "fire_alarm": "Fire Alarm",
+                "alarm_temperature_sensor": "Alarm: Temperature Sensor",
+                "alarm_fan": "Alarm: Fan",
+                "alarm_underheating": "Alarm: Underheating",
+                "alarm_overheating": "Alarm: Overheating",
+                "alarm_low_incoming_temperature": "Alarm: Low Inlet Temperature",
+                "alarm_high_outlet_temperature": "Alarm: High Outlet Temperature",
+                "alarm_fire": "Alarm: Fire",
                 "yes": "Yes",
                 "no": "No"
             },
             "ru": {
                 "vakio_city_air_title":"Vakio City Air 250/500",
                 "general":"Основные",
-                "inputs":"Входы",
+                "sensors":"Датчики",
                 "setpoints":"Уставки",
-                "errors":"Ошибки",                
+                "alarms":"Аварии",                
                 "state": "Состояние",
                 "mode": "Режим",
                 "inflow": "Приток",
                 "smart": "Смарт",
                 "open": "Открыто",
-                "close": "Закрыто",
+                "closed": "Закрыто",
                 "opening": "Открывается",
                 "closing": "Закрывается",
                 "air_damper_exists": "Заслонка",
                 "not_installed": "Не установлена",
                 "installed": "Установлена",
                 "air_heater": "Нагреватель",
-                "fan_speed_set": "Скорость вентилятора",
-                "heating_temperature_set": "Температура нагрева",
+                "fan_speed_setpoint": "Уставка скорости вентилятора",
+                "heating_temperature_setpoint": "Уставка температуры нагрева",
                 "air_damper_position": "Положение заслонки",
                 "fan_speed_current": "Скорость вентилятора текущая",
                 "incoming_air_temperature": "Температура входящего воздуха",
-                "error_temperature_sensor": "Ошибка датчика температуры",
-                "error_fan": "Ошибка вентилятора",
-                "error_underheating": "Ошибка недогрева",
-                "error_overheating": "Ошибка перегрева",
-                "error_low_incoming_temperature": "Ошибка низкой температуры на входе",
-                "high_outlet_temperature_error": "Ошибка высокой температуры на входе",
-                "fire_alarm": "Пожарная сигнализация",
+                "alarm_temperature_sensor": "Авария датчика температуры",
+                "alarm_fan": "Авария вентилятора",
+                "alarm_underheating": "Авария: недогрев",
+                "alarm_overheating": "Авария: перегрев",
+                "alarm_low_incoming_temperature": "Авария: низкое значение Tвх",
+                "alarm_high_outlet_temperature": "Авария: высокое значение Твых",
+                "alarm_fire": "Авария: Пожарная сигнализация",
                 "yes": "Да",
                 "no": "Нет"
             }
