@@ -582,6 +582,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
         Modbus::TReadResult res;
         res.ResponseTime = intermediateResponse.ResponseTime;
+        res.SlaveId = intermediateResponse.SlaveId;
         res.Pdu.assign(intermediateResponse.Pdu.begin() + PDU_MODBUS_STANDARD_COMMAND_HEADER_SIZE,
                        intermediateResponse.Pdu.end());
         return res;

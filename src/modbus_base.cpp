@@ -231,6 +231,7 @@ Modbus::TReadResult Modbus::TModbusRTUTraits::Transaction(TPort& port,
 
     TReadResult res;
     res.ResponseTime = readRes.ResponseTime;
+    res.SlaveId = slaveId;
     res.Pdu.assign(response.begin() + 1, response.begin() + (readRes.Count - CRC_SIZE));
     return res;
 }
@@ -367,6 +368,7 @@ Modbus::TReadResult Modbus::TModbusTCPTraits::Transaction(TPort& port,
 
     TReadResult res;
     res.ResponseTime = readRes.ResponseTime;
+    res.SlaveId = response[6];
     res.Pdu.assign(response.begin() + MBAP_SIZE, response.begin() + readRes.Count);
     return res;
 }
