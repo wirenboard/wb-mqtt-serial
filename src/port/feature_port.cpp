@@ -1,8 +1,32 @@
 #include "feature_port.h"
 #include "log.h"
 #include "modbus_base.h"
+#include "serial_exc.h"
 
 #define LOG(logger) ::logger.Log() << "[port] "
+
+namespace
+{
+    const std::vector<uint8_t> MGE_CHECK_REQUEST =
+        {0x47, 'W', 'B', '-', 'F', 'A', 'S', 'T', '-', 'M', 'O', 'D', 'B', 'U', 'S', '?'};
+    const std::vector<uint8_t> MGE_CHECK_RESPONSE =
+        {0x47, 'W', 'B', '-', 'F', 'A', 'S', 'T', '-', 'M', 'O', 'D', 'B', 'U', 'S', '-', 'O', 'K'};
+
+    /**
+     * @brief Checks that MGE v.3 is connected to the port.
+     *        Only applicable when using Modbus TCP.
+     */
+    bool CheckMgeModbusTcp(TPort& port,
+                           const std::chrono::milliseconds& responseTimeout,
+                           const std::chrono::milliseconds& frameTimeout)
+    {
+        Modbus::TModbusTCPTraits traits;
+        auto res =
+            traits.Transaction(port, 0, MGE_CHECK_REQUEST, MGE_CHECK_RESPONSE.size(), responseTimeout, frameTimeout);
+        return (res.Pdu.size() == MGE_CHECK_RESPONSE.size() &&
+                std::equal(res.Pdu.begin(), res.Pdu.end(), MGE_CHECK_RESPONSE.begin()));
+    }
+}
 
 TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp)
     : BasePort(basePort),
@@ -16,13 +40,14 @@ void TFeaturePort::Open()
     BasePort->Open();
     if (ModbusTcp && !ModbusTcpFastModbusChecked) {
         try {
-            FastModbus = Modbus::CheckMgeModbusTcp(
+            FastModbus = CheckMgeModbusTcp(
                 *BasePort,
                 std::chrono::ceil<std::chrono::milliseconds>(CalcResponseTimeout(GetMinimalResponseTimeout())),
                 DefaultFrameTimeout);
             ModbusTcpFastModbusChecked = true;
+            LOG(Debug) << BasePort->GetDescription() << ": MGE v.3 is " << (FastModbus ? "detected" : "not detected");
         } catch (const std::exception& e) {
-            LOG(Error) << BasePort->GetDescription() << ": MGE v.3 check failed: " << e.what();
+            LOG(Debug) << BasePort->GetDescription() << ": MGE v.3 check failed: " << e.what();
         }
     }
 }

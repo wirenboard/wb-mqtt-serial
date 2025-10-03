@@ -10,10 +10,6 @@ using namespace BinUtils;
 namespace
 {
     const size_t CRC_SIZE = 2;
-    const std::vector<uint8_t> MGE_CHECK_REQUEST =
-        {0x47, 'W', 'B', '-', 'F', 'A', 'S', 'T', '-', 'M', 'O', 'D', 'B', 'U', 'S', '?'};
-    const std::vector<uint8_t> MGE_CHECK_RESPONSE =
-        {0x47, 'W', 'B', '-', 'F', 'A', 'S', 'T', '-', 'M', 'O', 'D', 'B', 'U', 'S', '-', 'O', 'K'};
 
     std::string GetModbusExceptionMessage(uint8_t code)
     {
@@ -511,21 +507,4 @@ Modbus::TModbusExceptionError::TModbusExceptionError(uint8_t exceptionCode)
 uint8_t Modbus::TModbusExceptionError::GetExceptionCode() const
 {
     return ExceptionCode;
-}
-
-bool Modbus::CheckMgeModbusTcp(TPort& port,
-                               const std::chrono::milliseconds& responseTimeout,
-                               const std::chrono::milliseconds& frameTimeout)
-{
-    TModbusTCPTraits traits;
-    try {
-        auto res =
-            traits.Transaction(port, 0, MGE_CHECK_REQUEST, MGE_CHECK_RESPONSE.size(), responseTimeout, frameTimeout);
-        return (res.Pdu.size() == MGE_CHECK_RESPONSE.size() &&
-                std::equal(res.Pdu.begin(), res.Pdu.end(), MGE_CHECK_RESPONSE.begin()));
-    } catch (const Modbus::TErrorBase&) {
-        return false;
-    } catch (const TResponseTimeoutException&) {
-        return false;
-    }
 }

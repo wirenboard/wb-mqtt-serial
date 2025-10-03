@@ -209,16 +209,4 @@ namespace Modbus
                                  uint16_t writeAddress,
                                  uint16_t writeCount,
                                  const std::vector<uint8_t>& data);
-
-    /**
-     * @brief Checks that MGE v.3 is connected to the port.
-     *        Only applicable when using Modbus TCP.
-     *
-     * @throw TResponseTimeoutException on timeout.
-     *        Modbus::TErrorBase-based exception on Modbus related errors.
-     *        TSerialDeviceException-based on other internal errors.
-     */
-    bool CheckMgeModbusTcp(TPort& port,
-                           const std::chrono::milliseconds& responseTimeout,
-                           const std::chrono::milliseconds& frameTimeout);
 }
