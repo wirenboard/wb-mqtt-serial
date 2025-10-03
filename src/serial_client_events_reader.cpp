@@ -72,9 +72,8 @@ namespace
 
     TModbusDevice* ToModbusDevice(TSerialDevice* device)
     {
-        // Only MODBUS RTU devices
         auto dev = dynamic_cast<TModbusDevice*>(device);
-        if (dev != nullptr && dev->Protocol()->GetName() == "modbus") {
+        if (dev != nullptr && (dev->Protocol()->GetName() == "modbus" || dev->Protocol()->GetName() == "modbus-tcp")) {
             return dev;
         }
         return nullptr;
