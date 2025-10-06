@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.191.0) stable; urgency=medium
+wb-mqtt-serial (2.192.0) stable; urgency=medium
 
   * Add support for WB-MGE v.3.
     Allow to use Fast Modbus over TCP for device searching and events polling.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 02 Oct 2025 15:22:57 +0500
+
+wb-mqtt-serial (2.191.0) stable; urgency=medium
+
+  * Add VAKIO City Air 250/500 Template
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 01 Oct 2025 14:50:00 +0400
 
 wb-mqtt-serial (2.190.0) stable; urgency=medium
 
