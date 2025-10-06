@@ -72,24 +72,29 @@ namespace
 
     TModbusDevice* ToModbusDevice(TSerialDevice* device)
     {
-        // Only MODBUS RTU devices
         auto dev = dynamic_cast<TModbusDevice*>(device);
-        if (dev != nullptr && dev->Protocol()->GetName() == "modbus") {
+        if (dev != nullptr && (dev->Protocol()->GetName() == "modbus" || dev->Protocol()->GetName() == "modbus-tcp")) {
             return dev;
         }
         return nullptr;
     }
 
-    void DisableEventsFromRegs(TPort& port, const std::list<TEventsReaderRegisterDesc>& regs)
+    void DisableEventsFromRegs(TFeaturePort& port, const std::list<TEventsReaderRegisterDesc>& regs)
     {
         if (regs.empty()) {
             return;
+        }
+        std::unique_ptr<Modbus::IModbusTraits> traits;
+        if (port.IsModbusTcp()) {
+            traits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            traits = std::make_unique<Modbus::TModbusRTUTraits>();
         }
         auto regIt = regs.cbegin();
         while (regIt != regs.cend()) {
             uint8_t slaveId = regIt->SlaveId;
             LOG(Warn) << "Disable unexpected events from " << MakeDeviceDescriptionString(slaveId);
-            ModbusExt::TEventsEnabler enabler(slaveId, port, [](uint8_t, uint16_t, bool) {});
+            ModbusExt::TEventsEnabler enabler(slaveId, port, *traits, [](uint8_t, uint16_t, bool) {});
             for (; regIt != regs.cend() && slaveId == regIt->SlaveId; ++regIt) {
                 enabler.AddRegister(regIt->Addr,
                                     static_cast<ModbusExt::TEventType>(regIt->Type),
@@ -223,7 +228,7 @@ void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage
     }
 }
 
-void TSerialClientEventsReader::ReadEvents(TPort& port,
+void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
                                            util::TGetNowFn nowFn)
@@ -231,9 +236,16 @@ void TSerialClientEventsReader::ReadEvents(TPort& port,
     TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback);
     util::TSpentTimeMeter spentTimeMeter(nowFn);
     spentTimeMeter.Start();
+    std::unique_ptr<Modbus::IModbusTraits> traits;
+    if (port.IsModbusTcp()) {
+        traits = std::make_unique<Modbus::TModbusTCPTraits>();
+    } else {
+        traits = std::make_unique<ModbusExt::TModbusRTUWithArbitrationTraits>();
+    }
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
+                                       *traits,
                                        floor<milliseconds>(maxReadingTime - spentTime),
                                        LastAccessedSlaveId,
                                        EventState,
@@ -256,16 +268,29 @@ void TSerialClientEventsReader::ReadEvents(TPort& port,
     DisableEventsFromRegs(port, visitor.GetRegsToDisable());
 }
 
-void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
+void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort& port)
 {
     auto modbusDevice = ToModbusDevice(device.get());
     if (!modbusDevice) {
         return;
     }
+    if (!port.SupportsFastModbus()) {
+        LOG(Info) << port.GetDescription() << ". Skip enabling events for "
+                  << MakeDeviceDescriptionString(static_cast<uint8_t>(modbusDevice->SlaveId))
+                  << " because Fast Modbus is not supported by gateway";
+        return;
+    }
     uint8_t slaveId = static_cast<uint8_t>(modbusDevice->SlaveId);
     DevicesWithEnabledEvents.erase(slaveId);
+    std::unique_ptr<Modbus::IModbusTraits> traits;
+    if (port.IsModbusTcp()) {
+        traits = std::make_unique<Modbus::TModbusTCPTraits>();
+    } else {
+        traits = std::make_unique<Modbus::TModbusRTUTraits>();
+    }
     ModbusExt::TEventsEnabler ev(slaveId,
                                  port,
+                                 *traits,
                                  std::bind(&TSerialClientEventsReader::OnEnabledEvent,
                                            this,
                                            slaveId,

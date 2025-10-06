@@ -5,8 +5,8 @@
 #include <string.h>
 
 #include "log.h"
+#include "port/serial_port.h"
 #include "serial_exc.h"
-#include "serial_port.h"
 
 namespace IEC
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "port.h"
+#include "port/port.h"
 #include <mutex>
 
 namespace Modbus
@@ -29,7 +29,8 @@ namespace Modbus
         FN_WRITE_SINGLE_REGISTER = 0x6,
         FN_WRITE_MULTIPLE_COILS = 0xF,
         FN_WRITE_MULTIPLE_REGISTERS = 0x10,
-        FN_READ_WRITE_MULTIPLE_REGISTERS = 0x17
+        FN_READ_WRITE_MULTIPLE_REGISTERS = 0x17,
+        FN_CHECK_MGE = 0x47
     };
 
     enum EExceptionCode
@@ -45,6 +46,9 @@ namespace Modbus
 
         //! Time to first byte
         std::chrono::microseconds ResponseTime = std::chrono::microseconds::zero();
+
+        //! SlaveId of the device that sent the response
+        uint8_t SlaveId;
     };
 
     class IModbusTraits
@@ -58,14 +62,17 @@ namespace Modbus
         /**
          * @brief Read response to specified request.
          *
-         * @throw TSerialDeviceTransientErrorException on timeout.
+         * @throw TResponseTimeoutException on timeout.
+         *        Modbus::TErrorBase-based exception on Modbus related errors.
+         *        TSerialDeviceException-based on other internal errors.
          */
         virtual TReadResult Transaction(TPort& port,
                                         uint8_t slaveId,
                                         const std::vector<uint8_t>& requestPdu,
                                         size_t expectedResponsePduSize,
                                         const std::chrono::milliseconds& responseTimeout,
-                                        const std::chrono::milliseconds& frameTimeout) = 0;
+                                        const std::chrono::milliseconds& frameTimeout,
+                                        bool matchSlaveId = true) = 0;
 
     protected:
         bool ForceFrameTimeout;
@@ -82,7 +89,8 @@ namespace Modbus
                                    uint8_t slaveId,
                                    const std::chrono::milliseconds& responseTimeout,
                                    const std::chrono::milliseconds& frameTimeout,
-                                   std::vector<uint8_t>& response) const;
+                                   std::vector<uint8_t>& response,
+                                   bool matchSlaveId) const;
 
     public:
         TModbusRTUTraits(bool forceFrameTimeout = false);
@@ -92,7 +100,8 @@ namespace Modbus
                                 const std::vector<uint8_t>& requestPdu,
                                 size_t expectedResponsePduSize,
                                 const std::chrono::milliseconds& responseTimeout,
-                                const std::chrono::milliseconds& frameTimeout) override;
+                                const std::chrono::milliseconds& frameTimeout,
+                                bool matchSlaveId = true) override;
     };
 
     class TModbusTCPTraits: public IModbusTraits
@@ -109,7 +118,8 @@ namespace Modbus
                                    uint16_t transactionId,
                                    const std::chrono::milliseconds& responseTimeout,
                                    const std::chrono::milliseconds& frameTimeout,
-                                   std::vector<uint8_t>& response) const;
+                                   std::vector<uint8_t>& response,
+                                   bool matchSlaveId) const;
 
         static std::mutex TransactionIdMutex;
         static std::unordered_map<std::string, uint16_t> TransactionIds;
@@ -123,7 +133,8 @@ namespace Modbus
                                 const std::vector<uint8_t>& requestPdu,
                                 size_t expectedResponsePduSize,
                                 const std::chrono::milliseconds& responseTimeout,
-                                const std::chrono::milliseconds& frameTimeout) override;
+                                const std::chrono::milliseconds& frameTimeout,
+                                bool matchSlaveId = true) override;
 
         static void ResetTransactionId(TPort& port);
     };

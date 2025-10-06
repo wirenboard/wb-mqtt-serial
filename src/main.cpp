@@ -18,11 +18,11 @@
 
 #include "device_template_generator.h"
 #include "files_watcher.h"
+#include "port/serial_port.h"
 #include "rpc/rpc_config.h"
 #include "rpc/rpc_config_handler.h"
 #include "rpc/rpc_device_handler.h"
 #include "rpc/rpc_port_handler.h"
-#include "serial_port.h"
 
 #define STR(x) #x
 #define XSTR(x) STR(x)

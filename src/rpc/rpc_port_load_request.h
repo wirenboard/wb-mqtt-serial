@@ -3,9 +3,9 @@
 #include <wblib/json_utils.h>
 #include <wblib/rpc.h>
 
+#include "port/serial_port_settings.h"
 #include "rpc_port_handler.h"
 #include "serial_device.h"
-#include "serial_port_settings.h"
 
 enum class TRPCMessageFormat
 {

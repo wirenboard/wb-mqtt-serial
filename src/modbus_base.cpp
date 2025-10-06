@@ -1,9 +1,11 @@
 #include "modbus_base.h"
 
+#include "bin_utils.h"
 #include "crc16.h"
 #include "serial_exc.h"
 
 using namespace std;
+using namespace BinUtils;
 
 namespace
 {
@@ -69,12 +71,6 @@ namespace
         return function == Modbus::EFunction::FN_READ_COILS || function == Modbus::EFunction::FN_READ_DISCRETE ||
                function == Modbus::EFunction::FN_WRITE_SINGLE_COIL ||
                function == Modbus::EFunction::FN_WRITE_MULTIPLE_COILS;
-    }
-
-    void WriteAs2Bytes(uint8_t* dst, uint16_t val)
-    {
-        dst[0] = static_cast<uint8_t>(val >> 8);
-        dst[1] = static_cast<uint8_t>(val);
     }
 
     uint16_t GetCoilsByteSize(uint16_t count)
@@ -181,7 +177,8 @@ TReadFrameResult Modbus::TModbusRTUTraits::ReadFrame(TPort& port,
                                                      uint8_t slaveId,
                                                      const std::chrono::milliseconds& responseTimeout,
                                                      const std::chrono::milliseconds& frameTimeout,
-                                                     std::vector<uint8_t>& response) const
+                                                     std::vector<uint8_t>& response,
+                                                     bool matchSlaveId) const
 {
     auto rc =
         port.ReadFrame(response.data(), response.size(), responseTimeout, frameTimeout, ExpectNBytes(response.size()));
@@ -204,8 +201,7 @@ TReadFrameResult Modbus::TModbusRTUTraits::ReadFrame(TPort& port,
         }
     }
 
-    auto responseSlaveId = response[0];
-    if (slaveId != responseSlaveId) {
+    if (matchSlaveId && slaveId != response[0]) {
         throw Modbus::TUnexpectedResponseError("request and response slave id mismatch");
     }
     return rc;
@@ -216,7 +212,8 @@ Modbus::TReadResult Modbus::TModbusRTUTraits::Transaction(TPort& port,
                                                           const std::vector<uint8_t>& requestPdu,
                                                           size_t expectedResponsePduSize,
                                                           const std::chrono::milliseconds& responseTimeout,
-                                                          const std::chrono::milliseconds& frameTimeout)
+                                                          const std::chrono::milliseconds& frameTimeout,
+                                                          bool matchSlaveId)
 {
     std::vector<uint8_t> request(GetPacketSize(requestPdu.size()));
     std::copy(requestPdu.begin(), requestPdu.end(), request.begin() + 1);
@@ -226,10 +223,11 @@ Modbus::TReadResult Modbus::TModbusRTUTraits::Transaction(TPort& port,
 
     std::vector<uint8_t> response(GetPacketSize(expectedResponsePduSize));
 
-    auto readRes = ReadFrame(port, slaveId, responseTimeout, frameTimeout, response);
+    auto readRes = ReadFrame(port, slaveId, responseTimeout, frameTimeout, response, matchSlaveId);
 
     TReadResult res;
     res.ResponseTime = readRes.ResponseTime;
+    res.SlaveId = slaveId;
     res.Pdu.assign(response.begin() + 1, response.begin() + (readRes.Count - CRC_SIZE));
     return res;
 }
@@ -299,7 +297,8 @@ TReadFrameResult Modbus::TModbusTCPTraits::ReadFrame(TPort& port,
                                                      uint16_t transactionId,
                                                      const std::chrono::milliseconds& responseTimeout,
                                                      const std::chrono::milliseconds& frameTimeout,
-                                                     std::vector<uint8_t>& response) const
+                                                     std::vector<uint8_t>& response,
+                                                     bool matchSlaveId) const
 {
     auto startTime = chrono::steady_clock::now();
     // Timeout for reading packet with expected transaction ID
@@ -335,7 +334,7 @@ TReadFrameResult Modbus::TModbusTCPTraits::ReadFrame(TPort& port,
         // check transaction id
         if (((transactionId >> 8) & 0xFF) == response[0] && (transactionId & 0xFF) == response[1]) {
             // check unit identifier
-            if (slaveId != response[6]) {
+            if (matchSlaveId && slaveId != response[6]) {
                 throw Modbus::TUnexpectedResponseError("request and response unit identifier mismatch");
             }
             return rc;
@@ -349,7 +348,8 @@ Modbus::TReadResult Modbus::TModbusTCPTraits::Transaction(TPort& port,
                                                           const std::vector<uint8_t>& requestPdu,
                                                           size_t expectedResponsePduSize,
                                                           const std::chrono::milliseconds& responseTimeout,
-                                                          const std::chrono::milliseconds& frameTimeout)
+                                                          const std::chrono::milliseconds& frameTimeout,
+                                                          bool matchSlaveId)
 {
     auto transactionId = GetTransactionId(port);
     std::vector<uint8_t> request(GetPacketSize(requestPdu.size()));
@@ -360,10 +360,11 @@ Modbus::TReadResult Modbus::TModbusTCPTraits::Transaction(TPort& port,
 
     std::vector<uint8_t> response(GetPacketSize(expectedResponsePduSize));
 
-    auto readRes = ReadFrame(port, slaveId, transactionId, responseTimeout, frameTimeout, response);
+    auto readRes = ReadFrame(port, slaveId, transactionId, responseTimeout, frameTimeout, response, matchSlaveId);
 
     TReadResult res;
     res.ResponseTime = readRes.ResponseTime;
+    res.SlaveId = response[6];
     res.Pdu.assign(response.begin() + MBAP_SIZE, response.begin() + readRes.Count);
     return res;
 }

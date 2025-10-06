@@ -7,21 +7,22 @@
 class TSerialClientTaskExecutor: public util::TNonCopyable
 {
 public:
-    TSerialClientTaskExecutor(PPort port);
+    TSerialClientTaskExecutor(PFeaturePort port);
     ~TSerialClientTaskExecutor();
 
     void AddTask(PSerialClientTask task);
 
-    PPort GetPort() const;
+    PFeaturePort GetPort() const;
 
     bool IsIdle() const;
 
 private:
-    PPort Port;
+    PFeaturePort Port;
 
     mutable std::mutex Mutex;
     std::condition_variable TasksCv;
     std::vector<PSerialClientTask> Tasks;
+
     std::thread Thread;
     std::atomic<bool> Running;
     bool Idle;

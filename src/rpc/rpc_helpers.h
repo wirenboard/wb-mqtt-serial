@@ -2,7 +2,7 @@
 
 #include <wblib/json_utils.h>
 
-#include "serial_port_settings.h"
+#include "port/serial_port_settings.h"
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
 

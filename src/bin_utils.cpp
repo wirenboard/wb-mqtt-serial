@@ -36,3 +36,9 @@ void BinUtils::DecodeByteStuffing(std::vector<uint8_t>& data,
     }
     data.resize(writeIt - data.begin());
 }
+
+void BinUtils::WriteAs2Bytes(uint8_t* dst, uint16_t val)
+{
+    dst[0] = static_cast<uint8_t>(val >> 8);
+    dst[1] = static_cast<uint8_t>(val);
+}
