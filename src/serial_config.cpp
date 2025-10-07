@@ -14,6 +14,8 @@
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
 
+#include "devices/modbus_device.h"
+
 #ifndef __EMSCRIPTEN__
 #include "tcp_port.h"
 #include "tcp_port_settings.h"
@@ -41,8 +43,6 @@
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
 #endif
-
-#include "devices/modbus_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
@@ -1168,6 +1168,8 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 {
+    TModbusDevice::Register(deviceFactory);
+
 #ifndef __EMSCRIPTEN__
     TEnergomeraIecWithFastReadDevice::Register(deviceFactory);
     TEnergomeraIecModeCDevice::Register(deviceFactory);
@@ -1189,8 +1191,6 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     TIecModeCDevice::Register(deviceFactory);
     TEnergomeraCeDevice::Register(deviceFactory);
 #endif
-
-    TModbusDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

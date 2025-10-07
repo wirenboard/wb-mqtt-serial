@@ -64,12 +64,12 @@ SRC = \
 	$(JSONCPP_SRC)/json_writer.cpp                      \
 
 FILE = \
-	wasm/templates                                                 \
-	wb-mqtt-serial-confed-common.schema.json                       \
-	wb-mqtt-serial-device-template.schema.json                     \
-	wb-mqtt-serial-rpc-device-load-config-request.wasm-schema.json \
-	wb-mqtt-serial-rpc-device-set-request.wasm-schema.json         \
-	wb-mqtt-serial-rpc-port-scan-request.wasm-schema.json          \
+	wb-mqtt-serial-confed-common.schema.json                              \
+	wb-mqtt-serial-device-template.schema.json                            \
+	wasm/schema/wb-mqtt-serial-rpc-device-load-config-request.schema.json \
+	wasm/schema/wb-mqtt-serial-rpc-device-set-request.schema.json         \
+	wasm/schema/wb-mqtt-serial-rpc-port-scan-request.schema.json          \
+	wasm/templates                                                        \
 
 OPT = \
 	-fexceptions                                    \

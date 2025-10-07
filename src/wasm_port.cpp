@@ -10,6 +10,23 @@
 
 #define LOG(logger) logger.Log() << "[wasm port] "
 
+TWASMPort::TWASMPort()
+{}
+
+void TWASMPort::Open()
+{}
+
+void TWASMPort::Close()
+{}
+
+bool TWASMPort::IsOpen() const
+{
+    return true;
+}
+
+void TWASMPort::CheckPortOpen() const
+{}
+
 void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
 {
     // clang-format off
@@ -27,6 +44,11 @@ void TWASMPort::WriteBytes(const uint8_t* buffer, int count)
     // clang-format on
 
     LOG(Debug) << "write " << count << " bytes: " << WBMQTT::HexDump(buffer, count);
+}
+
+uint8_t TWASMPort::ReadByte(const std::chrono::microseconds& timeout)
+{
+    return 0;
 }
 
 TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
@@ -62,6 +84,27 @@ TReadFrameResult TWASMPort::ReadFrame(uint8_t* buffer,
 
     LOG(Debug) << "read " << length << " bytes: " << WBMQTT::HexDump(buffer, length);
     return res;
+}
+
+void TWASMPort::SkipNoise()
+{}
+
+void TWASMPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
+{}
+
+std::chrono::microseconds TWASMPort::GetSendTimeBytes(double bytesNumber) const
+{
+    return std::chrono::microseconds(0);
+}
+
+std::chrono::microseconds TWASMPort::GetSendTimeBits(size_t bitsNumber) const
+{
+    return std::chrono::microseconds(0);
+}
+
+std::string TWASMPort::GetDescription(bool verbose) const
+{
+    return "WASM port";
 }
 
 void TWASMPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)

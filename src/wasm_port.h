@@ -3,29 +3,14 @@
 class TWASMPort: public TPort
 {
 public:
-    TWASMPort()
-    {}
+    TWASMPort();
 
-    void Open() override
-    {}
-
-    void Close() override
-    {}
-
-    bool IsOpen() const override
-    {
-        return true;
-    }
-
-    void CheckPortOpen() const override
-    {}
-
+    void Open() override;
+    void Close() override;
+    bool IsOpen() const override;
+    void CheckPortOpen() const override;
     void WriteBytes(const uint8_t* buffer, int count) override;
-
-    uint8_t ReadByte(const std::chrono::microseconds& timeout) override
-    {
-        return 0;
-    }
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
 
     TReadFrameResult ReadFrame(uint8_t* buffer,
                                size_t count,
@@ -33,30 +18,10 @@ public:
                                const std::chrono::microseconds& frameTimeout,
                                TFrameCompletePred frame_complete = 0) override;
 
-    void SkipNoise() override
-    {}
-
-    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override
-    {}
-
-    std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override
-    {
-        // 8-N-2
-        auto bits = std::ceil(11 * bytesNumber);
-        return GetSendTimeBits(bits);
-    }
-
-    std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override
-    {
-        // 115200 bps
-        auto us = std::ceil((1000000.0 * bitsNumber) / 115200.0);
-        return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
-    }
-
-    std::string GetDescription(bool verbose) const override
-    {
-        return "WASM port";
-    }
-
+    void SkipNoise() override;
+    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
+    std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override;
+    std::string GetDescription(bool verbose) const override;
     void ApplySerialPortSettings(const TSerialPortConnectionSettings& settings) override;
 };

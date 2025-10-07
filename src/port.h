@@ -159,16 +159,10 @@ private:
 // restoring them back to preconfigured on destructor
 class TSerialPortSettingsGuard
 {
-    PPort Port;
-
 public:
-    TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings): Port(port)
-    {
-        Port->ApplySerialPortSettings(settings);
-    }
+    TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings);
+    ~TSerialPortSettingsGuard();
 
-    ~TSerialPortSettingsGuard()
-    {
-        Port->ResetSerialPortSettings();
-    }
+private:
+    PPort Port;
 };

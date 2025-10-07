@@ -17,14 +17,14 @@ using namespace std::chrono;
 
 namespace
 {
-    const auto TEMPLATES_DIR = "wasm/templates";
-
     const auto COMMON_SCHEMA_FILE = "wb-mqtt-serial-confed-common.schema.json";
     const auto TEMPLATES_SCHEMA_FILE = "wb-mqtt-serial-device-template.schema.json";
 
-    const auto PORT_SCAN_SCHEMA_FILE = "wb-mqtt-serial-rpc-port-scan-request.wasm-schema.json";
-    const auto DEVICE_LOAD_CONFIG_SCHEMA_FILE = "wb-mqtt-serial-rpc-device-load-config-request.wasm-schema.json";
-    const auto DEVICE_SET_SCHEMA_FILE = "wb-mqtt-serial-rpc-device-set-request.wasm-schema.json";
+    const auto PORT_SCAN_SCHEMA_FILE = "wasm/schema/wb-mqtt-serial-rpc-port-scan-request.schema.json";
+    const auto DEVICE_LOAD_CONFIG_SCHEMA_FILE = "wasm/schema/wb-mqtt-serial-rpc-device-load-config-request.schema.json";
+    const auto DEVICE_SET_SCHEMA_FILE = "wasm/schema/wb-mqtt-serial-rpc-device-set-request.schema.json";
+
+    const auto TEMPLATES_DIR = "wasm/templates";
 
     PTemplateMap TemplateMap = nullptr;
     auto Port = std::make_shared<TWASMPort>();
