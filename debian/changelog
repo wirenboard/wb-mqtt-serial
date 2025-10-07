@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.192.1) stable; urgency=medium
+
+  * Fix TModbusRTUWithArbitrationTraits::Transaction method
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 07 Oct 2025 17:21:57 +0300
+
 wb-mqtt-serial (2.192.0) stable; urgency=medium
 
   * Add support for WB-MGE v.3.
