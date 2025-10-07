@@ -723,11 +723,11 @@ namespace ModbusExt // modbus extension protocol declarations
         if (matchSlaveId && (packet[0] != slaveId)) {
             throw Modbus::TUnexpectedResponseError("slave id mismatch");
         }
+        const uint8_t* data = response.data();
         Modbus::TReadResult result;
         result.ResponseTime = res.ResponseTime;
-        result.Pdu.assign(packet + RTU_HEADER_SIZE, response.cbegin() + (res.Count - CRC_SIZE));
+        result.Pdu.assign(packet + RTU_HEADER_SIZE, data + (res.Count - CRC_SIZE));
         result.SlaveId = packet[0];
         return result;
     }
-
 }
