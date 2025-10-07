@@ -139,7 +139,7 @@ TRPCDeviceSetSerialClientTask::TRPCDeviceSetSerialClientTask(PRPCDeviceSetReques
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
-ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PFeaturePort port,
                                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                  const std::list<PSerialDevice>& polledDevices)
 {

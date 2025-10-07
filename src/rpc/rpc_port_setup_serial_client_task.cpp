@@ -1,5 +1,6 @@
 #include "rpc_port_setup_serial_client_task.h"
 #include "modbus_common.h"
+#include "port/serial_port.h"
 #include "rpc_helpers.h"
 #include "serial_exc.h"
 #include "wb_registers.h"
@@ -70,7 +71,7 @@ TRPCPortSetupSerialClientTask::TRPCPortSetupSerialClientTask(const Json::Value& 
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
-ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PFeaturePort port,
                                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                  const std::list<PSerialDevice>& polledDevices)
 {
@@ -86,7 +87,13 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
             port->Open();
         }
         port->SkipNoise();
-        ModbusExt::TModbusTraits fastModbusTraits;
+        std::unique_ptr<Modbus::IModbusTraits> baseTraits;
+        if (port->IsModbusTcp()) {
+            baseTraits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            baseTraits = std::make_unique<Modbus::TModbusRTUTraits>();
+        }
+        ModbusExt::TModbusTraits fastModbusTraits(std::move(baseTraits));
         Modbus::TModbusRTUTraits rtuTraits(false);
         auto frameTimeout =
             std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));

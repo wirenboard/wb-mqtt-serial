@@ -1,7 +1,7 @@
 #include "rpc_port_driver_list.h"
+#include "port/serial_port.h"
+#include "port/tcp_port.h"
 #include "rpc_helpers.h"
-#include "serial_port.h"
-#include "tcp_port.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -22,7 +22,7 @@ namespace
         throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    PPort InitPort(const Json::Value& request)
+    PFeaturePort InitPort(const Json::Value& request)
     {
         if (request.isMember("path")) {
             std::string path;
@@ -30,7 +30,7 @@ namespace
             TSerialPortSettings settings(path, ParseRPCSerialPortSettings(request));
 
             LOG(Debug) << "Create serial port: " << path;
-            return std::make_shared<TSerialPort>(settings);
+            return std::make_shared<TFeaturePort>(std::make_shared<TSerialPort>(settings), false);
         }
         if (request.isMember("ip") && request.isMember("port")) {
             std::string address;
@@ -40,7 +40,8 @@ namespace
             TTcpPortSettings settings(address, portNumber);
 
             LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
-            return std::make_shared<TTcpPort>(settings);
+            bool isModbusTcp = request.get("protocol", "modbus").asString() == "modbus-tcp";
+            return std::make_shared<TFeaturePort>(std::make_shared<TTcpPort>(settings), isModbusTcp);
         }
         throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
@@ -50,7 +51,7 @@ namespace
 //              TSerialClientTaskExecutor
 //==========================================================
 
-TSerialClientTaskExecutor::TSerialClientTaskExecutor(PPort port): Port(port), Running(true), Idle(true)
+TSerialClientTaskExecutor::TSerialClientTaskExecutor(PFeaturePort port): Port(port), Running(true), Idle(true)
 {
     Thread = std::thread([this]() {
         TSerialClientDeviceAccessHandler lastAccessedDevice(nullptr);
@@ -102,7 +103,7 @@ void TSerialClientTaskExecutor::AddTask(PSerialClientTask task)
     TasksCv.notify_all();
 }
 
-PPort TSerialClientTaskExecutor::GetPort() const
+PFeaturePort TSerialClientTaskExecutor::GetPort() const
 {
     return Port;
 }

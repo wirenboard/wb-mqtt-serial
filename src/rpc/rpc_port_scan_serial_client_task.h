@@ -91,7 +91,7 @@ public:
                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                  WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-    ISerialClientTask::TRunResult Run(PPort port,
+    ISerialClientTask::TRunResult Run(PFeaturePort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                       const std::list<PSerialDevice>& polledDevices) override;
 

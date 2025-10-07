@@ -7,7 +7,7 @@ TSerialClientDeviceAccessHandler::TSerialClientDeviceAccessHandler(PSerialClient
     : EventsReader(eventsReader)
 {}
 
-bool TSerialClientDeviceAccessHandler::PrepareToAccess(TPort& port, PSerialDevice dev)
+bool TSerialClientDeviceAccessHandler::PrepareToAccess(TFeaturePort& port, PSerialDevice dev)
 {
     if (LastAccessedDevice && dev != LastAccessedDevice) {
         try {

@@ -3,7 +3,7 @@
 #include <optional>
 
 #include "modbus_base.h"
-#include "port.h"
+#include "port/port.h"
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
@@ -58,6 +58,7 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @return false - no more events
      */
     bool ReadEvents(TPort& port,
+                    Modbus::IModbusTraits& traits,
                     std::chrono::milliseconds maxReadingTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,
@@ -77,6 +78,7 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
+                       Modbus::IModbusTraits& traits,
                        TEventsEnabler::TVisitorFn visitor,
                        TEventsEnablerFlags flags = TEventsEnablerFlags::NO_HOLES);
 
@@ -108,51 +110,65 @@ namespace ModbusExt // modbus extension protocol common utilities
             TEventPriority Priority;
         };
 
-        std::vector<uint8_t> Request;
-        std::vector<uint8_t> Response;
         std::vector<TRegisterToEnable> Settings;
         std::vector<TRegisterToEnable>::const_iterator SettingsStart;
         std::vector<TRegisterToEnable>::const_iterator SettingsEnd;
 
         uint8_t SlaveId;
         TPort& Port;
+        Modbus::IModbusTraits& Traits;
         size_t MaxRegDistance;
         std::chrono::milliseconds FrameTimeout;
         TVisitorFn Visitor;
 
-        void EnableEvents();
-        void ClearRequest();
+        void EnableEvents(const std::vector<uint8_t>& requestPdu);
 
         void SendSingleRequest();
     };
 
-    const uint8_t* GetPacketStart(const uint8_t* data, size_t size);
+    const uint8_t* GetRTUPacketStart(const uint8_t* data, size_t size);
 
     class TModbusTraits: public Modbus::IModbusTraits
     {
         uint32_t Sn;
         TModbusExtCommand ModbusExtCommand;
-        TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
+        std::unique_ptr<Modbus::IModbusTraits> BaseTraits;
 
-        size_t GetPacketSize(size_t pduSize) const;
-        void FinalizeRequest(std::vector<uint8_t>& request);
-        TReadFrameResult ReadFrame(TPort& port,
-                                   const std::chrono::milliseconds& responseTimeout,
-                                   const std::chrono::milliseconds& frameTimeout,
-                                   std::vector<uint8_t>& response) const;
+        size_t GetIntermediatePduSize(size_t pduSize) const;
+        void FinalizeIntermediatePdu(std::vector<uint8_t>& request);
+        void ValidateIntermediateResponsePdu(const std::vector<uint8_t>& response) const;
 
     public:
-        TModbusTraits();
+        TModbusTraits(std::unique_ptr<Modbus::IModbusTraits> baseTraits);
 
         Modbus::TReadResult Transaction(TPort& port,
                                         uint8_t slaveId,
                                         const std::vector<uint8_t>& requestPdu,
                                         size_t expectedResponsePduSize,
                                         const std::chrono::milliseconds& responseTimeout,
-                                        const std::chrono::milliseconds& frameTimeout) override;
+                                        const std::chrono::milliseconds& frameTimeout,
+                                        bool matchSlaveId = true) override;
 
         void SetSn(uint32_t sn);
         void SetModbusExtCommand(TModbusExtCommand command);
+    };
+
+    class TModbusRTUWithArbitrationTraits: public Modbus::IModbusTraits
+    {
+        TPort::TFrameCompletePred ExpectFastModbusRTU() const;
+
+        void FinalizeRequest(std::vector<uint8_t>& request, uint8_t slaveId);
+
+    public:
+        TModbusRTUWithArbitrationTraits();
+
+        Modbus::TReadResult Transaction(TPort& port,
+                                        uint8_t slaveId,
+                                        const std::vector<uint8_t>& requestPdu,
+                                        size_t expectedResponsePduSize,
+                                        const std::chrono::milliseconds& responseTimeout,
+                                        const std::chrono::milliseconds& frameTimeout,
+                                        bool matchSlaveId = true) override;
     };
 
     struct TScannedDevice
@@ -170,7 +186,10 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @param modbusExtCommand The Fast Modbus command to use for scanning.
      * @param scannedDevices A vector to store the scanned devices.
      */
-    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices);
+    void Scan(TPort& port,
+              Modbus::IModbusTraits& traits,
+              ModbusExt::TModbusExtCommand modbusExtCommand,
+              std::vector<ModbusExt::TScannedDevice>& scannedDevices);
 
     /**
      * Starts scan on specified port for devices using Fast Modbus.
@@ -180,7 +199,9 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @param modbusExtCommand The Fast Modbus command to use for scanning.
      * @return The scanned device or std::nullopt if no devices found.
      */
-    std::optional<TScannedDevice> ScanStart(TPort& port, TModbusExtCommand modbusExtCommand);
+    std::optional<ModbusExt::TScannedDevice> ScanStart(TPort& port,
+                                                       Modbus::IModbusTraits& traits,
+                                                       ModbusExt::TModbusExtCommand modbusExtCommand);
 
     /**
      * Continues scan on specified port for devices using Fast Modbus.
@@ -190,6 +211,8 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @param modbusExtCommand The Fast Modbus command to use for scanning.
      * @return The scanned device or std::nullopt if no more devices found.
      */
-    std::optional<TScannedDevice> ScanNext(TPort& port, TModbusExtCommand modbusExtCommand);
+    std::optional<ModbusExt::TScannedDevice> ScanNext(TPort& port,
+                                                      Modbus::IModbusTraits& traits,
+                                                      ModbusExt::TModbusExtCommand modbusExtCommand);
 
 } // modbus extension protocol common utilities

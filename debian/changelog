@@ -1,3 +1,40 @@
+wb-mqtt-serial (2.192.0) stable; urgency=medium
+
+  * Add support for WB-MGE v.3.
+    Allow to use Fast Modbus over TCP for device searching and events polling.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 02 Oct 2025 15:22:57 +0500
+
+wb-mqtt-serial (2.191.0) stable; urgency=medium
+
+  * Add VAKIO City Air 250/500 Template
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 01 Oct 2025 14:50:00 +0400
+
+wb-mqtt-serial (2.190.0) stable; urgency=medium
+
+  * Generate default config on service start
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 01 Oct 2025 15:00:00 +0400
+
+wb-mqtt-serial (2.189.0) stable; urgency=medium
+
+  * Update device templates for:
+      - Wb-MAI11;
+      - WM-MRGBDW-D (fw prior to version 3);
+      - WB-MS v.2;
+      - WBE2-I-EBUS;
+      - WBE2-I-OPENTHERM fw1.3 and fw1.4.
+    No functional change, only porting from old deprecated format.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 25 Sep 2025 11:36:36 +0500
+
+wb-mqtt-serial (2.188.4) stable; urgency=medium
+
+  * Fix WB-MAP* SN reading on port/Scan
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 23 Sep 2025 10:59:31 +0300
+
 wb-mqtt-serial (2.188.3) stable; urgency=medium
 
   * Fix formatting in WBE2-I-EBUS template. No functional changes

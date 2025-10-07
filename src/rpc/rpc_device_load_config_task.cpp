@@ -1,5 +1,6 @@
 #include "rpc_device_load_config_task.h"
 #include "config_merge_template.h"
+#include "port/serial_port.h"
 #include "rpc_helpers.h"
 #include "wb_registers.h"
 
@@ -174,7 +175,7 @@ TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCD
 }
 
 ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
-    PPort port,
+    PFeaturePort port,
     TSerialClientDeviceAccessHandler& lastAccessedDevice,
     const std::list<PSerialDevice>& polledDevices)
 {

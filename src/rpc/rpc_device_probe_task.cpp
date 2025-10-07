@@ -1,4 +1,5 @@
 #include "rpc_device_probe_task.h"
+#include "port/serial_port.h"
 #include "rpc_helpers.h"
 #include "rpc_port_handler.h"
 #include "rpc_port_scan_serial_client_task.h"
@@ -33,7 +34,7 @@ TRPCDeviceProbeSerialClientTask::TRPCDeviceProbeSerialClientTask(const Json::Val
     }
 }
 
-ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PPort port,
+ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PFeaturePort port,
                                                                    TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                    const std::list<PSerialDevice>& polledDevices)
 {

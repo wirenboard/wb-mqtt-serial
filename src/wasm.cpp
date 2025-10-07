@@ -1,7 +1,8 @@
 #ifdef __EMSCRIPTEN__
 
 #include "log.h"
-#include "wasm_port.h"
+#include "port/feature_port.h"
+#include "port/wasm_port.h"
 
 #include "rpc/rpc_device_load_config_task.h"
 #include "rpc/rpc_device_set_task.h"
@@ -27,7 +28,7 @@ namespace
     const auto TEMPLATES_DIR = "wasm/templates";
 
     PTemplateMap TemplateMap = nullptr;
-    auto Port = std::make_shared<TWASMPort>();
+    auto Port = std::make_shared<TFeaturePort>(std::make_shared<TWASMPort>(), false);
     std::list<PSerialDevice> PolledDevices;
 
     class THelper

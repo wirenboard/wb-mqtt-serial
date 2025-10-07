@@ -28,7 +28,6 @@ SRC = \
 	$(SRC_DIR)/modbus_ext_common.cpp                    \
 	$(SRC_DIR)/modbus_common.cpp                        \
 	$(SRC_DIR)/pollable_device.cpp                      \
-	$(SRC_DIR)/port.cpp                                 \
 	$(SRC_DIR)/register.cpp                             \
 	$(SRC_DIR)/register_value.cpp                       \
 	$(SRC_DIR)/register_handler.cpp                     \
@@ -41,10 +40,12 @@ SRC = \
 	$(SRC_DIR)/serial_exc.cpp                           \
 	$(SRC_DIR)/templates_map.cpp                        \
 	$(SRC_DIR)/wasm.cpp                                 \
-	$(SRC_DIR)/wasm_port.cpp                            \
 	$(SRC_DIR)/wb_registers.cpp                         \
 	$(SRC_DIR)/write_channel_serial_client_task.cpp     \
 	$(SRC_DIR)/devices/modbus_device.cpp                \
+	$(SRC_DIR)/port/port.cpp                            \
+	$(SRC_DIR)/port/feature_port.cpp                    \
+	$(SRC_DIR)/port/wasm_port.cpp                       \
 	$(SRC_DIR)/rpc/rpc_config.cpp                       \
 	$(SRC_DIR)/rpc/rpc_device_handler.cpp               \
 	$(SRC_DIR)/rpc/rpc_device_load_task.cpp             \

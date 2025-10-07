@@ -7,7 +7,7 @@
 #include "common_utils.h"
 #include "devices/modbus_device.h"
 #include "modbus_ext_common.h"
-#include "port.h"
+#include "port/port.h"
 #include "register.h"
 
 struct TEventsReaderRegisterDesc
@@ -40,9 +40,9 @@ public:
 
     void SetDevices(const std::list<PSerialDevice>& devices);
 
-    void EnableEvents(PSerialDevice device, TPort& port);
+    void EnableEvents(PSerialDevice device, TFeaturePort& port);
 
-    void ReadEvents(TPort& port,
+    void ReadEvents(TFeaturePort& port,
                     std::chrono::milliseconds maxReadingTime,
                     TRegisterCallback registerCallback,
                     util::TGetNowFn nowFn);

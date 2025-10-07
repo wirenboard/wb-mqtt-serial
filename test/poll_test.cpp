@@ -86,13 +86,14 @@ public:
         TLoggedFixture::SetUp();
         TimeMock.Reset();
         Port = std::make_shared<TFakeSerialPortWithTime>(*this, TimeMock);
+        FeaturePort = std::make_shared<TFeaturePort>(Port, false);
         TModbusDevice::Register(DeviceFactory);
-        Port->Open();
+        FeaturePort->Open();
     }
 
     void TearDown() override
     {
-        Port->Close();
+        FeaturePort->Close();
         TLoggedFixture::TearDown();
     }
 
@@ -100,7 +101,7 @@ public:
     {
         Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": Cycle";
         serialClient.OpenPortCycle(
-            *Port,
+            *FeaturePort,
             [this](PRegister reg) {
                 std::string errorMsg;
                 if (reg->GetErrorState().any()) {
@@ -295,6 +296,7 @@ public:
     }
 
     std::shared_ptr<TFakeSerialPortWithTime> Port;
+    std::shared_ptr<TFeaturePort> FeaturePort;
     TTimeMock TimeMock;
     TSerialDeviceFactory DeviceFactory;
 };

@@ -1,5 +1,4 @@
 #include "serial_port.h"
-#include "iec_common.h"
 #include "log.h"
 #include "serial_exc.h"
 
