@@ -1,3 +1,14 @@
+wb-mqtt-serial (2.180.2-wb102) stable; urgency=medium
+
+  * config-wb-mwac2_ver2.json.jinja:
+    - Add support for normally closed sensors
+    - Add buzzer control
+
+  * config-wb-mwac.json.jinja:
+    - Add support for normally closed sensors
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 08 Oct 2025 19:52:00 +0300
+
 wb-mqtt-serial (2.180.2-wb101) stable; urgency=medium
 
   * fix WB-LED fade dec RGB regs
