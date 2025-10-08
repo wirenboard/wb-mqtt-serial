@@ -15,9 +15,9 @@ class SerialPort
     {
         switch (true)
         {
-            case baudRate < 4800: this.replyTimeout = 1000; break;
-            case baudRate < 38400: this.replyTimeout = 500; break;
-            default: this.replyTimeout = 250; break;
+            case baudRate < 4800:  this.replyTimeout = 1000; break;
+            case baudRate < 38400: this.replyTimeout = 500;  break;
+            default:               this.replyTimeout = 250;  break;
         }
 
         switch (String.fromCharCode(parity))

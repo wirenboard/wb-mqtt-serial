@@ -81,7 +81,7 @@ namespace
                 Template = TemplateMap->GetTemplate(Request["device_type"].asString());
                 Device = Params.factory->CreateDevice(Template->GetTemplate(), config, Params.protocol);
             } catch (const std::out_of_range& e) {
-                LOG(Error) << "helper exception: " << e.what();
+                LOG(Error) << "Unable to create device: " << e.what();
             }
         }
 
@@ -147,7 +147,7 @@ void PortScan(const std::string& requestString)
         auto accessHandler = helper.GetAccessHandler();
         TRPCPortScanSerialClientTask(helper.Request, OnResult, OnError).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "port/Scan RPC exception: " << e.what();
+        LOG(Error) << "port/Scan RPC failed: " << e.what();
     }
 }
 
@@ -167,7 +167,7 @@ void DeviceLoadConfig(const std::string& requestString)
         auto accessHandler = helper.GetAccessHandler();
         TRPCDeviceLoadConfigSerialClientTask(rpcRequest).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "device/LoadConfig RPC exception: " << e.what();
+        LOG(Error) << "device/LoadConfig RPC failed: " << e.what();
     }
 }
 
@@ -185,7 +185,7 @@ void DeviceSet(const std::string& requestString)
         auto accessHandler = helper.GetAccessHandler();
         TRPCDeviceSetSerialClientTask(rpcRequest).Run(Port, accessHandler, PolledDevices);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "device/Set RPC exception: " << e.what();
+        LOG(Error) << "device/Set RPC failed: " << e.what();
     }
 }
 
