@@ -244,10 +244,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 
-std::string GetDeviceKey(const std::string& deviceType);
-std::string GetSubdeviceSchemaKey(const std::string& subDeviceType);
-
-void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
 std::string DecorateIfNotEmpty(const std::string& prefix,
                                const std::string& str,

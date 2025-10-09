@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.192.0) stable; urgency=medium
+
+  * Drop subdevices support in wb-mqtt-homeui
+
+  [ Ilya Titov ]
+  * Update config/Load RPC reply format
+  * Update config/GetSchema RPC reply format
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 09 Oct 2025 21:56:22 +0500
+
 wb-mqtt-serial (2.192.2) stable; urgency=medium
 
   * fix WB-LED fade dec RGB regs

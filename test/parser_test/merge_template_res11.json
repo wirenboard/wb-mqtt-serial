@@ -12,11 +12,13 @@
         {
             "address": "0x0504",
             "condition": "param2==3",
+            "dependencies" : [ "param2" ],
             "name": "c4"
         },
         {
             "address": "0x0505",
             "condition": "param1==2&&param2==3",
+            "dependencies": [ "param1", "param2" ],
             "name": "c5"
         }
     ],

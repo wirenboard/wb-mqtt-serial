@@ -7,23 +7,15 @@
       "properties": {
         "slave_id": {
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "Slave id of the device",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
-              "options": {
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              }
+          "title": "Slave id of the device",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
-            {
-              "type": "integer"
-            }
-          ],
-          "format": "wb-first-oneof"
+            "patternmessage": "Should be decimal or hex"
+          }
         }
       }
     },
@@ -31,37 +23,24 @@
       "properties": {
         "slave_id": {
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "Slave id of the device or broadcast mode",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-              "options": {
-                "show_opt_in": true,
-                "wb": {
-                    "editor_title": "decimal or hex slave id",
-                    "undefined_title": "broadcast",
-                    "undefined_message" : "broadcast_description"
-                },
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              },
-              "format" : "wb-optional"
+          "title": "Slave id of the device or broadcast mode",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "show_opt_in": true,
+            "wb": {
+                "editor_title": "decimal or hex slave id",
+                "undefined_title": "broadcast",
+                "undefined_message" : "broadcast_description"
             },
-            {
-              "type": "integer"
-            }
-          ],
-          "format": "wb-first-oneof"
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          },
+          "format" : "wb-optional"
         }
       }
-    },
-    "device_name": {
-      "description" : "Device name to be displayed in UI",
-      "minLength" : 1,
-      "type" : "string"
     },
     "deviceProperties": {
       "properties": {
@@ -73,8 +52,10 @@
           "propertyOrder": 1
         },
         "name" : {
-          "$ref" : "#/definitions/device_name",
+          "type" : "string",
           "title" : "Device name",
+          "description" : "Device name to be displayed in UI",
+          "minLength" : 1,
           "propertyOrder": 3
         },
         "id": {
@@ -86,12 +67,6 @@
             "patternmessage": "Invalid device ID"
           },
           "propertyOrder": 4
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
         },
         "read_rate_limit_ms": {
           "type": "integer",
@@ -112,11 +87,8 @@
           "type": "array",
           "title": "Password as a list of bytes",
           "items": { "$ref": "#/definitions/serial_int" },
-          "format": "table",
-          "propertyOrder": 101,
-          "options": {
-            "disable_array_delete_last_row": true
-          }
+          "format": "wb-byte-array",
+          "propertyOrder": 101
         },
         "access_level": {
           "type": "integer",
@@ -173,7 +145,7 @@
           "title": "Frame timeout (ms)",
           "description": "frame_timeout_description",
           "minimum": -1,
-          "default": -1,
+          "default": 20,
           "propertyOrder": 108
         },
         "force_frame_timeout": {
@@ -189,7 +161,7 @@
           "title": "Response timeout (ms)",
           "description": "response_timeout_description",
           "minimum": -1,
-          "default": -1,
+          "default": 500,
           "propertyOrder": 110
         },
         "device_timeout_ms": {
@@ -221,38 +193,39 @@
     "setup_cmd": {
       "type": "object",
       "title": "Setup command",
-      "headerTemplate": "{{self.title}}",
       "properties": {
         "title": {
           "type": "string",
           "title": "Command name",
           "description": "Used for logging/debugging purposes only",
-          "propertyOrder": 1
+          "propertyOrder": 1,
+          "options": {
+            "grid_columns": 4,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
+          }
         },
         "address": {
-          "title": "Address",
-          "description": "Register index (0-65535 in case of Modbus)",
+          "title": "Register address",
           "propertyOrder": 2,
           "$ref": "#/definitions/address",
+          "format": "wb-int-address",
           "options": {
-            "keep_oneof_values": false
+            "grid_columns": 4
           }
         },
         "value": {
           "title": "Value",
           "propertyOrder": 3,
           "$ref": "#/definitions/serial_int",
+          "format": "wb-serial-int",
           "options": {
-            "keep_oneof_values": false
+            "grid_columns": 4
           }
         }
       },
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      },
-      "format": "grid",
       "required": ["address", "value"]
     },
     "register_channel_common": {
@@ -263,43 +236,93 @@
           "title": "Enabled",
           "default" : true,
           "propertyOrder": 1,
-          "format": "checkbox"
+          "format": "checkbox",
+          "options": {
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "name": {
           "$ref": "#/definitions/channel_name",
           "title": "Name", 
-          "propertyOrder": 2
+          "propertyOrder": 2,
+          "options": {
+            "grid_columns": 6
+          }
         },
         "id": {
           "$ref": "#/definitions/channel_id",
-          "propertyOrder": 3
+          "propertyOrder": 3,
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
+          }
         },
         "type": {
           "$ref": "#/definitions/control_type",
           "title": "Type", 
-          "propertyOrder": 4
+          "propertyOrder": 6,
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "reg_type": {
           "$ref": "#/definitions/reg_type",
           "title": "Register type", 
-          "propertyOrder": 5
-        },
-        "units": {
-          "$ref": "#/definitions/units",
-          "title": "Units",
-          "propertyOrder": 8
+          "propertyOrder": 7,
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "format": {
           "$ref": "#/definitions/format",
           "title": "Format", 
-          "propertyOrder": 9
+          "propertyOrder": 8,
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
+        },
+        "units": {
+          "type": "string",
+          "title": "Units",
+          "propertyOrder": 9,
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
+          }
         },
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_num",
-          "propertyOrder": 10,
+          "propertyOrder": 13,
+          "format": "wb-serial-number",
           "options": {
-            "keep_oneof_values": false
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "scale": {
@@ -307,11 +330,15 @@
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 11,
+          "propertyOrder": 10,
           "options": {
-            "grid_columns": 4,
+            "grid_columns": 3,
             "dependencies": {
               "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
+            },
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
             }
           }
         },
@@ -320,11 +347,15 @@
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 12,
+          "propertyOrder": 11,
           "options": {
-            "grid_columns": 4,
+            "grid_columns": 3,
             "dependencies": {
               "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
+            },
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
             }
           }
         },
@@ -333,37 +364,55 @@
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 13,
-          "minimum": 0
+          "propertyOrder": 12,
+          "minimum": 0,
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 14
+          "default": false,
+          "propertyOrder": 14,
+          "options": {
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "on_value": {
-          // TBD: only use on_value for 'switch' and 'wo-switch' types
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 15,
+          "propertyOrder": 17,
+          "format": "wb-serial-int",
           "options": {
-            "keep_oneof_values": false
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "off_value": {
           "title": "'Off' value",
           "description": "Value corresponding to the 'Off' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 16,
+          "propertyOrder": 18,
+          "format": "wb-serial-int",
           "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "read_period_ms": {
@@ -372,13 +421,16 @@
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_values": [ 100, 200 ],
+            "grid_columns": 12,
             "inputAttributes": {
               "placeholder": "in queue order"
+            },
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
             }
           },
-          "format": "edWb",
-          "propertyOrder": 16
+          "propertyOrder": 15
         },
         "read_rate_limit_ms": {
           "type": "integer",
@@ -386,54 +438,63 @@
           "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 17
+          "propertyOrder": 16
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 18,
-          "oneOf": [
-            {
-              "title": "decimal or hex",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-              "options": {
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              }
-            },
-            {
-              "title": "decimal",
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 4294967295
+          "propertyOrder": 20,
+          "$ref": "#/definitions/serial_int",
+          "format": "wb-serial-int",
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
             }
-          ]
+          }
         },
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 19,
+          "propertyOrder": 21,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
+            "grid_columns": 3,
             "inputAttributes": {
               "placeholder":  "hex with prefix '0x'"
             },
-            "patternmessage": "Should be hex with prefix '0x'"
+            "patternmessage": "Should be hex with prefix '0x'",
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
           "title": "Word order",
-          "propertyOrder": 20
+          "propertyOrder": 22,
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "byte_order": {
           "$ref": "#/definitions/byte_order",
           "title": "Byte order",
-          "propertyOrder": 21
+          "propertyOrder": 23,
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "string_data_size": {
           "type": "integer",
@@ -441,10 +502,14 @@
           "description": "string_data_size_description",
           "minimum": 1,
           "default": 1,
-          "propertyOrder": 22,
+          "propertyOrder": 24,
           "options": {
             "dependencies": {
               "format": "string"
+            },
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
             }
           }
         },
@@ -453,14 +518,28 @@
           "description": "sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 23
+          "propertyOrder": 25,
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "semi-sporadic": {
           "title": "Dispatched with an event and polling",
           "description": "semi_sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 24
+          "propertyOrder": 26,
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         },
         "enum": {
           "title": "List of values",
@@ -471,31 +550,21 @@
               { "type": "number" }
             ]
           },
-          "propertyOrder": 25
+          "propertyOrder": 27
         },
         "enum_titles": {
           "title": "List of value titles",
           "type": "array",
           "items": { "type": "string" },
-          "propertyOrder": 26
-        },
-        "consists_of": {
-          "not": {},
-          "options": { "hidden": true }
+          "propertyOrder": 28
         },
         "device_type": {
           "not": {},
           "options": { "hidden": true }
         }
       },
-      // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
-      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset", "string_data_size"],
-      "format": "grid",
-      "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true
-      }
+      "format": "grid"
     },
     "registerChannel": {
       "allOf": [
@@ -505,182 +574,38 @@
             "address": {
               "$ref": "#/definitions/address",
               "title": "Address",
-              "propertyOrder": 6,
+              "propertyOrder": 4,
+              "format": "wb-int-address",
               "options": {
-                "keep_oneof_values": false
+                "grid_columns": 6,
+                "wb": {
+                  "show_editor": true,
+                  "allow_undefined": true
+                }
               }
-            }
-          },
-          "required": ["address"],
-          "defaultProperties" : ["address"],
-          "not" : {"required": ["write_address"]}
-        }
-      ]
-    },
-    "registerChannelSeparateAddress": {
-      "title": "Channel with separate r/w addresses",
-      "allOf": [
-        { "$ref": "#/definitions/register_channel_common"},
-        {
-          "properties": {
-            "address": {
-              "title": "Read Address",
+            },
+            "write_address": {
               "$ref": "#/definitions/address",
-              "propertyOrder": 6,
+              "title": "Write Address",
+              "propertyOrder": 5,
+              "format": "wb-int-address",
               "options": {
-                "keep_oneof_values": false
-              }
-            },
-            "write_address": {
-              "$ref": "#/definitions/write_address",
-              "propertyOrder": 7,
-              "options": {
-                "keep_oneof_values": false
+                "grid_columns": 6,
+                "wb": {
+                  "show_editor": true,
+                  "allow_undefined": true
+                }
               }
             }
-          },
-          "required": ["address", "write_address"],
-          "defaultProperties": ["address", "write_address"]
+          }
         }
       ]
-    },
-    "registerChannelWriteOnly": {
-      "title": "Write Only Channel",
-      "allOf": [
-        { "$ref": "#/definitions/register_channel_common"},
-        {
-          "properties": {
-            "write_address": {
-              "$ref": "#/definitions/write_address",
-              "propertyOrder": 6,
-              "options": {
-                "keep_oneof_values": false
-              }
-            }
-          },
-          "required": ["write_address"],
-          "defaultProperties": ["write_address"],
-          "not" : {"required": ["address"]}
-        }
-      ]
-    },
-    "compoundRegisterChannel": {
-      "title": "Compound channel",
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "title": "Enabled",
-          "default" : true,
-          "propertyOrder": 1,
-          "format": "checkbox"
-        },
-        "name": {
-          "$ref": "#/definitions/channel_name",
-          "propertyOrder": 2
-        },
-        "id": {
-          "$ref": "#/definitions/channel_id",
-          "propertyOrder": 3
-        },
-        "type": {
-          "$ref": "#/definitions/control_type",
-          "propertyOrder": 4
-        },
-        "units": {
-          "$ref": "#/definitions/units",
-          "title": "Units",
-          "propertyOrder": 7
-        },
-        "readonly": {
-          "title": "Read-only",
-          "type": "boolean",
-          "propertyOrder": 8
-        },
-        "consists_of": {
-          "type": "array",
-          "title": "A list of subregisters",
-          "items": { "$ref": "#/definitions/subreg" },
-          "minItems": 1,
-          "format": "table",
-          "propertyOrder": 9,
-          "options": {
-            "disable_collapse": true,
-            "wb": {
-              "disable_panel": true
-            },
-            "disable_array_delete_last_row": true,
-            "array_controls_top": true
-          }
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
-        "read_period_ms": {
-          "type": "integer",
-          "title": "Read period (ms)",
-          "description" : "read_period_description",
-          "minimum": 10,
-          "options": {
-            "enum_values": [ 100, 200 ],
-            "inputAttributes": {
-              "placeholder": "in queue order"
-            }
-          },
-          "format": "edWb",
-          "propertyOrder": 10
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "description" : "read_rate_limit_description",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 11
-        }
-      },
-      "required": ["name", "consists_of"],
-      "defaultProperties": ["name", "consists_of"],
-      "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true
-      }
     },
     "common_channel": {
-      "headerTemplate": "{{self.name}}",
-      "title": "Channel",
-      "oneOf": [
-        { "$ref": "#/definitions/registerChannel" },
-        { "$ref": "#/definitions/compoundRegisterChannel" }
-      ],
-      "options": {
-        "keep_oneof_values": false,
-        "wb": {
-          "disable_panel": true
-        },
-        "disable_collapse": true
-      },
-      "format": "wb-multiple"
+        "$ref": "#/definitions/registerChannel"
     },
     "common_channel_modbus": {
-      "headerTemplate": "{{self.name}}",
-      "title": "Channel",
-      "oneOf": [
-        { "$ref": "#/definitions/registerChannel" },
-        { "$ref": "#/definitions/compoundRegisterChannel" },
-        { "$ref": "#/definitions/registerChannelSeparateAddress" },
-        { "$ref": "#/definitions/registerChannelWriteOnly" }
-      ],
-      "options": {
-        "keep_oneof_values": false,
-        "wb": {
-          "disable_panel": true
-        },
-        "disable_collapse": true
-      }
+      "$ref": "#/definitions/registerChannel"
     },
     "channelSettings": {
       "type": "object",
@@ -690,12 +615,6 @@
           "title": "Enable poll",
           "default": true,
           "format": "checkbox"
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
         },
         "read_period_ms": {
           "type": "integer",
@@ -728,11 +647,6 @@
           "format": "siWb",
           "propertyOrder": 4
         }
-      },
-      "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true,
-        "disable_properties": true
       }
     },
     "tableChannelSettings": {
@@ -753,7 +667,20 @@
         "mode": {
           "type": "integer",
           "title": "Poll",
-          "propertyOrder": 2
+          "propertyOrder": 2,
+          "default": 1,
+          "enum": [0, 1, 2, 3, 4, 5],
+          "options": {
+            "enum_titles": [
+              "do not read",
+              "in queue order",
+              "200 ms",
+              "100 ms",
+              "custom period",
+              "not faster than (deprecated)"
+            ],
+            "enum_hidden": [5]
+          }
         },
         "period": {
           "type": "integer",
@@ -761,79 +688,15 @@
           "minimum": 0,
           "maximum": 172800000,
           "propertyOrder": 3,
-          "default": 1000
-        }
-      },
-      "required": ["mode", "name"],
-      "options": {
-        "remove_empty_properties": true
-      }
-    },
-    "groupsChannel": {
-      "type": "object",
-      "properties": {
-        "mode": {
-          "type": "integer",
-          "title": "Poll"
-        },
-        "period": {
-          "type": "integer",
-          "title": "Period (ms)",
-          "minimum": 0,
-          "maximum": 172800000,
-          "default": 1000
-        },
-        "channelIndex": {
-          "type": "integer",
-          "options": {
-            "hidden": true
+          "default": 1000,
+          "options":{
+            "dependencies": {
+              "mode": [4, 5]
+            }
           }
         }
       },
-      "required": ["mode", "channelIndex"]
-    },
-    "subreg": {
-      "type": "object",
-      "title": "Subregister",
-      "properties": {
-        "reg_type": {
-          "$ref": "#/definitions/reg_type",
-          "propertyOrder": 1
-        },
-        "address": {
-          "$ref": "#/definitions/address",
-          "propertyOrder": 2,
-          "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "format": {
-          "$ref": "#/definitions/format",
-          "propertyOrder": 3
-        },
-        "scale": {
-          "type": "number",
-          "title": "Scale (value multiplier)",
-          "default" : 1,
-          "propertyOrder": 4
-        },
-        "offset": {
-          "type": "number",
-          "title": "Value offset",
-          "default" : 0,
-          "propertyOrder": 5
-        },
-        "word_order": {
-          "$ref": "#/definitions/word_order",
-          "propertyOrder": 6
-        },
-        "byte_order": {
-          "$ref": "#/definitions/byte_order",
-          "propertyOrder": 7
-        }
-      },
-      "required": ["reg_type", "address"],
-      "defaultProperties":  ["reg_type", "address"]
+      "required": ["mode", "name"]
     },
     "channel_name": {
       "type": "string",
@@ -856,7 +719,6 @@
     "control_type": {
       "type": "string",
       "title": "Control type",
-      "description": "Defaults to 'switch' for coils and discrete inputs, 'text' for others",
       "enum": [
         "switch", "wo-switch", "pushbutton", "range", "rgb", "text",
         "value", "temperature", "rel_humidity",
@@ -896,10 +758,6 @@
           "sound_level (deprecated, use value with units)"
         ]
       }
-    },
-    "units": {
-      "type": "string",
-      "format": "edWb"
     },
     "reg_type": {
       "type": "string",
@@ -948,69 +806,29 @@
     },
     "address": {
       "title": "Address",
-      "description": "Register index (0-65535 in case of Modbus)",
       "oneOf": [
         {
-          "title": "decimal or hex",
           "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-          "options": {
-            "inputAttributes": {
-              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-            },
-            "patternmessage": "Should be decimal or hex"
-          }
-        },
-        {
-          "title": "bits",
-          "type": "string",
-          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
+          "pattern": "^(?:0x[A-Fa-f0-9]+|\\d+)(?::\\d+:\\d+)?$",
           "options": {
             "inputAttributes": {
               "placeholder":  "address:offset:bitwidth"
             },
-            "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
+            "patternmessage": "Address should be decimal or hex, can contain offset and bitwidth separated by ':'"
           }
         },
         {
           "title": "decimal",
           "type": "integer"
         }
-      ],
-      "options": {
-        "keep_oneof_values": false
-      }
-    },
-    "write_address": {
-      "title": "Write Address",
-      "description": "Register index (0-65535 in case of Modbus)",
-      "oneOf": [
-        {
-          "title": "decimal or hex",
-          "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-          "options": {
-            "inputAttributes": {
-              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-            },
-            "patternmessage": "Should be decimal or hex"
-          }
-        },
-        {
-          "title": "decimal",
-          "type": "integer"
-        }
-      ],
-      "options": {
-        "keep_oneof_values": false
-      }
+      ]
     },
     "serial_int": {
       "oneOf": [
         {
           "title": "decimal or hex",
           "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "pattern": "^(0x[A-Fa-f\\d]+|[-]?\\d+)$",
           "options": {
             "patternmessage": "Should be decimal or hex"
           }
@@ -1026,9 +844,10 @@
         {
           "title": "decimal or hex",
           "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+
+          "pattern": "^(0x[A-Fa-f\\d]+|[-]?\\d+[\\.\\,]?\\d*)$",
           "options": {
-            "patternmessage": "Should be decimal or hex"
+            "patternmessage": "Should be number or hex"
           }
         },
         {
@@ -1065,7 +884,6 @@
       "required": ["address"]
     },
     "dlms_channel": {
-      "headerTemplate": "{{self.name}}",
       "title": "Channel",
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
@@ -1084,11 +902,7 @@
           "type": "array",
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/dlms_channel" },
-          "propertyOrder": 99,
-          "format": "tabs",
-          "options": {
-            "disable_array_delete_last_row": true
-          }
+          "propertyOrder": 99
         }
       }
     },
@@ -1216,7 +1030,6 @@
       "required": ["address"]
     },
     "channel_with_string_address": {
-      "headerTemplate": "{{self.name}}",
       "title": "Channel",
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
@@ -1235,11 +1048,7 @@
           "type": "array",
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/channel_with_string_address" },
-          "propertyOrder": 99,
-          "format": "tabs",
-          "options": {
-            "disable_array_delete_last_row": true
-          }
+          "propertyOrder": 99
         }
       }
     },
@@ -1248,13 +1057,7 @@
       "properties": {
         "channels": {
           "type": "array",
-          "title": "Custom channels",
-          "items": { "$ref": "#/definitions/common_channel" },
-          "propertyOrder": 99,
-          "format": "tabs",
-          "options": {
-            "disable_array_delete_last_row": true
-          }
+          "items": { "$ref": "#/definitions/common_channel" }
         }
       }
     },
@@ -1262,13 +1065,7 @@
       "properties": {
         "channels": {
           "type": "array",
-          "title": "Custom channels",
-          "items": { "$ref": "#/definitions/common_channel_modbus" },
-          "propertyOrder": 99,
-          "format": "tabs",
-          "options": {
-            "disable_array_delete_last_row": true
-          }
+          "items": { "$ref": "#/definitions/common_channel_modbus" }
         }
       }
     },
@@ -1278,11 +1075,7 @@
           "type": "array",
           "title": "Custom setup commands",
           "items": { "$ref": "#/definitions/setup_cmd" },
-          "propertyOrder": 100,
-          "format": "tabs",
-          "options": {
-            "disable_array_delete_last_row": true
-          }
+          "propertyOrder": 100
         }
       }
     },
@@ -1371,12 +1164,12 @@
   "translations": {
     "en": {
       "read_rate_limit_description": "This option is deprecated, use read period of channels instead",
-      "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Short periods may not be maintained due to port bandwidth limitations",
+      "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Short periods may not be maintained due to port bandwidth limitations. If not set, the channel is read in queue order",
       "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
       "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
-      "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overwritten.",
-      "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
-      "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+      "response_timeout_description": "Specifies maximum device's response time. If port's appropriate parameter is bigger, this one is overwritten.",
+      "device_timeout_description": "Specifies timeout for device connection. Value -1 disables device reconnect. Zero means instant timeout.",
+      "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Value -1 disables device reconnect. Zero means instant timeout.",
       "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters",
       "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7",
       "sporadic_description": "If a protocol allows, the register is excluded from periodic polling. Its change is sent by a special event",
@@ -1389,7 +1182,7 @@
       "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
       "Read period (ms)": "Период чтения (мс)",
-      "read_period_description": "Задаёт период чтения канала в миллисекундах. Короткие периоды опроса могут не выдерживаться из-за ограничений пропускной способности порта.",
+      "read_period_description": "Задаёт период чтения канала в миллисекундах. Короткие периоды опроса могут не выдерживаться из-за ограничений пропускной способности порта. Если не задан, канал читается в порядке очереди",
       "Slave id of the device": "Адрес устройства",
       "decimal or hex": "десятичное или шестнадцатеричное значение",
       "decimal (e.g. 123) or hex (e.g. 0xAF)": "десятичное (например, 123) или шестнадцатеричное (например, 0xAF)",
@@ -1417,16 +1210,15 @@
       "Device timeout (ms)": "Время ожидания устройства (мс)",
       "Device max fail cycles": "Максимальное число неудачных циклов опроса",
       "frame_timeout_description": "Задаёт минимальную задержку между сообщениями. В некоторых протоколах это значение используется для определения границ сообщений.",
-      "response_timeout_description": "Задаёт максимальное время ответа устройства. По умолчанию 500 мс. Если соответствующий параметр порта больше, то используется значение порта.",
-      "device_timeout_description": "Задаёт время ожидания устройства. По умолчанию 3000 мс. Запрещает переподключение, если установлено -1.",
-      "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. По умолчанию 2. Запрещает переподключение, если установлено -1.",
+      "response_timeout_description": "Задаёт максимальное время ответа устройства. Если соответствующий параметр порта больше, то используется значение порта.",
+      "device_timeout_description": "Задаёт время ожидания устройства. Запрещает переподключение, если установлено -1.",
+      "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. Запрещает переподключение, если установлено -1.",
       "Setup command": "Команда настройки",
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
       "Address": "Адрес",
       "Read Address" : "Адрес для чтения",
       "Write Address" : "Адрес для записи",
-      "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
       "Value": "Значение",
       "Enabled": "Включено",
       "MQTT id of the channel": " Идентификатор канала в MQTT",
@@ -1455,7 +1247,6 @@
       "Control name": "Название канала",
       "This name is displayed both in UI and used as part of MQTT topic": "Отображается в интерфейсе и используется как часть топика в MQTT",
       "Control type": "Тип канала",
-      "Defaults to 'switch' for coils and discrete inputs, 'text' for others": "По умолчанию используется switch для дискретных выходов и входов, для остальных - текст",
       "Register type": "Тип регистра",
       "Format": "Формат",
       "Signed 16-bit integer": "16-битное целое со знаком",
@@ -1475,7 +1266,7 @@
       "16-bit Word Byte Order": "Порядок байтов в 16-битных словах",
       "bits": "биты",
       "address:offset:bitwidth": "адрес:смещение:число бит",
-      "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
+      "Address should be decimal or hex, can contain offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Может содержать смещение и число бит, отделенные двоеточием",
       "OBIS code": "Код OBIS",
       "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)": "Код OBIS должен состоять из 6 чисел, разделённых точками",
       "Custom channels": "Каналы, заданные пользователем",
@@ -1534,7 +1325,10 @@
       "Force frame timeout": "Разделять сообщения по времени",
       "Max write fail time (s)": "Время повторных попыток записать регистр (с)",
       "max_write_fail_time_desc": "Максимальное время, в течение которого будут продолжаться попытки записать регистр",
-      "Minimal interval between requests to the devices (ms)": "Минимальный интервал между запросами к устройству (мс)"
+      "Minimal interval between requests to the devices (ms)": "Минимальный интервал между запросами к устройству (мс)",
+      "hex with prefix '0x'": "шестнадцатеричный вид с префиксом '0x'",
+      "Should be hex with prefix '0x'": "Задайте шестнадцатеричное значение с префиксом '0x'",
+      "Register address": "Адрес регистра"
     }
   }
 }
