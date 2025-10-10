@@ -7,6 +7,7 @@
 
 using namespace std;
 using namespace WBMQTT::JSON;
+using Expressions::TExpressionsCache;
 
 namespace
 {

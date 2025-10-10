@@ -21,16 +21,13 @@
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
-          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "description": "Zero means no timeout.",
           "minimum": 0,
           "default": 500,
           "propertyOrder": 8,
           "options": {
             "grid_columns": 12,
-            "show_opt_in": true,
-            "wb" : {
-              "disabledEditorText": " "
-            }
+            "show_opt_in": true
           }
         },
         "guard_interval_us": {
@@ -42,16 +39,7 @@
           "propertyOrder": 9,
           "options": {
             "grid_columns": 12,
-            "show_opt_in": true,
-            "wb" : {
-              "disabledEditorText": " "
-            }
-          }
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
+            "show_opt_in": true
           }
         },
         "read_rate_limit_ms": {
@@ -89,7 +77,7 @@
               "propertyOrder": 3,
               "options": {
                 "grid_columns": 4
-              }    
+              }
             },
             "baud_rate": {
               "type": "integer",
@@ -102,7 +90,7 @@
                 "wb": {
                   "show_editor":true
                 }
-              }    
+              }
             },
             "parity": {
               "type": "string",
@@ -128,7 +116,7 @@
                 "wb": {
                   "show_editor":true
                 }
-              }    
+              }
             },
             "stop_bits": {
               "type": "integer",
@@ -141,19 +129,14 @@
                 "wb": {
                   "show_editor":true
                 }
-              }    
+              }
             }
           },
           "required": ["path"]
         },
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "format": "grid",
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      }
+      "format": "grid"
     },
     "commonTcpPortSettings": {
       "properties": {
@@ -182,7 +165,11 @@
           "description": "connection_timeout_description",
           "minimum": -1,
           "default": 5000,
-          "propertyOrder": 5
+          "propertyOrder": 5,
+          "options": {
+            "grid_columns": 12,
+            "show_opt_in":true
+          }
         },
         "connection_max_fail_cycles": {
           "type": "integer",
@@ -190,7 +177,11 @@
           "description": "connection_max_fail_description",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 6
+          "propertyOrder": 6,
+          "options": {
+            "grid_columns": 12,
+            "show_opt_in":true
+          }
         }
       },
       "required": ["address", "port"]
@@ -213,13 +204,7 @@
       "allOf": [
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
-      ],
-      "format": "grid",
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      }
+      ]
     },
     "tcpPort": {
       "title": "Serial over TCP",
@@ -239,13 +224,7 @@
       "allOf": [
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
-      ],
-      "format": "grid",
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      }
+      ]
     }
   },
 
@@ -286,7 +265,6 @@
       "type" : "integer",
       "title" : "Maximum registers reads per second",
       "description" : "rate_limit_desc",
-      "default" : 100,
       "min": 1,
       "propertyOrder" : 3,
       "options": {
@@ -295,26 +273,19 @@
     }
   },
 
-  "options": {
-    "disable_edit_json": true,
-    "wb": {
-      "disable_title": true
-    }
-  },
-
   "translations": {
     "en": {
       "read_rate_limit_description": "This option is deprecated, use read period of channels instead",
       "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
-      "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
-      "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
-      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
-      "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7"
+      "connection_timeout_description": "Used for disconnect detection. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between publishing the same values to MQTT. Zero means the values are published every time they read from the device. Negative value means the values are published only when they change. In any case, the values are published only after reading them from the device. If the values are not read, no out-of-turn publication is made.",
+      "rate_limit_desc": "If not set, 100 reads for WB6 and 800 for WB7/WB8 are used to reduce the load on the processor"
     },
     "ru": {
       "Enable port": "Включить порт",
       "Response timeout (ms)": "Таймаут ответа (мс)",
-      "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
+      "Zero means no timeout.": "Ноль - без таймаута.",
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
       "guard_interval_description": "",
       "Serial port": "Последовательный порт",
@@ -326,17 +297,17 @@
       "IPv4 address or hostname of device": "IPv4 адрес или доменное имя устройства",
       "TCP port number": "Номер TCP порта",
       "Connection timeout (ms)": "Таймаут подключения (мс)",
-      "connection_timeout_description": "Используется для определения потери связи. По умолчанию 5000мс. -1 запрещает автоматическое переподключение при потере связи.",
+      "connection_timeout_description": "Используется для определения потери связи. -1 запрещает автоматическое переподключение при потере связи.",
       "Connection max fail cycles": "Максимальное число неудачных переподключений",
-      "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. По умолчанию 2. -1 запрещает переподключения.",
+      "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. -1 запрещает переподключения.",
       "Serial over TCP": "Передача пакетов через TCP",
       "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
-      "max_unchanged_interval_desc": "Задает интервал публикации значений, если они не изменились (в секундах). Ноль задает публикацию после каждого чтения данных из устройства. По умолчанию публикация происходит по изменению значения. Отрицательное число задает поведение по умолчанию",
+      "max_unchanged_interval_desc": "Задает интервал публикации значений, если они не изменились (в секундах). Ноль задает публикацию после каждого чтения данных из устройства. Отрицательное число задает публикацию только при изменении значения. В любом случае, публикация происходит только после чтения значения из устройства. Если значения не читаются, внеочередная публикация не делается.",
       "Enable debug logging": "Включить отладочные сообщения",
       "Read rate limit (ms)": "Читать не чаще (мс)",
       "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
       "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
-      "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7"
+      "rate_limit_desc": "Если не задано, то используется 100 чтений для WB6 и 800 для WB7/WB8, чтобы снизить нагрузку на процессор"
     }
   }
 }

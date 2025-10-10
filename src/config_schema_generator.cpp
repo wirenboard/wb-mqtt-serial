@@ -1,15 +1,21 @@
 #include "config_schema_generator.h"
-#include "confed_schema_generator.h"
-#include "config_merge_template.h"
-#include "json_common.h"
-#include "log.h"
 
-#define LOG(logger) ::logger.Log() << "[serial config] "
+#include "config_merge_template.h"
+#include "expression_evaluator.h"
+#include "json_common.h"
+
+#include "subdevices_config/config_schema_generator.h"
 
 using namespace WBMQTT::JSON;
+using Expressions::TExpressionsCache;
 
 namespace
 {
+    bool IsRequiredSetupRegister(const Json::Value& setupRegister)
+    {
+        return setupRegister.get("required", false).asBool();
+    }
+
     //  {
     //      "type": "number",
     //      "minimum": MIN,
@@ -36,86 +42,13 @@ namespace
     //      },
     //      "required": ["name"]
     //  }
-    Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
+    Json::Value MakeTabChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
         MakeArray("allOf", r).append(MakeObject("$ref", "#/definitions/channelSettings"));
         r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
         MakeArray("required", r).append("name");
         return r;
-    }
-
-    //  {
-    //      "oneOf": [
-    //          {
-    //              "allOf": [ { "$ref": "#/definitions/DEVICE_SCHEMA_NAME" } ],
-    //              "properties": {
-    //                  "device_type": {
-    //                      "type": "string",
-    //                      "enum": [ DEVICE_TYPE ]
-    //                  }
-    //              },
-    //              "required": [ "device_type" ]
-    //          },
-    //          ...
-    //      ],
-    //      "properties": {
-    //          "name": {
-    //              "type": "string",
-    //              "enum": [ CHANNEL_NAME ]
-    //          }
-    //      },
-    //      "required": ["name"]
-    //  }
-    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate)
-    {
-        Json::Value r;
-        r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
-        MakeArray("required", r).append("name");
-
-        auto& items = MakeArray("oneOf", r);
-        for (const auto& subDeviceName: channelTemplate["oneOf"]) {
-            auto name(subDeviceName.asString());
-            Json::Value i;
-            i["properties"]["device_type"] = MakeSingleValueProperty(name);
-            MakeArray("required", i).append("device_type");
-            MakeArray("allOf", i).append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(name)));
-            items.append(i);
-        }
-
-        return r;
-    }
-
-    //  {
-    //      "allOf": [ { "$ref": "#/definitions/DEVICE_SCHEMA_NAME" } ],
-    //      "properties": {
-    //          "name": {
-    //              "type": "string",
-    //              "enum": [ CHANNEL_NAME ]
-    //          }
-    //      },
-    //      "required": ["name"]
-    //  }
-    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channelTemplate)
-    {
-        Json::Value r;
-        MakeArray("allOf", r)
-            .append(MakeObject("$ref",
-                               "#/definitions/" + GetSubdeviceSchemaKey(channelTemplate["device_type"].asString())));
-        r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
-        MakeArray("required", r).append("name");
-        return r;
-    }
-
-    Json::Value MakeTabChannelSchema(const Json::Value& channel)
-    {
-        if (channel.isMember("oneOf")) {
-            return MakeTabOneOfChannelSchema(channel);
-        }
-        if (channel.isMember("device_type")) {
-            return MakeTabSingleDeviceChannelSchema(channel);
-        }
-        return MakeTabSimpleChannelSchema(channel);
     }
 
     //  {
@@ -228,47 +161,6 @@ namespace
 
     //  {
     //      "type": "object",
-    //      "properties": {
-    //          "device_type": {
-    //              "type": "string",
-    //              "enum": [ DEVICE_TYPE ]
-    //          },
-    //          "parameter1": PARAMETER_SCHEMA,
-    //          ...
-    //          "channels": CHANNELS_SCHEMA
-    //      },
-    //      "required": [ "parameter1", ... ]
-    //  }
-    Json::Value MakeSubDeviceSchema(const Json::Value& config,
-                                    const std::string& subDeviceType,
-                                    const TSubDeviceTemplate& subdeviceTemplate,
-                                    TExpressionsCache& exprCache)
-    {
-        Json::Value res;
-        res["type"] = "object";
-        res["properties"]["device_type"] = MakeSingleValueProperty(subDeviceType);
-
-        if (subdeviceTemplate.Schema.isMember("parameters")) {
-            Json::Value req(Json::arrayValue);
-            MakeDeviceParametersSchema(config, res["properties"], req, subdeviceTemplate.Schema, exprCache);
-            if (!req.empty()) {
-                res["required"] = req;
-            }
-        }
-
-        if (subdeviceTemplate.Schema.isMember("channels")) {
-            res["properties"]["channels"]["type"] = "array";
-            auto& items = MakeArray("oneOf", res["properties"]["channels"]["items"]);
-            for (const auto& channel: subdeviceTemplate.Schema["channels"]) {
-                items.append(MakeTabChannelSchema(channel));
-            }
-        }
-
-        return res;
-    }
-
-    //  {
-    //      "type": "object",
     //      "allOf": [
     //          { "$ref": COMMON_DEVICE_SCHEMA }
     //      ],
@@ -283,12 +175,13 @@ namespace
     //      },
     //      "required": ["device_type", "slave_id", "parameter1", ...]
     //  }
-    void AddDeviceSchema(const Json::Value& deviceConfig,
-                         TDeviceTemplate& deviceTemplate,
-                         TSerialDeviceFactory& deviceFactory,
-                         Json::Value& schema,
-                         TExpressionsCache& exprCache)
+    Json::Value MakeSchemaForDeviceConfigValidation(const Json::Value& commonDeviceSchema,
+                                                    const Json::Value& deviceConfig,
+                                                    TDeviceTemplate& deviceTemplate,
+                                                    TSerialDeviceFactory& deviceFactory,
+                                                    TExpressionsCache& exprCache)
     {
+        auto schema(commonDeviceSchema);
         auto protocolName = GetProtocolName(deviceTemplate.GetTemplate());
 
         auto& req = MakeArray("required", schema);
@@ -320,15 +213,7 @@ namespace
             deviceSchemaRef += NO_CHANNELS_SUFFIX;
         }
         MakeArray("allOf", schema).append(MakeObject("$ref", deviceSchemaRef));
-
-        TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.GetTemplate());
-        if (deviceTemplate.WithSubdevices()) {
-            for (const auto& subDevice: deviceTemplate.GetTemplate()["subdevices"]) {
-                auto name = subDevice["device_type"].asString();
-                schema["definitions"][GetSubdeviceSchemaKey(name)] =
-                    MakeSubDeviceSchema(deviceConfig, name, subdeviceTemplates.GetTemplate(name), exprCache);
-            }
-        }
+        return schema;
     }
 
     std::string ReplaceSubstrings(std::string str, const std::string& pattern, const std::string& repl)
@@ -349,7 +234,7 @@ namespace
         const Json::Value& CommonDeviceSchema;
         TTemplateMap& Templates;
         TSerialDeviceFactory& DeviceFactory;
-        TExpressionsCache exprCache;
+        TExpressionsCache ExprCache;
 
     public:
         TDeviceTypeValidator(const Json::Value& commonDeviceSchema,
@@ -362,12 +247,17 @@ namespace
 
         void Validate(const Json::Value& deviceConfig)
         {
-            auto schema(CommonDeviceSchema);
-            AddDeviceSchema(deviceConfig,
-                            *Templates.GetTemplate(deviceConfig["device_type"].asString()),
-                            DeviceFactory,
-                            schema,
-                            exprCache);
+            auto deviceTemplate = Templates.GetTemplate(deviceConfig["device_type"].asString());
+            auto schema = deviceTemplate->WithSubdevices()
+                              ? Subdevices::MakeSchemaForDeviceConfigValidation(CommonDeviceSchema,
+                                                                                *deviceTemplate,
+                                                                                DeviceFactory)
+                              : MakeSchemaForDeviceConfigValidation(CommonDeviceSchema,
+                                                                    deviceConfig,
+                                                                    *deviceTemplate,
+                                                                    DeviceFactory,
+                                                                    ExprCache);
+
             ::Validate(deviceConfig, schema);
         }
     };

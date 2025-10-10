@@ -1,5 +1,6 @@
 #include "serial_config.h"
 #include "file_utils.h"
+#include "json_common.h"
 #include "log.h"
 
 #include <cstdlib>
@@ -19,6 +20,7 @@
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
+#include "old_serial_config.h"
 
 #include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
@@ -179,10 +181,6 @@ namespace
     std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
-        try {
-            Get(data, "poll_interval", res);
-        } catch (...) { // poll_interval is deprecated, so ignore it, if it has wrong format
-        }
         Get(data, "read_rate_limit_ms", res);
         if (res < 0ms) {
             return std::nullopt;
@@ -732,6 +730,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
+    FixOldConfigFormat(Root, templates);
 
     try {
         ValidateConfig(Root, deviceFactory, commonDeviceSchema, portsSchema, templates, protocolSchemas);
@@ -895,13 +894,6 @@ bool IsSubdeviceChannel(const Json::Value& channelSchema)
     return (channelSchema.isMember("oneOf") || channelSchema.isMember("device_type"));
 }
 
-void AppendParams(Json::Value& dst, const Json::Value& src)
-{
-    for (auto it = src.begin(); it != src.end(); ++it) {
-        dst[it.name()] = *it;
-    }
-}
-
 std::string GetProtocolName(const Json::Value& deviceDescription)
 {
     std::string p;
@@ -1057,10 +1049,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
     Get(dev, "name", res->Name);
 
     if (dev.isMember("slave_id")) {
-        if (dev["slave_id"].isString())
-            res->SlaveId = dev["slave_id"].asString();
-        else // legacy
-            res->SlaveId = std::to_string(dev["slave_id"].asInt());
+        res->SlaveId = dev["slave_id"].asString();
     }
 
     LoadCommonDeviceParameters(*res, dev);

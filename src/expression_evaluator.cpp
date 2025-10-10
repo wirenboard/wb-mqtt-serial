@@ -1,5 +1,6 @@
 #include "expression_evaluator.h"
 
+#include <set>
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
@@ -485,4 +486,20 @@ bool Expressions::Eval(const Expressions::TAstNode* expr, const IParams& params)
 {
     auto res = EvalImpl(expr, params);
     return res && res.value();
+}
+
+std::vector<std::string> Expressions::GetDependencies(const TAstNode* expression)
+{
+    std::set<std::string> dependencies;
+    if (expression) {
+        if (expression->GetType() == TAstNodeType::Ident) {
+            dependencies.insert(expression->GetValue());
+        } else {
+            auto leftDeps = GetDependencies(expression->GetLeft());
+            dependencies.insert(leftDeps.begin(), leftDeps.end());
+            auto rightDeps = GetDependencies(expression->GetRight());
+            dependencies.insert(rightDeps.begin(), rightDeps.end());
+        }
+    }
+    return std::vector<std::string>(dependencies.begin(), dependencies.end());
 }

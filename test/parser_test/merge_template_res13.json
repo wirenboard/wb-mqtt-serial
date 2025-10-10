@@ -23,6 +23,7 @@
         {
             "address" : 10,
             "condition" : "param1==1",
+            "dependencies" : [ "param1" ],
             "id" : "param2",
             "required" : true,
             "title" : "p2",

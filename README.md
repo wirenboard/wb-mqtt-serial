@@ -515,7 +515,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             "address": 1,
 
                             // Значение для записи
-                            "value": 1,
+                            "value": "1",
 
                             // Тип регистра, для Modbus по умолчанию - "holding"
                             "reg_type": "holding",
@@ -526,7 +526,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                         {
                             "title": "Input 0 module",
                             "address": 3,
-                            "value": 3
+                            "value": "3"
                         }
                     ],
                     "channels": [
