@@ -845,7 +845,7 @@
           "title": "decimal or hex",
           "type": "string",
 
-          "pattern": "^(0x[A-Fa-f\\d]+|[-]?\\d+[\\.\\,]?\\d*)$",
+          "pattern": "^(0x[A-Fa-f\\d]+|[-]?\\d+(?:[\\.,]\\d+)?)$",
           "options": {
             "patternmessage": "Should be number or hex"
           }
