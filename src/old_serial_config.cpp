@@ -62,7 +62,7 @@ namespace
         }
     }
 
-    void FisPassword(Json::Value& device)
+    void FixPassword(Json::Value& device)
     {
         if (device.isMember("password") && device["password"].isArray()) {
             for (Json::Value& byte: device["password"]) {
@@ -76,7 +76,7 @@ namespace
     void FixDevice(Json::Value& device)
     {
         ConvertPollIntervalToReadRateLimit(device);
-        FisPassword(device);
+        FixPassword(device);
         if (device.isMember("slave_id")) {
             // Old configs could have slave_id defined as number not as string.
             // Convert numbers to strings.
