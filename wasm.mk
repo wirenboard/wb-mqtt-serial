@@ -1,3 +1,4 @@
+CC = emcc
 
 SRC_DIR = src
 WBLIB_DIR = wblib
@@ -89,4 +90,4 @@ all:
 # fix include
 	cp -r $(JSONCPP_DIR)/include/json wblib/
 # build module
-	emcc -v -O3 $(addprefix -I, $(INC)) $(SRC) -o $(DST_DIR)/module.js $(addprefix --preload-file , $(FILE)) $(OPT)
+	$(CC) -v -O3 $(addprefix -I, $(INC)) $(SRC) -o $(DST_DIR)/module.js $(addprefix --preload-file , $(FILE)) $(OPT)

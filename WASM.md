@@ -1,6 +1,6 @@
-Сборка `jinja` шаблнов _(для сборки нужна утилита `j2`)_:
+Сборка `jinja` шаблнов:
 ```
-make templates
+wbdev root make templates
 ```
 
 Сборка модуля WASM с помощью официального [Docker-образа](https://hub.docker.com/r/emscripten/emsdk) Emscripten _(для сборки нужны исходники `libwbmqtt1`)_:
