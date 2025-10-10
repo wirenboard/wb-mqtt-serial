@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.192.0) stable; urgency=medium
+wb-mqtt-serial (2.193.0) stable; urgency=medium
 
   * Drop subdevices support in wb-mqtt-homeui
 
