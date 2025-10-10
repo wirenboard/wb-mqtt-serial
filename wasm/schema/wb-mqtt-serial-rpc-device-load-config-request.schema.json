@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "port_options": {
+      "properties": {
+        "baud_rate": {
+          "type": "integer",
+          "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
+        },
+        "parity": {
+          "type": "string",
+          "enum": ["N", "E", "O"]
+        },
+        "data_bits": {
+          "type": "integer",
+          "enum": [5, 6, 7, 8]
+        },
+        "stop_bits": {
+          "type": "integer",
+          "enum": [1, 2]
+        }
+      },
+      "required": [
+        "baud_rate",
+        "parity",
+        "data_bits",
+        "stop_bits"
+      ]
+    },
+    "request_data": {
+      "properties": {
+        "slave_id": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        },
+        "device_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "group": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "slave_id",
+        "device_type"
+      ]
+    }
+  },
+  "allOf": [
+    { "$ref" : "#/definitions/port_options" },
+    { "$ref" : "#/definitions/request_data" }
+  ]
+}
