@@ -123,7 +123,7 @@
                 "default": 1,
             },
             {% for value_scale in [1, 10, 100, 1000] -%}
-            {            
+            {
                 "id": "input_{{ input_num }}_min",
                 "title": "minimum_value_title",
                 "group": "conversion_{{ input_num }}",
@@ -267,7 +267,7 @@
                 "0-20 mA sensor": "Измерение тока 0-20 мА",
                 "4-20 mA sensor": "Измерение тока 4-20 мА",
                 {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
-                "IN {{ input_num }} Current": "IN {{ input_num }} Ток",
+                "IN {{ input_num }} Current (mA)": "IN {{ input_num }} Ток",
                 "IN {{ input_num }} Value": "IN {{ input_num }} Пересчитанное значение",
                 {% endfor -%}
                 "physical_value_scale_title": "Диапазон значений",
