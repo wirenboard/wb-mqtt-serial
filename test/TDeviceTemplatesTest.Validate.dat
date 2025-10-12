@@ -16482,7 +16482,7 @@ WB-MAI11
 	Internal Temperature  =>  Internal Temperature
 	Serial  =>  Serial
 	Uptime  =>  Uptime
-WB-MAI2-MINI/CC
+WB-MAI2
 	IN 1 Current (mA) => IN 1 Current (mA)
 	IN 2 Current (mA) => IN 2 Current (mA)
 	IN 1 Value => IN 1 Value
