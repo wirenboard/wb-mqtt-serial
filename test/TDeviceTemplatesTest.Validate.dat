@@ -16482,11 +16482,19 @@ WB-MAI11
 	Internal Temperature  =>  Internal Temperature
 	Serial  =>  Serial
 	Uptime  =>  Uptime
-WB-MAI2-mini/CC
+WB-MAI2-MINI/CC
 	IN 1 Current (mA) => IN 1 Current (mA)
 	IN 2 Current (mA) => IN 2 Current (mA)
 	IN 1 Value => IN 1 Value
 	IN 2 Value => IN 2 Value
+	FW Version  =>  FW Version
+	Input Voltage  =>  Input Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
+	Serial NO  =>  Serial NO
+	Uptime  =>  Uptime
+WB-MAI2-mini/CC
+	Current input 1 (mA)  =>  Current input 1 (mA)
+	Current input 2 (mA)  =>  Current input 2 (mA)
 	FW Version  =>  FW Version
 	Input Voltage  =>  Input Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
