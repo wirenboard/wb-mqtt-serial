@@ -17,7 +17,6 @@
         "id": "wb-mai2-mini",
         "response_timeout_ms": 1,
         "enable_wb_continuous_read": true,
-
         "groups": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
@@ -39,37 +38,7 @@
                 "id": "hw_info"
             }
         ],
-
         "parameters": [
-            {
-                "title": "Baud rate",
-                "id": "baud_rate",
-                "description": "baud_rate_description",
-                "address": 110,
-                "reg_type": "holding",
-                "enum": [96, 192, 384, 576, 1152],
-                "default": 96,
-                "enum_titles": [
-                    "9600",
-                    "19200",
-                    "38400",
-                    "57600",
-                    "115200"
-                ],
-                "group": "general",
-                "order": 1
-            },
-            {
-                "title": "Status LED",
-                "id": "status_led",
-                "address": 130,
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": ["Enabled", "Disabled"],
-                "default": 0,
-                "group": "general",
-                "order": 2
-            },
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Lowpass filter time, ms",
@@ -105,22 +74,6 @@
                     "0-20 mA sensor",
                     "4-20 mA sensor"
                 ]
-            },
-            {
-                "id": "input_{{ input_num }}_physical_value_scale",
-                "title": "physical_value_scale_title",
-                "group": "conversion_{{ input_num }}",
-                "order": 2,
-                "required": true,
-                "readonly": true,
-                "enum": [1, 10, 100, 1000],
-                "enum_titles": [
-                    "[-32768; 32766]",
-                    "[-3276.8; 3276.6]",
-                    "[-327.68; 327.66]",
-                    "[-32.768; 32.766]"
-                ],
-                "default": 1,
             },
             {% for value_scale in [1, 10, 100, 1000] -%}
             {
@@ -162,9 +115,53 @@
                     input_{{ input_num }}_physical_value_scale=={{value_scale}})"
             },
             {% endfor -%}
+            {
+                "id": "input_{{ input_num }}_physical_value_scale",
+                "title": "physical_value_scale_title",
+                "group": "conversion_{{ input_num }}",
+                "order": 2,
+                "required": true,
+                "readonly": true,
+                "enum": [1, 10, 100, 1000],
+                "enum_titles": [
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
+                ],
+                "default": 1
+            },
             {% endfor -%}
+            {
+                "title": "Baud rate",
+                "id": "baud_rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "title": "Status LED",
+                "id": "status_led",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 2
+            }
         ],
-
         "channels": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
