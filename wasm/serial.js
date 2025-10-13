@@ -1,5 +1,19 @@
 class SerialPort
 {
+    filters =
+    [
+        {usbVendorId: 0x0403, usbProductId: 0x6001},
+        {usbVendorId: 0x0403, usbProductId: 0x6014},
+        {usbVendorId: 0x0403, usbProductId: 0x6015},
+        {usbVendorId: 0x04d9, usbProductId: 0xb534},
+        {usbVendorId: 0x10c4, usbProductId: 0xea60},
+        {usbVendorId: 0x10c4, usbProductId: 0xea61},
+        {usbVendorId: 0x10c4, usbProductId: 0xea63},
+        {usbVendorId: 0x1a86, usbProductId: 0x55d3},
+        {usbVendorId: 0x1a86, usbProductId: 0x7522},
+        {usbVendorId: 0x1a86, usbProductId: 0x7523}
+    ];
+
     options = new Object();
     isOpen = false;
 
@@ -8,7 +22,7 @@ class SerialPort
         if (navigator.serial)
             return;
 
-        alert('Web Serial API is not supported by this browser :(');
+        alert('Web Serial API is not supported by this browser :(\n\nIt\'s currently supported by Chrome/Chromium, Edge and Opera browsers.');
     }
 
     setOptions(baudRate, dataBits, parity, stopBits)
@@ -37,7 +51,7 @@ class SerialPort
         if (this.port && !force)
             return;
 
-        this.port = await navigator.serial.requestPort();
+        this.port = await navigator.serial.requestPort({filters: this.filters});
     }
 
     async open()
@@ -53,7 +67,7 @@ class SerialPort
         }
         catch (error)
         {
-            console.error('Can not open serial port: ', error);
+            console.error('Can\'t open serial port: ', error);
             delete this.port;
         }
     }
