@@ -37,3 +37,9 @@ compile_commands.json
 ### direnv ###
 .direnv
 .envrc
+
+# wasm
+cache
+wasm/module*
+wasm/templates
+wblib

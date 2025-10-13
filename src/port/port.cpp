@@ -96,3 +96,14 @@ void TPortOpenCloseLogic::CloseIfNeeded(PPort port, bool allPreviousDataExchange
         port->Close();
     }
 }
+
+TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings)
+    : Port(port)
+{
+    Port->ApplySerialPortSettings(settings);
+}
+
+TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
+{
+    Port->ResetSerialPortSettings();
+}

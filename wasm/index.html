@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Modbus JS Magic</title>
+    <script async type="text/javascript" src="serial.js"></script>
+    <script async type="text/javascript" src="script.js"></script>
+    <script async type="text/javascript" src="module.js"></script>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        textarea {
+            font-family: monospace;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 5px 10px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <textarea id="output" rows="25"></textarea>
+    <button id="portButton">select port</button>
+    <button id="scanButton">scan port</button>
+    <hr>
+    <table></table>
+</body>
+
+</html>
