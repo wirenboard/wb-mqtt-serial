@@ -49,11 +49,8 @@
                 "group": "input_{{ input_num }}",
                 "min": 0,
                 "max": 65534,
-                "required": true,
                 "order": 1,
                 "default": 100,
-                "unsupported_value": "0xFFFF",
-                "error_value": "0xFFFF"
             },
             {
                 "title": "Mode",
@@ -62,7 +59,6 @@
                 "address": {{ 8 + (input_num - 1) }},
                 "group": "conversion_{{ input_num }}",
                 "default": 2,
-                "required": true,
                 "order": 1,
                 "enum": [
                     0,
@@ -120,7 +116,6 @@
                 "title": "physical_value_scale_title",
                 "group": "conversion_{{ input_num }}",
                 "order": 2,
-                "required": true,
                 "readonly": true,
                 "enum": [1, 10, 100, 1000],
                 "enum_titles": [
@@ -215,7 +210,7 @@
                 "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
-                "type": "voltage",
+                "type": "V",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "hw_info"
