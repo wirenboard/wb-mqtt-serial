@@ -65,7 +65,7 @@
             {
                 "title": "Mode",
                 "reg_type": "holding",
-                "id": "input_{{ input_num }}_type",
+                "id": "input_{{ input_num }}_mode",
                 "address": {{ 8 + (input_num - 1) }},
                 "group": "conversion_{{ input_num }}",
                 "default": 2,
@@ -95,7 +95,7 @@
                 {% endif -%}
                 "default": 0,
                 "format": "s16",
-                "condition": "(
+                "condition": "isDefined(input_{{ input_num }}_mode)&&(
                     {%- if value_scale == 1 -%}
                     isDefined(input_{{ input_num }}_physical_value_scale)==0||
                     {%- endif -%}
@@ -114,7 +114,7 @@
                 {% endif -%}
                 "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
                 "format": "s16",
-                "condition": "(
+                "condition": "isDefined(input_{{ input_num }}_mode)&&(
                     {%- if value_scale == 1 -%}
                     isDefined(input_{{ input_num }}_physical_value_scale)==0||
                     {%- endif -%}
@@ -134,7 +134,8 @@
                     "[-327.68; 327.66]",
                     "[-32.768; 32.766]"
                 ],
-                "default": 1
+                "default": 1,
+                "condition": "input_{{ input_num }}_mode"
             },
             {% endfor -%}
             {
