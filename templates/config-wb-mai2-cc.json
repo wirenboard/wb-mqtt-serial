@@ -2,7 +2,6 @@
     "title": "WB-MAI2-mini_template_title",
     "device_type": "WB-MAI2-mini/CC",
     "group": "g-wb",
-    "deprecated": true,
     "hw": [
         {
             "signature": "MAI2CC"
