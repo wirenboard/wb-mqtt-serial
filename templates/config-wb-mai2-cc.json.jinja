@@ -93,6 +93,7 @@
                 {% if value_scale != 1 -%}
                 "scale": {{ 1.0 / value_scale }},
                 {% endif -%}
+                "required": true,
                 "default": 0,
                 "format": "s16",
                 "condition": "isDefined(input_{{ input_num }}_mode)&&(
@@ -112,6 +113,7 @@
                 {% if value_scale != 1 -%}
                 "scale": {{ 1.0 / value_scale }},
                 {% endif -%}
+                "required": true,
                 "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
                 "format": "s16",
                 "condition": "isDefined(input_{{ input_num }}_mode)&&(
@@ -134,6 +136,7 @@
                     "[-327.68; 327.66]",
                     "[-32.768; 32.766]"
                 ],
+                "required": true,
                 "default": 1,
                 "condition": "input_{{ input_num }}_mode"
             },
