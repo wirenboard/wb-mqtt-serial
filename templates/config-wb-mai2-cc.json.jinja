@@ -138,7 +138,7 @@
                 ],
                 "required": true,
                 "default": 1,
-                "condition": "input_{{ input_num }}_mode"
+                "condition": "isDefined(input_{{ input_num }}_mode)"
             },
             {% endfor -%}
             {
