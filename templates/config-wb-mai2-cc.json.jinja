@@ -194,7 +194,7 @@
                 "group": "channels_{{ input_num }}",
                 "error_value": "0x7FFF",
                 "scale": {{ 1.0 / value_scale }},
-                "condition": "(
+                "condition": "isDefined(input_{{ input_num }}_mode)&&(
                     {%- if value_scale == 1 -%}
                     isDefined(input_{{ input_num }}_physical_value_scale)==0||
                     {%- endif -%}
