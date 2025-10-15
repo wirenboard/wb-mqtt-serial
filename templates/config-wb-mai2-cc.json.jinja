@@ -28,6 +28,16 @@
                 "id": "conversion_{{ input_num }}",
                 "group": "input_{{ input_num }}"
             },
+            {
+                "title": "Channels",
+                "id": "channels_{{ input_num }}",
+                "group": "input_{{ input_num }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {
                 "title": "General",
@@ -167,7 +177,7 @@
                 "type": "value",
                 "format": "u16",
                 "scale": 0.001,
-                "group": "input_{{ input_num }}"
+                "group": "channels_{{ input_num }}"
             },
             {% for value_scale in [1, 10, 100, 1000] -%}
             {
@@ -177,7 +187,7 @@
                 "address": {{ 2 + (input_num - 1) }},
                 "type": "value",
                 "format": "s16",
-                "group": "input_{{ input_num }}",
+                "group": "channels_{{ input_num }}",
                 "error_value": "0x7FFF",
                 "scale": {{ 1.0 / value_scale }},
                 "condition": "(
