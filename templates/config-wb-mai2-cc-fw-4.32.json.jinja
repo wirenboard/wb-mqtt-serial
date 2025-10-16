@@ -53,7 +53,7 @@
         "parameters": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Lowpass filter time",
+                "title": "Lowpass filter time, ms",
                 "reg_type": "holding",
                 "id": "input_{{ input_num }}_lowpass_filter",
                 "address": {{ 273 + (input_num - 1) }},
@@ -83,6 +83,23 @@
                     "0-20 mA sensor",
                     "4-20 mA sensor"
                 ]
+            },
+            {
+                "id": "input_{{ input_num }}_physical_value_scale",
+                "title": "physical_value_scale_title",
+                "group": "conversion_{{ input_num }}",
+                "order": 2,
+                "readonly": true,
+                "enum": [1, 10, 100, 1000],
+                "enum_titles": [
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
+                ],
+                "required": true,
+                "default": 1,
+                "condition": "isDefined(input_{{ input_num }}_mode)"
             },
             {% for value_scale in [1, 10, 100, 1000] -%}
             {
@@ -118,23 +135,6 @@
                 "condition": "input_{{ input_num }}_physical_value_scale=={{value_scale}}"
             },
             {% endfor -%}
-            {
-                "id": "input_{{ input_num }}_physical_value_scale",
-                "title": "physical_value_scale_title",
-                "group": "conversion_{{ input_num }}",
-                "order": 2,
-                "readonly": true,
-                "enum": [1, 10, 100, 1000],
-                "enum_titles": [
-                    "[-32768; 32766]",
-                    "[-3276.8; 3276.6]",
-                    "[-327.68; 327.66]",
-                    "[-32.768; 32.766]"
-                ],
-                "required": true,
-                "default": 1,
-                "condition": "isDefined(input_{{ input_num }}_mode)"
-            },
             {% endfor -%}
             {
                 "title": "Baud rate",
@@ -270,15 +270,15 @@
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Mode": "Режим",
-                "Lowpass filter time": "Время усреднения сигнала",
+                "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
                 "Conversion to Physical Value": "Пересчет в физическую величину",
                 "0-5 mA sensor": "Измерение тока 0-5 мА",
                 "0-20 mA sensor": "Измерение тока 0-20 мА",
                 "4-20 mA sensor": "Измерение тока 4-20 мА",
                 {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{ input_num }}": "Вход {{ input_num }}",
-                "Input {{ input_num }} Current": "Вход {{ input_num }} Ток",
-                "Input {{ input_num }} Value": "Вход {{ input_num }} Пересчитанное значение",
+                "Input {{ input_num }} Current": "Вход {{ input_num }} ток",
+                "Input {{ input_num }} Value": "Вход {{ input_num }} пересчитанное значение",
                 {% endfor -%}
                 "physical_value_scale_title": "Диапазон значений",
                 "minimum_value_title": "Нижняя граница диапазона",
