@@ -22,11 +22,11 @@
         "groups": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "IN {{ input_num }}",
+                "title": "Input {{ input_num }}",
                 "id": "input_{{ input_num }}"
             },
             {
-                "title": "Conversion to physical value",
+                "title": "Conversion to Physical Value",
                 "id": "conversion_{{ input_num }}",
                 "group": "input_{{ input_num }}"
             },
@@ -53,12 +53,13 @@
         "parameters": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Lowpass filter time, ms",
+                "title": "Lowpass filter time",
                 "reg_type": "holding",
                 "id": "input_{{ input_num }}_lowpass_filter",
                 "address": {{ 273 + (input_num - 1) }},
                 "format": "u16",
                 "group": "input_{{ input_num }}",
+                "units": "ms",
                 "min": 0,
                 "max": 65534,
                 "order": 1,
@@ -98,11 +99,7 @@
                 "required": true,
                 "default": 0,
                 "format": "s16",
-                "condition": "isDefined(input_{{ input_num }}_mode)&&(
-                    {%- if value_scale == 1 -%}
-                    isDefined(input_{{ input_num }}_physical_value_scale)==0||
-                    {%- endif -%}
-                    input_{{ input_num }}_physical_value_scale=={{value_scale}})"
+                "condition": "input_{{ input_num }}_physical_value_scale=={{value_scale}}"
             },
             {
                 "id": "input_{{ input_num }}_max",
@@ -118,11 +115,7 @@
                 "required": true,
                 "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
                 "format": "s16",
-                "condition": "isDefined(input_{{ input_num }}_mode)&&(
-                    {%- if value_scale == 1 -%}
-                    isDefined(input_{{ input_num }}_physical_value_scale)==0||
-                    {%- endif -%}
-                    input_{{ input_num }}_physical_value_scale=={{value_scale}})"
+                "condition": "input_{{ input_num }}_physical_value_scale=={{value_scale}}"
             },
             {% endfor -%}
             {
@@ -176,18 +169,19 @@
         "channels": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "name": "IN {{ input_num }} Current",
+                "name": "Input {{ input_num }} Current",
                 "reg_type": "input",
                 "id": "input_{{ input_num }}_current",
                 "address": {{ input_num - 1 }},
                 "type": "value",
+                "units": "uA",
                 "format": "u16",
                 "scale": 0.001,
                 "group": "channels_{{ input_num }}"
             },
             {% for value_scale in [1, 10, 100, 1000] -%}
             {
-                "name": "IN {{ input_num }} Value",
+                "name": "Input {{ input_num }} Value",
                 "reg_type": "input",
                 "id": "input_{{ input_num }}_value",
                 "address": {{ 2 + (input_num - 1) }},
@@ -205,6 +199,7 @@
             {% endfor -%}
             {% endfor -%}
             {
+                "id": "serial",
                 "name": "Serial NO",
                 "reg_type": "input",
                 "address": 270,
@@ -213,6 +208,7 @@
                 "group": "hw_info"
             },
             {
+                "id": "fw_version",
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -223,6 +219,7 @@
                 "group": "hw_info"
             },
             {
+                "id": "input_voltage",
                 "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
@@ -232,6 +229,7 @@
                 "group": "hw_info"
             },
             {
+                "id": "minimum_mcu_voltage",
                 "name": "Minimum MCU Voltage Since Startup",
                 "reg_type": "input",
                 "address": 119,
@@ -242,10 +240,11 @@
                 "group": "hw_info"
             },
             {
+                "id": "uptime",
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "type": "text",
+                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
@@ -256,7 +255,9 @@
             "en": {
                 "WB-MAI2-mini_template_title": "WB-MAI2-MINI/CC fw 4.32 (2-channel analog input module)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)"
+                "minimum_value_title": "Lower limit of the measurement range",
+                "maximum_value_title": "Upper limit of the measurement range",
+                "physical_value_scale_title": "Range"
             },
             "ru": {
                 "WB-MAI2-mini_template_title": "WB-MAI2-MINI/CC fw 4.32 (2-канальный модуль измерения токового сигнала)",
@@ -269,14 +270,15 @@
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Mode": "Режим",
-                "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
-                "Conversion to physical value": "Пересчет в физическую величину",
+                "Lowpass filter time": "Время усреднения сигнала",
+                "Conversion to Physical Value": "Пересчет в физическую величину",
                 "0-5 mA sensor": "Измерение тока 0-5 мА",
                 "0-20 mA sensor": "Измерение тока 0-20 мА",
                 "4-20 mA sensor": "Измерение тока 4-20 мА",
                 {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
-                "IN {{ input_num }} Current (mA)": "IN {{ input_num }} Ток",
-                "IN {{ input_num }} Value": "IN {{ input_num }} Пересчитанное значение",
+                "Input {{ input_num }}": "Вход {{ input_num }}",
+                "Input {{ input_num }} Current": "Вход {{ input_num }} Ток",
+                "Input {{ input_num }} Value": "Вход {{ input_num }} Пересчитанное значение",
                 {% endfor -%}
                 "physical_value_scale_title": "Диапазон значений",
                 "minimum_value_title": "Нижняя граница диапазона",
@@ -285,7 +287,7 @@
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
                 "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения"
             }
         }
     }

@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.193.0) UNRELEASED; urgency=medium
+wb-mqtt-serial (2.193.0) stable; urgency=medium
 
   * New WB-MAI2 config with conversion of current into a physical quantity, old marked as deprecated
 
