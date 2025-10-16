@@ -16492,10 +16492,10 @@ WB-MAI2-mini/CC
 	Uptime  =>  Uptime
 WB-MAI2-mini/CC-fw-4.32
 	FW Version  =>  FW Version
-	IN 1 Current  =>  input_1_current
-	IN 1 Value  =>  input_1_value
-	IN 2 Current  =>  input_2_current
-	IN 2 Value  =>  input_2_value
+	Input 1 Current  =>  Input 1 Current
+	Input 1 Value  =>  Input 1 Value
+	Input 2 Current  =>  Input 2 Current
+	Input 2 Value  =>  Input 2 Value
 	Input Voltage  =>  Input Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Serial NO  =>  Serial NO
