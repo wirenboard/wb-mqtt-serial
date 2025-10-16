@@ -16491,15 +16491,15 @@ WB-MAI2-mini/CC
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MAI2-mini/CC-fw-4.32
-	FW Version  =>  FW Version
-	Input 1 Current  =>  Input 1 Current
-	Input 1 Value  =>  Input 1 Value
-	Input 2 Current  =>  Input 2 Current
-	Input 2 Value  =>  Input 2 Value
-	Input Voltage  =>  Input Voltage
-	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
-	Serial NO  =>  Serial NO
-	Uptime  =>  Uptime
+	FW Version  =>  fw_version
+	Input 1 Current  =>  input_1_current
+	Input 1 Value  =>  input_1_value
+	Input 2 Current  =>  input_2_current
+	Input 2 Value  =>  input_2_value
+	Input Voltage  =>  input_voltage
+	Minimum MCU Voltage Since Startup  =>  minimum_mcu_voltage
+	Serial NO  =>  serial
+	Uptime  =>  uptime
 WB-MAI6
 	2W Resistance Offset 1-3N  =>  2W Resistance Offset 1-3N
 	2W Resistance Offset 1-3P  =>  2W Resistance Offset 1-3P
