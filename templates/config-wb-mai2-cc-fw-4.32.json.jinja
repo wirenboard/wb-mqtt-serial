@@ -53,7 +53,7 @@
         "parameters": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Lowpass filter time, ms",
+                "title": "Lowpass filter time (ms)",
                 "reg_type": "holding",
                 "id": "input_{{ input_num }}_lowpass_filter",
                 "address": {{ 273 + (input_num - 1) }},
@@ -270,7 +270,7 @@
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Mode": "Режим",
-                "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
+                "Lowpass filter time (ms)": "Время усреднения сигнала (мс)",
                 "Conversion to Physical Value": "Пересчет в физическую величину",
                 "0-5 mA sensor": "Измерение тока 0-5 мА",
                 "0-20 mA sensor": "Измерение тока 0-20 мА",
