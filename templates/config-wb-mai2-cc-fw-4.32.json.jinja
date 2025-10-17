@@ -53,7 +53,7 @@
         "parameters": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Lowpass filter time (ms)",
+                "title": "Lowpass Filter Time (ms)",
                 "reg_type": "holding",
                 "id": "input_{{ input_num }}_lowpass_filter",
                 "address": {{ 273 + (input_num - 1) }},
@@ -255,8 +255,8 @@
             "en": {
                 "WB-MAI2-mini_template_title": "WB-MAI2-MINI/CC fw 4.32 (2-channel analog input module)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "minimum_value_title": "Lower limit of the Measurement Range",
-                "maximum_value_title": "Upper limit of the Measurement Range",
+                "minimum_value_title": "Lower Limit of the Measurement Range",
+                "maximum_value_title": "Upper Limit of the Measurement Range",
                 "physical_value_scale_title": "Range"
             },
             "ru": {
@@ -270,7 +270,7 @@
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Mode": "Режим",
-                "Lowpass filter time (ms)": "Время усреднения сигнала (мс)",
+                "Lowpass Filter Time (ms)": "Время усреднения сигнала (мс)",
                 "Conversion to Physical Value": "Пересчет в физическую величину",
                 "0-5 mA sensor": "Измерение тока 0-5 мА",
                 "0-20 mA sensor": "Измерение тока 0-20 мА",
