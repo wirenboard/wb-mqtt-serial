@@ -15,10 +15,11 @@
         }
     ],
     "device": {
-        "name": "WB-MAI2-mini/CC-fw-4.32",
+        "name": "WB-MAI2-mini/CC",
         "id": "wb-mai2-mini",
         "response_timeout_ms": 1,
         "enable_wb_continuous_read": true,
+        "max_read_registers": 0,
         "groups": [
             {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
             {
