@@ -16490,7 +16490,7 @@ WB-MAI2-mini/CC
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
-WB-MAI2-mini/CC-fw-4.32
+WB-MAI2-mini/CC-since-fw-4.32
 	FW Version  =>  fw_version
 	Input 1 Current  =>  input_1_current
 	Input 1 Value  =>  input_1_value
