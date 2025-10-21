@@ -1,0 +1,295 @@
+{% set INPUTS_NUMBER = 2 -%}
+
+{
+    "title": "WB-MAI2-mini_template_title",
+    "device_type": "WB-MAI2-mini/CC-since-fw-4.32",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MAI2CC",
+            "fw": "4.32.0"
+        },
+        {
+            "signature": "WB-MAI2-mini/CC v.3",
+            "fw": "4.32.0"
+        }
+    ],
+    "device": {
+        "name": "WB-MAI2-mini/CC",
+        "id": "wb-mai2-mini",
+        "response_timeout_ms": 1,
+        "enable_wb_continuous_read": true,
+        "max_read_registers": 0,
+        "groups": [
+            {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{ input_num }}",
+                "id": "input_{{ input_num }}"
+            },
+            {
+                "title": "Conversion to Physical Value",
+                "id": "conversion_{{ input_num }}",
+                "group": "input_{{ input_num }}"
+            },
+            {
+                "title": "Channels",
+                "id": "channels_{{ input_num }}",
+                "group": "input_{{ input_num }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+        "parameters": [
+            {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Lowpass Filter Time (ms)",
+                "reg_type": "holding",
+                "id": "input_{{ input_num }}_lowpass_filter",
+                "address": {{ 273 + (input_num - 1) }},
+                "format": "u16",
+                "group": "input_{{ input_num }}",
+                "units": "ms",
+                "min": 0,
+                "max": 65534,
+                "order": 1,
+                "default": 100
+            },
+            {
+                "title": "Mode",
+                "reg_type": "holding",
+                "id": "input_{{ input_num }}_mode",
+                "address": {{ 8 + (input_num - 1) }},
+                "group": "conversion_{{ input_num }}",
+                "default": 2,
+                "order": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor"
+                ]
+            },
+            {
+                "id": "input_{{ input_num }}_physical_value_scale",
+                "title": "physical_value_scale_title",
+                "group": "conversion_{{ input_num }}",
+                "order": 2,
+                "readonly": true,
+                "enum": [1, 10, 100, 1000],
+                "enum_titles": [
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
+                ],
+                "required": true,
+                "default": 1,
+                "condition": "isDefined(input_{{ input_num }}_mode)"
+            },
+            {% for value_scale in [1, 10, 100, 1000] -%}
+            {
+                "id": "input_{{ input_num }}_min",
+                "title": "minimum_value_title",
+                "group": "conversion_{{ input_num }}",
+                "order": 3,
+                "address": {{ 10 + (input_num - 1) }},
+                "min": {{ -32768 if value_scale == 1 else -32768 / value_scale }},
+                "max": {{ 32766 if value_scale == 1 else 32766 / value_scale }},
+                {% if value_scale != 1 -%}
+                "scale": {{ 1.0 / value_scale }},
+                {% endif -%}
+                "required": true,
+                "default": 0,
+                "format": "s16",
+                "condition": "input_{{ input_num }}_physical_value_scale=={{value_scale}}"
+            },
+            {
+                "id": "input_{{ input_num }}_max",
+                "title": "maximum_value_title",
+                "group": "conversion_{{ input_num }}",
+                "order": 4,
+                "address": {{ 12 + (input_num - 1) }},
+                "min": {{ -32768 if value_scale == 1 else -32768 / value_scale }},
+                "max": {{ 32766 if value_scale == 1 else 32766 / value_scale }},
+                {% if value_scale != 1 -%}
+                "scale": {{ 1.0 / value_scale }},
+                {% endif -%}
+                "required": true,
+                "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
+                "format": "s16",
+                "condition": "input_{{ input_num }}_physical_value_scale=={{value_scale}}"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {
+                "title": "Baud rate",
+                "id": "baud_rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "title": "Status LED",
+                "id": "status_led",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 2
+            }
+        ],
+        "channels": [
+            {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input {{ input_num }} Current",
+                "reg_type": "input",
+                "id": "input_{{ input_num }}_current",
+                "address": {{ input_num - 1 }},
+                "type": "value",
+                "units": "mA",
+                "format": "u16",
+                "scale": 0.001,
+                "group": "channels_{{ input_num }}"
+            },
+            {% for value_scale in [1, 10, 100, 1000] -%}
+            {
+                "name": "Input {{ input_num }} Value",
+                "reg_type": "input",
+                "id": "input_{{ input_num }}_value",
+                "address": {{ 2 + (input_num - 1) }},
+                "type": "value",
+                "format": "s16",
+                "group": "channels_{{ input_num }}",
+                "error_value": "0x7FFF",
+                "scale": {{ 1.0 / value_scale }},
+                "condition": "isDefined(input_{{ input_num }}_mode)&&(
+                    {%- if value_scale == 1 -%}
+                    isDefined(input_{{ input_num }}_physical_value_scale)==0||
+                    {%- endif -%}
+                    input_{{ input_num }}_physical_value_scale=={{value_scale}})"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {
+                "id": "serial",
+                "name": "Serial NO",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "id": "fw_version",
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "input_voltage",
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "minimum_mcu_voltage",
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "uptime",
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC fw 4.32 (2-channel analog input module)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "minimum_value_title": "Lower Limit of the Measurement Range",
+                "maximum_value_title": "Upper Limit of the Measurement Range",
+                "physical_value_scale_title": "Range"
+            },
+            "ru": {
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC fw 4.32 (2-канальный модуль измерения токового сигнала)",
+                "Inputs": "Входы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Baud rate": "Скорость обмена",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Mode": "Режим",
+                "Lowpass Filter Time (ms)": "Время усреднения сигнала (мс)",
+                "Conversion to Physical Value": "Пересчет в физическую величину",
+                "0-5 mA sensor": "Измерение тока 0-5 мА",
+                "0-20 mA sensor": "Измерение тока 0-20 мА",
+                "4-20 mA sensor": "Измерение тока 4-20 мА",
+                {% for input_num in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{ input_num }}": "Вход {{ input_num }}",
+                "Input {{ input_num }} Current": "Вход {{ input_num }} ток",
+                "Input {{ input_num }} Value": "Вход {{ input_num }} пересчитанное значение",
+                {% endfor -%}
+                "physical_value_scale_title": "Диапазон значений",
+                "minimum_value_title": "Нижняя граница диапазона",
+                "maximum_value_title": "Верхняя граница диапазона",
+                "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "Uptime": "Время работы с момента включения"
+            }
+        }
+    }
+}
