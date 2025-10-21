@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.193.0) stable; urgency=medium
+
+  * New WB-MAI2 config with conversion of current into a physical quantity, old marked as deprecated
+
+ -- Vadim Deriabkin <vadim.deriabkin@wirenboard.com>  Tue, 14 Oct 2025 15:56:38 +0700
+
 wb-mqtt-serial (2.192.2) stable; urgency=medium
 
   * fix WB-LED fade dec RGB regs
