@@ -1159,8 +1159,6 @@
 
   "required": ["device_type"],
 
-  "defaultProperties": [ "slave_id", "device_type"],
-
   "translations": {
     "en": {
       "read_rate_limit_description": "This option is deprecated, use read period of channels instead",

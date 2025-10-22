@@ -49,7 +49,6 @@ namespace
     //      "properties": {
     //          "device_type": DEVICE_TYPE
     //      },
-    //      "defaultProperties": ["device_type", "slave_id"],
     //      "required": ["device_type", "slave_id"]
     //  }
     Json::Value MakeDeviceWithGroupsTemplateSchema(TDeviceTemplate& deviceTemplate,

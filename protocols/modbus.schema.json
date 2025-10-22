@@ -20,15 +20,6 @@
     }
   },
   "required": ["slave_id"],
-  "options": {
-    "disable_edit_json": true,
-    "compact": true,
-    "disable_collapse": true,
-    "wb": {
-      "disable_panel": true
-    }
-  },
-  "defaultProperties": ["slave_id", "channels", "protocol"],
   "translations": {
     "en": {
       "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests"
