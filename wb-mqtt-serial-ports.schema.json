@@ -27,7 +27,10 @@
           "propertyOrder": 8,
           "options": {
             "grid_columns": 12,
-            "show_opt_in": true
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "guard_interval_us": {
@@ -39,7 +42,10 @@
           "propertyOrder": 9,
           "options": {
             "grid_columns": 12,
-            "show_opt_in": true
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "read_rate_limit_ms": {
@@ -168,7 +174,10 @@
           "propertyOrder": 5,
           "options": {
             "grid_columns": 12,
-            "show_opt_in":true
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         },
         "connection_max_fail_cycles": {
@@ -180,7 +189,10 @@
           "propertyOrder": 6,
           "options": {
             "grid_columns": 12,
-            "show_opt_in":true
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
           }
         }
       },
@@ -258,7 +270,10 @@
       "default" : -1,
       "propertyOrder" : 2,
       "options": {
-        "show_opt_in": true
+        "wb": {
+          "show_editor": true,
+          "allow_undefined": true
+        }
       }
     },
     "rate_limit" : {
@@ -268,7 +283,10 @@
       "min": 1,
       "propertyOrder" : 3,
       "options": {
-        "show_opt_in": true
+        "wb": {
+          "show_editor": true,
+          "allow_undefined": true
+        }
       }
     }
   },
