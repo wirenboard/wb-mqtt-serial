@@ -1,8 +1,8 @@
-{% set title_en = title_en | default("WB-MIO, WB-MIO-E, WB-MIO-E v2 (Interface Converter)") -%}
-{% set title_ru = title_ru | default("WB-MIO, WB-MIO-E, WB-MIO-E v2 (преобразователь интерфейсов)") -%}
+{% set title_en = title_en | default("WB-MGE, WB-MIO, WB-MIO-E (Interface Converter)") -%}
+{% set title_ru = title_ru | default("WB-MGE, WB-MIO, WB-MIO-E (преобразователь интерфейсов)") -%}
 {% set device_type = device_type | default("wb_mio") -%}
 {% set group = group | default("g-wb") -%}
-{% set device_name = device_name | default("WB-MIO, WB-MIO-E, WB-MIO-E v2") -%}
+{% set device_name = device_name | default("WB-MGE, WB-MIO, WB-MIO-E") -%}
 {% set device_id = device_id | default("wb_mio") -%}
 {
     "title": "template_title",
@@ -39,6 +39,15 @@
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
                 "group": "general",
                 "order": 1
             },
@@ -60,31 +69,14 @@
             }
         ],
         "channels": [
-            {% set enum_channel = [                    0,
-                    1,
-                    2
-                ] %
-            }
-            {% set enum_titles_channel = [
-                    "not_connected_tittle",
-                    "8_channel_tittle",
-                    "16_channel_tittle"
-                ] %
-            }
             {
                 "id": "status_DI1",
                 "name": "Status DI 1",
                 "read_only": true,
                 "reg_type": "input",
                 "address": 997,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -93,14 +85,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 996,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -109,14 +95,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 995,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -125,14 +105,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 993,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -141,14 +115,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 990,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -157,14 +125,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 991,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -173,14 +135,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 992,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
@@ -189,14 +145,8 @@
                 "read_only": true,
                 "reg_type": "input",
                 "address": 994,
-                "enum": {
-                    { enum_channel
-                    }
-                },
-                "enum_titles": {
-                    { enum_titles_channel
-                    }
-                },
+                "enum": [0, 1, 2],
+                "enum_titles": ["not_connected_tittle", "8_channel_tittle", "16_channel_tittle"],
                 "group": "general"
             },
             {
