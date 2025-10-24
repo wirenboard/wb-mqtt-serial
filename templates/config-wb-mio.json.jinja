@@ -1,0 +1,297 @@
+{% set title_en = title_en | default("WB-MIO, WB-MIO-E, WB-MIO-E v2 (Interface Converter)") -%}
+{% set title_ru = title_ru | default("WB-MIO, WB-MIO-E, WB-MIO-E v2 (преобразователь интерфейсов)") -%}
+{% set device_type = device_type | default("wb_mio") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MIO, WB-MIO-E, WB-MIO-E v2") -%}
+{% set device_id = device_id | default("wb_mio") -%}
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+    "hw": [
+        {
+            "signature": "WBMIO"
+        },
+        {
+            "signature": "WBMIOGE"
+        }
+    ],
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "enable_wb_continuous_read": true,
+        "groups": [
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "baud_rate",
+                "title": "Baud Rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "enum_led_enabled",
+                    "enum_led_disabled"
+                ],
+                "default": 0,
+                "group": "general"
+            }
+        ],
+        "channels": [
+            {% set enum_channel = [                    0,
+                    1,
+                    2
+                ] %
+            }
+            {% set enum_titles_channel = [
+                    "not_connected_tittle",
+                    "8_channel_tittle",
+                    "16_channel_tittle"
+                ] %
+            }
+            {
+                "id": "status_DI1",
+                "name": "Status DI 1",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 997,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DI2",
+                "name": "Status DI 2",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 996,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DI3",
+                "name": "Status DI 3",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 995,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DI4",
+                "name": "Status DI 4",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 993,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DO1",
+                "name": "Status DO 1",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 990,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DO2",
+                "name": "Status DO 2",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 991,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DO3",
+                "name": "Status DO 3",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 992,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "status_DO4",
+                "name": "Status DO 4",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 994,
+                "enum": {
+                    { enum_channel
+                    }
+                },
+                "enum_titles": {
+                    { enum_titles_channel
+                    }
+                },
+                "group": "general"
+            },
+            {
+                "id": "serial",
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "id": "fw_version",
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "uptime",
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_temperature",
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_voltage",
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "enum_led_enabled": "Enabled",
+                "enum_led_disabled": "Disabled",
+                "enum_parallel_disabled": "Disabled",
+                "enum_parallel_enabled": "Enabled",
+                "not_connected_tittle": "Not Connected",
+                "8_channel_tittle": "8 Channel",
+                "16_channel_tittle": "16 Channel"
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Baud Rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Uptime": "Время работы с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Status LED": "Индикатор состояния",
+                "enum_led_enabled": "Включен",
+                "enum_led_disabled": "Выключен",
+                "enum_parallel_disabled": "Выключен",
+                "enum_parallel_enabled": "Включен",
+                "not_connected_tittle": "Не подключено",
+                "8_channel_tittle": "8 Каналов",
+                "16_channel_tittle": "16 Каналов",
+                "Status DI 1":"Статус DI 1",
+                "Status DI 2":"Статус DI 2",
+                "Status DI 3":"Статус DI 3",
+                "Status DI 4":"Статус DI 4",
+                "Status DO 1":"Статус DO 1",
+                "Status DO 2":"Статус DO 2",
+                "Status DO 3":"Статус DO 3",
+                "Status DO 4":"Статус DO 4",
+            }
+        }
+    }
+}
