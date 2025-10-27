@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.193.0) stable; urgency=medium
+wb-mqtt-serial (2.194.0) stable; urgency=medium
 
   * Drop subdevices support in wb-mqtt-homeui
 
@@ -6,7 +6,13 @@ wb-mqtt-serial (2.193.0) stable; urgency=medium
   * Update config/Load RPC reply format
   * Update config/GetSchema RPC reply format
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 09 Oct 2025 21:56:22 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 27 Oct 2025 10:29:23 +0500
+
+wb-mqtt-serial (2.193.0) stable; urgency=medium
+
+  * New WB-MAI2 config with conversion of current into a physical quantity, old marked as deprecated
+
+ -- Vadim Deriabkin <vadim.deriabkin@wirenboard.com>  Tue, 14 Oct 2025 15:56:38 +0700
 
 wb-mqtt-serial (2.192.2) stable; urgency=medium
 
