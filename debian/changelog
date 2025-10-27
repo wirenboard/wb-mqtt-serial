@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.194.0) stable; urgency=medium
+
+  * Add template for WB-MIO, WB-MIO-E, WB-MIO-E v2, WB-MGE
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Mon, 27 Oct 2025 10:56:00 +0300
+
 wb-mqtt-serial (2.193.0) stable; urgency=medium
 
   * New WB-MAI2 config with conversion of current into a physical quantity, old marked as deprecated
