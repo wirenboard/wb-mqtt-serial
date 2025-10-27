@@ -45,3 +45,10 @@ std::unordered_map<std::string, std::string> GetTranslations(const std::string& 
     }
     return res;
 }
+
+void AppendParams(Json::Value& dst, const Json::Value& src)
+{
+    for (auto it = src.begin(); it != src.end(); ++it) {
+        dst[it.name()] = *it;
+    }
+}

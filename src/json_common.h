@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unordered_map>
 #include <wblib/json/json.h>
 
@@ -19,3 +21,5 @@ Json::Value& Append(Json::Value& array);
 Json::Value MakeSingleValueProperty(const std::string& value);
 
 std::unordered_map<std::string, std::string> GetTranslations(const std::string& key, const Json::Value& deviceTemplate);
+
+void AppendParams(Json::Value& dst, const Json::Value& src);
