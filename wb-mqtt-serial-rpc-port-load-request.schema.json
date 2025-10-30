@@ -42,7 +42,7 @@
         "ip": {
           "description": "Client ip address",
           "type": "string",
-          "pattern": "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)(\\.(?!$)|$)){4}$"
+          "minLength": 1
         },
         "port": {
           "description": "Client tcp port number",
