@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.194.1) stable; urgency=medium
+
+  * Add template's firmware version check for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 30 Oct 2025 14:54:57 +0300
+
 wb-mqtt-serial (2.194.0) stable; urgency=medium
 
   * Drop subdevices support in wb-mqtt-homeui
