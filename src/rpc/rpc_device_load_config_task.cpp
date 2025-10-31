@@ -10,7 +10,7 @@ namespace
 {
     const auto MAX_RETRIES = 2;
 
-    bool ReadModbusRegister(Modbus::IModbusTraits& traits,
+    void ReadModbusRegister(Modbus::IModbusTraits& traits,
                             TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
                             PRegisterConfig registerConfig,
@@ -26,13 +26,12 @@ namespace
                                              std::chrono::microseconds(0),
                                              rpcRequest->ResponseTimeout,
                                              rpcRequest->FrameTimeout);
-                return true;
             } catch (const Modbus::TModbusExceptionError& err) {
                 if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
                     err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
                     err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
                 {
-                    break;
+                    throw;
                 }
             } catch (const Modbus::TErrorBase& err) {
                 if (i == MAX_RETRIES) {
@@ -44,33 +43,39 @@ namespace
                 }
             }
         }
-
-        return false;
     }
 
-    std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    std::string ReadWbRegister(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, const std::string& registerName)
     {
-        if (!rpcRequest->IsWBDevice) {
-            return std::string();
-        }
         std::string error;
         try {
             Modbus::TModbusRTUTraits traits;
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME);
+            auto config = WbRegisters::GetRegisterConfig(registerName);
             TRegisterValue value;
-            std::string version;
-            if (ReadModbusRegister(traits, port, rpcRequest, config, value)) {
-                version = value.Get<std::string>();
-            }
-            return version;
+            ReadModbusRegister(traits, port, rpcRequest, config, value);
+            return value.Get<std::string>();
         } catch (const Modbus::TErrorBase& err) {
             error = err.what();
         } catch (const TResponseTimeoutException& e) {
             error = e.what();
         }
         LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
-                  << " unable to read \"" << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
+                  << " unable to read \"" << registerName << "\" register: " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
+    std::string ReadDeviceModel(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    {
+        try {
+            return ReadWbRegister(port, rpcRequest, WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME);
+        } catch (const Modbus::TErrorBase& err) {
+            return ReadWbRegister(port, rpcRequest, WbRegisters::DEVICE_MODEL_REGISTER_NAME);
+        }
+    }
+
+    std::string ReadFwVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    {
+        return ReadWbRegister(port, rpcRequest, WbRegisters::FW_VERSION_REGISTER_NAME);
     }
 
     void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
@@ -86,10 +91,12 @@ namespace
         }
 
         std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
+        std::string deviceModel;
         std::string fwVersion;
         Json::Value parameters;
         if (rpcRequest->ParametersCache.Contains(id)) {
             Json::Value cache = rpcRequest->ParametersCache.Get(id);
+            deviceModel = cache["model"].asString();
             fwVersion = cache["fw"].asString();
             parameters = cache["parameters"];
         }
@@ -102,8 +109,25 @@ namespace
         }
 
         port->SkipNoise();
-        if (fwVersion.empty()) {
-            fwVersion = ReadFirmwareVersion(*port, rpcRequest);
+
+        if (rpcRequest->IsWBDevice) {
+            if (deviceModel.empty()) {
+                deviceModel = ReadDeviceModel(*port, rpcRequest);
+            }
+            if (fwVersion.empty()) {
+                fwVersion = ReadFwVersion(*port, rpcRequest);
+            }
+            auto match = false;
+            for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
+                if (item.Signature == deviceModel) {
+                    match = util::CompareVersionStrings(item.Fw, fwVersion) <= 0;
+                    break;
+                }
+            }
+            if (!match) {
+                throw TRPCException("Device model or firmware version is not compatible with selected template",
+                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
         }
 
         std::list<std::string> paramsList;
@@ -117,6 +141,9 @@ namespace
         ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
 
         Json::Value result;
+        if (!deviceModel.empty()) {
+            result["model"] = deviceModel;
+        }
         if (!fwVersion.empty()) {
             result["fw"] = fwVersion;
         }

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.195.1) stable; urgency=medium
+
+  * Add template's firmware version check for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 31 Oct 2025 08:52:14 +0300
+
 wb-mqtt-serial (2.195.0) stable; urgency=medium
 
   * Allow using domain names in RPC requests to TCP ports
