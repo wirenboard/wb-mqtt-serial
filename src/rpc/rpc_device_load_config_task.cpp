@@ -78,6 +78,28 @@ namespace
         return ReadWbRegister(port, rpcRequest, WbRegisters::FW_VERSION_REGISTER_NAME);
     }
 
+    void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model, std::string& version)
+    {
+        if (model.empty()) {
+            model = ReadDeviceModel(*port, rpcRequest);
+        }
+        if (version.empty()) {
+            version = ReadFwVersion(*port, rpcRequest);
+        }
+        for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
+            if (item.Signature == model) {
+                if (util::CompareVersionStrings(version, item.Fw) >= 0) {
+                    return;
+                }
+                throw TRPCException("Device firmware version " + version +
+                                        " is lower than selected template minimal firmware version " + item.Fw,
+                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
+        }
+        throw TRPCException("Device model \"" + model + "\" is not compatible with selected template",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
     void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         if (!rpcRequest->OnResult) {
@@ -111,23 +133,7 @@ namespace
         port->SkipNoise();
 
         if (rpcRequest->IsWBDevice) {
-            if (deviceModel.empty()) {
-                deviceModel = ReadDeviceModel(*port, rpcRequest);
-            }
-            if (fwVersion.empty()) {
-                fwVersion = ReadFwVersion(*port, rpcRequest);
-            }
-            auto match = false;
-            for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
-                if (item.Signature == deviceModel) {
-                    match = util::CompareVersionStrings(item.Fw, fwVersion) <= 0;
-                    break;
-                }
-            }
-            if (!match) {
-                throw TRPCException("Device model or firmware version is not compatible with selected template",
-                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-            }
+            CheckTemplate(port, rpcRequest, deviceModel, fwVersion);
         }
 
         std::list<std::string> paramsList;

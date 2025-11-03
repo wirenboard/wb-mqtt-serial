@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.195.1) stable; urgency=medium
+wb-mqtt-serial (2.196.0) stable; urgency=medium
 
   * Add template's firmware version check for device/LoadConfig RPC
 
@@ -273,7 +273,7 @@ wb-mqtt-serial (2.175.3) stable; urgency=medium
 
 wb-mqtt-serial (2.175.2) stable; urgency=medium
 
-  * Fix forced frame timeout bug for modbus register range reading 
+  * Fix forced frame timeout bug for modbus register range reading
   * Fix slow first poll for devices with continuous read enabled
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 30 Jun 2025 12:19:52 +0300
@@ -328,7 +328,7 @@ wb-mqtt-serial (2.171.2) stable; urgency=medium
 
 wb-mqtt-serial (2.171.1) stable; urgency=medium
 
-  * Add byte order property definition to confed common schema 
+  * Add byte order property definition to confed common schema
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Jun 2025 18:40:32 +0300
 
