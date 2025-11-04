@@ -97,7 +97,7 @@ namespace
             }
         }
         throw TRPCException("Device \"" + model + "\" with firmware version " + version +
-                                "is incompatible with selected template device models",
+                                " is incompatible with selected template device models",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
