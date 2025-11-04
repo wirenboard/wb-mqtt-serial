@@ -91,12 +91,13 @@ namespace
                 if (util::CompareVersionStrings(version, item.Fw) >= 0) {
                     return;
                 }
-                throw TRPCException("Device firmware version " + version +
-                                        " is lower than selected template minimal firmware version " + item.Fw,
+                throw TRPCException("Device \"" + model + "\" firmware version " + version +
+                                        " is lower than selected template minimal supported version " + item.Fw,
                                     TRPCResultCode::RPC_WRONG_PARAM_VALUE);
             }
         }
-        throw TRPCException("Device model \"" + model + "\" is not compatible with selected template",
+        throw TRPCException("Device \"" + model + "\" with firmware version " + version +
+                                "is incompatible with selected template device models",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
