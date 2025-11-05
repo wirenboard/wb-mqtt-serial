@@ -15,6 +15,7 @@
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
 #include "old_serial_config.h"
+
 #include "devices/modbus_device.h"
 
 #ifndef __EMSCRIPTEN__
