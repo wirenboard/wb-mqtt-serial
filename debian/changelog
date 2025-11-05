@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.197.1) stable; urgency=medium
+
+  * Delete html tags <b> in descriptions
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Nov 2025 17:33:00 +0300
+
 wb-mqtt-serial (2.197.0) stable; urgency=medium
 
   * Add template for WB-MIO, WB-MIO-E, WB-MIO-E v2, WB-MGE
