@@ -18,15 +18,6 @@
     }
   },
   "required": ["protocol"],
-  "options": {
-    "disable_edit_json": true,
-    "compact": true,
-    "disable_collapse": true,
-    "wb": {
-      "disable_panel": true
-    }
-  },
-  "defaultProperties": ["slave_id", "channels", "protocol"],
   "translations": {
     "ru": {
       "Custom Neva device": "Счётчик Нева"

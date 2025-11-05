@@ -1,8 +1,30 @@
-wb-mqtt-serial (2.194.0) stable; urgency=medium
+wb-mqtt-serial (2.197.0) stable; urgency=medium
 
   * Add template for WB-MIO, WB-MIO-E, WB-MIO-E v2, WB-MGE
 
- -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Mon, 27 Oct 2025 10:56:00 +0300
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Nov 2025 11:25:00 +0300
+
+wb-mqtt-serial (2.196.0) stable; urgency=medium
+
+  * Add template's firmware version check for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 31 Oct 2025 08:52:14 +0300
+
+wb-mqtt-serial (2.195.0) stable; urgency=medium
+
+  * Allow using domain names in RPC requests to TCP ports
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 30 Oct 2025 16:14:10 +0500
+
+wb-mqtt-serial (2.194.0) stable; urgency=medium
+
+  * Drop subdevices support in wb-mqtt-homeui
+
+  [ Ilya Titov ]
+  * Update config/Load RPC reply format
+  * Update config/GetSchema RPC reply format
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 27 Oct 2025 10:29:23 +0500
 
 wb-mqtt-serial (2.193.0) stable; urgency=medium
 
@@ -257,7 +279,7 @@ wb-mqtt-serial (2.175.3) stable; urgency=medium
 
 wb-mqtt-serial (2.175.2) stable; urgency=medium
 
-  * Fix forced frame timeout bug for modbus register range reading 
+  * Fix forced frame timeout bug for modbus register range reading
   * Fix slow first poll for devices with continuous read enabled
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 30 Jun 2025 12:19:52 +0300
@@ -312,7 +334,7 @@ wb-mqtt-serial (2.171.2) stable; urgency=medium
 
 wb-mqtt-serial (2.171.1) stable; urgency=medium
 
-  * Add byte order property definition to confed common schema 
+  * Add byte order property definition to confed common schema
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Jun 2025 18:40:32 +0300
 

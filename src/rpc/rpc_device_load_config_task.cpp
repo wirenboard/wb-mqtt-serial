@@ -10,7 +10,7 @@ namespace
 {
     const auto MAX_RETRIES = 2;
 
-    bool ReadModbusRegister(Modbus::IModbusTraits& traits,
+    void ReadModbusRegister(Modbus::IModbusTraits& traits,
                             TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
                             PRegisterConfig registerConfig,
@@ -26,13 +26,12 @@ namespace
                                              std::chrono::microseconds(0),
                                              rpcRequest->ResponseTimeout,
                                              rpcRequest->FrameTimeout);
-                return true;
             } catch (const Modbus::TModbusExceptionError& err) {
                 if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
                     err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
                     err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
                 {
-                    break;
+                    throw;
                 }
             } catch (const Modbus::TErrorBase& err) {
                 if (i == MAX_RETRIES) {
@@ -44,33 +43,62 @@ namespace
                 }
             }
         }
-
-        return false;
     }
 
-    std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    std::string ReadWbRegister(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, const std::string& registerName)
     {
-        if (!rpcRequest->IsWBDevice) {
-            return std::string();
-        }
         std::string error;
         try {
             Modbus::TModbusRTUTraits traits;
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME);
+            auto config = WbRegisters::GetRegisterConfig(registerName);
             TRegisterValue value;
-            std::string version;
-            if (ReadModbusRegister(traits, port, rpcRequest, config, value)) {
-                version = value.Get<std::string>();
-            }
-            return version;
+            ReadModbusRegister(traits, port, rpcRequest, config, value);
+            return value.Get<std::string>();
         } catch (const Modbus::TErrorBase& err) {
             error = err.what();
         } catch (const TResponseTimeoutException& e) {
             error = e.what();
         }
         LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
-                  << " unable to read \"" << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
+                  << " unable to read \"" << registerName << "\" register: " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
+    std::string ReadDeviceModel(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    {
+        try {
+            return ReadWbRegister(port, rpcRequest, WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME);
+        } catch (const Modbus::TErrorBase& err) {
+            return ReadWbRegister(port, rpcRequest, WbRegisters::DEVICE_MODEL_REGISTER_NAME);
+        }
+    }
+
+    std::string ReadFwVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    {
+        return ReadWbRegister(port, rpcRequest, WbRegisters::FW_VERSION_REGISTER_NAME);
+    }
+
+    void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model, std::string& version)
+    {
+        if (model.empty()) {
+            model = ReadDeviceModel(*port, rpcRequest);
+        }
+        if (version.empty()) {
+            version = ReadFwVersion(*port, rpcRequest);
+        }
+        for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
+            if (item.Signature == model) {
+                if (util::CompareVersionStrings(version, item.Fw) >= 0) {
+                    return;
+                }
+                throw TRPCException("Device \"" + model + "\" firmware version " + version +
+                                        " is lower than selected template minimal supported version " + item.Fw,
+                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
+        }
+        throw TRPCException("Device \"" + model + "\" with firmware version " + version +
+                                " is incompatible with selected template device models",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
     void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
@@ -86,10 +114,12 @@ namespace
         }
 
         std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
+        std::string deviceModel;
         std::string fwVersion;
         Json::Value parameters;
         if (rpcRequest->ParametersCache.Contains(id)) {
             Json::Value cache = rpcRequest->ParametersCache.Get(id);
+            deviceModel = cache["model"].asString();
             fwVersion = cache["fw"].asString();
             parameters = cache["parameters"];
         }
@@ -102,8 +132,9 @@ namespace
         }
 
         port->SkipNoise();
-        if (fwVersion.empty()) {
-            fwVersion = ReadFirmwareVersion(*port, rpcRequest);
+
+        if (rpcRequest->IsWBDevice) {
+            CheckTemplate(port, rpcRequest, deviceModel, fwVersion);
         }
 
         std::list<std::string> paramsList;
@@ -117,6 +148,9 @@ namespace
         ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
 
         Json::Value result;
+        if (!deviceModel.empty()) {
+            result["model"] = deviceModel;
+        }
         if (!fwVersion.empty()) {
             result["fw"] = fwVersion;
         }
@@ -244,7 +278,7 @@ Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
 void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters)
 {
     TJsonParams jsonParams(parameters);
-    TExpressionsCache expressionsCache;
+    Expressions::TExpressionsCache expressionsCache;
     bool check = true;
     while (check) {
         std::unordered_map<std::string, bool> matches;
