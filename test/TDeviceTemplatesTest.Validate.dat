@@ -27753,6 +27753,20 @@ wb_mao4_20ma
 	Serial  =>  serial
 	Supply voltage  =>  supply_voltage
 	Uptime  =>  uptime
+wb_mio
+	FW Version  =>  fw_version
+	MCU Temperature  =>  mcu_temperature
+	MCU Voltage  =>  mcu_voltage
+	Serial  =>  serial
+	Status DI 1  =>  di_1_status
+	Status DI 2  =>  di_2_status
+	Status DI 3  =>  di_3_status
+	Status DI 4  =>  di_4_status
+	Status DO 1  =>  do_1_status
+	Status DO 2  =>  do_2_status
+	Status DO 3  =>  do_3_status
+	Status DO 4  =>  do_4_status
+	Uptime  =>  uptime
 wb_ups_v3
 	Battery Charge Level  =>  battery_charge_level
 	Battery Current  =>  battery_current
