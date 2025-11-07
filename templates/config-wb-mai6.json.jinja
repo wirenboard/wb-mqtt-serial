@@ -10,7 +10,13 @@
 {% set TYPES_WITH_GAIN = [3, 257] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
-{% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 6144] -%}
+{% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 5890, 5891, 5892, 5893, 5894, 5895, 6144] -%}
+
+{% macro is_ntc_p(ch_num) -%}(in{{ ch_num }}_type>=5889&&in{{ ch_num }}_type<=5895){% endmacro -%}
+{% macro is_ntc_n(ch_num) -%}(in{{ ch_num }}_n_type>=5889&&in{{ ch_num }}_n_type<=5895){% endmacro -%}
+{% macro is_rtd2w_p(ch_num) -%}(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402){% endmacro -%}
+{% macro is_rtd2w_n(ch_num) -%}(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402){% endmacro -%}
+
 {% macro format_list(index, types, format) -%}
     {% set separator = joiner('||') -%}
     {% for t in types -%}{{ separator() }}{{ format|format(index, t) }}{% endfor -%}
@@ -151,7 +157,14 @@
                     5376,
 
                     5632,
+                    
                     5889,
+                    5890,
+                    5891,
+                    5892,
+                    5893,
+                    5894,
+                    5895,
 
                     6144,
 
@@ -209,7 +222,14 @@
                     "-50 to 50 mV sensor",
 
                     "P: dry contact sensor",
+
                     "P: NTC thermistor 10k (B = 3988 K)",
+                    "P: NTC thermistor 10k (B = 3964 K)",
+                    "P: NTC thermistor 10k (B = 3950 K)",
+                    "P: NTC thermistor 100k (B = 3950 K)",
+                    "P: NTC thermistor 10k (B = 3435 K)",
+                    "P: NTC thermistor 5k (B = 3470 K)",
+                    "P: NTC thermistor 10k (B = 3470 K)",
 
                     "P: Hall effect current sensor (2.5V±0.625V), single ended",
 
@@ -411,7 +431,14 @@
                     5121,
 
                     5632,
+                    
                     5889,
+                    5890,
+                    5891,
+                    5892,
+                    5893,
+                    5894,
+                    5895,
 
                     6144,
 
@@ -447,7 +474,14 @@
                     "0-10 V sensor",
 
                     "dry contact sensor",
+
                     "NTC thermistor 10k (B = 3988 K)",
+                    "NTC thermistor 10k (B = 3964 K)",
+                    "NTC thermistor 10k (B = 3950 K)",
+                    "NTC thermistor 100k (B = 3950 K)",
+                    "NTC thermistor 10k (B = 3435 K)",
+                    "NTC thermistor 5k (B = 3470 K)",
+                    "NTC thermistor 10k (B = 3470 K)",
 
                     "Hall effect current sensor (2.5V±0.625V), single ended",
 
@@ -493,7 +527,14 @@
                     5121,
 
                     5632,
+                    
                     5889,
+                    5890,
+                    5891,
+                    5892,
+                    5893,
+                    5894,
+                    5895,
 
                     6144,
 
@@ -530,7 +571,14 @@
                     "0-10 V sensor",
 
                     "dry contact sensor",
+
                     "NTC thermistor 10k (B = 3988 K)",
+                    "NTC thermistor 10k (B = 3964 K)",
+                    "NTC thermistor 10k (B = 3950 K)",
+                    "NTC thermistor 100k (B = 3950 K)",
+                    "NTC thermistor 10k (B = 3435 K)",
+                    "NTC thermistor 5k (B = 3470 K)",
+                    "NTC thermistor 10k (B = 3470 K)",
 
                     "Hall effect current sensor (2.5V±0.625V), single ended",
 
@@ -782,7 +830,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_p_channels",
-                "condition": "(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5632||in{{ ch_num }}_type==5889",
+                "condition": "{{ is_rtd2w_p(ch_num) }}||in{{ ch_num }}_type==5632||{{ is_ntc_p(ch_num) }}",
                 "enabled": false
             },
             {
@@ -899,7 +947,7 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
                 "group": "gg_in{{ ch_num }}_p_channels",
-                "condition": "in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402||in{{ ch_num }}_type==5889"
+                "condition": "{{ is_rtd2w_p(ch_num) }}||{{ is_ntc_p(ch_num) }}"
             },
             {
                 "name": "IN {{ch_num}} P State",
@@ -965,7 +1013,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
-                "condition": "in{{ ch_num }}_n_type==5632||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
+                "condition": "in{{ ch_num }}_n_type==5632||{{ is_ntc_n(ch_num) }}||{{ is_rtd2w_n(ch_num) }}",
                 "group": "gg_in{{ ch_num }}_n_channels",
                 "enabled": false
 
@@ -979,7 +1027,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
-                "condition": "in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
+                "condition": "{{ is_ntc_n(ch_num) }}||{{ is_rtd2w_n(ch_num) }}",
                 "group": "gg_in{{ ch_num }}_n_channels"
             },
             {
@@ -1232,6 +1280,12 @@
                 "P: Disabled": "P: Отключен",
                 "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
                 "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
+                "NTC thermistor 10k (B = 3964 K)": "термистор NTC 10 кОм (B = 3964 K)",
+                "NTC thermistor 10k (B = 3950 K)": "термистор NTC 10 кОм (B = 3950 K)",
+                "NTC thermistor 100k (B = 3950 K)": "термистор NTC 100 кОм (B = 3950 K)",
+                "NTC thermistor 10k (B = 3435 K)": "термистор NTC 10 кОм (B = 3435 K)",
+                "NTC thermistor 5k (B = 3470 K)": "термистор NTC 5 кОм (B = 3470 K)",
+                "NTC thermistor 10k (B = 3470 K)": "термистор NTC 10 кОм (B = 3470 K)",
                 "0-5 mA sensor": "измерение тока 0-5 мА",
                 "0-20 mA sensor": "измерение тока 0-20 мА",
                 "4-20 mA sensor": "измерение тока 4-20 мА",
@@ -1298,6 +1352,12 @@
                 "voltage measurement in differential mode from -2 to 2 V": "дифф. режим измерения напряжения от -2 до 2 В",
                 "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
                 "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
+                "P: NTC thermistor 10k (B = 3964 K)": "P: термистор NTC 10 кОм (B = 3964 K)",
+                "P: NTC thermistor 10k (B = 3950 K)": "P: термистор NTC 10 кОм (B = 3950 K)",
+                "P: NTC thermistor 100k (B = 3950 K)": "P: термистор NTC 100 кОм (B = 3950 K)",
+                "P: NTC thermistor 10k (B = 3435 K)": "P: термистор NTC 10 кОм (B = 3435 K)",
+                "P: NTC thermistor 5k (B = 3470 K)": "P: термистор NTC 5 кОм (B = 3470 K)",
+                "P: NTC thermistor 10k (B = 3470 K)": "P: термистор NTC 10 кОм (B = 3470 K)",
                 "P: current measurement": "P: измерение тока",
                 "single-ended voltage measurement from 0 to 30 V": "измерение положительного напряжения 0-30 В",
                 "single-ended voltage measurement with WB-VDIV": "измерение положительного напряжения с делителем WB-VDIV",
