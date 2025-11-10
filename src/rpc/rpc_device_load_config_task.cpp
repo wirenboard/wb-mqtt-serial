@@ -144,7 +144,8 @@ namespace
             rpcRequest->Group.empty() ? templateParams
                                       : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
             parameters,
-            fwVersion);
+            fwVersion,
+            rpcRequest->IsWBDevice);
         ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
 
         Json::Value result;

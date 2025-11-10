@@ -265,7 +265,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateItems,
                                     const Json::Value& knownItems,
-                                    const std::string& fwVersion)
+                                    const std::string& fwVersion,
+                                    bool checkUnsupported)
 {
     TRPCRegisterList registerList;
     for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
@@ -287,15 +288,36 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 continue;
             }
         }
+
         auto config = LoadRegisterConfig(item,
                                          *protocolParams.protocol->GetRegTypes(),
                                          std::string(),
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
-        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
-        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-        registerList.push_back({id, reg});
+        TRPCRegister reg = {id, std::make_shared<TRegister>(device, config.RegisterConfig), checkUnsupported};
+        reg.Register->SetAvailable(TRegisterAvailability::AVAILABLE);
+
+        // this code checks enums and ranges only for 16-bit register unsupported value 0xFFFE
+        // it must be modified to check larger registers like 24, 32 or 64-bits
+        if (reg.CheckUnsupported) {
+            auto unsupportedValue = 0xFFFE;
+            if (item.isMember("enum")) {
+                const auto& list = item["enum"];
+                for (auto it = list.begin(); it != list.end(); ++it) {
+                    if ((*it).asInt() == unsupportedValue) {
+                        reg.CheckUnsupported = false;
+                        break;
+                    }
+                }
+            } else {
+                if (item["min"].asInt() <= unsupportedValue && item["max"].asInt() >= unsupportedValue) {
+                    reg.CheckUnsupported = false;
+                }
+            }
+        }
+
+        registerList.push_back(reg);
     }
     return registerList;
 }
