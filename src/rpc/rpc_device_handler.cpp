@@ -273,7 +273,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
         auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
         bool duplicate = false;
         for (const auto& item: registerList) {
-            if (item.first == id) {
+            if (item.Id == id) {
                 duplicate = true;
                 break;
             }
@@ -295,7 +295,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                          0);
         auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
         reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-        registerList.push_back(std::make_pair(id, reg));
+        registerList.push_back({id, reg});
     }
     return registerList;
 }
@@ -309,12 +309,11 @@ void ReadRegisterList(TPort& port,
     if (registerList.size() == 0) {
         return;
     }
+
     TRegisterComparePredicate compare;
-    std::sort(registerList.begin(),
-              registerList.end(),
-              [compare](std::pair<std::string, PRegister>& a, std::pair<std::string, PRegister>& b) {
-                  return compare(b.second, a.second);
-              });
+    std::sort(registerList.begin(), registerList.end(), [compare](TRPCRegister& a, TRPCRegister& b) {
+        return compare(b.Register, a.Register);
+    });
 
     std::string error;
     for (int i = 0; i <= maxRetries; i++) {
@@ -332,10 +331,10 @@ void ReadRegisterList(TPort& port,
 
     size_t index = 0;
     while (index < registerList.size() && error.empty()) {
-        auto first = registerList[index].second;
+        auto first = registerList[index].Register;
         auto range = device->CreateRegisterRange();
         while (index < registerList.size() &&
-               range->Add(port, registerList[index].second, std::chrono::milliseconds::max()))
+               range->Add(port, registerList[index].Register, std::chrono::milliseconds::max()))
         {
             ++index;
         }
@@ -365,6 +364,6 @@ void ReadRegisterList(TPort& port,
 
     for (size_t i = 0; i < registerList.size(); ++i) {
         auto& reg = registerList[i];
-        result[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
+        result[reg.Id] = RawValueToJSON(*reg.Register->GetConfig(), reg.Register->GetValue());
     }
 }

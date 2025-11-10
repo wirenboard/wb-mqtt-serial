@@ -136,8 +136,14 @@ private:
     Json::Value SetPoll(const Json::Value& request);
 };
 
+struct TRPCRegister
+{
+    std::string Id;
+    PRegister Register;
+};
+
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;
-typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
+typedef std::vector<TRPCRegister> TRPCRegisterList;
 
 /**
  * @brief Creates named PRegister map based on template items (channels/parameters) JSON array or object.
