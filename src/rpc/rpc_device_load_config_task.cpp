@@ -16,10 +16,15 @@ namespace
                             TRegisterValue& value)
     {
         auto slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->Device->DeviceConfig()->SlaveId));
-        Modbus::TModbusRTUTraits traits;
+        std::unique_ptr<Modbus::IModbusTraits> traits;
+        if (rpcRequest->ProtocolParams.protocol->GetName() == "modbus-tcp") {
+            traits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            traits = std::make_unique<Modbus::TModbusRTUTraits>();
+        }
         for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
-                value = Modbus::ReadRegister(traits,
+                value = Modbus::ReadRegister(*traits,
                                              port,
                                              slaveId,
                                              *registerConfig,
@@ -51,11 +56,16 @@ namespace
                              const TRegisterValue& value)
     {
         auto slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->Device->DeviceConfig()->SlaveId));
-        Modbus::TModbusRTUTraits traits;
+        std::unique_ptr<Modbus::IModbusTraits> traits;
+        if (rpcRequest->ProtocolParams.protocol->GetName() == "modbus-tcp") {
+            traits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            traits = std::make_unique<Modbus::TModbusRTUTraits>();
+        }
         Modbus::TRegisterCache cache;
         for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
-                Modbus::WriteRegister(traits,
+                Modbus::WriteRegister(*traits,
                                       port,
                                       slaveId,
                                       *registerConfig,
