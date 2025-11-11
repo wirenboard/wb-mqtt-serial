@@ -301,7 +301,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
         // this code checks enums and ranges only for 16-bit register unsupported value 0xFFFE
         // it must be modified to check larger registers like 24, 32 or 64-bits
         if (reg.CheckUnsupported) {
-            auto unsupportedValue = 0xFFFE;
+            int unsupportedValue =
+                config.RegisterConfig->Format == S16 ? static_cast<int16_t>(0xFFFE) : static_cast<uint16_t>(0xFFFE);
             if (item.isMember("enum")) {
                 const auto& list = item["enum"];
                 for (auto it = list.begin(); it != list.end(); ++it) {
