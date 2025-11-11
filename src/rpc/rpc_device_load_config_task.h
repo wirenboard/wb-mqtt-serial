@@ -66,4 +66,3 @@ Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
                                    std::list<std::string>& paramsList);
 
 void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters);
-Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
