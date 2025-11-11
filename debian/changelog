@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.198.0) stable; urgency=medium
+
+  * Remove unsupported registers data from devie/LoadConfig RPC reply
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 11 Nov 2025 12:02:14 +0300
+
 wb-mqtt-serial (2.197.2) stable; urgency=medium
 
   * Fix port response_timeout_ms handling
