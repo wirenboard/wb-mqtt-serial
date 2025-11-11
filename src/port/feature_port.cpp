@@ -79,7 +79,7 @@ void TFeaturePort::WriteBytes(const uint8_t* buf, int count)
 
 uint8_t TFeaturePort::ReadByte(const std::chrono::microseconds& timeout)
 {
-    return BasePort->ReadByte(timeout);
+    return BasePort->ReadByte(CalcResponseTimeout(timeout));
 }
 
 TReadFrameResult TFeaturePort::ReadFrame(uint8_t* buf,
@@ -88,7 +88,7 @@ TReadFrameResult TFeaturePort::ReadFrame(uint8_t* buf,
                                          const std::chrono::microseconds& frameTimeout,
                                          TFrameCompletePred frame_complete)
 {
-    return BasePort->ReadFrame(buf, count, responseTimeout, frameTimeout, frame_complete);
+    return BasePort->ReadFrame(buf, count, CalcResponseTimeout(responseTimeout), frameTimeout, frame_complete);
 }
 
 void TFeaturePort::SkipNoise()
