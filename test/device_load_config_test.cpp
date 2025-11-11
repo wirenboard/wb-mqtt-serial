@@ -27,7 +27,7 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
         Json::Value json;
         for (size_t i = 0; i < registerList.size(); ++i) {
             auto& reg = registerList[i];
-            json[reg.first] = static_cast<int>(GetUint32RegisterAddress(reg.second->GetConfig()->GetAddress()));
+            json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
         }
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_register_list.json")));
@@ -62,7 +62,7 @@ TEST(TDeviceLoadConfigTest, CreateGroupRegisterList)
         Json::Value json;
         for (size_t i = 0; i < registerList.size(); ++i) {
             auto& reg = registerList[i];
-            json[reg.first] = static_cast<int>(GetUint32RegisterAddress(reg.second->GetConfig()->GetAddress()));
+            json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
         }
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_register_list.json")));

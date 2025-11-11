@@ -136,8 +136,15 @@ private:
     Json::Value SetPoll(const Json::Value& request);
 };
 
+struct TRPCRegister
+{
+    std::string Id;
+    PRegister Register;
+    bool CheckUnsupported;
+};
+
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;
-typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
+typedef std::vector<TRPCRegister> TRPCRegisterList;
 
 /**
  * @brief Creates named PRegister map based on template items (channels/parameters) JSON array or object.
@@ -149,6 +156,9 @@ typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
  *                     item value, for example: {"baudrate": 96, "in1_mode": 2},
  *                     used to exclule known items from regiter list
  * @param fwVersion - device firmvare version string, used to exclude items unsupporterd by firmware
+ * @param checkUnsupported - if set as true, template item's enums and ranges will be checked for presense of
+ *                           default Wiren Board devices unsupported register value 0xFFFE,
+ *                           to set register list item checkValue flag
  *
  * @return TRPCRegisterList - named PRegister list
  */
@@ -156,7 +166,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateItems,
                                     const Json::Value& knownItems = Json::Value(),
-                                    const std::string& fwVersion = std::string());
+                                    const std::string& fwVersion = std::string(),
+                                    bool checkUnsupported = false);
 
 /**
  * @brief Reads TRPCRegisterList registers and puts valuet to JSON object.
