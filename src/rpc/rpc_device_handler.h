@@ -156,9 +156,9 @@ typedef std::vector<TRPCRegister> TRPCRegisterList;
  *                     item value, for example: {"baudrate": 96, "in1_mode": 2},
  *                     used to exclule known items from regiter list
  * @param fwVersion - device firmvare version string, used to exclude items unsupporterd by firmware
- * @param checkUnsupported - if set as true, template items enums and ranges will be checked for presense of
- *                     default Wiren Board devices unsupported register value 0xFFFE,
- *                     to set register list item checkValue flag
+ * @param checkUnsupported - if set as true, template item's enums and ranges will be checked for presense of
+ *                           default Wiren Board devices unsupported register value 0xFFFE,
+ *                           to set register list item checkValue flag
  *
  * @return TRPCRegisterList - named PRegister list
  */
