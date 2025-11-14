@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.198.0) stable; urgency=medium
+wb-mqtt-serial (2.199.0) stable; urgency=medium
 
   * Add more NTC options for WB-MAI6 template
 
- -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Wed, 12 Nov 2025 22:30:00 +0300
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Fri, 14 Nov 2025 13:30:00 +0300
+
+wb-mqtt-serial (2.198.0) stable; urgency=medium
+
+  * Fix device/Load and device/LoadConfig RPC reply values scale, offset and round
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 11 Nov 2025 14:36:14 +0300
 
 wb-mqtt-serial (2.197.2) stable; urgency=medium
 
