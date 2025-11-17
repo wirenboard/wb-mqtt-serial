@@ -11,7 +11,7 @@ namespace
         if (!rpcRequest->OnResult) {
             return;
         }
-        Json::Value result;
+        Json::Value result(Json::objectValue);
         for (int i = 0; i < 2; i++) {
             auto registerList = i ? rpcRequest->GetParametersRegisterList() : rpcRequest->GetChannelsRegisterList();
             if (!registerList.empty()) {
