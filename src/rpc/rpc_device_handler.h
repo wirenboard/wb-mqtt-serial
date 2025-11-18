@@ -172,3 +172,5 @@ void ReadRegisterList(TPort& port,
                       TRPCRegisterList& registerList,
                       Json::Value& result,
                       int maxRetries = 0);
+
+Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
