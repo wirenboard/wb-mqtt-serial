@@ -30,8 +30,8 @@
                 "id": "heating_settings"
             },
              {
-                "title": "Boiler manufacturer",
-                "id": "Boiler_manufacturer"
+                "title": "Boiler Manufacturer",
+                "id": "boiler_manufacturer"
             }
         ],
 
@@ -79,21 +79,21 @@
                 "condition": "(heating_options==1)||(heating_options==2)||(heating_options==0)"
             },
             {
-                "title": "Current algorithm fix",
+                "title": "fix current algorithm",
                 "address": 219,
                 "reg_type": "holding",
                 "value": 0,
                 "condition": "use_algorithm==0"
             },
             {
-                "title": "Current algorithm standart",
+                "title": "standard current algorithm",
                 "address": 219,
                 "reg_type": "holding",
                 "value": 1,
                 "condition": "use_algorithm==1"
             },
             {
-                "title": "Current algorithm synchrofix",
+                "title": "synchrofix current algorithm",
                 "address": 219,
                 "reg_type": "holding",
                 "value": 2,
@@ -138,10 +138,10 @@
                     3
                 ],
                 "enum_titles": [
-                    "STANDBY",
-                    "WINTER",
-                    "SUMMER",
-                    "CHONLY"
+                    "standby",
+                    "winter",
+                    "summer",
+                    "ch_only"
                 ],
                 "default": 1,
                 "order": 2,
@@ -149,8 +149,8 @@
                 "condition": "heating_options==0"
             },
             {
-                "id": "CH_heating_mode",
-                "title": "CH heating mode",
+                "id": "ch_heating_mode",
+                "title": "CH Heating Mode",
                 "address": 224,
                 "reg_type": "holding",
                 "enum": [
@@ -158,8 +158,8 @@
                     1
                 ],
                 "enum_titles": [
-                    "Linear",
-                    "MaxPower"
+                    "linear",
+                    "max_power"
                 ],
                 "default": 0,
                 "order": 2,
@@ -190,17 +190,17 @@
                     2
                 ],
                 "enum_titles": [
-                    "FIX_INTERVAL",
-                    "STANDART",
-                    "FIX_INTERVAL_SYNCHRO"
+                    "fix_interval",
+                    "standard",
+                    "fix_interval_synchro"
                 ],
                 "default": 1,
                 "order": 1,
                 "group": "hw_info"
             },
             {
-                "id": "Boiler_manufacturer",
-                "title": "Boiler manufacturer",
+                "id": "boiler_manufacturer",
+                "title": "Boiler Manufacturer",
                 "address": 223,
                 "reg_type": "holding",
                 "enum": [
@@ -213,11 +213,11 @@
                     "BAXI Ampera",
                     "ImmerGaz",
                     "ZOTA X-LINE 100E",
-                    "Другой"
+                    "Another Boiler"
                 ],
                 "default": 3,
                 "order": 1,
-                "group": "Boiler_manufacturer"
+                "group": "boiler_manufacturer"
             }
         ],
 
@@ -239,7 +239,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Master CH enable",
+                "name": "Master CH Enable",
                 "address": "205:8:1",
                 "reg_type": "input",
                 "type": "value",
@@ -247,7 +247,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Boiler CH mode",
+                "name": "Boiler CH Mode",
                 "address": "205:1:1",
                 "reg_type": "input",
                 "type": "value",
@@ -255,7 +255,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Master DHW enable",
+                "name": "Master DHW Enable",
                 "address": "205:9:1",
                 "reg_type": "input",
                 "type": "value",
@@ -263,7 +263,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Boiler DHW mode",
+                "name": "Boiler DHW Mode",
                 "address": "205:2:1",
                 "reg_type": "input",
                 "type": "value",
@@ -271,7 +271,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Master CH2 enable",
+                "name": "Master CH2 Enable",
                 "address": "205:12:1",
                 "reg_type": "input",
                 "type": "value",
@@ -280,7 +280,7 @@
                 "enabled": false
             },
             {
-                "name": "Boiler CH2 mode",
+                "name": "Boiler CH2 Mode",
                 "address": "205:5:1",
                 "reg_type": "input",
                 "type": "value",
@@ -289,7 +289,7 @@
                 "enabled": false
             },
             {
-                "name": "Master OTC active",
+                "name": "Master OTC Active",
                 "address": "205:11:1",
                 "reg_type": "input",
                 "type": "value",
@@ -298,7 +298,7 @@
                 "enabled": false
             },
             {
-                "name": "Boiler fault indication",
+                "name": "Boiler Fault Indication",
                 "address": "205:0:1",
                 "reg_type": "input",
                 "type": "value",
@@ -314,7 +314,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Low water press",
+                "name": "Low Water Pressure",
                 "address": "229:2:1",
                 "reg_type": "input",
                 "type": "value",
@@ -322,7 +322,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "GAS Flame fault",
+                "name": "GAS Flame Fault",
                 "address": "229:3:1",
                 "reg_type": "input",
                 "type": "value",
@@ -330,7 +330,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Air press fault",
+                "name": "Air Pressure Fault",
                 "address": "229:4:1",
                 "reg_type": "input",
                 "type": "value",
@@ -338,7 +338,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Water overtemp",
+                "name": "Water Overtemperature",
                 "address": "229:5:1",
                 "reg_type": "input",
                 "type": "value",
@@ -381,7 +381,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Solar Storage temp",
+                "name": "Solar Storage Temperature",
                 "address": 220,
                 "reg_type": "input",
                 "type": "value",
@@ -393,7 +393,7 @@
                 "enabled": false
             },
             {
-                "name": "Solar Collector temp",
+                "name": "Solar Collector Temperature",
                 "address": 221,
                 "reg_type": "input",
                 "type": "value",
@@ -481,16 +481,6 @@
                 "enabled": false
             },
             {
-                "name": "Hot Water Setpoint Max",
-                "address": 212,
-                "reg_type": "input",
-                "type": "value",
-                "units": "deg C",
-                "format": "u16",
-                "group": "boiler_state",
-                "enabled": false
-            },
-            {
                 "name": "Hot Water Setpoint Min",
                 "address": 213,
                 "reg_type": "input",
@@ -501,8 +491,8 @@
                 "enabled": false
             },
             {
-                "name": "Heating Setpoint Max",
-                "address": 214,
+                "name": "Hot Water Setpoint Max",
+                "address": 212,
                 "reg_type": "input",
                 "type": "value",
                 "units": "deg C",
@@ -513,6 +503,16 @@
             {
                 "name": "Heating Setpoint Min",
                 "address": 215,
+                "reg_type": "input",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Heating Setpoint Max",
+                "address": 214,
                 "reg_type": "input",
                 "type": "value",
                 "units": "deg C",
@@ -550,7 +550,7 @@
                 "enabled": false
             },
             {
-                "name": "Auto Temp Switch",
+                "name": "Auto Temperature Switch",
                 "address": 213,
                 "reg_type": "holding",
                 "type": "value",
@@ -559,7 +559,7 @@
                 "enabled": false
             },
             {
-                "name": "Season reg",
+                "name": "Season Regime",
                 "address": 212,
                 "reg_type": "holding",
                 "type": "value",
@@ -569,7 +569,7 @@
                 "enabled": false
             },
             {
-                "name": "OT MasterID",
+                "name": "OT Master ID",
                 "address": 218,
                 "reg_type": "holding",
                 "type": "value",
@@ -644,7 +644,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Algorithm_type",
+                "name": "Algorithm Type",
                 "address": 225,
                 "reg_type": "input",
                 "type": "value",
@@ -726,7 +726,7 @@
                 "type": "value",
                 "units": "deg C",
                 "format": "u16",
-                "round_to": 0.0,
+                "round_to": 0.1,
                 "min": 0,
                 "max": 80,
                 "group": "heating_settings",
@@ -739,7 +739,7 @@
                 "type": "value",
                 "units": "deg C",
                 "format": "u16",
-                "round_to": 0.0,
+                "round_to": 0.1,
                 "min": 0,
                 "max": 80,
                 "readonly": true,
@@ -769,61 +769,69 @@
         "translations": {
             "en": {
                 "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM fw1.93 (OpenTherm boiler interface)",
-                "climate_curve_number_description": "Values from 1 to 17 are transformed in module as value/200"
+                "climate_curve_number_description": "Values from 1 to 17 are transformed in module as value/200",
+                "standby": "Standby",
+                "winter": "Winter",
+                "summer": "Summer",
+                "ch_only": "CH Only",
+                "linear": "Linear Mode, Calculated Coolant Temperature",
+                "max_power": "Constant Maximum Coolant Temperature",
+                "fix_interval": "Fixed Interval",
+                "standard": "Standard",
+                "fix_interval_synchro": "Fixed Interval With Synchronization"
             },
             "ru": {
                 "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM fw1.93 (интерфейс OpenTherm для котлов)",
                 "Boiler State": "Состояние котла",
-                "Boiler fault indication": "Индикатор ошибки котла",
-                "Boiler CH mode": "Контур ЦО котла",
-                "Boiler DHW mode": "Контур ГВС котла",
+                "Boiler Fault Indication": "Индикатор ошибки котла",
+                "Boiler CH Mode": "Контур ЦО котла",
+                "Boiler DHW Mode": "Контур ГВС котла",
                 "Boiler Flame Status": "Состояние горелки котла",
-                "Boiler CH2 mode": "Второй контур котла",
-                "Master CH enable": "Разрешение контура ЦО",
-                "Master DHW enable": "Разрешение контура ГВС",
-                "Master OTC active": "Разрешение погодозависимого реж. котла",
-                "Master CH2 enable": "Разрешение второго контура",
+                "Boiler CH2 Mode": "Второй контур котла",
+                "Master CH Enable": "Разрешение контура ЦО",
+                "Master DHW Enable": "Разрешение контура ГВС",
+                "Master OTC Active": "Разрешение погодозависимого реж. котла",
+                "Master CH2 Enable": "Разрешение второго контура",
                 "Hot Water Settings": "Параметры ГВС",
-                "Boiler manufacturer": "Модель котла",
+                "Boiler Manufacturer": "Модель котла",
                 "OpenTherm Commands": "Команды OpenTherm",
                 "HW Info": "Данные модуля",
                 "Boiler Status": "Статус котла",
                 "Error Code": "Код ошибки котла, OEM-код",
                 "Hot Water Temperature": "Температура ГВС",
-                "Solar Storage temp": "Температура БКН",
-                "Solar Collector temp": "t° в контуре солнечного коллектора",
+                "Solar Storage Temperature": "Температура БКН",
+                "Solar Collector Temperature": "t° в контуре солнечного коллектора",
                 "CH2 Temperature": "Температура CH2", 
                 "Heating Temperature": "Температура теплоносителя",
                 "Heating Return Water Temperature": "Температура обратки",
                 "Burner Modulation Level": "Модуляция горелки",
                 "Water Pressure": "Давление воды",
                 "Boiler Outdoor Temperature Sensor": "Уличная t° - датчик котла",
-                "Hot Water Setpoint Max": "Max t° ГВС котла",
                 "Hot Water Setpoint Min": "Min t° ГВС котла",
+                "Hot Water Setpoint Max": "Max t° ГВС котла",
                 "Heating Setpoint Max": "Max t° теплоносителя котла",
                 "Heating Setpoint Min": "Min t° теплоносителя котла",
                 "Hot Water Setpoint": "Уставка ГВС",
                 "Heating Settings": "Параметры отопления",
                 "Command Type": "Команда 2-чтение/3-запись",
                 "Command ID": "Регистр котла",
-                "Data Type": "Значение",
-                "Season reg": "Режим работы по сезону",
-                "Algorithm": "Выбор алгоритма",
-                "Algorithm_type": "Текущий алгоритм",
+                "Data Type": "Значение. При команде чтения установить = 1",
+                "Season Regime": "Режим работы по сезону",
+                "Algorithm Type": "Текущий алгоритм",
                 "Use Modulation Level Limitation": "Регулировка мощности горелки",
                 "Max Modulation Level": "Максимальная мощность",
                 "FW Version": "Версия прошивки",
                 "Invalid Connection": "Ошибка связи с котлом",
-                "Auto Temp Switch": "Режим отключения контуров",
-                "CH Max Value": "Max t° теплоносителя",
+                "Auto Temperature Switch": "Режим отключения контуров",
                 "CH Min Value": "Min t° теплоносителя",
+                "CH Max Value": "Max t° теплоносителя",
                 "CH Gest": "Гистерезис теплоносителя",
                 "DHW Gest": "Гистерезис ГВС",
-                "OT MasterID": "Идентификатор мастера",
+                "OT Master ID": "Идентификатор мастера",
                 "DHW Override": "Перезапись уставки ГВС",
                 "DHW Transfer": "Передача температуры ГВС",
                 "Room Temperature Sensor": "Датчик комнатной температуры",
-                "CH heating mode": "Режим нагрева теплоносителя",
+                "CH Heating Mode": "Режим нагрева теплоносителя",
                 "Temperature Sensor Type": "Тип датчика температуры",
                 "Heating Setpoint": "Уставка отопления",
                 "Calculated Heating Setpoint": "Расчетная уставка отопления",
@@ -835,24 +843,25 @@
                 "Outdoor Temperature": "Уличная температура",
                 "Heating Status": "Статус отопления",
                 "Direct Heating Setpoint Control": "Управление уставкой отопления",
-                "Debug Field 1" : "Отладочное сообщение 1",
-                "Debug Field 2" : "Отладочное сообщение 2",
+                "Debug Field 1": "Отладочное сообщение 1",
+                "Debug Field 2": "Отладочное сообщение 2",
                 "Heating Off": "Отопление отключено",
                 "Current Boiler Mode": "Текущий режим работы котла",
                 "Current Algorithm": "Текущий алгоритм разбора ответов от котла",
-                "STANDBY": "Спящий режим",
-                "WINTER": "Зима - ЦО+ГВС",
-                "SUMMER": "Лето - только ГВС",
-                "CHONLY": "Только ЦО",
-                "MaxPower": "Постоянная максимальная температура теплоносителя",
-                "Linear": "Линейный режим, рассчитываемая температура теплоносителя",
-                "FIX_INTERVAL": "Фиксированый интервал",
-                "STANDART": "Стандартный разбор",
-                "FIX_INTERVAL_SYNCHRO": "Фикс.интервал с синхронизацией",
-                "Low water press": "Ошибка - Низкое давление",
-                "GAS Flame fault": "Ошибка - Газ/Пламя",
-                "Air press fault": "Ошибка - Пресостат",
-                "Water overtemp" : "Ошибка - Перегрев"
+                "standby": "Спящий режим",
+                "winter": "Зима - ЦО+ГВС",
+                "summer": "Лето - только ГВС",
+                "ch_only": "Только ЦО",
+                "linear": "Линейный режим, рассчитываемая температура теплоносителя",
+                "max_power": "Постоянная максимальная температура теплоносителя",
+                "fix_interval": "Фиксированый интервал",
+                "standard": "Стандартный разбор",
+                "fix_interval_synchro": "Фиксированный интервал с синхронизацией",
+                "Low Water Pressure": "Ошибка - Низкое давление",
+                "GAS Flame Fault": "Ошибка - Газ/Пламя",
+                "Air Pressure Fault": "Ошибка - Прессостат",
+                "Water Overtemperature": "Ошибка - Перегрев",
+                "Another Boiler": "Другой котел"
             }
         }
     }
