@@ -1,6 +1,6 @@
- wb-mqtt-serial (2.200.0) stable; urgency=medium
+wb-mqtt-serial (2.200.0) stable; urgency=medium
  
- * Add new template for wbe2-i-opentherm-fw-1.93
+  * Add new template for wbe2-i-opentherm-fw-1.93
 
  -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 18 Nov 2025 12:10:00 +0300
 
