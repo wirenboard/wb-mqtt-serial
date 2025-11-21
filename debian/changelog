@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.200.1) stable; urgency=medium
+
+  * Fix empty RPC responses
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 20 Nov 2025 19:08:41 +0500
+
 wb-mqtt-serial (2.200.0) stable; urgency=medium
  
   * Add new template for wbe2-i-opentherm-fw-1.93

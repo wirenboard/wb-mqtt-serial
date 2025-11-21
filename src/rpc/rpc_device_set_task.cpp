@@ -18,7 +18,7 @@ namespace
         rpcRequest->GetChannelsSetupItems(setupItems);
         rpcRequest->GetParametersSetupItems(setupItems);
         if (setupItems.empty()) {
-            rpcRequest->OnResult(Json::Value());
+            rpcRequest->OnResult(Json::Value(Json::objectValue));
         }
 
         std::string error;
@@ -48,7 +48,7 @@ namespace
             throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
-        rpcRequest->OnResult(Json::Value());
+        rpcRequest->OnResult(Json::Value(Json::objectValue));
     }
 } // namespace
 

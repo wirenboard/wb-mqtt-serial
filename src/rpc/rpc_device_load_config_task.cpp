@@ -147,7 +147,7 @@ namespace
             fwVersion);
         ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
 
-        Json::Value result;
+        Json::Value result(Json::objectValue);
         if (!deviceModel.empty()) {
             result["model"] = deviceModel;
         }
