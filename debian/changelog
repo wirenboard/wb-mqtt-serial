@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.201.1) stable; urgency=medium
+
+  * Fix RPC port settings bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 24 Nov 2025 11:07:17 +0300
+
 wb-mqtt-serial (2.201.0) stable; urgency=medium
 
   * Remove unsupported registers data from device/LoadConfig RPC reply

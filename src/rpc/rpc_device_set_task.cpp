@@ -158,8 +158,10 @@ ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PFeaturePort po
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
+            ExecRPCRequest(port, Request);
+        } else {
+            ExecRPCRequest(port, Request);
         }
-        ExecRPCRequest(port, Request);
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
