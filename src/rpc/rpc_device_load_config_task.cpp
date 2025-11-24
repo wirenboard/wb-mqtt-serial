@@ -10,16 +10,21 @@ namespace
 {
     const auto MAX_RETRIES = 2;
 
-    void ReadModbusRegister(Modbus::IModbusTraits& traits,
-                            TPort& port,
+    void ReadModbusRegister(TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
                             PRegisterConfig registerConfig,
                             TRegisterValue& value)
     {
-        uint8_t slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->Device->DeviceConfig()->SlaveId));
+        auto slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->Device->DeviceConfig()->SlaveId));
+        std::unique_ptr<Modbus::IModbusTraits> traits;
+        if (rpcRequest->ProtocolParams.protocol->GetName() == "modbus-tcp") {
+            traits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            traits = std::make_unique<Modbus::TModbusRTUTraits>();
+        }
         for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
-                value = Modbus::ReadRegister(traits,
+                value = Modbus::ReadRegister(*traits,
                                              port,
                                              slaveId,
                                              *registerConfig,
@@ -45,14 +50,56 @@ namespace
         }
     }
 
+    void WriteModbusRegister(TPort& port,
+                             PRPCDeviceLoadConfigRequest rpcRequest,
+                             PRegisterConfig registerConfig,
+                             const TRegisterValue& value)
+    {
+        auto slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->Device->DeviceConfig()->SlaveId));
+        std::unique_ptr<Modbus::IModbusTraits> traits;
+        if (rpcRequest->ProtocolParams.protocol->GetName() == "modbus-tcp") {
+            traits = std::make_unique<Modbus::TModbusTCPTraits>();
+        } else {
+            traits = std::make_unique<Modbus::TModbusRTUTraits>();
+        }
+        Modbus::TRegisterCache cache;
+        for (int i = 0; i <= MAX_RETRIES; ++i) {
+            try {
+                Modbus::WriteRegister(*traits,
+                                      port,
+                                      slaveId,
+                                      *registerConfig,
+                                      value,
+                                      cache,
+                                      std::chrono::microseconds(0),
+                                      rpcRequest->ResponseTimeout,
+                                      rpcRequest->FrameTimeout);
+            } catch (const Modbus::TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+                    err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+                    err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+                {
+                    throw;
+                }
+            } catch (const Modbus::TErrorBase& err) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
+            } catch (const TResponseTimeoutException& e) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
+            }
+        }
+    }
+
     std::string ReadWbRegister(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, const std::string& registerName)
     {
         std::string error;
         try {
-            Modbus::TModbusRTUTraits traits;
             auto config = WbRegisters::GetRegisterConfig(registerName);
             TRegisterValue value;
-            ReadModbusRegister(traits, port, rpcRequest, config, value);
+            ReadModbusRegister(port, rpcRequest, config, value);
             return value.Get<std::string>();
         } catch (const Modbus::TErrorBase& err) {
             error = err.what();
@@ -78,6 +125,25 @@ namespace
         return ReadWbRegister(port, rpcRequest, WbRegisters::FW_VERSION_REGISTER_NAME);
     }
 
+    void SetContinuousRead(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, bool enabled)
+    {
+        std::string error;
+        try {
+            auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
+            WriteModbusRegister(port, rpcRequest, config, TRegisterValue(enabled));
+        } catch (const Modbus::TErrorBase& err) {
+            error = err.what();
+        } catch (const TResponseTimeoutException& e) {
+            error = e.what();
+        }
+        if (!error.empty()) {
+            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
+                      << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
+                      << "\" register: " << error;
+            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+    }
+
     void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model, std::string& version)
     {
         if (model.empty()) {
@@ -99,6 +165,34 @@ namespace
         throw TRPCException("Device \"" + model + "\" with firmware version " + version +
                                 " is incompatible with selected template device models",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
+    void ClearUnsupportedParameters(TPort& port,
+                                    PRPCDeviceLoadConfigRequest rpcRequest,
+                                    TRPCRegisterList& registerList,
+                                    Json::Value& parameters)
+    {
+        auto continuousRead = true;
+        for (auto it = registerList.begin(); it != registerList.end(); ++it) {
+            const auto& item = *it;
+            // this code checks registers only for 16-bit register unsupported value 0xFFFE
+            // it must be modified to check larger registers like 24, 32 or 64-bits
+            if (item.CheckUnsupported && item.Register->GetValue().Get<uint16_t>() == 0xFFFE) {
+                if (continuousRead) {
+                    SetContinuousRead(port, rpcRequest, false);
+                    continuousRead = false;
+                }
+                try {
+                    TRegisterValue value;
+                    ReadModbusRegister(port, rpcRequest, item.Register->GetConfig(), value);
+                } catch (const Modbus::TModbusExceptionError& err) {
+                    parameters.removeMember(item.Id);
+                }
+            }
+        }
+        if (!continuousRead && rpcRequest->DeviceFromConfig) {
+            SetContinuousRead(port, rpcRequest, true);
+        }
     }
 
     void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
@@ -144,8 +238,10 @@ namespace
             rpcRequest->Group.empty() ? templateParams
                                       : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
             parameters,
-            fwVersion);
+            fwVersion,
+            rpcRequest->IsWBDevice);
         ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
+        ClearUnsupportedParameters(*port, rpcRequest, registerList, parameters);
 
         Json::Value result(Json::objectValue);
         if (!deviceModel.empty()) {
@@ -156,7 +252,9 @@ namespace
         }
         if (!paramsList.empty()) {
             for (const auto& id: paramsList) {
-                result["parameters"][id] = parameters[id];
+                if (parameters.isMember(id)) {
+                    result["parameters"][id] = parameters[id];
+                }
             }
         } else {
             result["parameters"] = parameters;
