@@ -390,3 +390,13 @@ void ReadRegisterList(TPort& port,
         result[reg.Id] = RawValueToJSON(*reg.Register->GetConfig(), reg.Register->GetValue());
     }
 }
+
+Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
+{
+    auto str = ConvertFromRawValue(reg, val);
+    try {
+        return std::stod(str.c_str(), 0);
+    } catch (const std::invalid_argument&) {
+        return str;
+    }
+}
