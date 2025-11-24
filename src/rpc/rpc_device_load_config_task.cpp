@@ -125,6 +125,25 @@ namespace
         return ReadWbRegister(port, rpcRequest, WbRegisters::FW_VERSION_REGISTER_NAME);
     }
 
+    void SetContinuousRead(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, bool enabled)
+    {
+        std::string error;
+        try {
+            auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
+            WriteModbusRegister(port, rpcRequest, config, TRegisterValue(enabled));
+        } catch (const Modbus::TErrorBase& err) {
+            error = err.what();
+        } catch (const TResponseTimeoutException& e) {
+            error = e.what();
+        }
+        if (!error.empty()) {
+            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
+                      << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
+                      << "\" register: " << error;
+            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+    }
+
     void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model, std::string& version)
     {
         if (model.empty()) {
@@ -160,21 +179,7 @@ namespace
             // it must be modified to check larger registers like 24, 32 or 64-bits
             if (item.CheckUnsupported && item.Register->GetValue().Get<uint16_t>() == 0xFFFE) {
                 if (continuousRead) {
-                    std::string error;
-                    try {
-                        auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-                        WriteModbusRegister(port, rpcRequest, config, TRegisterValue(0));
-                    } catch (const Modbus::TErrorBase& err) {
-                        error = err.what();
-                    } catch (const TResponseTimeoutException& e) {
-                        error = e.what();
-                    }
-                    if (!error.empty()) {
-                        LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
-                                  << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
-                                  << "\" register: " << error;
-                        throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-                    }
+                    SetContinuousRead(port, rpcRequest, false);
                     continuousRead = false;
                 }
                 try {
@@ -184,6 +189,9 @@ namespace
                     parameters.removeMember(item.Id);
                 }
             }
+        }
+        if (!continuousRead && rpcRequest->DeviceFromConfig) {
+            SetContinuousRead(port, rpcRequest, true);
         }
     }
 
