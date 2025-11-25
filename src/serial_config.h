@@ -167,7 +167,10 @@ struct TDeviceProtocolParams
     std::shared_ptr<IDeviceFactory> factory;
 };
 
-PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const TDeviceConfigLoadParams& parameters);
+PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
+                               PProtocol protocol,
+                               const TDeviceConfigLoadParams& parameters,
+                               bool isWBDevice);
 
 struct TLoadRegisterConfigResult
 {
