@@ -541,7 +541,7 @@ namespace
         }
 
         if (isWBDevice || device_data["enable_wb_continuous_read"].asBool()) {
-            device_config.MaxWriteRegisters = 0;
+            device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
         }
 
         Get(device_data, "frame_timeout_ms", device_config.FrameTimeout);
