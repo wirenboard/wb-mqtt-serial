@@ -8,6 +8,7 @@
 class TRPCConfigHandler
 {
 public:
+#ifndef __EMSCRIPTEN__
     TRPCConfigHandler(const std::string& configPath,
                       const Json::Value& portsSchema,
                       PTemplateMap templates,
@@ -15,6 +16,15 @@ public:
                       TProtocolConfedSchemasMap& protocolConfedSchemas,
                       const Json::Value& groupTranslations,
                       WBMQTT::PMqttRpcServer rpcServer);
+#else
+    TRPCConfigHandler(const Json::Value& portsSchema,
+                      PTemplateMap templates,
+                      TDevicesConfedSchemasMap& deviceConfedSchemas,
+                      TProtocolConfedSchemasMap& protocolConfedSchemas,
+                      const Json::Value& groupTranslations);
+#endif
+    Json::Value GetDeviceTypes(const Json::Value& request);
+    Json::Value GetSchema(const Json::Value& request);
 
 private:
     std::string ConfigPath;
@@ -25,8 +35,6 @@ private:
     Json::Value GroupTranslations;
 
     Json::Value LoadConfig(const Json::Value& request);
-    Json::Value GetDeviceTypes(const Json::Value& request);
-    Json::Value GetSchema(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCConfigHandler> PRPCConfigHandler;
