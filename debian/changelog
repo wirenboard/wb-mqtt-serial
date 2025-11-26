@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.203.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in WB-MIR v.2, WB-MIR v.3 and WB-MR6C templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 26 Nov 2025 12:32:47 +0500
+
 wb-mqtt-serial (2.202.0) stable; urgency=medium
 
   * Set default "max_write_registers" parameter for Wiren Board devices to Modbus frame maximum value (123)

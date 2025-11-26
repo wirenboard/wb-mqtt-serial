@@ -461,7 +461,8 @@
                     "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs",
                     "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close"
                 ],
-                "order": 1
+                "order": 1,
+                "fw": "1.21.0"
             },
             "curtain{{curtain_num}}_open_time": {
                 "title": "Open time (s)",
@@ -473,7 +474,8 @@
                 "min": 1.0,
                 "max": 600.0,
                 "order": 2,
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             "curtain{{curtain_num}}_close_time": {
                 "title": "Close time (s)",
@@ -485,7 +487,8 @@
                 "min": 1.0,
                 "max": 600.0,
                 "order": 3,
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             "curtain{{curtain_num}}_deadtime": {
                 "title": "Dead time (ms)",
@@ -496,7 +499,8 @@
                 "min": 50,
                 "max": 10000,
                 "order": 4,
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             "curtain{{curtain_num}}_safety_action": {
                 "title": "Action when safety mode is activated",
@@ -511,7 +515,8 @@
                     "close"
                 ],
                 "order": 5,
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             "curtain{{curtain_num}}_powerup_action": {
                 "title": "Power up action",
@@ -526,7 +531,8 @@
                     "close"
                 ],
                 "order": 6,
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             "curtain{{curtain_num}}_safety_input_control": {
                 "title": "Curtain {{curtain_num}}",
@@ -698,7 +704,8 @@
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             {
                 "name": "Curtain {{curtain_num}} Close",
@@ -707,7 +714,8 @@
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
-                "condition": "curtain{{curtain_num}}_mode==1"
+                "condition": "curtain{{curtain_num}}_mode==1",
+                "fw": "1.21.0"
             },
             {% endfor -%}
             {

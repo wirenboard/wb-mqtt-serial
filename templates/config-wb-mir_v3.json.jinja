@@ -121,6 +121,7 @@
                 "reg_type": "holding",
                 "min": 1,
                 "max": 65534,
+                "fw": "4.32.1",
                 "default": 10
             },
             "safety_action": {
@@ -131,6 +132,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
+                "fw": "4.32.1",
                 "enum_titles": [
                     "No Action",
                     "Play IR Command"
@@ -146,6 +148,7 @@
                 "min": 1,
                 "max": 80,
                 "default": 1,
+                "fw": "4.32.1",
                 "condition": "safety_action==1"
             },
             "temperature_readings_filter_deg": {
@@ -479,7 +482,7 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
                 "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
 
-                "g_safety_description": "Safety mode is activated if there is no Modbus polling for the specified time. Supported since firmware version 4.32.1",
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling for the specified time",
                 "poll_timeout_description": "Time without modbus polling after which safety mode will be activated",
                 "safety_command_description": "IR Command that will be played in safety mode"
             },
@@ -508,7 +511,7 @@
                 "Recording a command": "Запись команды",
 
                 "Safety Mode": "Безопасный режим",
-                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus. Доступно с версии прошивки 4.32.1",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
                 "Safety Action": "Действие в безопасном режиме",
