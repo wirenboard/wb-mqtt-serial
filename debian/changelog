@@ -1,3 +1,58 @@
+wb-mqtt-serial (2.202.0) stable; urgency=medium
+
+  * Set default "max_write_registers" parameter for Wiren Board devices to Modbus frame maximum value (123)
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 25 Nov 2025 10:48:23 +0300
+
+wb-mqtt-serial (2.201.1) stable; urgency=medium
+
+  * Fix RPC port settings bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Nov 2025 11:07:17 +0300
+
+wb-mqtt-serial (2.201.0) stable; urgency=medium
+
+  * Remove unsupported registers data from device/LoadConfig RPC reply
+  * Add Modbus TCP support for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Nov 2025 08:30:43 +0300
+
+wb-mqtt-serial (2.200.1) stable; urgency=medium
+
+  * Fix empty RPC responses
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 20 Nov 2025 19:08:41 +0500
+
+wb-mqtt-serial (2.200.0) stable; urgency=medium
+
+  * Add new template for wbe2-i-opentherm-fw-1.93
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 18 Nov 2025 12:10:00 +0300
+
+wb-mqtt-serial (2.199.0) stable; urgency=medium
+
+  * Add more NTC options for WB-MAI6 template
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Fri, 14 Nov 2025 13:30:00 +0300
+
+wb-mqtt-serial (2.198.0) stable; urgency=medium
+
+  * Fix device/Load and device/LoadConfig RPC reply values scale, offset and round
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 11 Nov 2025 14:36:14 +0300
+
+wb-mqtt-serial (2.197.2) stable; urgency=medium
+
+  * Fix port response_timeout_ms handling
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 11 Nov 2025 09:37:07 +0500
+
+wb-mqtt-serial (2.197.1) stable; urgency=medium
+
+  * Delete html tags <b> in descriptions
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Nov 2025 17:33:00 +0300
+
 wb-mqtt-serial (2.197.0) stable; urgency=medium
 
   * Add template for WB-MIO, WB-MIO-E, WB-MIO-E v2, WB-MGE

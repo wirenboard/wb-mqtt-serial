@@ -269,7 +269,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateItems,
                                     const Json::Value& knownItems,
-                                    const std::string& fwVersion)
+                                    const std::string& fwVersion,
+                                    bool checkUnsupported)
 {
     TRPCRegisterList registerList;
     for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
@@ -277,7 +278,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
         auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
         bool duplicate = false;
         for (const auto& item: registerList) {
-            if (item.first == id) {
+            if (item.Id == id) {
                 duplicate = true;
                 break;
             }
@@ -291,15 +292,37 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 continue;
             }
         }
+
         auto config = LoadRegisterConfig(item,
                                          *protocolParams.protocol->GetRegTypes(),
                                          std::string(),
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
-        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
-        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-        registerList.push_back(std::make_pair(id, reg));
+        TRPCRegister reg = {id, std::make_shared<TRegister>(device, config.RegisterConfig), checkUnsupported};
+        reg.Register->SetAvailable(TRegisterAvailability::AVAILABLE);
+
+        // this code checks enums and ranges only for 16-bit register unsupported value 0xFFFE
+        // it must be modified to check larger registers like 24, 32 or 64-bits
+        if (reg.CheckUnsupported) {
+            int unsupportedValue =
+                config.RegisterConfig->Format == S16 ? static_cast<int16_t>(0xFFFE) : static_cast<uint16_t>(0xFFFE);
+            if (item.isMember("enum")) {
+                const auto& list = item["enum"];
+                for (auto it = list.begin(); it != list.end(); ++it) {
+                    if ((*it).asInt() == unsupportedValue) {
+                        reg.CheckUnsupported = false;
+                        break;
+                    }
+                }
+            } else {
+                if (item["min"].asInt() <= unsupportedValue && item["max"].asInt() >= unsupportedValue) {
+                    reg.CheckUnsupported = false;
+                }
+            }
+        }
+
+        registerList.push_back(reg);
     }
     return registerList;
 }
@@ -313,12 +336,11 @@ void ReadRegisterList(TPort& port,
     if (registerList.size() == 0) {
         return;
     }
+
     TRegisterComparePredicate compare;
-    std::sort(registerList.begin(),
-              registerList.end(),
-              [compare](std::pair<std::string, PRegister>& a, std::pair<std::string, PRegister>& b) {
-                  return compare(b.second, a.second);
-              });
+    std::sort(registerList.begin(), registerList.end(), [compare](TRPCRegister& a, TRPCRegister& b) {
+        return compare(b.Register, a.Register);
+    });
 
     std::string error;
     for (int i = 0; i <= maxRetries; i++) {
@@ -336,10 +358,10 @@ void ReadRegisterList(TPort& port,
 
     size_t index = 0;
     while (index < registerList.size() && error.empty()) {
-        auto first = registerList[index].second;
+        auto first = registerList[index].Register;
         auto range = device->CreateRegisterRange();
         while (index < registerList.size() &&
-               range->Add(port, registerList[index].second, std::chrono::milliseconds::max()))
+               range->Add(port, registerList[index].Register, std::chrono::milliseconds::max()))
         {
             ++index;
         }
@@ -369,6 +391,16 @@ void ReadRegisterList(TPort& port,
 
     for (size_t i = 0; i < registerList.size(); ++i) {
         auto& reg = registerList[i];
-        result[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
+        result[reg.Id] = RawValueToJSON(*reg.Register->GetConfig(), reg.Register->GetValue());
+    }
+}
+
+Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
+{
+    auto str = ConvertFromRawValue(reg, val);
+    try {
+        return std::stod(str.c_str(), 0);
+    } catch (const std::invalid_argument&) {
+        return str;
     }
 }

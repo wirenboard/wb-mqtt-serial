@@ -119,8 +119,7 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PFeaturePort po
         }
 
         if (Request->OnResult) {
-            Json::Value replyJSON;
-            Request->OnResult(replyJSON);
+            Request->OnResult(Json::Value(Json::objectValue));
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {

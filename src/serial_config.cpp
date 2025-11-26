@@ -530,7 +530,7 @@ namespace
         }
     }
 
-    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data)
+    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWBDevice)
     {
         if (device_data.isMember("password")) {
             device_config.Password.clear();
@@ -541,6 +541,10 @@ namespace
 
         if (device_data.isMember("delay_ms")) {
             LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
+        }
+
+        if (isWBDevice || device_data["enable_wb_continuous_read"].asBool()) {
+            device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
         }
 
         Get(device_data, "frame_timeout_ms", device_config.FrameTimeout);
@@ -992,6 +996,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     loadParams.Defaults = params.Defaults;
     const auto* cfg = &deviceConfigJson;
     unique_ptr<Json::Value> mergedConfig;
+    auto isWBDevice = false;
     if (deviceConfigJson.isMember("device_type")) {
         auto deviceType = deviceConfigJson["device_type"].asString();
         auto deviceTemplate = templates.GetTemplate(deviceType);
@@ -1000,6 +1005,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
             MergeDeviceConfigWithTemplate(deviceConfigJson, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
         loadParams.Translations = &deviceTemplate->GetTemplate()["translations"];
+        isWBDevice = !deviceTemplate->GetHardware().empty();
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
@@ -1012,7 +1018,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     }
 
     TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName);
-    auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams);
+    auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams, isWBDevice);
     auto deviceWithChannels = std::make_shared<TSerialDeviceWithChannels>();
     deviceWithChannels->Device = protocolParams.factory->CreateDevice(*cfg, deviceConfig, protocolParams.protocol);
     TLoadingContext context(*protocolParams.factory,
@@ -1048,7 +1054,10 @@ const IRegisterAddressFactory& IDeviceFactory::GetRegisterAddressFactory() const
     return *RegisterAddressFactory;
 }
 
-PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const TDeviceConfigLoadParams& parameters)
+PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
+                               PProtocol protocol,
+                               const TDeviceConfigLoadParams& parameters,
+                               bool isWBDevice)
 {
     auto res = std::make_shared<TDeviceConfig>();
 
@@ -1061,7 +1070,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
         res->SlaveId = dev["slave_id"].asString();
     }
 
-    LoadCommonDeviceParameters(*res, dev);
+    LoadCommonDeviceParameters(*res, dev, isWBDevice);
 
     if (res->RequestDelay.count() == 0) {
         res->RequestDelay = parameters.Defaults.RequestDelay;
