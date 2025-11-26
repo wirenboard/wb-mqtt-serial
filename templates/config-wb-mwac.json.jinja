@@ -100,6 +100,7 @@
             {
                 "title": "Cleaning Mode",
                 "id": "wet_cleaning_mode",
+                "fw": "1.21.0",
                 "description": "wet_cleaning_mode_description"
             },
             {
@@ -140,8 +141,8 @@
             "in{{ in_num }}_mode": {
                 "title": "Input {{ letter }}{{ in_num - in_num_offset }} Mode",
                 "address": {{ 8 + in_num }},
-                "description": "mode_description",
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "enum": [0, 1, 2, 3, 4, 5, 6],
                 "default": {% if in_num < 4 %}4{% else %}5{% endif %},
                 "enum_titles": [
@@ -158,9 +159,9 @@
             },
             "in{{ in_num }}_sensor_type": {
                 "title": "Sensor Type",
-                "description": "sensor_type_description",
                 "address": {{ 521 + in_num }},
                 "reg_type": "holding",
+                "fw": "1.22.0",
                 "enum": [0, 1],
                 "enum_titles": [
                     "Normally Open (NO)",
@@ -637,7 +638,6 @@
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
                 "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
 
-                "sensor_type_description": "Supported since firmware 1.22.0",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
                 "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
@@ -646,10 +646,9 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms.",
 
-                "mode_description": "For press detection, firmware version 1.21.0 or newer is required",
 
                 "Cleaning Mode": "\"Wet cleaning\" Mode",
-                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors. The mode is available starting from firmware version 1.21.0",
+                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors",
                 "wet_cleaning_mode_timer_description": "1 - 360 min",
 
                 "Alarm": "\"Leakage\" Mode"
@@ -662,18 +661,16 @@
                 "Counters": "Счетчики",
 
                 "Cleaning Mode": "Режим \"Влажная уборка\"",
-                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки. Режим доступен начиная с прошивки версии 1.21.0",
+                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
 
-                "mode_description": "Для детектирования нажатий требуется прошивка версии 1.21.0 или новее",
                 "Debounce (ms)": "Время подавления дребезга (мс)",
 
                 "Sensor Type": "Тип датчика",
                 "Normally Open (NO)": "Нормально открытый (NO)",
                 "Normally Closed (NC)": "Нормально закрытый (NC)",
 
-                "sensor_type_description": "Поддерживается с версии прошивки 1.22.0",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "S" if in_num < 4 else "F" -%}
