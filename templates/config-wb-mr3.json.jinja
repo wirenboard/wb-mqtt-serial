@@ -100,7 +100,7 @@
             },
             {
                 "title": "Curtains Control",
-                "description": "curtains_control_description",
+                "fw": "1.21.0",
                 "id": "g_curtains_control"
             },
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -332,6 +332,7 @@
                 "order": 1,
                 "address": {{1400 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
@@ -343,6 +344,7 @@
                 "order": 2,
                 "address": {{1432 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
@@ -354,6 +356,7 @@
                 "order": 3,
                 "address": {{1464 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
@@ -365,6 +368,7 @@
                 "order": 4,
                 "address": {{1496 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
@@ -452,6 +456,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1280 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
@@ -465,6 +470,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "scale": 0.1,
                 "default": 10.0,
                 "min": 1.0,
@@ -477,6 +483,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "scale": 0.1,
                 "default": 10.0,
                 "min": 1.0,
@@ -489,6 +496,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1336 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 500,
                 "min": 50,
                 "max": 10000,
@@ -500,6 +508,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1288 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -515,6 +524,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1284 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -696,6 +706,7 @@
                 "reg_type": "coil",
                 "address": {{16 + (curtain_num - 1) * 2}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
                 "condition": "curtain{{curtain_num}}_mode==1"
@@ -705,6 +716,7 @@
                 "reg_type": "coil",
                 "address": {{17 + (curtain_num - 1) * 2}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
                 "condition": "curtain{{curtain_num}}_mode==1"
