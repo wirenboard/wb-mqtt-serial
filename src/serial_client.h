@@ -24,27 +24,26 @@ class TSerialClientRegisterAndEventsReader: public util::TNonCopyable
 {
 public:
     typedef std::function<void(PRegister reg)> TRegisterCallback;
-    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
     TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,
                                          std::chrono::milliseconds readEventsPeriod,
                                          util::TGetNowFn nowFn,
                                          size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
-    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
-                         TRegisterCallback regCallback,
-                         TDeviceCallback deviceConnectionStateChangedCallback);
-    PSerialDevice OpenPortCycle(TPort& port,
+    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback regCallback);
+    PSerialDevice OpenPortCycle(TFeaturePort& port,
                                 TRegisterCallback regCallback,
-                                TDeviceCallback deviceConnectionStateChangedCallback,
                                 TSerialClientDeviceAccessHandler& lastAccessedDevice);
 
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
 
-    TSerialClientEventsReader& GetEventsReader();
+    PSerialClientEventsReader GetEventsReader() const;
+
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
+    void ResumePoll(PSerialDevice device);
 
 private:
-    TSerialClientEventsReader EventsReader;
+    PSerialClientEventsReader EventsReader;
     TSerialClientRegisterPoller RegisterPoller;
     TScheduler<TClientTaskType> TimeBalancer;
     std::chrono::milliseconds ReadEventsPeriod;
@@ -65,7 +64,17 @@ public:
 
     virtual ~ISerialClientTask() = default;
 
-    virtual ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) = 0;
+    /**
+     * @brief Executes some code in the serial client thread.
+     *
+     * @param port The port to be used for communication.
+     * @param lastAccessedDevice A reference to the handler for the last accessed device.
+     * @param polledDevices A list of serial devices polled on this port.
+     * @return The result of the task execution as a TRunResult.
+     */
+    virtual ISerialClientTask::TRunResult Run(PFeaturePort port,
+                                              TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                              const std::list<PSerialDevice>& polledDevices) = 0;
 };
 
 typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;
@@ -74,9 +83,8 @@ class TSerialClient: public std::enable_shared_from_this<TSerialClient>, util::T
 {
 public:
     typedef std::function<void(PRegister reg)> TRegisterCallback;
-    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
-    TSerialClient(PPort port,
+    TSerialClient(PFeaturePort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
                   util::TGetNowFn nowFn,
                   size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
@@ -87,14 +95,17 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TRegisterCallback& callback);
     void SetErrorCallback(const TRegisterCallback& callback);
-    void SetDeviceConnectionStateChangedCallback(const TDeviceCallback& callback);
-    PPort GetPort();
+
+    PFeaturePort GetPort();
+    std::list<PSerialDevice> GetDevices();
 
     void AddTask(PSerialClientTask task);
 
+    void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
+    void ResumePoll(PSerialDevice device);
+
 private:
     void Activate();
-    void Connect();
     void WaitForPollAndFlush(std::chrono::steady_clock::time_point now,
                              std::chrono::steady_clock::time_point waitUntil);
     PRegisterHandler GetHandler(PRegister) const;
@@ -102,14 +113,13 @@ private:
     void OpenPortCycle();
     void ProcessPolledRegister(PRegister reg);
 
-    PPort Port;
+    PFeaturePort Port;
     std::list<PRegister> RegList;
     std::list<PSerialDevice> Devices;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     TRegisterCallback RegisterReadCallback;
     TRegisterCallback RegisterErrorCallback;
-    TDeviceCallback DeviceConnectionStateChangedCallback;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;

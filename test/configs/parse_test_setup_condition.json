@@ -1,0 +1,18 @@
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "setup with condition",
+                    "slave_id": 1
+                },
+                {
+                    "device_type" : "setup with condition",
+                    "slave_id": 2,
+                    "p1": 1
+                }
+            ]
+        }
+    ]
+}

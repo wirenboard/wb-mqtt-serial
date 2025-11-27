@@ -56,15 +56,15 @@ void TNevaDevice::Register(TSerialDeviceFactory& factory)
                                                                   "#/definitions/common_channel"));
 }
 
-TNevaDevice::TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, IEC::CalcXorCRC)
+TNevaDevice::TNevaDevice(PDeviceConfig device_config, PProtocol protocol)
+    : TIEC61107ModeCDevice(device_config, protocol, LOG_PREFIX, IEC::CalcXorCRC)
 {
     if (DeviceConfig()->Password.empty()) {
         DeviceConfig()->Password = std::vector<uint8_t>{0x00, 0x00, 0x00, 0x00};
     }
 }
 
-std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
+std::string TNevaDevice::GetParameterRequest(const TRegisterConfig& reg) const
 {
     // Address is 0xCCDDEEFF OBIS value groups
     std::stringstream ss;
@@ -73,7 +73,7 @@ std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
     return ss.str();
 }
 
-TRegisterValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
+TRegisterValue TNevaDevice::GetRegisterValue(const TRegisterConfig& reg, const std::string& v)
 {
     if (v.size() < 3 || v.front() != '(' || v.back() != ')') {
         throw TSerialDeviceTransientErrorException("malformed response");

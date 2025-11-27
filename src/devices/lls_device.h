@@ -6,16 +6,18 @@
 class TLLSDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TLLSDevice(PDeviceConfig config, PProtocol protocol);
+
+    std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
 
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
     void InvalidateReadCache() override;
 
 private:
     std::unordered_map<uint8_t, std::vector<uint8_t>> CmdResultCache;
 
-    std::vector<uint8_t> ExecCommand(uint8_t cmd);
+    std::vector<uint8_t> ExecCommand(TPort& port, uint8_t cmd);
 };

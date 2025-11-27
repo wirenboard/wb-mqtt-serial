@@ -25,34 +25,35 @@ class TDlmsDevice: public TSerialDevice, public TUInt32SlaveId
     std::unique_ptr<CGXDLMSSecureClient> Client;
     std::chrono::milliseconds DisconnectRetryTimeout;
 
-    void InitializeConnection();
-    void SendData(const uint8_t* data, size_t size);
-    void SendData(const std::string& str);
-    void Read(unsigned char eop, CGXByteBuffer& reply);
-    void ReadData(CGXByteBuffer& reply);
-    void ReadDataBlock(const uint8_t* data, size_t size, CGXReplyData& reply);
-    void ReadDLMSPacket(const uint8_t* data, size_t size, CGXReplyData& reply);
-    void ReadAttribute(const std::string& addr, int attribute, CGXDLMSObject& obj);
-    void GetAssociationView();
-    void Disconnect();
+    void InitializeConnection(TPort& port);
+    void SendData(TPort& port, const uint8_t* data, size_t size);
+    void SendData(TPort& port, const std::string& str);
+    void Read(TPort& port, unsigned char eop, CGXByteBuffer& reply);
+    void ReadData(TPort& port, CGXByteBuffer& reply);
+    void ReadDataBlock(TPort& port, const uint8_t* data, size_t size, CGXReplyData& reply);
+    void ReadDLMSPacket(TPort& port, const uint8_t* data, size_t size, CGXReplyData& reply);
+    void ReadAttribute(TPort& port, const std::string& addr, int attribute, CGXDLMSObject& obj);
+    void GetAssociationView(TPort& port);
+    void Disconnect(TPort& port);
 
-    void CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> requestsGenerator,
+    void CheckCycle(TPort& port,
+                    std::function<int(std::vector<CGXByteBuffer>&)> requestsGenerator,
                     std::function<int(CGXReplyData&)> responseParser,
                     const std::string& errorMsg);
 
 public:
-    TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol protocol);
+    TDlmsDevice(const TDlmsDeviceConfig& config, PProtocol protocol);
 
-    void EndSession() override;
+    void EndSession(TPort& port) override;
 
     static void Register(TSerialDeviceFactory& factory);
 
-    const CGXDLMSObjectCollection& ReadAllObjects(bool readAttributes);
-    std::map<int, std::string> GetLogicalDevices();
+    const CGXDLMSObjectCollection& ReadAllObjects(TPort& port, bool readAttributes);
+    std::map<int, std::string> GetLogicalDevices(TPort& port);
 
 protected:
-    void PrepareImpl() override;
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    void PrepareImpl(TPort& port) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
 };
 
 namespace DLMS

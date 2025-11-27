@@ -1,0 +1,330 @@
+{
+    "title": "WB-MRGBW-D_template_title",
+    "device_type": "WB-MRGBW-D",
+    "deprecated": true,
+    "group": "g-wb",
+    "device": {
+        "name": "WB-MRGBW-D",
+        "id": "wb-mrgbw-d",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Inputs",
+                "id": "inputs"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "parameters": {
+            "inputs_mode": {
+                "title": "Inputs Mode",
+                "address": 5,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "control enabled",
+                    "control disabled"
+                ],
+                "group": "inputs",
+                "order": 1
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Button 1",
+                "reg_type": "input",
+                "address": 6,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Button 1 counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Button 2",
+                "reg_type": "input",
+                "address": 7,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Button 2 counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Button 3",
+                "reg_type": "input",
+                "address": 8,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Button 3 counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Channels",
+                "id": "",
+                "oneOf": ["rgb_w", "independent_channels"],
+                "device_type": "rgb_w"
+            },
+            {
+                "name": "Serial NO",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+
+        "subdevices": [
+            {
+                "title": "RGB+W",
+                "device_type": "rgb_w",
+                "device": {
+                    "parameters": {
+                        "pwm_frequency_factor": {
+                            "title": "pwm_frequency_factor_title",
+                            "description": "pwm_frequency_factor_description",
+                            "address": 9,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 239,
+                            "default": 0,
+                            "order": 1
+                        },
+                        "on_off_time_ms": {
+                            "title": "Soft On/Off Time (ms)",
+                            "address": 13,
+                            "reg_type": "holding",
+                            "scale": 10,
+                            "min": 20,
+                            "max": 5000,
+                            "default": 1000,
+                            "order": 2
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "RGB",
+                            "type": "rgb",
+                            "consists_of": [
+                                {
+                                    "reg_type": "holding",
+                                    "address": 1
+                                },
+                                {
+                                    "reg_type": "holding",
+                                    "address": 0
+                                },
+                                {
+                                    "reg_type": "holding",
+                                    "address": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "White",
+                            "reg_type": "holding",
+                            "address": 3,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Independent Channels",
+                "device_type": "independent_channels",
+                "device": {
+                    "parameters": {
+                        "pwm_frequency_factor": {
+                            "title": "pwm_frequency_factor_title",
+                            "description": "pwm_frequency_factor_description",
+                            "address": 9,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 239,
+                            "default": 0,
+                            "order": 1
+                        },
+                        "on_off_time_ms": {
+                            "title": "Soft On/Off Time (ms)",
+                            "address": 13,
+                            "reg_type": "holding",
+                            "scale": 10,
+                            "min": 20,
+                            "max": 5000,
+                            "default": 1000,
+                            "order": 2
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "Channel B",
+                            "reg_type": "holding",
+                            "address": 2,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel R",
+                            "reg_type": "holding",
+                            "address": 1,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel G",
+                            "reg_type": "holding",
+                            "address": 0,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel W",
+                            "reg_type": "holding",
+                            "address": 3,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        }
+                    ]
+                }
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+                "pwm_frequency_factor_title": "PWM Frequency Factor",
+                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / (Factor + 1)"
+            },
+            "ru": {
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-канальный диммер светодиодных лент)",
+                "Inputs": "Входы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Inputs Mode": "Режим работы входов",
+                "control enabled": "управление отключено",
+                "control disabled": "управление включено",
+                "Button 1": "Вход 1",
+                "Button 2": "Вход 2",
+                "Button 3": "Вход 3",
+                "Button 1 counter": "Счетчик 1",
+                "Button 2 counter": "Счетчик 2",
+                "Button 3 counter": "Счетчик 3",
+                "Channels": "Каналы",
+                "Independent Channels": "Независимые каналы",
+                "pwm_frequency_factor_title": "Делитель частоты ШИМ",
+                "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / (Делитель + 1)",
+                "Soft On/Off Time (ms)": "Время плавного включения/выключения (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "White": "Белый",
+                "Channel B": "Канал B",
+                "Channel R": "Канал R",
+                "Channel G": "Канал G",
+                "Channel W": "Канал W"
+            }
+        }
+    }
+}

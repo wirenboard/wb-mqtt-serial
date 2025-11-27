@@ -18,7 +18,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -103,7 +103,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 111
         DeviceChannels:
             ------
@@ -141,7 +141,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -305,7 +305,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 1000
         DeviceTimeout: 2000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -414,7 +414,7 @@ Ports:
         MinReadRegisters: 2
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -499,7 +499,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -536,7 +536,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -573,7 +573,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -658,7 +658,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 111
         DeviceChannels:
             ------
@@ -696,7 +696,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
-        Response timeout: 222
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -949,17 +949,45 @@ Ports:
                 WordOrder: BigEndian
         SetupItems:
             ------
-            Name: Old Sub2 c2 s21
-            Address: 20400
-            Value: 1
-            RawValue: 0x01
-            Reg type: holding (0)
-            Reg format: U16
-            ------
             Name: s1
             Address: 10
             Value: 15
             RawValue: 0x0f
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub s2
+            Address: 10092
+            Value: 0xfff2
+            RawValue: 0xfff2
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub s4
+            Address: 10095
+            Value: 10
+            RawValue: 0x05
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub2 s2
+            Address: 10193
+            Value: 0xfff2
+            RawValue: 0xfff2
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub2 s4
+            Address: 10196
+            Value: 10
+            RawValue: 0x05
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub2 c3 s22
+            Address: 10494
+            Value: 111
+            RawValue: 0x6f
             Reg type: holding (0)
             Reg format: U16
             ------
@@ -970,8 +998,29 @@ Ports:
             Reg type: holding (0)
             Reg format: U16
             ------
-            Name: Sub s2
-            Address: 10092
+            Name: Sub c2 s21
+            Address: 20300
+            Value: 0xfff2
+            RawValue: 0xfff2
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Old Sub2 c2 s21
+            Address: 20400
+            Value: 1
+            RawValue: 0x01
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub c3 s21
+            Address: 20402
+            Value: 0xfff2
+            RawValue: 0xfff2
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub2 c3 s21
+            Address: 20502
             Value: 0xfff2
             RawValue: 0xfff2
             Reg type: holding (0)
@@ -984,54 +1033,12 @@ Ports:
             Reg type: coil (2)
             Reg format: S32
             ------
-            Name: Sub s4
-            Address: 10095
-            Value: 10
-            RawValue: 0x05
-            Reg type: holding (0)
-            Reg format: U16
-            ------
-            Name: Sub c2 s21
-            Address: 20300
-            Value: 0xfff2
-            RawValue: 0xfff2
-            Reg type: holding (0)
-            Reg format: U16
-            ------
-            Name: Sub c3 s21
-            Address: 20402
-            Value: 0xfff2
-            RawValue: 0xfff2
-            Reg type: holding (0)
-            Reg format: U16
-            ------
-            Name: Sub2 s2
-            Address: 10193
-            Value: 0xfff2
-            RawValue: 0xfff2
-            Reg type: holding (0)
-            Reg format: U16
-            ------
             Name: Sub2 s3
             Address: 10196
             Value: -2
             RawValue: 0xfffffffe
             Reg type: coil (2)
             Reg format: S32
-            ------
-            Name: Sub2 c3 s22
-            Address: 10494
-            Value: 111
-            RawValue: 0x6f
-            Reg type: holding (0)
-            Reg format: U16
-            ------
-            Name: Sub2 c3 s21
-            Address: 20502
-            Value: 0xfff2
-            RawValue: 0xfff2
-            Reg type: holding (0)
-            Reg format: U16
     ------
     ConnSettings: <192.168.0.1:3000>
     ConnectionMaxFailCycles: 2

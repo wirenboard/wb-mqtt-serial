@@ -10,15 +10,15 @@
 class TIVTMDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TIVTMDevice(PDeviceConfig config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
 
 private:
-    void WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len);
-    void ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len);
+    void WriteCommand(TPort& port, uint16_t addr, uint16_t data_addr, uint8_t data_len);
+    void ReadResponse(TPort& port, uint16_t addr, uint8_t* payload, uint16_t len);
 
     uint8_t DecodeASCIIByte(uint8_t* buf);
     uint16_t DecodeASCIIWord(uint8_t* buf);

@@ -32,6 +32,40 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
+TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device)
+    : Name(config->GetName()),
+      ParameterId(config->GetParameterId()),
+      RawValue(config->GetRawValue()),
+      HumanReadableValue(config->GetValue()),
+      RegisterConfig(config->GetRegisterConfig()),
+      Device(device)
+{}
+
+std::string TDeviceSetupItem::ToString()
+{
+    std::stringstream stream;
+    auto reg = "<" + (Device ? Device->ToString() : "unknown device") + ":" + RegisterConfig->ToString() + ">";
+    stream << "Init setup register \"" << Name << "\": " << reg << "<-- " << HumanReadableValue;
+    if (RawValue.GetType() == TRegisterValue::ValueType::String) {
+        stream << " (\"" << RawValue << "\")";
+    } else {
+        stream << " (0x" << std::hex << RawValue << ")";
+    }
+    return stream.str();
+}
+
+bool TDeviceSetupItemComparePredicate::operator()(const PDeviceSetupItem& a, const PDeviceSetupItem& b) const
+{
+    if (a->RegisterConfig->Type != b->RegisterConfig->Type) {
+        return a->RegisterConfig->Type < b->RegisterConfig->Type;
+    }
+    auto compare = a->RegisterConfig->GetWriteAddress().Compare(b->RegisterConfig->GetWriteAddress());
+    if (compare == 0) {
+        return a->RegisterConfig->GetDataOffset() < b->RegisterConfig->GetDataOffset();
+    }
+    return compare < 0;
+}
+
 TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name,
                                                const TRegisterTypes& reg_types,
                                                bool allowBroadcast)
@@ -49,14 +83,14 @@ bool TUint32SlaveIdProtocol::SupportsBroadcast() const
     return AllowBroadcast;
 }
 
-TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : SerialPort(port),
-      _DeviceConfig(config),
+TSerialDevice::TSerialDevice(PDeviceConfig config, PProtocol protocol)
+    : _DeviceConfig(config),
       _Protocol(protocol),
       LastSuccessfulCycle(),
       ConnectionState(TDeviceConnectionState::UNKNOWN),
       RemainingFailCycles(0),
-      SupportsHoles(true)
+      SupportsHoles(true),
+      SporadicOnly(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -69,13 +103,13 @@ PRegisterRange TSerialDevice::CreateRegisterRange() const
     return PRegisterRange(new TSameAddressRegisterRange());
 }
 
-void TSerialDevice::Prepare()
+void TSerialDevice::Prepare(TPort& port, TDevicePrepareMode prepareMode)
 {
     bool deviceWasDisconnected = (ConnectionState != TDeviceConnectionState::CONNECTED);
     try {
-        PrepareImpl();
-        if (deviceWasDisconnected) {
-            WriteSetupRegisters();
+        PrepareImpl(port);
+        if (prepareMode == TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED && deviceWasDisconnected) {
+            WriteSetupRegisters(port, GetSetupItems());
         }
     } catch (const TSerialDeviceException& ex) {
         SetTransferResult(false);
@@ -83,21 +117,21 @@ void TSerialDevice::Prepare()
     }
 }
 
-void TSerialDevice::PrepareImpl()
+void TSerialDevice::PrepareImpl(TPort& port)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
 }
 
-void TSerialDevice::EndSession()
+void TSerialDevice::EndSession(TPort& port)
 {}
 
 void TSerialDevice::InvalidateReadCache()
 {}
 
-void TSerialDevice::WriteRegister(PRegister reg, const TRegisterValue& value)
+void TSerialDevice::WriteRegister(TPort& port, PRegister reg, const TRegisterValue& value)
 {
     try {
-        WriteRegisterImpl(reg, value);
+        WriteRegisterImpl(port, *reg->GetConfig(), value);
         SetTransferResult(true);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         SetTransferResult(true);
@@ -108,35 +142,39 @@ void TSerialDevice::WriteRegister(PRegister reg, const TRegisterValue& value)
     }
 }
 
-void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
+void TSerialDevice::WriteRegister(TPort& port, PRegister reg, uint64_t value)
 {
-    WriteRegister(reg, TRegisterValue{value});
+    WriteRegister(port, reg, TRegisterValue{value});
 }
 
-TRegisterValue TSerialDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TSerialDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     throw TSerialDeviceException("single register reading is not supported");
 }
 
-void TSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value)
 {
     throw TSerialDeviceException(ToString() + ": register writing is not supported");
 }
 
-void TSerialDevice::ReadRegisterRange(PRegisterRange range)
+void TSerialDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError)
 {
     for (auto& reg: range->RegisterList()) {
         try {
             if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
-                Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-                reg->SetValue(ReadRegisterImpl(reg));
+                port.SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
+                auto value = ReadRegisterImpl(port, *reg->GetConfig());
                 SetTransferResult(true);
+                reg->SetValue(value);
             }
         } catch (const TSerialDeviceInternalErrorException& e) {
             reg->SetError(TRegister::TError::ReadError);
             LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
             SetTransferResult(true);
+            if (breakOnError) {
+                throw;
+            }
         } catch (const TSerialDevicePermanentRegisterException& e) {
             reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
             reg->SetError(TRegister::TError::ReadError);
@@ -144,12 +182,18 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
                       << reg->Device()->ToString() + "] Register " << reg->ToString()
                       << " is now marked as unsupported";
             SetTransferResult(true);
+            if (breakOnError) {
+                throw;
+            }
         } catch (const TSerialDeviceException& e) {
             reg->SetError(TRegister::TError::ReadError);
             auto& logger = (ConnectionState == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
             LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                         << reg->Device()->ToString() + "]";
             SetTransferResult(false);
+            if (breakOnError) {
+                throw;
+            }
         }
     }
     InvalidateReadCache();
@@ -164,10 +208,7 @@ void TSerialDevice::SetTransferResult(bool ok)
 
     if (ok) {
         LastSuccessfulCycle = std::chrono::steady_clock::now();
-        if (ConnectionState != TDeviceConnectionState::CONNECTED) {
-            LOG(Info) << "device " << ToString() << " is connected";
-        }
-        ConnectionState = TDeviceConnectionState::CONNECTED;
+        SetConnectionState(TDeviceConnectionState::CONNECTED);
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
 
@@ -188,40 +229,15 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
     return ConnectionState;
 }
 
-void TSerialDevice::InitSetupItems()
+void TSerialDevice::WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError)
 {
-    for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
-        SetupItems.push_back(std::make_shared<TDeviceSetupItem>(
-            setup_item_config,
-            std::make_shared<TRegister>(shared_from_this(), setup_item_config->GetRegisterConfig())));
+    for (const auto& item: setupItems) {
+        WriteRegisterImpl(port, *item->RegisterConfig, item->RawValue);
+        LOG(Info) << item->ToString();
     }
-}
-
-void TSerialDevice::WriteSetupRegisters()
-{
-    for (const auto& setup_item: SetupItems) {
-        WriteRegisterImpl(setup_item->Register, setup_item->RawValue);
-
-        std::stringstream ss;
-        ss << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
-           << setup_item->HumanReadableValue;
-
-        if (setup_item->RawValue.GetType() == TRegisterValue::ValueType::String) {
-            ss << " ('" << setup_item->RawValue << "')";
-        } else {
-            ss << " (0x" << std::hex << setup_item->RawValue << ")";
-            // TODO: More verbose exception
-        }
-        LOG(Info) << ss.str();
-    }
-    if (!SetupItems.empty()) {
+    if (!setupItems.empty()) {
         SetTransferResult(true);
     }
-}
-
-PPort TSerialDevice::Port() const
-{
-    return SerialPort;
 }
 
 PDeviceConfig TSerialDevice::DeviceConfig() const
@@ -244,11 +260,20 @@ void TSerialDevice::SetSupportsHoles(bool supportsHoles)
     SupportsHoles = supportsHoles;
 }
 
+bool TSerialDevice::IsSporadicOnly() const
+{
+    return SporadicOnly;
+}
+
+void TSerialDevice::SetSporadicOnly(bool sporadicOnly)
+{
+    SporadicOnly = sporadicOnly;
+}
+
 void TSerialDevice::SetDisconnected()
 {
-    ConnectionState = TDeviceConnectionState::DISCONNECTED;
     SetSupportsHoles(true);
-    LOG(Warn) << "device " << ToString() << " is disconnected";
+    SetConnectionState(TDeviceConnectionState::DISCONNECTED);
 }
 
 PRegister TSerialDevice::AddRegister(PRegisterConfig config)
@@ -271,6 +296,84 @@ std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
 void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTime)
 {
     LastReadTime = readTime;
+}
+
+void TSerialDevice::AddOnConnectionStateChangedCallback(TSerialDevice::TDeviceCallback callback)
+{
+    ConnectionStateChangedCallbacks.push_back(callback);
+}
+
+void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
+{
+    if (ConnectionState == state) {
+        return;
+    }
+    ConnectionState = state;
+    if (state == TDeviceConnectionState::CONNECTED) {
+        // clear serial number on connection as it can be other device than before disconnection
+        if (SnRegister) {
+            SnRegister->SetValue(TRegisterValue());
+        }
+        LOG(Info) << "device " << ToString() << " is connected";
+    } else {
+        LOG(Warn) << "device " << ToString() << " is disconnected";
+    }
+    for (auto& callback: ConnectionStateChangedCallbacks) {
+        callback(shared_from_this());
+    }
+}
+
+PRegister TSerialDevice::GetSnRegister() const
+{
+    return SnRegister;
+}
+
+void TSerialDevice::SetSnRegister(PRegisterConfig regConfig)
+{
+    auto regIt = std::find_if(Registers.begin(), Registers.end(), [&regConfig](const PRegister& reg) {
+        return reg->GetConfig() == regConfig;
+    });
+    if (regIt == Registers.end()) {
+        SnRegister = std::make_shared<TRegister>(shared_from_this(), regConfig);
+    } else {
+        SnRegister = *regIt;
+    }
+}
+
+void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
+{
+    auto key = item->GetRegisterConfig()->ToString();
+    auto addrIt = SetupItemsByAddress.find(key);
+    if (addrIt != SetupItemsByAddress.end()) {
+        std::stringstream ss;
+        ss << "Setup command \"" << item->GetName() << "\" (" << key << ") from \"" << DeviceConfig()->DeviceType
+           << "\" has a duplicate command \"" << addrIt->second->Name << "\" ";
+        if (item->GetRawValue() == addrIt->second->RawValue) {
+            ss << "with the same register value.";
+        } else {
+            ss << "with different register value. IT WILL BREAK TEMPLATE OPERATION";
+        }
+        LOG(Warn) << ss.str();
+    } else {
+        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this());
+        SetupItemsByAddress.insert({key, setupItem});
+        SetupItems.insert(setupItem);
+    }
+}
+
+const TDeviceSetupItems& TSerialDevice::GetSetupItems() const
+{
+    return SetupItems;
+}
+
+std::chrono::milliseconds TSerialDevice::GetFrameTimeout(TPort& port) const
+{
+    return _DeviceConfig->FrameTimeout;
+}
+
+std::chrono::milliseconds TSerialDevice::GetResponseTimeout(TPort& port) const
+{
+    return _DeviceConfig->ResponseTimeout;
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)
@@ -304,3 +407,9 @@ uint64_t CopyDoubleToUint64(double value)
     memcpy(&res, &value, sizeof(value));
     return res;
 }
+
+TDeviceConfig::TDeviceConfig(const std::string& name, const std::string& slave_id, const std::string& protocol)
+    : Name(name),
+      SlaveId(slave_id),
+      Protocol(protocol)
+{}

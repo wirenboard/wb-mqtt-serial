@@ -22,7 +22,7 @@ namespace
     const auto DB_PATH = "/tmp/wb-mqtt-serial-test.db";
 }
 
-TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture, const std::string& portName)
+TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture, const std::string& portName, bool emptyDescription)
     : Fixture(fixture),
       AllowOpen(true),
       IsPortOpen(false),
@@ -31,7 +31,8 @@ TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture, const std::string& por
       RespPos(0),
       DumpPos(0),
       BaudRate(9600),
-      PortName(portName)
+      PortName(portName),
+      EmptyDescription(emptyDescription)
 {}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
@@ -271,9 +272,15 @@ std::chrono::microseconds TFakeSerialPort::GetSendTimeBytes(double bytesNumber) 
     return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
 
+std::chrono::microseconds TFakeSerialPort::GetSendTimeBits(size_t bitsNumber) const
+{
+    auto us = std::ceil((1000000.0 * bitsNumber) / double(BaudRate));
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
+}
+
 std::string TFakeSerialPort::GetDescription(bool verbose) const
 {
-    return PortName;
+    return EmptyDescription ? "" : PortName;
 }
 
 void TFakeSerialPort::SetBaudRate(size_t value)
@@ -299,7 +306,7 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-WBMQTT::TMap<std::string, std::shared_ptr<TTemplateMap>> TSerialDeviceIntegrationTest::Templates;
+WBMQTT::TMap<std::string, PTemplateMap> TSerialDeviceIntegrationTest::Templates;
 Json::Value TSerialDeviceIntegrationTest::CommonDeviceSchema;
 Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
@@ -342,14 +349,15 @@ void TSerialDeviceIntegrationTest::SetUp()
     auto portsSchema = WBMQTT::JSON::Parse(GetDataFilePath("../wb-mqtt-serial-ports.schema.json"));
     TProtocolConfedSchemasMap protocolSchemas(GetDataFilePath("../protocols"), CommonDeviceSchema);
 
-    Config = LoadConfig(GetDataFilePath(ConfigPath()),
-                        DeviceFactory,
-                        CommonDeviceSchema,
-                        *it->second,
-                        rpcConfig,
-                        portsSchema,
-                        protocolSchemas,
-                        [=](const Json::Value&, PRPCConfig config) { return std::make_pair(SerialPort, false); });
+    Config = LoadConfig(
+        GetDataFilePath(ConfigPath()),
+        DeviceFactory,
+        CommonDeviceSchema,
+        *it->second,
+        rpcConfig,
+        portsSchema,
+        protocolSchemas,
+        [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(SerialPort, false); });
 
     std::filesystem::remove(DB_PATH);
     MqttBroker = NewFakeMqttBroker(*this);

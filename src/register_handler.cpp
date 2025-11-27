@@ -44,7 +44,7 @@ void TRegisterHandler::HandleWriteErrorRetryWrite(const TRegisterValue& tempValu
     Reg->SetError(TRegister::TError::WriteError);
 }
 
-void TRegisterHandler::Flush()
+void TRegisterHandler::Flush(TPort& port)
 {
     TRegisterValue tempValue; // must be volatile
     try {
@@ -52,7 +52,7 @@ void TRegisterHandler::Flush()
             std::lock_guard<std::mutex> lock(SetValueMutex);
             tempValue = ValueToSet;
         }
-        Reg->Device()->WriteRegister(Reg, tempValue);
+        Reg->Device()->WriteRegister(port, Reg, tempValue);
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
             Dirty = (tempValue != ValueToSet);
@@ -75,7 +75,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
 {
     std::lock_guard<std::mutex> lock(SetValueMutex);
     Dirty = true;
-    ValueToSet = ConvertToRawValue(*Reg, v);
+    ValueToSet = ConvertToRawValue(*Reg->GetConfig(), v);
 }
 
 PRegister TRegisterHandler::Register() const

@@ -27,20 +27,20 @@ namespace
 
     const size_t RESPONSE_BUF_LEN = 1000;
 
-    uint16_t GetParamId(const PRegister& reg)
+    uint16_t GetParamId(const TRegisterConfig& reg)
     {
-        return ((GetUint32RegisterAddress(reg->GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
+        return ((GetUint32RegisterAddress(reg.GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
     }
 
-    uint8_t GetValueNum(const PRegister& reg)
+    uint8_t GetValueNum(const TRegisterConfig& reg)
     {
-        return GetUint32RegisterAddress(reg->GetAddress()) & 0xFF;
+        return GetUint32RegisterAddress(reg.GetAddress()) & 0xFF;
     }
 
     class TEnergomeraRegisterRange: public TRegisterRange
     {
     public:
-        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
+        bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override
         {
             // TODO: respect pollLimit
             if (RegisterList().size() > 10) {
@@ -60,22 +60,22 @@ namespace
         {
             std::list<PRegister> sortedRegList = RegisterList();
             sortedRegList.sort([](const PRegister& a, const PRegister& b) -> bool {
-                if (GetParamId(a) < GetParamId(b))
+                if (GetParamId(*a->GetConfig()) < GetParamId(*b->GetConfig()))
                     return true;
-                if (GetParamId(a) > GetParamId(b))
+                if (GetParamId(*a->GetConfig()) > GetParamId(*b->GetConfig()))
                     return false;
 
-                if (GetValueNum(a) < GetValueNum(b))
+                if (GetValueNum(*a->GetConfig()) < GetValueNum(*b->GetConfig()))
                     return true;
-                if (GetValueNum(a) > GetValueNum(b))
+                if (GetValueNum(*a->GetConfig()) > GetValueNum(*b->GetConfig()))
                     return false;
 
                 return false;
             });
             RegisterList().swap(sortedRegList);
             for (auto reg: RegisterList()) {
-                auto param_id = GetParamId(reg);
-                auto value_num = GetValueNum(reg);
+                auto param_id = GetParamId(*reg->GetConfig());
+                auto value_num = GetValueNum(*reg->GetConfig());
                 ParamMasks[param_id] |= (1 << (value_num - 1));
                 RegsByParam[param_id].push_back(reg);
             };
@@ -220,29 +220,29 @@ namespace
     }
 }
 
-TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TIEC61107Device(config, port, protocol)
+TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig config, PProtocol protocol)
+    : TIEC61107Device(config, protocol)
 {}
 
-void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
+void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(TPort& port, PRegisterRange abstract_range, bool breakOnError)
 {
     auto range = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
         throw std::runtime_error("TEnergomeraRegisterRange expected");
     }
 
-    Port()->CheckPortOpen();
-    Port()->SkipNoise();
+    port.CheckPortOpen();
+    port.SkipNoise();
 
     try {
         range->UpdateMasks();
-        SendFastGroupReadRequest(*Port(), *range, SlaveId);
+        SendFastGroupReadRequest(port, *range, SlaveId);
 
         uint8_t resp[RESPONSE_BUF_LEN] = {};
-        char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
+        char* presp = ReadResponse(port, resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
-        ProcessResponse(*range, presp);
         SetTransferResult(true);
+        ProcessResponse(*range, presp);
     } catch (const TSerialDeviceException& e) {
         for (auto& r: range->RegisterList()) {
             r->SetError(TRegister::TError::ReadError);
@@ -251,6 +251,9 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
         SetTransferResult(false);
+        if (breakOnError) {
+            throw;
+        }
     }
 }
 
@@ -259,15 +262,15 @@ PRegisterRange TEnergomeraIecWithFastReadDevice::CreateRegisterRange() const
     return std::make_shared<TEnergomeraRegisterRange>();
 }
 
-void TEnergomeraIecWithFastReadDevice::PrepareImpl()
+void TEnergomeraIecWithFastReadDevice::PrepareImpl(TPort& port)
 {
-    TIEC61107Device::PrepareImpl();
+    TIEC61107Device::PrepareImpl(port);
     TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
-    Port()->ApplySerialPortSettings(bf);
+    port.ApplySerialPortSettings(bf);
 }
 
-void TEnergomeraIecWithFastReadDevice::EndSession()
+void TEnergomeraIecWithFastReadDevice::EndSession(TPort& port)
 {
-    Port()->ResetSerialPortSettings(); // Return old port settings
-    TIEC61107Device::EndSession();
+    port.ResetSerialPortSettings(); // Return old port settings
+    TIEC61107Device::EndSession(port);
 }

@@ -1,0 +1,566 @@
+{% set FIRST_ROM = 1 -%}
+{% set LAST_ROM = 80 -%}
+{% set INPUTS_NUMBER = 1 -%}
+{% set FIRST_INPUT = 1 -%}
+{
+    "title": "WB-MIR-v.3_template_title",
+    "device_type": "WB-MIR v.3",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WB-MIR v.3"
+        }
+    ],
+    "device": {
+        "name": "WB-MIR v.3",
+        "id": "wb-mir_v3",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "IR Commands",
+                "id": "ir_commands"
+            },
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{in_num}}",
+                "id": "g_in{{in_num}}"
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{in_num}}_press_params",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "input{{in_num}}_channels",
+                "id": "gg_in{{in_num}}_channels",
+                "group": "g_in{{in_num}}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
+            {
+                "title": "General",
+                "id": "g_general"
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info"
+            }
+        ],
+
+        "parameters": {
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_mode": {
+                "title": "Mode",
+                "address": {{275 + in_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "1-Wire",
+                    "Counting and press detection"
+                ],
+                "group": "g_in{{in_num}}",
+                "order": 1
+            },
+            "in{{in_num}}_debounce_ms": {
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                "address": {{340 + in_num - 1}},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "g_in{{in_num}}",
+                "order": 2,
+                "condition": "in{{in_num}}_mode==1"
+            },
+            "in{{in_num}}_lp_hold_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                "address": {{1100 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in{{in_num}}_mode==1"
+            },
+            "in{{in_num}}_secp_waiting_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                "address": {{1140 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {% endfor -%}
+            "safety_timer_s": {
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 1,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "fw": "4.32.1",
+                "default": 10
+            },
+            "safety_action": {
+                "title": "Safety Action",
+                "group": "g_safety",
+                "address": 956,
+                "order": 2,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "fw": "4.32.1",
+                "enum_titles": [
+                    "No Action",
+                    "Play IR Command"
+                ]
+            },
+            "safety_command": {
+                "title": "Safety Command",
+                "group": "g_safety",
+                "description": "safety_command_description",
+                "address": 957,
+                "order": 3,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 80,
+                "default": 1,
+                "fw": "4.32.1",
+                "condition": "safety_action==1"
+            },
+            "temperature_readings_filter_deg": {
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
+                "address": 99,
+                "reg_type": "holding",
+                "scale": 0.0625,
+                "default": 1,
+                "group": "g_general",
+                "order": 2
+            },
+            "temperature_readings_period_s": {
+                "title": "temperature_readings_period_s_title",
+                "description": "temperature_readings_period_s_description",
+                "address": 101,
+                "reg_type": "holding",
+                "default": 2,
+                "min": 1,
+                "max": 60,
+                "group": "g_general",
+                "order": 3
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
+            },
+            "rs485_response_delay_ms": {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "g_general",
+                "order": 2
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "g_general",
+                "order": 3
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Command size in RAM",
+                "reg_type": "input",
+                "address": 5520,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Play from RAM",
+                "reg_type": "coil",
+                "address": 5002,
+                "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Record to RAM",
+                "id": "Learn to RAM",
+                "reg_type": "coil",
+                "address": 5001,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+            {% set enabled = "true" if rom < 11 else "false" -%}
+            {
+                "name": "Play command {{ rom }}",
+                "id": "Play from ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5100 + rom - 1 }},
+                "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {% endfor -%}
+
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+            {% set enabled = "true" if rom < 11 else "false" -%}
+            {
+                "name": "Command {{ rom }} recording",
+                "id": "Learn to ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5300 + rom - 1 }},
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {
+                "name": "Command {{ rom }} size",
+                "id": "ROM{{ rom }} size",
+                "reg_type": "input",
+                "address": {{ 5400 + rom - 1 }},
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {% endfor -%}
+
+            {
+                "name": "Reset all commands",
+                "id": "Reset all ROM",
+                "reg_type": "coil",
+                "address": 5000,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play a command",
+                "id": "Play from BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5500,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Recording a command",
+                "id": "Learn to BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5502,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input {{in_num}}",
+                "reg_type": "discrete",
+                "address": {{in_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Counter",
+                "reg_type": "input",
+                "format": "u16",
+                "address": {{277 + in_num - 1}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Single Press Counter",
+                "reg_type": "input",
+                "address": {{464 + in_num - 1}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Long Press Counter",
+                "reg_type": "input",
+                "address": {{480 + in_num - 1}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Double Press Counter",
+                "reg_type": "input",
+                "address": {{496 + in_num - 1}},
+                "type": "value",
+                "enabled": false,
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Shortlong Press Counter",
+                "reg_type": "input",
+                "address": {{512 + in_num - 1}},
+                "type": "value",
+                "enabled": false,
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {% endfor -%}
+            {
+                "name": "External Temperature Sensor",
+                "reg_type": "input",
+                "address": 7,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==0"
+            },
+            {
+                "name": "External Temperature Sensor OK",
+                "reg_type": "discrete",
+                "address": 16,
+                "type": "switch",
+                "enabled": false,
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==0"
+            },
+            {
+                "name": "Reset All Counters",
+                "reg_type": "holding",
+                "address": 100,
+                "value": 1,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "g_general",
+                "condition": "
+                    {%- for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                        in{{in_num}}_mode==1
+                        {%- if not loop.last -%} || {%- endif -%}
+                    {%- endfor -%}
+                "
+            },
+            {
+                "name": "Serial NO",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "type": "value",
+                "units": "s",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "WB-MIR-v.3_template_title": "WB-MIR v.3 (Modbus IR remote control)",
+
+                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
+                "temperature_readings_period_s_title": "Temperature sensor poll period (s)",
+                "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
+
+                "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
+
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "debounce_time_title": "Debounce Time (ms)",
+
+                "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
+                "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
+
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling for the specified time",
+                "poll_timeout_description": "Time without modbus polling after which safety mode will be activated",
+                "safety_command_description": "IR Command that will be played in safety mode"
+            },
+            "ru": {
+                "WB-MIR-v.3_template_title": "WB-MIR v.3 (Modbus-модуль ИК-управления)",
+                "IR Commands": "ИК-команды",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Command size in RAM": "Размер команды в RAM",
+                "Record to RAM": "Запись команды в RAM",
+                "Play from RAM": "Воспроизвести команду из RAM",
+
+                {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+                "Command {{ rom }} recording": "Запись команды {{ rom }}",
+                "Command {{ rom }} size": "Размер команды {{ rom }}",
+                "Play command {{ rom }}": "Воспроизвести команду {{ rom }}",
+                {% endfor -%}
+
+                "Reset all commands": "Стереть все команды",
+                "Play a command": "Воспроизвести команду",
+                "Recording a command": "Запись команды",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
+                "Safety Action": "Действие в безопасном режиме",
+                "No Action": "Ничего не делать",
+                "Play IR Command": "Воспроизвести ИК-команду",
+                "Safety Command": "ИК-команда",
+                "safety_command_description": "ИК-команда, которая будет воcпроизведена в безопасном режиме",
+
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчика 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_period_s_title": "Период опроса датчика температуры (с)",
+                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
+
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}}": "Вход {{in_num}}",
+                "Input {{in_num}} Counter": "Счетчик {{in_num}}",
+                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
+                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
+                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
+                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                {% endfor -%}
+                "External Temperature Sensor": "Датчик температуры",
+                "External Temperature Sensor OK": "Датчик температуры подключен",
+
+                "Press Parameters": "Параметры нажатий",
+                "Counting and press detection": "Счет и детектирование нажатий",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
+
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
+                "debounce_time_title": "Время подавления дребезга (мс)",
+
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным. Значение по умолчанию - 1000",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
+                "Reset All Counters": "Сбросить все счетчики",
+
+                "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "1-Wire": "Датчик 1-Wire",
+                "Disabled": "Отключен",
+                "Mode": "Режим работы"
+            }
+        }
+    }
+}

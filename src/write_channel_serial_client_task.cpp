@@ -8,8 +8,9 @@ TWriteChannelSerialClientTask::TWriteChannelSerialClientTask(PRegisterHandler ha
       ErrorCallback(errorCallback)
 {}
 
-ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PPort port,
-                                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice)
+ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort port,
+                                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                                 const std::list<PSerialDevice>& polledDevices)
 {
     if (!Handler->NeedToFlush()) {
         return ISerialClientTask::TRunResult::OK;
@@ -23,8 +24,8 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PPort port,
         return ISerialClientTask::TRunResult::OK;
     }
 
-    if (lastAccessedDevice.PrepareToAccess(Handler->Register()->Device())) {
-        Handler->Flush();
+    if (lastAccessedDevice.PrepareToAccess(*port, Handler->Register()->Device())) {
+        Handler->Flush(*port);
     } else {
         Handler->Register()->SetError(TRegister::TError::WriteError);
     }

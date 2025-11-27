@@ -17,7 +17,7 @@ namespace
     {
         size_t res = 0;
         for (const auto& device: portConfig->Devices) {
-            res += device->DeviceConfig()->DeviceChannelConfigs.size();
+            res += device->Channels.size();
         }
         return res;
     }

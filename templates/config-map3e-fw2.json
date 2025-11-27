@@ -4,7 +4,8 @@
     "group": "g-wb",
     "hw": [
         {
-            "signature": "MAP3E\u0002"
+            "signature": "MAP3E",
+            "fw": "2.0.0"
         }
     ],
     "device": {
@@ -49,6 +50,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "l1",
                 "order": 1
             },
@@ -59,6 +61,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "l1",
                 "order": 2
             },
@@ -74,12 +77,25 @@
                 "group": "l1",
                 "order": 3
             },
+            "l1_ct_reverse": {
+                "title": "Current Transformer Reverse L1",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "l1",
+                "order": 4
+            },
             "l2_turns": {
                 "title": "Turns L2",
                 "address": "0x1461",
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "l2",
                 "order": 1
             },
@@ -90,6 +106,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "l2",
                 "order": 2
             },
@@ -105,12 +122,25 @@
                 "group": "l2",
                 "order": 3
             },
+            "l2_ct_reverse": {
+                "title": "Current Transformer Reverse L2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "l2",
+                "order": 4
+            },
             "l3_turns": {
                 "title": "Turns L3",
                 "address": "0x1462",
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "l3",
                 "order": 1
             },
@@ -121,6 +151,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "l3",
                 "order": 2
             },
@@ -135,6 +166,18 @@
                 "description": "Firmware v2.3.0 or newer is required",
                 "group": "l3",
                 "order": 3
+            },
+            "l3_ct_reverse": {
+                "title": "Current Transformer Reverse L3",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "l3",
+                "order": 4
             },
             "baud_rate": {
                 "title": "Baud rate",
@@ -630,7 +673,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l3"
-            },  
+            },
             {
                 "name": "RP energy L3",
                 "reg_type": "input",
@@ -746,7 +789,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "total"
-            },  
+            },
             {
                 "name": "Frequency",
                 "reg_type": "input",
@@ -829,17 +872,22 @@
                 "HW Info": "Данные модуля",
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
+                "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Actual Phase L1": "Фаза транформатора L1",
                 "Turns L2": "Коэффициент трансформации L2",
                 "Phi L2": "Фазовая задержка L2",
+                "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Actual Phase L2": "Фаза транформатора L2",
                 "Turns L3": "Коэффициент трансформации L3",
                 "Phi L3": "Фазовая задержка L3",
+                "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Actual Phase L3": "Фаза транформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
                 "Disabled": "Выключено",
+                "Yes": "Да",
+                "No": "Нет",
                 "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
@@ -876,7 +924,8 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }

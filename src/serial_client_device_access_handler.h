@@ -6,10 +6,10 @@
 class TSerialClientDeviceAccessHandler
 {
 public:
-    TSerialClientDeviceAccessHandler(TSerialClientEventsReader& eventsReader);
-    bool PrepareToAccess(PSerialDevice dev);
+    TSerialClientDeviceAccessHandler(PSerialClientEventsReader eventsReader);
+    bool PrepareToAccess(TFeaturePort& port, PSerialDevice dev);
 
 private:
     PSerialDevice LastAccessedDevice;
-    TSerialClientEventsReader& EventsReader;
+    PSerialClientEventsReader EventsReader;
 };

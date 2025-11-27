@@ -15,7 +15,9 @@ public:
 
     ~TWriteChannelSerialClientTask() = default;
 
-    ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
+    ISerialClientTask::TRunResult Run(PFeaturePort port,
+                                      TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                      const std::list<PSerialDevice>& polledDevices) override;
 
 private:
     PRegisterHandler Handler;

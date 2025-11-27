@@ -381,8 +381,8 @@
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
-                    "Increase level",
-                    "Decrease level"
+                    "Decrease level",
+                    "Increase level"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
@@ -705,7 +705,7 @@
             },
             {
                 "name": "Input {{index + 1}} Short Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{464 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -714,7 +714,7 @@
             },
             {
                 "name": "Input {{index + 1}} Long Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{480 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -723,7 +723,7 @@
             },
             {
                 "name": "Input {{index + 1}} Double Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{496 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -732,7 +732,7 @@
             },
             {
                 "name": "Input {{index + 1}} Short Long Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{512 + index}},
                 "type": "value",
                 "sporadic": true,

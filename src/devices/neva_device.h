@@ -6,11 +6,11 @@
 class TNevaDevice: public TIEC61107ModeCDevice
 {
 public:
-    TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TNevaDevice(PDeviceConfig device_config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 
 private:
-    std::string GetParameterRequest(const TRegister& reg) const override;
-    TRegisterValue GetRegisterValue(const TRegister& reg, const std::string& value) override;
+    std::string GetParameterRequest(const TRegisterConfig& reg) const override;
+    TRegisterValue GetRegisterValue(const TRegisterConfig& reg, const std::string& value) override;
 };

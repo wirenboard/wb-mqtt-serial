@@ -4,10 +4,12 @@
     "group": "g-wb",
     "hw": [
         {
-            "signature": "MAP6S\u0002E"
+            "signature": "MAP6S",
+            "fw": "2.0.0"
         },
         {
-            "signature": "MAP6S\u0002"
+            "signature": "MAP6SE",
+            "fw": "2.0.0"
         }
     ],
     "device": {
@@ -60,6 +62,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_1",
                 "order": 1
             },
@@ -70,8 +73,21 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_1",
                 "order": 2
+            },
+            "channel1_ct_reverse": {
+                "title": "Current Transformer Reverse 1",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_1",
+                "order": 3
             },
             "channel2_turns": {
                 "title": "Turns 2",
@@ -79,6 +95,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_2",
                 "order": 1
             },
@@ -89,8 +106,21 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_2",
                 "order": 2
+            },
+            "channel2_ct_reverse": {
+                "title": "Current Transformer Reverse 2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_2",
+                "order": 3
             },
             "channel3_turns": {
                 "title": "Turns 3",
@@ -98,6 +128,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_3",
                 "order": 1
             },
@@ -108,8 +139,21 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_3",
                 "order": 2
+            },
+            "channel3_ct_reverse": {
+                "title": "Current Transformer Reverse 3",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_3",
+                "order": 3
             },
             "channel4_turns": {
                 "title": "Turns 4",
@@ -117,6 +161,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_4",
                 "order": 1
             },
@@ -127,8 +172,21 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_4",
                 "order": 2
+            },
+            "channel4_ct_reverse": {
+                "title": "Current Transformer Reverse 4",
+                "address": "0x24b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_4",
+                "order": 3
             },
             "channel5_turns": {
                 "title": "Turns 5",
@@ -136,6 +194,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_5",
                 "order": 1
             },
@@ -146,8 +205,21 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_5",
                 "order": 2
+            },
+            "channel5_ct_reverse": {
+                "title": "Current Transformer Reverse 5",
+                "address": "0x24b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_5",
+                "order": 3
             },
             "channel6_turns": {
                 "title": "Turns 6",
@@ -155,6 +227,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_6",
                 "order": 1
             },
@@ -165,8 +238,21 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_6",
                 "order": 2
+            },
+            "channel6_ct_reverse": {
+                "title": "Current Transformer Reverse 6",
+                "address": "0x24b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_6",
+                "order": 3
             },
             "baud_rate": {
                 "title": "Baud rate",
@@ -184,6 +270,17 @@
                 ],
                 "group": "general",
                 "order": 1
+            },
+            "peaks_measurement_period_s": {
+                "title": "Peaks Measurement Period (s)",
+                "address": "0x10F0",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "default": 60,
+                "group": "general",
+                "description": "Firmware v2.3.0 or newer is required",
+                "order": 2
             }
         },
 
@@ -196,6 +293,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_1"
+            },
+            {
+                "name": "Ipeak 1",
+                "reg_type": "input",
+                "address": "0x181c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_1"
             },
             {
@@ -259,7 +368,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_1"
-            }, 
+            },
             {
                 "name": "RP energy 1",
                 "reg_type": "input",
@@ -300,6 +409,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_2"
+            },
+            {
+                "name": "Ipeak 2",
+                "reg_type": "input",
+                "address": "0x181a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_2"
             },
             {
@@ -363,7 +484,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_2"
-            },  
+            },
             {
                 "name": "RP energy 2",
                 "reg_type": "input",
@@ -404,6 +525,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_3"
+            },
+            {
+                "name": "Ipeak 3",
+                "reg_type": "input",
+                "address": "0x1818",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_3"
             },
             {
@@ -511,6 +644,18 @@
                 "group": "channel_4"
             },
             {
+                "name": "Ipeak 4",
+                "reg_type": "input",
+                "address": "0x281c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel_4"
+            },
+            {
                 "name": "P 4",
                 "reg_type": "input",
                 "address": "0x2306",
@@ -615,6 +760,18 @@
                 "group": "channel_5"
             },
             {
+                "name": "Ipeak 5",
+                "reg_type": "input",
+                "address": "0x281a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel_5"
+            },
+            {
                 "name": "P 5",
                 "reg_type": "input",
                 "address": "0x2304",
@@ -697,7 +854,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_5"
-            },  
+            },
             {
                 "name": "Phase angle 5",
                 "reg_type": "input",
@@ -716,6 +873,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_6"
+            },
+            {
+                "name": "Ipeak 6",
+                "reg_type": "input",
+                "address": "0x2818",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_6"
             },
             {
@@ -816,11 +985,25 @@
                 "name": "Urms",
                 "reg_type": "input",
                 "address": "0x10d9",
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "semi-sporadic": true,
                 "format": "u16",
                 "scale": 0.01,
                 "round_to": 0.01,
+                "group": "general"
+            },
+            {
+                "name": "Upeak",
+                "reg_type": "input",
+                "address": "0x1810",
+                "type": "value",
+                "units": "V",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
                 "group": "general"
             },
             {
@@ -909,18 +1092,25 @@
                 "HW Info": "Данные модуля",
                 "Turns 1": "Коэффициент трансформации 1",
                 "Phi 1": "Фазовая задержка 1",
+                "Current Transformer Reverse 1": "Инвертировать токовый трансформатор 1",
                 "Turns 2": "Коэффициент трансформации 2",
                 "Phi 2": "Фазовая задержка 2",
+                "Current Transformer Reverse 2": "Инвертировать токовый трансформатор 2",
                 "Turns 3": "Коэффициент трансформации 3",
                 "Phi 3": "Фазовая задержка 3",
+                "Current Transformer Reverse 3": "Инвертировать токовый трансформатор 3",
                 "Turns 4": "Коэффициент трансформации 4",
                 "Phi 4": "Фазовая задержка 4",
+                "Current Transformer Reverse 4": "Инвертировать токовый трансформатор 4",
                 "Turns 5": "Коэффициент трансформации 5",
                 "Phi 5": "Фазовая задержка 5",
+                "Current Transformer Reverse 5": "Инвертировать токовый трансформатор 5",
                 "Turns 6": "Коэффициент трансформации 6",
                 "Phi 6": "Фазовая задержка 6",
+                "Current Transformer Reverse 6": "Инвертировать токовый трансформатор 6",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "AP energy 1": "Энергия AP 1",
                 "RP energy 1": "Энергия RP 1",
                 "AN energy 1": "Энергия AN 1",
@@ -951,13 +1141,17 @@
                 "AN energy 6": "Энергия AN 6",
                 "RN energy 6": "Энергия RN 6",
                 "Phase angle 6": "Угол между I6 и U",
+                "Yes": "Да",
+                "No": "Нет",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }

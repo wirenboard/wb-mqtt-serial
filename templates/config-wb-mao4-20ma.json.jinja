@@ -249,8 +249,8 @@
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
-                    "Increase Level",
-                    "Decrease Level"
+                    "Decrease Level",
+                    "Increase Level"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
@@ -526,7 +526,7 @@
             {
                 "id": "input_{{index + 1}}_single_press_counter",
                 "name": "Input {{index + 1}} Single Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{464 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -537,7 +537,7 @@
             {
                 "id": "input_{{index + 1}}_long_press_counter",
                 "name": "Input {{index + 1}} Long Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{480 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -548,7 +548,7 @@
             {
                 "id": "input_{{index + 1}}_double_press_counter",
                 "name": "Input {{index + 1}} Double Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{496 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -559,7 +559,7 @@
             {
                 "id": "input_{{index + 1}}_shortlong_press_counter",
                 "name": "Input {{index + 1}} Shortlong Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{512 + index}},
                 "type": "value",
                 "sporadic": true,
@@ -595,14 +595,14 @@
                 "address": {{index}},
                 "type": "value",
                 "units": "mA",
-                "max": 20,
+                "max": 20.48,
                 "scale": 0.001,
                 "enabled": false,
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
-                "id": "channel_{{index + 1}}_open_circuit_fail",
-                "name": "Channel {{index + 1}} Open Circuit Fail",
+                "id": "channel_{{index + 1}}_fault",
+                "name": "Channel {{index + 1}} Fault",
                 "reg_type": "discrete",
                 "address": {{16 + index}},
                 "type": "switch",
@@ -702,7 +702,7 @@
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "output_description": "Output can be controlled by:<br>1) setting level in percentage between working range limits<br>2) setting output current in mA (level of the channel will not change)",
-                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.5.0",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "g_power_up_behaviour_description": "Actions that will be performed when power is applied to the module"
@@ -739,7 +739,7 @@
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
                 "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
-                "Channel {{ch_number}} Open Circuit Fail": "Обрыв цепи канала {{ch_number}}",
+                "Channel {{ch_number}} Fault": "Ошибка канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}
 

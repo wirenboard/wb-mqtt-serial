@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/dlms/meta: '{"driver":"em-test","title":{"en":"DLMS"}}' (QoS 1, retained)
 Publish: /devices/dlms/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/dlms/meta/error: '' (QoS 1, retained)
 Publish: /devices/dlms/meta/name: 'DLMS' (QoS 1, retained)
 Publish: /devices/dlms/controls/Temperature/meta: '{"order":1,"readonly":true,"type":"temperature"}' (QoS 1, retained)
 Publish: /devices/dlms/controls/Temperature/meta/error: '' (QoS 1, retained)
@@ -31,11 +32,11 @@ EnqueueRequests()
 << 7E A0 38 41 02 29 30 A0 83 E6 E7 00 61 29 A1 09 06 07 60 85 74 05 08 01 01 A2 03 02 01 00 A3 05 A1 03 02 01 00 BE 10 04 0E 08 00 06 5F 1F 04 00 00 10 1D 00 64 00 07 82 8B 7E
 Sleep(20000)
 EnqueueRequests()
->> 7E A0 1A 02 29 41 32 D9 64 E6 E6 00 C0 01 81 00 03 00 00 60 09 00 FF 03 00 8E B5 7E
+>> 7E A0 1A 02 29 41 32 D9 64 E6 E6 00 C0 01 C1 00 03 00 00 60 09 00 FF 03 00 8B 78 7E
 << 7E A0 17 41 02 29 52 D9 C9 E6 E7 00 C4 01 81 00 02 02 0F 00 16 09 AE D5 7E
 Sleep(20000)
 EnqueueRequests()
->> 7E A0 1A 02 29 41 54 E9 62 E6 E6 00 C0 01 81 00 03 00 00 60 09 00 FF 02 00 56 AC 7E
+>> 7E A0 1A 02 29 41 54 E9 62 E6 E6 00 C0 01 C1 00 03 00 00 60 09 00 FF 02 00 53 61 7E
 << 7E A0 14 41 02 29 74 21 90 E6 E7 00 C4 01 81 00 10 00 1E 66 3C 7E
 Publish: /devices/dlms/controls/Temperature: '30' (QoS 1, retained)
 Publish: /devices/dlms/controls/Temperature: '' (QoS 1, retained)

@@ -15,7 +15,7 @@
 class TEMDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TEMDevice(PDeviceConfig config, PProtocol protocol);
 
 protected:
     enum ErrorType
@@ -27,15 +27,20 @@ protected:
     };
     const int MAX_LEN = 64;
 
-    virtual bool ConnectionSetup() = 0;
+    virtual bool ConnectionSetup(TPort& port) = 0;
 
     virtual ErrorType CheckForException(uint8_t* frame, int len, const char** message) = 0;
 
-    void WriteCommand(uint8_t cmd, uint8_t* payload, int len);
+    void WriteCommand(TPort& port, uint8_t cmd, uint8_t* payload, int len);
 
-    bool ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort::TFrameCompletePred frame_complete = 0);
+    bool ReadResponse(TPort& port,
+                      int expectedByte1,
+                      uint8_t* payload,
+                      int len,
+                      TPort::TFrameCompletePred frame_complete = 0);
 
-    void Talk(uint8_t cmd,
+    void Talk(TPort& port,
+              uint8_t cmd,
               uint8_t* payload,
               int payload_len,
               int expected_byte1,
@@ -46,7 +51,7 @@ protected:
     uint8_t SlaveIdWidth = 1;
 
 private:
-    void EnsureSlaveConnected(bool force = false);
+    void EnsureSlaveConnected(TPort& port, bool force = false);
 
     std::unordered_set<uint8_t> ConnectedSlaves;
 };

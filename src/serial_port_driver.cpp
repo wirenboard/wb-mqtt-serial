@@ -8,8 +8,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "serial_port.h"
-#include "tcp_port.h"
+#include "port/serial_port.h"
+#include "port/tcp_port.h"
 
 using namespace std;
 using namespace WBMQTT;
@@ -40,8 +40,6 @@ void TSerialPortDriver::SetUpDevices()
 {
     SerialClient->SetReadCallback([this](PRegister reg) { OnValueRead(reg); });
     SerialClient->SetErrorCallback([this](PRegister reg) { UpdateError(reg); });
-    SerialClient->SetDeviceConnectionStateChangedCallback(
-        [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
 
     LOG(Debug) << "setting up devices at " << Config->Port->GetDescription();
 
@@ -49,23 +47,27 @@ void TSerialPortDriver::SetUpDevices()
         auto tx = MqttDriver->BeginTx();
 
         for (const auto& device: Config->Devices) {
-            auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
-            assert(mqttDevice);
-            Devices.push_back(device);
+            device->Device->AddOnConnectionStateChangedCallback(
+                [this](PSerialDevice dev) { OnDeviceConnectionStateChanged(dev); });
+            auto mqttDevice = tx->CreateDevice(From(device->Device)).GetValue();
+            Devices.push_back(device->Device);
+            std::vector<PDeviceChannel> channels;
             // init channels' registers
-            for (const auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
+            for (const auto& channelConfig: device->Channels) {
                 try {
-                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    auto channel = std::make_shared<TDeviceChannel>(device->Device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (const auto& reg: channel->Registers) {
                         RegisterToChannelMap.emplace(reg, channel);
                     }
+                    channels.push_back(channel);
                 } catch (const exception& e) {
                     LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
             mqttDevice->RemoveUnusedControls(tx).Sync();
-            SerialClient->AddDevice(device);
+            SerialClient->AddDevice(device->Device);
+            DeviceToChannelsMap.emplace(device->Device, channels);
         }
     } catch (const exception& e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
@@ -142,7 +144,16 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         return;
     }
     if (it->second->HasValuesOfAllRegisters()) {
-        it->second->UpdateValueAndError(*MqttDriver, PublishPolicy);
+        // change publish policy for sporadic registers to publish register data on every read, even if it not changed
+        // needed for DALI bus devices polling
+        auto publishPolicy = PublishPolicy;
+        if ((reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS &&
+             reg->IsExcludedFromPolling()) ||
+            reg->Device()->IsSporadicOnly())
+        {
+            publishPolicy.Policy = TPublishParameters::PublishAll;
+        }
+        it->second->UpdateValueAndError(*MqttDriver, publishPolicy);
     }
 }
 
@@ -159,6 +170,15 @@ void TSerialPortDriver::UpdateError(PRegister reg)
 
 void TSerialPortDriver::OnDeviceConnectionStateChanged(PSerialDevice device)
 {
+    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+        auto it = DeviceToChannelsMap.find(device);
+        if (it != DeviceToChannelsMap.end()) {
+            for (auto& channel: it->second) {
+                channel->DoNotPublishNextZeroPressCounter();
+            }
+        }
+    }
+
     auto tx = MqttDriver->BeginTx();
     auto mqttDevice = tx->GetDevice(device->DeviceConfig()->Id);
     auto localMqttDevice = dynamic_pointer_cast<TLocalDevice>(mqttDevice);
@@ -197,6 +217,7 @@ void TSerialPortDriver::ClearDevices() noexcept
         }
         Devices.clear();
         RegisterToChannelMap.clear();
+        DeviceToChannelsMap.clear();
     } catch (const exception& e) {
         LOG(Warn) << "TSerialPortDriver::ClearDevices(): " << e.what();
     } catch (...) {
@@ -247,12 +268,34 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
         args.SetEnumValueTitles(it.first, it.second);
     }
 
+    if (std::any_of(channel->Registers.cbegin(), channel->Registers.cend(), [](const auto& reg) {
+            return reg->GetConfig()->TypeName == "press_counter";
+        }))
+    {
+        args.SetDurable();
+    }
+
     return args;
 }
 
 PSerialClient TSerialPortDriver::GetSerialClient()
 {
     return SerialClient;
+}
+
+TDeviceChannel::TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config)
+    : TDeviceChannelConfig(*config),
+      Device(device),
+      PublishNextZeroPressCounter(true)
+{}
+
+std::string TDeviceChannel::Describe() const
+{
+    const auto& name = GetName();
+    if (name != MqttId) {
+        return "channel '" + name + "' (MQTT control '" + MqttId + "') of device '" + DeviceId + "'";
+    }
+    return "channel '" + name + "' of device '" + DeviceId + "'";
 }
 
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
@@ -273,6 +316,14 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
     }
     auto error = GetErrorText();
     bool errorIsChanged = (CachedErrorText != error);
+    if (ShouldNotPublishPressCounter()) {
+        if (errorIsChanged) {
+            PublishError(deviceDriver, error);
+        }
+        CachedCurrentValue = value;
+        return;
+    }
+    PublishNextZeroPressCounter = true;
     switch (publishPolicy.Policy) {
         case TPublishParameters::PublishOnlyOnChange: {
             if (CachedCurrentValue != value) {
@@ -362,13 +413,13 @@ std::string TDeviceChannel::GetTextValue() const
 {
     if (Registers.size() == 1) {
         if (!OnValue.empty()) {
-            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OnValue) {
+            if (ConvertFromRawValue(*Registers.front()->GetConfig(), Registers.front()->GetValue()) == OnValue) {
                 LOG(Debug) << "OnValue: " << OnValue << "; value: 1";
                 return "1";
             }
         }
         if (!OffValue.empty()) {
-            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OffValue) {
+            if (ConvertFromRawValue(*Registers.front()->GetConfig(), Registers.front()->GetValue()) == OffValue) {
                 LOG(Debug) << "OnValue: " << OffValue << "; value: 0";
                 return "0";
             }
@@ -381,7 +432,7 @@ std::string TDeviceChannel::GetTextValue() const
             value += ";";
         }
         first = false;
-        value += ConvertFromRawValue(*r, r->GetValue());
+        value += ConvertFromRawValue(*r->GetConfig(), r->GetValue());
     }
     return value;
 }
@@ -394,4 +445,24 @@ bool TDeviceChannel::HasValuesOfAllRegisters() const
         }
     }
     return true;
+}
+
+bool TDeviceChannel::ShouldNotPublishPressCounter() const
+{
+    for (const auto& r: Registers) {
+        if (r->GetConfig()->TypeName == "press_counter" && !PublishNextZeroPressCounter) {
+            try {
+                if (r->GetValue().Get<uint16_t>() == 0) {
+                    return true;
+                }
+            } catch (const TRegisterValueException&) {
+            }
+        }
+    }
+    return false;
+}
+
+void TDeviceChannel::DoNotPublishNextZeroPressCounter()
+{
+    PublishNextZeroPressCounter = false;
 }

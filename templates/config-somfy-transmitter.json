@@ -98,7 +98,7 @@
                 "reg_type": "command",
                 "address": "0x80",
                 "on_value": "0x030202",
-                "group": "ch2"
+                "group": "ch3"
             },
             {
                 "name": "Open programming mode 3",

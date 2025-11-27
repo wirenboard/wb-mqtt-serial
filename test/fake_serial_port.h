@@ -24,7 +24,9 @@ public:
         BadFileDescriptorOnWriteAndRead //! Port can be successfully open, but all operations fail with EBADF
     };
 
-    TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture, const std::string& portName);
+    TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture,
+                    const std::string& portName,
+                    bool emptyDescription = true);
 
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
     void CheckPortOpen() const override;
@@ -42,6 +44,7 @@ public:
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
 
+    std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override;
     std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0) override;
@@ -70,6 +73,7 @@ private:
     std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
     size_t BaudRate;
     std::string PortName;
+    bool EmptyDescription;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
@@ -105,7 +109,7 @@ protected:
     bool PortMakerCalled;
 
     // Key - path to folder, value - loaded templates map
-    static WBMQTT::TMap<std::string, std::shared_ptr<TTemplateMap>> Templates;
+    static WBMQTT::TMap<std::string, PTemplateMap> Templates;
     static Json::Value CommonDeviceSchema;
     static Json::Value CommonConfigTemplatesSchema;
     static void SetUpTestCase();

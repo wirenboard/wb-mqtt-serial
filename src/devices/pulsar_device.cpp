@@ -18,8 +18,8 @@ void TPulsarDevice::Register(TSerialDeviceFactory& factory)
         new TBasicDeviceFactory<TPulsarDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
-TPulsarDevice::TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TPulsarDevice::TPulsarDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId),
       RequestID(0)
 {}
@@ -96,9 +96,9 @@ uint64_t TPulsarDevice::ReadHex(const uint8_t* buffer, size_t size, bool big_end
     return result;
 }
 
-void TPulsarDevice::WriteDataRequest(uint32_t addr, uint32_t mask, uint16_t id)
+void TPulsarDevice::WriteDataRequest(TPort& port, uint32_t addr, uint32_t mask, uint16_t id)
 {
-    Port()->CheckPortOpen();
+    port.CheckPortOpen();
 
     uint8_t buf[14];
 
@@ -119,12 +119,12 @@ void TPulsarDevice::WriteDataRequest(uint32_t addr, uint32_t mask, uint16_t id)
     uint16_t crc = CalculateCRC16(buf, 12);
     WriteHex(crc, &buf[12], sizeof(uint16_t), false);
 
-    Port()->WriteBytes(buf, 14);
+    port.WriteBytes(buf, 14);
 }
 
-void TPulsarDevice::WriteSysTimeRequest(uint32_t addr, uint16_t id)
+void TPulsarDevice::WriteSysTimeRequest(TPort& port, uint32_t addr, uint16_t id)
 {
-    Port()->CheckPortOpen();
+    port.CheckPortOpen();
 
     uint8_t buf[10];
 
@@ -142,20 +142,19 @@ void TPulsarDevice::WriteSysTimeRequest(uint32_t addr, uint16_t id)
     uint16_t crc = CalculateCRC16(buf, 8);
     WriteHex(crc, &buf[8], sizeof(uint16_t), false);
 
-    Port()->WriteBytes(buf, 10);
+    port.WriteBytes(buf, 10);
 }
 
-void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id)
+void TPulsarDevice::ReadResponse(TPort& port, uint32_t addr, uint8_t* payload, size_t size, uint16_t id)
 {
     const int exp_size = size + 10; /* payload size + service bytes */
     std::vector<uint8_t> response(exp_size);
 
-    int nread = Port()
-                    ->ReadFrame(response.data(),
-                                response.size(),
-                                DeviceConfig()->ResponseTimeout,
-                                DeviceConfig()->FrameTimeout,
-                                [](uint8_t* buf, int size) { return size >= 6 && size == buf[5]; })
+    int nread = port.ReadFrame(response.data(),
+                               response.size(),
+                               GetResponseTimeout(port),
+                               GetFrameTimeout(port),
+                               [](uint8_t* buf, int size) { return size >= 6 && size == buf[5]; })
                     .Count;
 
     /* check size */
@@ -187,9 +186,9 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, u
     memcpy(payload, response.data() + 6, size);
 }
 
-TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)
+TRegisterValue TPulsarDevice::ReadDataRegister(TPort& port, const TRegisterConfig& reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     // raw payload data
     uint8_t payload[sizeof(uint64_t)];
 
@@ -197,23 +196,23 @@ TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)
     uint32_t mask = 1 << addr;
 
     // send data request and receive response
-    WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, reg->GetByteWidth(), RequestID);
+    WriteDataRequest(port, SlaveId, mask, RequestID);
+    ReadResponse(port, SlaveId, payload, reg.GetByteWidth(), RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return TRegisterValue{ReadHex(payload, reg->GetByteWidth(), false)};
+    return TRegisterValue{ReadHex(payload, reg.GetByteWidth(), false)};
 }
 
-TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
+TRegisterValue TPulsarDevice::ReadSysTimeRegister(TPort& port, const TRegisterConfig& reg)
 {
     // raw payload data
     uint8_t payload[6];
 
     // send system time request and receive response
-    WriteSysTimeRequest(SlaveId, RequestID);
-    ReadResponse(SlaveId, payload, sizeof(payload), RequestID);
+    WriteSysTimeRequest(port, SlaveId, RequestID);
+    ReadResponse(port, SlaveId, payload, sizeof(payload), RequestID);
 
     ++RequestID;
 
@@ -221,15 +220,15 @@ TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     return TRegisterValue{ReadHex(payload, sizeof(payload), false)};
 }
 
-TRegisterValue TPulsarDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TPulsarDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    Port()->SkipNoise();
+    port.SkipNoise();
 
-    switch (reg->Type) {
+    switch (reg.Type) {
         case REG_DEFAULT:
-            return ReadDataRegister(reg);
+            return ReadDataRegister(port, reg);
         case REG_SYSTIME:
-            return ReadSysTimeRegister(reg);
+            return ReadSysTimeRegister(port, reg);
         default:
             throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }

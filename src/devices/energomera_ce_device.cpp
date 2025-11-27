@@ -17,7 +17,7 @@ namespace
     const uint8_t CLASS_ACCESS_ERROR = 0x07;
 
     const uint8_t DIRECT_REQUEST = 0x01;
-    const uint8_t DIRECT_RESPONSE = 0x00;
+    // const uint8_t DIRECT_RESPONSE = 0x00;
 
     const size_t PACKET_ENVELOPE_SIZE = 8;
     const size_t RESPONSE_HEADER_SIZE = 3;
@@ -182,27 +182,27 @@ void TEnergomeraCeDevice::Register(TSerialDeviceFactory& factory)
         new TBasicDeviceFactory<TEnergomeraCeDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
-TEnergomeraCeDevice::TEnergomeraCeDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TEnergomeraCeDevice::TEnergomeraCeDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId)
 {}
 
-TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     auto request = MakePacket(SlaveId,
                               DeviceConfig()->Password,
-                              MakeCommandFromRegisterAddress(GetUint32RegisterAddress(reg->GetAddress())));
-    Port()->WriteBytes(request.data(), request.size());
+                              MakeCommandFromRegisterAddress(GetUint32RegisterAddress(reg.GetAddress())));
+    port.WriteBytes(request.data(), request.size());
     std::vector<uint8_t> response(MAX_RESPONSE_SIZE);
-    auto res = Port()->ReadFrame(response.data(),
-                                 response.size(),
-                                 DeviceConfig()->ResponseTimeout,
-                                 DeviceConfig()->FrameTimeout,
-                                 FrameComplete);
+    auto res = port.ReadFrame(response.data(),
+                              response.size(),
+                              GetResponseTimeout(port),
+                              GetFrameTimeout(port),
+                              FrameComplete);
     response.resize(res.Count);
     DecodeByteStuffing(response, BYTE_STUFFING_RULES);
     CheckResponse(response);
-    switch (reg->Type) {
+    switch (reg.Type) {
         case TEnergomeraCeRegisterType::DEFAULT:
             return GetValue(response);
         case TEnergomeraCeRegisterType::DATE:
@@ -210,7 +210,7 @@ TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
         case TEnergomeraCeRegisterType::ENERGY:
             return GetEnergy(response);
         default: {
-            throw TSerialDevicePermanentRegisterException("Unknown register type " + std::to_string(reg->Type));
+            throw TSerialDevicePermanentRegisterException("Unknown register type " + std::to_string(reg.Type));
         }
     }
 }

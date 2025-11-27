@@ -1,0 +1,324 @@
+{
+  "title": "mtdx62_title",
+  "device_type": "MTDX62-MB",
+  "device": {
+    "name": "MTDX62-MB",
+    "id": "mtdx62-mb",
+    "groups": [
+      {
+        "title": "general",
+        "id": "general"
+      },
+      {
+        "title": "settings",
+        "id": "settings",
+        "description": "warning"
+      }
+    ],
+    "parameters": [
+      {
+        "title": "device_id",
+        "id": "device_id",
+        "reg_type": "holding",
+        "address": "0x07",
+        "min": 1,
+        "max": 247,
+        "default": 1,
+        "group": "settings",
+        "order": 1
+      },
+      {
+        "title": "baud_rate",
+        "id": "baud_rate",
+        "reg_type": "holding",
+        "address": "0x08",
+        "enum": [
+          1200,
+          2400,
+          4800,
+          9600,
+          19200,
+          38400,
+          57600
+        ],
+        "enum_titles": [
+          "1200",
+          "2400",
+          "4800",
+          "9600",
+          "19200",
+          "38400",
+          "57600"
+        ],
+        "default": 9600,
+        "group": "settings",
+        "order": 2
+      },
+      {
+        "title": "parity",
+        "id": "parity",
+        "reg_type": "holding",
+        "address": "0x09",
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "enum_titles": [
+          "none",
+          "odd",
+          "even"
+        ],
+        "defailt": 0,
+        "group": "settings",
+        "order": 3
+      },
+      {
+        "title": "proactively_report_data",
+        "id": "proactively_report_data",
+        "reg_type": "holding",
+        "address": "0x0A",
+        "enum": [
+          1,
+          2
+        ],
+        "enum_titles": [
+          "reporting",
+          "not reporting"
+        ],
+        "default": 2,
+        "group": "settings",
+        "order": 4
+      },
+      {
+        "title": "light_threshold",
+        "id": "light_threshold",
+        "reg_type": "holding",
+        "address": "0x0B",
+        "unit": "lux",
+        "scale": 0.1,
+        "min": 0,
+        "max": 4200,
+        "default": 0,
+        "group": "settings",
+        "order": 5,
+        "description": "0 to turn off"
+      },
+      {
+        "title": "reporting_interval",
+        "id": "reporting_interval",
+        "reg_type": "holding",
+        "address": "0x0C",
+        "unit": "sec",
+        "scale": 1,
+        "min": 1,
+        "max": 36000,
+        "default": 600,
+        "group": "settings",
+        "order": 6
+      }
+    ],
+    "channels": [
+      {
+        "name": "presence_status",
+        "reg_type": "input",
+        "address": "0x00",
+        "format": "s16",
+        "type": "switch",
+        "group": "general"
+      },
+      {
+        "name": "illuminance",
+        "reg_type": "input",
+        "address": "0x01",
+        "type": "lux",
+        "format": "s16",
+        "scale": 0.1,
+        "group": "general"
+      },
+      {
+        "name": "target_distance",
+        "reg_type": "input",
+        "address": "0x02",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.01,
+        "group": "general"
+      },
+      {
+        "name": "device_status",
+        "reg_type": "input",
+        "address": "0x03",
+        "format": "s16",
+        "group": "general",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "enum_titles": [
+          "selftest in progress",
+          "selftest succesfull",
+          "selftest failed",
+          "other fault",
+          "radar malfunction",
+          "rs485 malfunction",
+          "both comm failed"
+        ],
+        "enabled": false
+      },
+      {
+        "name": "detection_distance",
+        "reg_type": "holding",
+        "address": "0x00",
+        "type": "value",
+        "group": "general",
+        "scale": 0.01,
+        "min": 0.6,
+        "max": 10,
+        "default": 6
+      },
+      {
+        "name": "detection_shielding_distance",
+        "reg_type": "holding",
+        "address": "0x01",
+        "type": "value",
+        "group": "general",
+        "scale": 0.01,
+        "min": 0.6,
+        "max": 10,
+        "default": 0.6
+      },
+      {
+        "name": "admission_confirmation_delay",
+        "reg_type": "holding",
+        "address": "0x02",
+        "type": "value",
+        "group": "general",
+        "scale": 0.01,
+        "min": 0.1,
+        "max": 5,
+        "default": 0.1
+      },
+      {
+        "name": "departure_disappearance_delay",
+        "reg_type": "holding",
+        "address": "0x03",
+        "type": "value",
+        "group": "general",
+        "scale": 1,
+        "min": 5,
+        "max": 1500,
+        "default": 30
+      },
+      {
+        "name": "trigger_sensitivity",
+        "reg_type": "holding",
+        "address": "0x04",
+        "type": "value",
+        "group": "general",
+        "scale": 1,
+        "min": 1,
+        "max": 9
+      },
+      {
+        "name": "maintain_sensitivity",
+        "reg_type": "holding",
+        "address": "0x05",
+        "type": "value",
+        "group": "general",
+        "scale": 1,
+        "min": 1,
+        "max": 9
+      },
+      {
+        "name": "entrance_distance_reduction",
+        "reg_type": "holding",
+        "address": "0x06",
+        "type": "value",
+        "group": "general",
+        "scale": 0.01,
+        "min": 0,
+        "max": 10,
+        "default": 0.6
+      }
+    ],
+    "translations": {
+      "en": {
+        "mtdx62_title": "Saifuli MTDX62-MB (presense detector)",
+        "warning": "Before changing the parameters, make sure that the connection to the device is established. You will need to restart your device to apply the new settings.",
+        "general": "General",
+        "settings": "Settings",
+        "presence_status": "Presence Detected",
+        "illuminance": "Illuminance",
+        "target_distance": "Target Distance",
+        "device_status": "Device Status",
+        "selftest in progress": "Selftest In Progress",
+        "selftest succesfull": "Selftest Succesfull",
+        "selftest failed": "Selftest Failed",
+        "other fault": "Other Fault",
+        "radar malfunction": "Radar Malfunction",
+        "rs485 malfunction": "RS485 Malfunction",
+        "both comm failed": "Radar and RS485 malfunction",
+        "detection_distance": "Detection Distance",
+        "detection_shielding_distance": "Detection Shielding Distance",
+        "admission_confirmation_delay": "Admission Confirmation Delay",
+        "departure_disappearance_delay": "Departure Disappearance Delay",
+        "trigger_sensitivity": "Trigger Sensitivity",
+        "maintain_sensitivity": "Person Maintain Sensitivity",
+        "entrance_distance_reduction": "Entrance Distance Reduction",
+        "device_id": "Modbus Slave ID",
+        "baud_rate": "Baudrate",
+        "parity": "Parity",
+        "none": "none",
+        "odd": "odd",
+        "even": "even",
+        "proactively_report_data": "Proactively Report Data",
+        "reporting": "reporting",
+        "not reporting": "not reporting",
+        "light_threshold": "Light Threshold (0-off)",
+        "reporting_interval": "Reporting Interval"
+      },
+      "ru": {
+        "mtdx62_title": "Saifuli MTDX62-MB (датчик присутствия)",
+        "warning": "Перед изменением параметров убедитесь, что связь с устройством установлена. Для применения новых настроек потребуется выполнить перезагрузку устройства.",
+        "general": "Общее",
+        "settings": "Настройки",
+        "presence_status": "Есть присутствие",
+        "illuminance": "Освещенность",
+        "target_distance": "Дистанция",
+        "device_status": "Статус датчика",
+        "selftest in progress": "идет тест",
+        "selftest succesfull": "тест пройден",
+        "selftest failed": "сбой теста",
+        "other fault": "ошибка",
+        "radar malfunction": "сбой радара",
+        "rs485 malfunction": "сбой соединения",
+        "both comm failed": "сбой rs485 и радара",
+        "detection_distance": "Расстояние (макс)",
+        "detection_shielding_distance": "Расстояние (мин)",
+        "admission_confirmation_delay": "Задержка обнаружения присутствия",
+        "departure_disappearance_delay": "Задержка определения отсутствия",
+        "trigger_sensitivity": "Чувствительность",
+        "maintain_sensitivity": "Чувствительность к движению",
+        "entrance_distance_reduction": "Заужение конуса обнаружения",
+        "device_id": "Modbus-адрес датчика",
+        "baud_rate": "Скорость обмена",
+        "parity": "Контроль четности",
+        "none": "нет контроля",
+        "odd": "нечетные",
+        "even": "четные",
+        "proactively_report_data": "Упреждающий опрос",
+        "reporting": "использовать",
+        "not reporting": "не использовать",
+        "light_threshold": "Порог освещенности",
+        "reporting_interval": "Период отчетов",
+        "0 to turn off": "0 - выкл"
+      }
+    }
+  }
+}

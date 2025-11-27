@@ -1,0 +1,5 @@
+Open()
+EnqueueString8WriteResponse()
+>> 01 10 00 8E 00 05 0A 4C 61 74 65 72 61 6C 75 73 00 45 7E
+<< 01 10 00 8E 00 05 60 21
+Close()

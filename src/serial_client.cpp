@@ -37,7 +37,7 @@ namespace
     }
 };
 
-TSerialClient::TSerialClient(PPort port,
+TSerialClient::TSerialClient(PFeaturePort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
                              util::TGetNowFn nowFn,
                              size_t lowPriorityRateLimit)
@@ -80,11 +80,6 @@ void TSerialClient::Activate()
     }
 }
 
-void TSerialClient::Connect()
-{
-    OpenCloseLogic.OpenIfAllowed(Port);
-}
-
 void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, steady_clock::time_point waitUntil)
 {
     if (currentTime > waitUntil) {
@@ -105,7 +100,7 @@ void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, st
             Tasks.swap(tasks);
             lock.unlock();
             for (auto& task: tasks) {
-                if (task->Run(Port, *LastAccessedDevice) == ISerialClientTask::TRunResult::RETRY) {
+                if (task->Run(Port, *LastAccessedDevice, Devices) == ISerialClientTask::TRunResult::RETRY) {
                     retryTasks.push_back(task);
                 }
             }
@@ -154,10 +149,7 @@ void TSerialClient::ClosedPortCycle()
     auto waitUntil = currentTime + CLOSED_PORT_CYCLE_TIME;
     WaitForPollAndFlush(currentTime, waitUntil);
 
-    RegReader->ClosedPortCycle(
-        waitUntil,
-        [this](PRegister reg) { ProcessPolledRegister(reg); },
-        DeviceConnectionStateChangedCallback);
+    RegReader->ClosedPortCycle(waitUntil, [this](PRegister reg) { ProcessPolledRegister(reg); });
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -179,11 +171,6 @@ void TSerialClient::SetErrorCallback(const TSerialClient::TRegisterCallback& cal
     RegisterErrorCallback = callback;
 }
 
-void TSerialClient::SetDeviceConnectionStateChangedCallback(const TSerialClient::TDeviceCallback& callback)
-{
-    DeviceConnectionStateChangedCallback = callback;
-}
-
 PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
 {
     auto it = Handlers.find(reg);
@@ -203,7 +190,6 @@ void TSerialClient::OpenPortCycle()
     auto device = RegReader->OpenPortCycle(
         *Port,
         [this](PRegister reg) { ProcessPolledRegister(reg); },
-        DeviceConnectionStateChangedCallback,
         *LastAccessedDevice);
 
     if (device) {
@@ -211,9 +197,14 @@ void TSerialClient::OpenPortCycle()
     }
 }
 
-PPort TSerialClient::GetPort()
+PFeaturePort TSerialClient::GetPort()
 {
     return Port;
+}
+
+std::list<PSerialDevice> TSerialClient::GetDevices()
+{
+    return Devices;
 }
 
 void TSerialClient::AddTask(PSerialClientTask task)
@@ -225,11 +216,21 @@ void TSerialClient::AddTask(PSerialClientTask task)
     TasksCv.notify_all();
 }
 
+void TSerialClient::SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime)
+{
+    RegReader->SuspendPoll(device, currentTime);
+}
+
+void TSerialClient::ResumePoll(PSerialDevice device)
+{
+    RegReader->ResumePoll(device);
+}
+
 TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,
                                                                            std::chrono::milliseconds readEventsPeriod,
                                                                            util::TGetNowFn nowFn,
                                                                            size_t lowPriorityRateLimit)
-    : EventsReader(MAX_EVENT_READ_ERRORS),
+    : EventsReader(std::make_shared<TSerialClientEventsReader>(MAX_EVENT_READ_ERRORS)),
       RegisterPoller(lowPriorityRateLimit),
       TimeBalancer(BALANCING_THRESHOLD),
       ReadEventsPeriod(readEventsPeriod),
@@ -239,20 +240,15 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
 {
     auto currentTime = NowFn();
     RegisterPoller.SetDevices(devices, currentTime);
-    for (const auto& dev: devices) {
-        for (const auto& reg: dev->GetRegisters()) {
-            EventsReader.AddRegister(reg);
-        }
-    }
+    EventsReader->SetDevices(devices);
     TimeBalancer.AddEntry(TClientTaskType::POLLING, currentTime, TPriority::Low);
 }
 
 void TSerialClientRegisterAndEventsReader::ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
-                                                           TRegisterCallback regCallback,
-                                                           TDeviceCallback deviceConnectionStateChangedCallback)
+                                                           TRegisterCallback regCallback)
 {
-    EventsReader.SetReadErrors(regCallback);
-    RegisterPoller.ClosedPortCycle(currentTime, regCallback, deviceConnectionStateChangedCallback);
+    EventsReader->SetReadErrors(regCallback);
+    RegisterPoller.ClosedPortCycle(currentTime, regCallback);
 }
 
 class TSerialClientTaskHandler
@@ -273,9 +269,8 @@ public:
     }
 };
 
-PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
+PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TFeaturePort& port,
                                                                   TRegisterCallback regCallback,
-                                                                  TDeviceCallback deviceConnectionStateChangedCallback,
                                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
 {
     // Count idle time as high priority task time to faster reach time balancing threshold
@@ -291,17 +286,9 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     }
 
     if (handler.TaskType == TClientTaskType::EVENTS) {
-        if (EventsReader.HasDevicesWithEnabledEvents()) {
-            lastAccessedDevice.PrepareToAccess(nullptr);
-            EventsReader.ReadEvents(
-                port,
-                MAX_POLL_TIME,
-                regCallback,
-                [this](PSerialDevice device) {
-                    device->SetDisconnected();
-                    RegisterPoller.DeviceDisconnected(device, NowFn());
-                },
-                NowFn);
+        if (EventsReader && EventsReader->HasDevicesWithEnabledEvents()) {
+            lastAccessedDevice.PrepareToAccess(port, nullptr);
+            EventsReader->ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
             TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
             TimeBalancer.AddEntry(TClientTaskType::EVENTS,
                                   SpentTime.GetStartTime() + ReadEventsPeriod,
@@ -319,23 +306,14 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     // 2. If there are not devices with enabled events, the only limiting timeout is MAX_POLL_TIME.
     //    We can miss it and read at least one register.
     const bool readAtLeastOneRegister =
-        (handler.Policy == TItemAccumulationPolicy::Force) || !EventsReader.HasDevicesWithEnabledEvents();
+        (handler.Policy == TItemAccumulationPolicy::Force) || !EventsReader->HasDevicesWithEnabledEvents();
 
-    auto res =
-        RegisterPoller.OpenPortCycle(port,
-                                     SpentTime,
-                                     std::min(handler.PollLimit, MAX_POLL_TIME),
-                                     readAtLeastOneRegister,
-                                     lastAccessedDevice,
-                                     regCallback,
-                                     [this, &deviceConnectionStateChangedCallback](PSerialDevice device) {
-                                         if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
-                                             EventsReader.DeviceDisconnected(device);
-                                         }
-                                         if (deviceConnectionStateChangedCallback) {
-                                             deviceConnectionStateChangedCallback(device);
-                                         }
-                                     });
+    auto res = RegisterPoller.OpenPortCycle(port,
+                                            SpentTime,
+                                            std::min(handler.PollLimit, MAX_POLL_TIME),
+                                            readAtLeastOneRegister,
+                                            lastAccessedDevice,
+                                            regCallback);
 
     TimeBalancer.AddEntry(TClientTaskType::POLLING, res.Deadline, TPriority::Low);
     if (res.NotEnoughTime) {
@@ -345,7 +323,7 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
         TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::Low);
     }
 
-    if (EventsReader.HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
+    if (EventsReader->HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
         TimeBalancer.AddEntry(TClientTaskType::EVENTS, SpentTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
     }
 
@@ -359,7 +337,18 @@ std::chrono::steady_clock::time_point TSerialClientRegisterAndEventsReader::GetD
     return TimeBalancer.GetDeadline();
 }
 
-TSerialClientEventsReader& TSerialClientRegisterAndEventsReader::GetEventsReader()
+PSerialClientEventsReader TSerialClientRegisterAndEventsReader::GetEventsReader() const
 {
     return EventsReader;
+}
+
+void TSerialClientRegisterAndEventsReader::SuspendPoll(PSerialDevice device,
+                                                       std::chrono::steady_clock::time_point currentTime)
+{
+    RegisterPoller.SuspendPoll(device, currentTime);
+}
+
+void TSerialClientRegisterAndEventsReader::ResumePoll(PSerialDevice device)
+{
+    RegisterPoller.ResumePoll(device);
 }

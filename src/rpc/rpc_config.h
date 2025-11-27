@@ -1,18 +1,21 @@
 #pragma once
-#include "rpc_port.h"
-#include "serial_port_settings.h"
-#include "tcp_port_settings.h"
+
+#include <memory>
+
+#include <wblib/json_utils.h>
+
+#include "port/serial_port_settings.h"
+#include "port/tcp_port_settings.h"
 
 class TRPCConfig
 {
 public:
-    void AddSerialPort(PPort port, const TSerialPortSettings& settings);
-    void AddTCPPort(PPort port, const TTcpPortSettings& settings);
-    std::vector<PRPCPort> GetPorts();
+    void AddSerialPort(const TSerialPortSettings& settings);
+    void AddTCPPort(const TTcpPortSettings& settings);
+    void AddModbusTCPPort(const TTcpPortSettings& settings);
     Json::Value GetPortConfigs() const;
 
 private:
-    std::vector<PRPCPort> Ports;
     Json::Value PortConfigs{Json::arrayValue};
 };
 

@@ -5,6 +5,14 @@
 class TModbusExpectations: public TModbusExpectationsBase
 {
 public:
+    enum StringReadHint
+    {
+        FULL_OF_CHARS,
+        TRAILING_ZEROS,
+        ZERO_AND_TRASH,
+        TRAILING_FF
+    };
+
     void EnqueueCoilReadResponse(uint8_t exception = 0);
     void EnqueueCoilOneByOneReadResponse(uint8_t exception = 0);
 
@@ -21,7 +29,10 @@ public:
 
     void EnqueueDiscreteReadResponse(uint8_t exception = 0);
     void EnqueueHoldingReadS64Response(uint8_t exception = 0);
-    void EnqueueStringReadResponse(uint8_t exception = 0);
+    void EnqueueStringReadResponse(StringReadHint hint = TRAILING_ZEROS);
+    void EnqueueStringWriteResponse();
+    void EnqueueString8ReadResponse(StringReadHint hint = TRAILING_ZEROS);
+    void EnqueueString8WriteResponse();
     void EnqueueHoldingReadF32Response(uint8_t exception = 0);
     void EnqueueHoldingReadU16Response(uint8_t exception = 0, bool timeout = false);
     void EnqueueInputReadU16Response(uint8_t exception = 0);
@@ -85,8 +96,16 @@ public:
     /*--------------------------------------*/
 
     void EnqueueContinuousReadEnableResponse(bool ok = true);
-    void EnqueueContinuousReadResponse(bool separated = true);
+    void EnqueueContinuousReadHoldingResponse(bool separated = true);
+    void EnqueueContinuousReadCoilResponse(bool separated = true);
 
+    void EnqueueContinuousWriteResponse();
+
+    void EnqueuePartialWriteReadCacheDataResponse();
+    void EnqueuePartialWriteResponse();
+    void EnqueuePartialWriteReadChannelResponse();
+
+    void EnqueueSimpleChannelReadResponse();
     void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);
 
     void EnqueueLittleEndianReadResponses();

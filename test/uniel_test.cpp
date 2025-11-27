@@ -22,7 +22,6 @@ void TUnielDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
 
     Dev = std::make_shared<TUnielDevice>(std::make_shared<TDeviceConfig>("uniel", std::to_string(0x01), "uniel"),
-                                         SerialPort,
                                          DeviceFactory.GetProtocol("uniel"));
 
     InputReg = Dev->AddRegister(TRegisterConfig::Create(TUnielDevice::REG_INPUT, 0x0a, U8));
@@ -43,50 +42,50 @@ void TUnielDeviceTest::TearDown()
 TEST_F(TUnielDeviceTest, TestQuery)
 {
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(InputReg));
+    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(*SerialPort, *InputReg->GetConfig()));
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(InputReg));
+    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(*SerialPort, *InputReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    ASSERT_EQ(TRegisterValue{0}, Dev->ReadRegisterImpl(RelayReg));
+    ASSERT_EQ(TRegisterValue{0}, Dev->ReadRegisterImpl(*SerialPort, *RelayReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    ASSERT_EQ(TRegisterValue{1}, Dev->ReadRegisterImpl(RelayReg));
+    ASSERT_EQ(TRegisterValue{1}, Dev->ReadRegisterImpl(*SerialPort, *RelayReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    ASSERT_EQ(TRegisterValue{0x70}, Dev->ReadRegisterImpl(ThresholdReg));
+    ASSERT_EQ(TRegisterValue{0x70}, Dev->ReadRegisterImpl(*SerialPort, *ThresholdReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    ASSERT_EQ(TRegisterValue{66}, Dev->ReadRegisterImpl(BrightnessReg));
+    ASSERT_EQ(TRegisterValue{66}, Dev->ReadRegisterImpl(*SerialPort, *BrightnessReg->GetConfig()));
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
-    Dev->WriteRegister(RelayReg, 1);
+    Dev->WriteRegister(*SerialPort, RelayReg, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteRegister(RelayReg, 0);
+    Dev->WriteRegister(*SerialPort, RelayReg, 0);
 }
 
 TEST_F(TUnielDeviceTest, TestSetParam)
 {
     EnqueueSetLowThreshold0Response();
-    Dev->WriteRegister(ThresholdReg, 0x70);
+    Dev->WriteRegister(*SerialPort, ThresholdReg, 0x70);
 }
 
 TEST_F(TUnielDeviceTest, TestSetBrightness)
 {
     EnqueueSetBrightnessResponse();
-    Dev->WriteRegister(BrightnessReg, 0x42);
+    Dev->WriteRegister(*SerialPort, BrightnessReg, 0x42);
 }
 
 class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations

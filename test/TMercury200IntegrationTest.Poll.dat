@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/mercury200.02_0xFE123456/meta: '{"driver":"em-test","title":{"en":"Mercury 200.02 0xFE123456"}}' (QoS 1, retained)
 Publish: /devices/mercury200.02_0xFE123456/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/mercury200.02_0xFE123456/meta/error: '' (QoS 1, retained)
 Publish: /devices/mercury200.02_0xFE123456/meta/name: 'Mercury 200.02 0xFE123456' (QoS 1, retained)
 Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 1/meta: '{"order":1,"readonly":true,"type":"power_consumption"}' (QoS 1, retained)
 Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 1/meta/error: '' (QoS 1, retained)

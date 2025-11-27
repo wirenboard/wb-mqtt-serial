@@ -1,47 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "RPC request schema",
   "type": "object",
-  "properties": {
-    "msg": {
-      "description": "Message to send via RPC",
-      "type": "string"
-    },
-    "response_size": {
-      "description": "Expected response size",
-      "type": "integer",
-      "minimum": 0
-    },
-    "response_timeout": {
-      "description": "Timeout in milliseconds for response first byte receiving, default 500 (DefaultResponseTimeout from wb-mqtt-serial)",
-      "type": "integer",
-      "minimum": 0
-    },
-    "frame_timeout": {
-      "description": "Timeout in milliseconds between bytes receiving in port io, default 20 (DefaultFrameTimeout from wb-mqtt-serial)",
-      "type": "integer",
-      "minimum": 0
-    },
-    "total_timeout": {
-      "description": "Request execution time in seconds including queue time and thread operations, default 10",
-      "type": "integer",
-      "minimum": 0
-    },
-    "format": {
-      "description": "If format is HEX, msg interprets as string with only hex digits",
-      "type": "string",
-      "enum": [
-        "HEX",
-        "STR"
-      ]
-    }
-  },
-  "required": [
-    "msg",
-    "response_size"
-  ],
-  "oneOf": [
-    {
+  "definitions": {
+    "serial_port_config": {
       "properties": {
         "path": {
           "description": "Path to serial port",
@@ -76,12 +37,12 @@
         "stop_bits"
       ]
     },
-    {
+    "tcp_port_config": {
       "properties": {
         "ip": {
           "description": "Client ip address",
           "type": "string",
-          "pattern": "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)(\\.(?!$)|$)){4}$"
+          "minLength": 1
         },
         "port": {
           "description": "Client tcp port number",
@@ -93,6 +54,96 @@
       "required": [
         "ip",
         "port"
+      ]
+    },
+    "timeouts_config": {
+      "properties": {
+        "response_timeout": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frame_timeout": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_timeout": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "request_data": {
+      "properties": {
+        "msg": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [ "HEX", "STR" ]
+        }
+      }
+    },
+    "raw_request": {
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "enum": [ "raw" ]
+        },
+        "response_size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [ "msg", "response_size" ]
+    },
+    "modbus_request": {
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "enum": [ "modbus", "modbus-tcp" ]
+        },
+        "slave_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "function": {
+          "type": "integer",
+          "enum": [1, 2, 3, 4, 5, 6, 15, 16, 23]
+        },
+        "address": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "write_address": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "write_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [ "protocol", "slave_id", "function", "address" ]
+    }
+  },
+
+  "allOf": [
+    {
+      "oneOf": [
+        { "$ref" : "#/definitions/serial_port_config"},
+        { "$ref" : "#/definitions/tcp_port_config"}
+      ]
+    },
+    { "$ref" : "#/definitions/timeouts_config" },
+    { "$ref" : "#/definitions/request_data" },
+    {
+      "oneOf": [
+        { "$ref" : "#/definitions/raw_request"},
+        { "$ref" : "#/definitions/modbus_request"}
       ]
     }
   ]

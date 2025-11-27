@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/reduced_neva/meta: '{"driver":"em-test","title":{"en":"Reduced NEVA registers set"}}' (QoS 1, retained)
 Publish: /devices/reduced_neva/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/reduced_neva/meta/error: '' (QoS 1, retained)
 Publish: /devices/reduced_neva/meta/name: 'Reduced NEVA registers set' (QoS 1, retained)
 Publish: /devices/reduced_neva/controls/Total A energy/meta: '{"order":1,"readonly":true,"type":"power_consumption"}' (QoS 1, retained)
 Publish: /devices/reduced_neva/controls/Total A energy/meta/error: '' (QoS 1, retained)

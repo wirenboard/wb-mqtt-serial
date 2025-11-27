@@ -12,29 +12,28 @@
 #include <wblib/json_utils.h>
 
 #include "confed_protocol_schemas_map.h"
-#include "port.h"
+#include "port/feature_port.h"
 #include "rpc/rpc_config.h"
 #include "serial_device.h"
 #include "templates_map.h"
 
+struct TSerialDeviceWithChannels
+{
+    PSerialDevice Device;
+    std::vector<PDeviceChannelConfig> Channels;
+};
+
+typedef std::shared_ptr<TSerialDeviceWithChannels> PSerialDeviceWithChannels;
+
 struct TPortConfig
 {
-    PPort Port;
-    std::vector<PSerialDevice> Devices;
+    PFeaturePort Port;
+    std::vector<PSerialDeviceWithChannels> Devices;
     std::optional<std::chrono::milliseconds> ReadRateLimit;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
 
-    /**
-     * @brief Maximum allowed time from request to response for any device connected to the port.
-     * -1 if not set, DefaultResponseTimeout will be used.
-     * The timeout is used if device's ResponseTimeout is not set or if device's ResponseTimeout is smaller.
-     */
-    std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
-
-    bool IsModbusTcp = false;
-
-    void AddDevice(PSerialDevice device);
+    void AddDevice(PSerialDeviceWithChannels device);
 };
 
 typedef std::shared_ptr<TPortConfig> PPortConfig;
@@ -60,9 +59,9 @@ public:
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
-typedef std::function<std::pair<PPort, bool>(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
+typedef std::function<PFeaturePort(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
 
-std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
+PFeaturePort DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
 
 class IRegisterAddressFactory
 {
@@ -129,7 +128,6 @@ public:
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(const Json::Value& data,
                                        PDeviceConfig deviceConfig,
-                                       PPort port,
                                        PProtocol protocol) const = 0;
 
     const IRegisterAddressFactory& GetRegisterAddressFactory() const;
@@ -149,36 +147,64 @@ public:
     const std::string& GetCustomChannelSchemaRef() const;
 };
 
+struct TDeviceLoadDefaults
+{
+    std::string Id;
+    std::chrono::microseconds RequestDelay;
+    std::optional<std::chrono::milliseconds> ReadRateLimit;
+};
+
 struct TDeviceConfigLoadParams
 {
-    std::string DefaultId;
-    std::chrono::microseconds DefaultRequestDelay;
-    std::chrono::milliseconds PortResponseTimeout;
-    std::optional<std::chrono::milliseconds> DefaultReadRateLimit;
+    TDeviceLoadDefaults Defaults;
     std::string DeviceTemplateTitle;
     const Json::Value* Translations = nullptr;
 };
 
-PDeviceConfig LoadBaseDeviceConfig(const Json::Value& deviceData,
-                                   PProtocol protocol,
-                                   const IDeviceFactory& factory,
-                                   const TDeviceConfigLoadParams& parameters);
+struct TDeviceProtocolParams
+{
+    PProtocol protocol;
+    std::shared_ptr<IDeviceFactory> factory;
+};
+
+PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
+                               PProtocol protocol,
+                               const TDeviceConfigLoadParams& parameters,
+                               bool isWBDevice);
+
+struct TLoadRegisterConfigResult
+{
+    PRegisterConfig RegisterConfig;
+    std::string DefaultControlType;
+};
+
+TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
+                                             const TRegisterTypeMap& typeMap,
+                                             const std::string& readonlyOverrideErrorMessagePrefix,
+                                             const IDeviceFactory& factory,
+                                             const IRegisterAddress& deviceBaseAddress,
+                                             size_t stride);
 
 class TSerialDeviceFactory
 {
-    std::unordered_map<std::string, std::pair<PProtocol, std::shared_ptr<IDeviceFactory>>> Protocols;
+    std::unordered_map<std::string, TDeviceProtocolParams> Protocols;
 
 public:
+    struct TCreateDeviceParams
+    {
+        TDeviceLoadDefaults Defaults;
+        bool IsModbusTcp = false;
+    };
+
     void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
-    PRegisterTypeMap GetRegisterTypes(const std::string& protocolName);
-    PSerialDevice CreateDevice(const Json::Value& device_config,
-                               const std::string& defaultId,
-                               PPortConfig PPortConfig,
-                               TTemplateMap& templates);
-    PProtocol GetProtocol(const std::string& name);
+    TDeviceProtocolParams GetProtocolParams(const std::string& protocolName) const;
+    PProtocol GetProtocol(const std::string& protocolName) const;
     const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
     const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
     std::vector<std::string> GetProtocolNames() const;
+    PSerialDeviceWithChannels CreateDevice(const Json::Value& device_config,
+                                           const TCreateDeviceParams& params,
+                                           TTemplateMap& templates);
 };
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
@@ -204,14 +230,9 @@ public:
         : IDeviceFactory(std::make_unique<AddressFactory>(), commonDeviceSchemaRef, customChannelSchemaRef)
     {}
 
-    PSerialDevice CreateDevice(const Json::Value& data,
-                               PDeviceConfig deviceConfig,
-                               PPort port,
-                               PProtocol protocol) const override
+    PSerialDevice CreateDevice(const Json::Value& data, PDeviceConfig deviceConfig, PProtocol protocol) const override
     {
-        auto dev = std::make_shared<Dev>(deviceConfig, port, protocol);
-        dev->InitSetupItems();
-        return dev;
+        return std::make_shared<Dev>(deviceConfig, protocol);
     }
 };
 
@@ -226,10 +247,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 
-std::string GetDeviceKey(const std::string& deviceType);
-std::string GetSubdeviceSchemaKey(const std::string& subDeviceType);
-
-void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
 std::string DecorateIfNotEmpty(const std::string& prefix,
                                const std::string& str,
@@ -240,6 +257,7 @@ namespace SerialConfig
 {
     constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
     constexpr auto ADDRESS_PROPERTY_NAME = "address";
+    constexpr auto FW_VERSION_PROPERTY_NAME = "fw";
 }
 
 bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName);

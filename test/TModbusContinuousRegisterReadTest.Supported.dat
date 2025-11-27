@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/modbus-sample/meta: '{"driver":"em-test","title":{"en":"Modbus-sample"}}' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R1/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R1/meta/error: '' (QoS 1, retained)
@@ -82,52 +83,43 @@ Sleep(5000)
 EnqueueContinuousReadEnableResponse()
 >> 01 06 00 72 00 01 E8 11
 << 01 06 00 72 00 01 E8 11
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
 Publish: /devices/modbus-sample/controls/R1: '0' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 08 00 01 05 C8
 << 01 03 02 00 01 79 84
 Publish: /devices/modbus-sample/controls/R2: '1' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 00 02 39 85
 Publish: /devices/modbus-sample/controls/R3: '2' (QoS 1, retained)
-EnqueueContinuousReadResponse()
->> 01 01 00 01 00 01 AC 0A
-<< 01 01 01 01 90 48
+EnqueueContinuousReadCoilResponse()
+>> 01 01 00 01 00 46 EC 38
+<< 01 01 09 FF FF FF FF FF FF FF FF FF 49 62
 Publish: /devices/modbus-sample/controls/C1: '1' (QoS 1, retained)
-EnqueueContinuousReadResponse()
->> 01 01 00 46 00 01 1C 1F
-<< 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C2: '1' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 AA 00 01 DD EA
 << 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C3: '1' (QoS 1, retained)
 >>> LoopOnce() [continuous]
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 01 00 08 15 CC
 << 01 03 10 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 72 98
 Publish: /devices/modbus-sample/controls/R1: '1' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2: '8' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 00 03 F8 45
 Publish: /devices/modbus-sample/controls/R3: '3' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 01 00 46 EC 38
 << 01 01 09 FF FF FF FF FF FF FF FF FF 49 62
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 AA 00 01 DD EA
 << 01 01 01 01 90 48
-Unsubscribe -- em-test: /devices/modbus-sample/controls/C3/on
-Publish: /devices/modbus-sample/controls/C3/meta: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/C2/on
 Publish: /devices/modbus-sample/controls/C2/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/C2/meta/order: '' (QoS 1, retained)
@@ -152,6 +144,12 @@ Publish: /devices/modbus-sample/controls/R2/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/C3/on
+Publish: /devices/modbus-sample/controls/C3/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/R1/on
 Publish: /devices/modbus-sample/controls/R1/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R1/meta/order: '' (QoS 1, retained)

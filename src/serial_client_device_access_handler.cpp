@@ -3,15 +3,15 @@
 
 #define LOG(logger) logger.Log() << "[serial client] "
 
-TSerialClientDeviceAccessHandler::TSerialClientDeviceAccessHandler(TSerialClientEventsReader& eventsReader)
+TSerialClientDeviceAccessHandler::TSerialClientDeviceAccessHandler(PSerialClientEventsReader eventsReader)
     : EventsReader(eventsReader)
 {}
 
-bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
+bool TSerialClientDeviceAccessHandler::PrepareToAccess(TFeaturePort& port, PSerialDevice dev)
 {
     if (LastAccessedDevice && dev != LastAccessedDevice) {
         try {
-            LastAccessedDevice->EndSession();
+            LastAccessedDevice->EndSession(port);
         } catch (const TSerialDeviceException& e) {
             auto& logger =
                 (LastAccessedDevice->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
@@ -22,15 +22,17 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
     }
     if (dev) {
         try {
-            bool devWasDisconnected = dev->GetConnectionState() != TDeviceConnectionState::CONNECTED;
-            if (devWasDisconnected || dev != LastAccessedDevice) {
-                dev->Prepare();
-                if (devWasDisconnected) {
-                    try {
-                        EventsReader.EnableEvents(dev, *(dev->Port()));
-                    } catch (const TSerialDeviceException& e) {
-                        dev->SetDisconnected();
-                        throw;
+            if (EventsReader) {
+                bool devWasDisconnected = dev->GetConnectionState() != TDeviceConnectionState::CONNECTED;
+                if (devWasDisconnected || dev != LastAccessedDevice) {
+                    dev->Prepare(port);
+                    if (devWasDisconnected) {
+                        try {
+                            EventsReader->EnableEvents(dev, port);
+                        } catch (const TSerialDeviceException& e) {
+                            dev->SetDisconnected();
+                            throw;
+                        }
                     }
                 }
             }

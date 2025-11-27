@@ -31,42 +31,53 @@ namespace Somfy
         AC_40 = 9  // Ø40 AC Serie
     };
 
+    enum TApplicationMode
+    {
+        ROLLER = 0,
+        VENETIAN = 1
+    };
+
     class TDevice: public TSerialDevice, public TUInt32SlaveId
     {
         std::vector<uint8_t> OpenCommand;
         std::vector<uint8_t> CloseCommand;
-        uint8_t NodeType;
+        TNodeType NodeType;
+        TApplicationMode ApplicationMode;
 
         std::unordered_map<uint8_t, TRegisterValue> DataCache;
 
         // Key - read MSG (request header)
         std::unordered_map<uint8_t, std::vector<uint8_t>> WriteCache;
 
-        TRegisterValue GetCachedResponse(uint8_t requestHeader,
+        TRegisterValue GetCachedResponse(TPort& port,
+                                         uint8_t requestHeader,
                                          uint8_t responseHeader,
                                          size_t bitOffset,
                                          size_t bitWidth);
 
-        std::vector<uint8_t> ExecCommand(const std::vector<uint8_t>& request);
+        std::vector<uint8_t> ExecCommand(TPort& port, const std::vector<uint8_t>& request);
 
         std::vector<uint8_t> MakeDataForSetupCommand(uint8_t header, const std::vector<uint8_t>& readCache) const;
 
     public:
-        TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol);
+        TDevice(PDeviceConfig config, TNodeType nodeType, TApplicationMode applicationMode, PProtocol protocol);
 
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue) override;
         void InvalidateReadCache() override;
     };
 
     std::vector<uint8_t> MakeRequest(uint8_t msg,
                                      uint32_t address,
-                                     uint8_t nodeType,
+                                     TNodeType nodeType,
                                      const std::vector<uint8_t>& data = std::vector<uint8_t>());
-    std::vector<uint8_t> MakeSetPositionRequest(uint32_t address, uint8_t nodeType, uint32_t position);
+    std::vector<uint8_t> MakeSetPositionRequest(uint32_t address,
+                                                TNodeType nodeType,
+                                                TApplicationMode applicationMode,
+                                                uint32_t position);
 
     std::vector<uint8_t> ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes);
 

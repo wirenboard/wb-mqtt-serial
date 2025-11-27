@@ -48,40 +48,11 @@ void TMercury230Device::Register(TSerialDeviceFactory& factory)
                                  "#/definitions/common_channel"));
 }
 
-TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TEMDevice(device_config, port, protocol)
-{
-    /*
-        Mercury 230 documentation:
-        ~2 ms  - 34800
-        ~3 ms  - 19200
-        ~5 ms  - 9600
-        ~10 ms - 4800
-        ~20 ms - 2400
-        etc
+TMercury230Device::TMercury230Device(PDeviceConfig device_config, PProtocol protocol)
+    : TEMDevice(device_config, protocol)
+{}
 
-        Mercury 200 documentation says about 5-6 bytes delay. It is similar to table for Mercury 230.
-    */
-    device_config->FrameTimeout =
-        std::max(device_config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(6)));
-
-    /*
-        Mercury 230 documentation:
-        150 ms  - 9600-34800
-        180 ms  - 4800
-        250 ms  - 2400
-        400 ms  - 1200
-        800 ms  - 600
-        1600 ms - 300
-    */
-    const std::chrono::milliseconds minTimeout(150);
-    auto timeout = std::max(minTimeout,
-                            std::chrono::milliseconds(115) +
-                                std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(35)));
-    device_config->ResponseTimeout = std::max(device_config->FrameTimeout, timeout);
-}
-
-bool TMercury230Device::ConnectionSetup()
+bool TMercury230Device::ConnectionSetup(TPort& port)
 {
     uint8_t setupCmd[7] = {uint8_t(DeviceConfig()->AccessLevel), 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
 
@@ -93,9 +64,9 @@ bool TMercury230Device::ConnectionSetup()
     }
 
     uint8_t buf[1];
-    WriteCommand(0x01, setupCmd, 7);
+    WriteCommand(port, 0x01, setupCmd, 7);
     try {
-        return ReadResponse(0x00, buf, 0);
+        return ReadResponse(port, 0x00, buf, 0);
     } catch (TSerialDeviceTransientErrorException&) {
         // retry upon response from a wrong slave
         return false;
@@ -131,7 +102,7 @@ TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int le
     return TEMDevice::OTHER_ERROR;
 }
 
-const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t address, int resp_len)
+const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(TPort& port, uint32_t address, int resp_len)
 {
     int key = address;
     auto it = CachedValues.find(key);
@@ -143,7 +114,7 @@ const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t
     cmdBuf[1] = (uint8_t)((address >> 8) & 0x0f); // tariff
     uint8_t buf[MAX_LEN], *p = buf;
     TValueArray a;
-    Talk(0x05, cmdBuf, 2, -1, buf, resp_len * 4);
+    Talk(port, 0x05, cmdBuf, 2, -1, buf, resp_len * 4);
     for (int i = 0; i < resp_len; i++, p += 4) {
         a.values[i] = ((uint32_t)p[1] << 24) + ((uint32_t)p[0] << 16) + ((uint32_t)p[3] << 8) + (uint32_t)p[2];
     }
@@ -151,7 +122,7 @@ const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t
     return CachedValues.insert(std::make_pair(key, a)).first->second;
 }
 
-uint32_t TMercury230Device::ReadParam(uint32_t address, unsigned resp_payload_len, RegisterType reg_type)
+uint32_t TMercury230Device::ReadParam(TPort& port, uint32_t address, unsigned resp_payload_len, RegisterType reg_type)
 {
     uint8_t cmdBuf[2];
     cmdBuf[0] = (address >> 8) & 0xff; // param
@@ -159,7 +130,7 @@ uint32_t TMercury230Device::ReadParam(uint32_t address, unsigned resp_payload_le
 
     assert(resp_payload_len <= 3);
     uint8_t buf[3] = {};
-    Talk(0x08, cmdBuf, 2, -1, buf, resp_payload_len);
+    Talk(port, 0x08, cmdBuf, 2, -1, buf, resp_payload_len);
 
     if (resp_payload_len == 3) {
         if ((reg_type == REG_PARAM_SIGN_ACT) || (reg_type == REG_PARAM_SIGN_REACT) ||
@@ -191,20 +162,20 @@ uint32_t TMercury230Device::ReadParam(uint32_t address, unsigned resp_payload_le
     }
 }
 
-TRegisterValue TMercury230Device::ReadRegisterImpl(PRegister reg)
+TRegisterValue TMercury230Device::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    switch (reg->Type) {
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    switch (reg.Type) {
         case REG_VALUE_ARRAY:
-            return TRegisterValue{ReadValueArray(addr, 4).values[reg->GetDataOffset() & 0x03]};
+            return TRegisterValue{ReadValueArray(port, addr, 4).values[reg.GetDataOffset() & 0x03]};
         case REG_VALUE_ARRAY12:
-            return TRegisterValue{ReadValueArray(addr, 3).values[reg->GetDataOffset() & 0x03]};
+            return TRegisterValue{ReadValueArray(port, addr, 3).values[reg.GetDataOffset() & 0x03]};
         case REG_PARAM:
         case REG_PARAM_SIGN_ACT:
         case REG_PARAM_SIGN_REACT:
         case REG_PARAM_SIGN_IGNORE:
         case REG_PARAM_BE:
-            return TRegisterValue{ReadParam(addr & 0xffff, reg->GetByteWidth(), (RegisterType)reg->Type)};
+            return TRegisterValue{ReadParam(port, addr & 0xffff, reg.GetByteWidth(), (RegisterType)reg.Type)};
         default:
             throw TSerialDeviceException("mercury230: invalid register type");
     }
@@ -214,4 +185,39 @@ void TMercury230Device::InvalidateReadCache()
 {
     CachedValues.clear();
     TSerialDevice::InvalidateReadCache();
+}
+
+std::chrono::milliseconds TMercury230Device::GetFrameTimeout(TPort& port) const
+{
+    /*
+        Mercury 230 documentation:
+        ~2 ms  - 34800
+        ~3 ms  - 19200
+        ~5 ms  - 9600
+        ~10 ms - 4800
+        ~20 ms - 2400
+        etc
+
+        Mercury 200 documentation says about 5-6 bytes delay. It is similar to table for Mercury 230.
+    */
+    return std::max(DeviceConfig()->FrameTimeout,
+                    std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(6)));
+}
+
+std::chrono::milliseconds TMercury230Device::GetResponseTimeout(TPort& port) const
+{
+    /*
+        Mercury 230 documentation:
+        150 ms  - 9600-34800
+        180 ms  - 4800
+        250 ms  - 2400
+        400 ms  - 1200
+        800 ms  - 600
+        1600 ms - 300
+    */
+    const std::chrono::milliseconds minTimeout(150);
+    auto timeout = std::max(minTimeout,
+                            std::chrono::milliseconds(115) +
+                                std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(35)));
+    return std::max(DeviceConfig()->FrameTimeout, timeout);
 }

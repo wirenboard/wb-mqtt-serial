@@ -29,14 +29,10 @@ void TLLSDevice::Register(TSerialDeviceFactory& factory)
                                                                               "#/definitions/common_channel"));
 }
 
-TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TLLSDevice::TLLSDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId)
-{
-    auto timeout =
-        std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)) + std::chrono::milliseconds(1);
-    config->FrameTimeout = std::max(config->FrameTimeout, timeout);
-}
+{}
 
 static unsigned char dallas_crc8(const unsigned char* data, const unsigned int size)
 {
@@ -70,26 +66,25 @@ namespace
     const uint8_t RESPONSE_PREFIX = 0x3E;
 }
 
-std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
+std::vector<uint8_t> TLLSDevice::ExecCommand(TPort& port, uint8_t cmd)
 {
     auto it = CmdResultCache.find(cmd);
     if (it != CmdResultCache.end()) {
         return it->second;
     }
 
-    Port()->CheckPortOpen();
-    Port()->SkipNoise();
+    port.CheckPortOpen();
+    port.SkipNoise();
 
     uint8_t buf[RESPONSE_BUF_LEN] = {};
     buf[0] = REQUEST_PREFIX;
     buf[1] = SlaveId;
     buf[2] = cmd;
     buf[3] = dallas_crc8(buf, REQUEST_LEN - 1);
-    Port()->WriteBytes(buf, REQUEST_LEN);
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
+    port.WriteBytes(buf, REQUEST_LEN);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
 
-    int len =
-        Port()->ReadFrame(buf, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout).Count;
+    int len = port.ReadFrame(buf, RESPONSE_BUF_LEN, GetResponseTimeout(port), GetFrameTimeout(port)).Count;
     if (buf[0] != RESPONSE_PREFIX) {
         throw TSerialDeviceTransientErrorException("invalid response prefix");
     }
@@ -109,17 +104,24 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-TRegisterValue TLLSDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TLLSDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    uint8_t cmd = GetUint32RegisterAddress(reg->GetAddress());
-    auto result = ExecCommand(cmd);
+    uint8_t cmd = GetUint32RegisterAddress(reg.GetAddress());
+    auto result = ExecCommand(port, cmd);
 
     int result_buf[8] = {};
 
-    for (uint32_t i = 0; i < reg->GetByteWidth(); ++i) {
-        result_buf[i] = result[reg->GetDataOffset() + i];
+    for (uint32_t i = 0; i < reg.GetByteWidth(); ++i) {
+        result_buf[i] = result[reg.GetDataOffset() + i];
     }
 
     return TRegisterValue{
         static_cast<uint64_t>((result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0])};
+}
+
+std::chrono::milliseconds TLLSDevice::GetFrameTimeout(TPort& port) const
+{
+    auto timeout =
+        std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(3.5)) + std::chrono::milliseconds(1);
+    return std::max(DeviceConfig()->FrameTimeout, timeout);
 }

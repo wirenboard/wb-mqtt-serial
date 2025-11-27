@@ -9,7 +9,6 @@ namespace
     std::vector<int> WrapAsRTU(const std::vector<int>& pdu, uint8_t slave_id)
     {
         std::vector<uint8_t> adu;
-        adu.reserve(pdu.size() + 3);
         adu.push_back(slave_id);
         adu.insert(adu.end(), pdu.begin(), pdu.end());
         uint16_t crc = CRC16::CalculateCRC16(adu.data(), adu.size());

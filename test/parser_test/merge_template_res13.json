@@ -1,0 +1,34 @@
+{
+    "channels" : 
+    [
+        {
+            "address" : "0x0504",
+            "format" : "s32",
+            "name" : "Temperature",
+            "reg_type" : "input"
+        }
+    ],
+    "device_type" : "with conditions",
+    "id" : "with conditions_2",
+    "name" : "with conditions 2",
+    "setup" : 
+    [
+        {
+            "address" : 10,
+            "id" : "param1",
+            "required" : true,
+            "title" : "p1",
+            "value" : 1
+        },
+        {
+            "address" : 10,
+            "condition" : "param1==1",
+            "dependencies" : [ "param1" ],
+            "id" : "param2",
+            "required" : true,
+            "title" : "p2",
+            "value" : 2
+        }
+    ],
+    "slave_id" : 2
+}

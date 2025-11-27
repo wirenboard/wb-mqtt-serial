@@ -25,15 +25,18 @@ public:
         REG_VALUE_ARRAY12 = 6
     };
 
-    TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
+    TMercury230Device(PDeviceConfig, PProtocol protocol);
 
     void InvalidateReadCache() override;
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+
+    std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
+    std::chrono::milliseconds GetResponseTimeout(TPort& port) const override;
 
 protected:
-    bool ConnectionSetup() override;
+    bool ConnectionSetup(TPort& port) override;
     ErrorType CheckForException(uint8_t* frame, int len, const char** message) override;
 
 private:
@@ -41,8 +44,8 @@ private:
     {
         uint32_t values[4];
     };
-    const TValueArray& ReadValueArray(uint32_t address, int resp_len = 4);
-    uint32_t ReadParam(uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
+    const TValueArray& ReadValueArray(TPort& port, uint32_t address, int resp_len = 4);
+    uint32_t ReadParam(TPort& port, uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

@@ -4,7 +4,8 @@
     "group": "g-wb-old",
     "hw": [
         {
-            "signature": "MAP3H\u0002"
+            "signature": "MAP3H",
+            "fw": "2.0.0"
         }
     ],
     "device": {
@@ -62,6 +63,18 @@
                 "group": "l1",
                 "order": 2
             },
+            "l1_ct_reverse": {
+                "title": "Current Transformer Reverse L1",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "l1",
+                "order": 3
+            },
             "l2_turns": {
                 "title": "Turns L2",
                 "address": "0x1461",
@@ -81,6 +94,18 @@
                 "group": "l2",
                 "order": 2
             },
+            "l2_ct_reverse": {
+                "title": "Current Transformer Reverse L2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "l2",
+                "order": 3
+            },
             "l3_turns": {
                 "title": "Turns L3",
                 "address": "0x1462",
@@ -99,6 +124,18 @@
                 "max": 32767,
                 "group": "l3",
                 "order": 2
+            },
+            "l3_ct_reverse": {
+                "title": "Current Transformer Reverse L3",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "l3",
+                "order": 3
             }
         },
 
@@ -1088,10 +1125,13 @@
                 "HW Info": "Данные модуля",
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
+                "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Turns L2": "Коэффициент трансформации L2",
                 "Phi L2": "Фазовая задержка L2",
+                "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Turns L3": "Коэффициент трансформации L3",
                 "Phi L3": "Фазовая задержка L3",
+                "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Voltage angle L1": "Фазовый угол L1",
                 "AP energy L1": "Энергия AP L1",
                 "RP energy L1": "Энергия RP L1",
@@ -1134,10 +1174,13 @@
                 "NN energy L1": "Энергия NN L1",
                 "NN energy L2": "Энергия NN L2",
                 "NN energy L3": "Энергия NN L3",
+                "Yes": "Да",
+                "No": "Нет",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение 5 В",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения (с)",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }

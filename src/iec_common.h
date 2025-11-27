@@ -48,7 +48,7 @@ namespace IEC
 class TIEC61107Device: public TSerialDevice
 {
 public:
-    TIEC61107Device(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TIEC61107Device(PDeviceConfig device_config, PProtocol protocol);
 
 protected:
     std::string SlaveId;
@@ -73,13 +73,12 @@ class TIEC61107ModeCDevice: public TIEC61107Device
 {
 public:
     TIEC61107ModeCDevice(PDeviceConfig device_config,
-                         PPort port,
                          PProtocol protocol,
                          const std::string& logPrefix,
                          IEC::TCrcFn crcFn);
 
     void InvalidateReadCache() override;
-    void EndSession() override;
+    void EndSession(TPort& port) override;
 
     //! Set the read command. Default: "R1"
     void SetReadCommand(const std::string& command);
@@ -97,7 +96,7 @@ protected:
      *    ETOPE(1)
      *    0011223344()
      */
-    virtual std::string GetParameterRequest(const TRegister& reg) const = 0;
+    virtual std::string GetParameterRequest(const TRegisterConfig& reg) const = 0;
 
     /**
      * @brief Get register value from response
@@ -106,9 +105,9 @@ protected:
      * @param value - response string without parameter prefix
      *                Example: 1.8.0(019132.530*kWh) -> (019132.530*kWh)
      */
-    virtual TRegisterValue GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
-    void PrepareImpl() override;
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    virtual TRegisterValue GetRegisterValue(const TRegisterConfig& reg, const std::string& value) = 0;
+    void PrepareImpl(TPort& port) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
 
 private:
     IEC::TCrcFn CrcFn;
@@ -120,13 +119,13 @@ private:
     int DesiredBaudRate;
     std::vector<uint8_t> ToProgModeCommand;
 
-    std::string GetCachedResponse(const std::string& paramAddress);
-    bool Probe();
-    void StartSession();
-    void SwitchToProgMode();
-    void SendPassword();
-    void SendEndSession();
-    size_t ReadFrameProgMode(uint8_t* buffer, size_t size, uint8_t startByte);
-    void WriteBytes(const std::vector<uint8_t>& data);
-    void WriteBytes(const std::string& str);
+    std::string GetCachedResponse(TPort& port, const std::string& paramAddress);
+    bool Probe(TPort& port);
+    void StartSession(TPort& port);
+    void SwitchToProgMode(TPort& port);
+    void SendPassword(TPort& port);
+    void SendEndSession(TPort& port);
+    size_t ReadFrameProgMode(TPort& port, uint8_t* buffer, size_t size, uint8_t startByte);
+    void WriteBytes(TPort& port, const std::vector<uint8_t>& data);
+    void WriteBytes(TPort& port, const std::string& str);
 };

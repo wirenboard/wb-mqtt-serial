@@ -29,7 +29,7 @@ namespace // utility
         TFakeRegisterRange()
         {}
 
-        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
+        bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override
         {
             if (HasOtherDeviceAndType(reg)) {
                 return false;
@@ -51,21 +51,18 @@ void TFakeSerialDevice::Register(TSerialDeviceFactory& factory)
                                                    "#/definitions/common_channel"));
 }
 
-TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId),
       Connected(true),
       SessionLogEnabled(false)
 {
-    FakePort = dynamic_pointer_cast<TFakeSerialPort>(port);
-    if (!FakePort) {
-        throw runtime_error("not fake serial port passed to fake serial device");
-    }
     Devices.push_back(this);
 }
 
-TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TFakeSerialDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
+    CheckFakePort();
     try {
         if (!FakePort->IsOpen()) {
             throw TSerialDeviceException("port not open");
@@ -75,7 +72,7 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = GetUint32RegisterAddress(reg->GetAddress());
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
 
         if (Blockings[addr].first) {
             throw TSerialDeviceTransientErrorException("read blocked");
@@ -85,14 +82,14 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
             throw runtime_error("invalid register address");
         }
 
-        if (reg->Type != REG_FAKE) {
+        if (reg.Type != REG_FAKE) {
             throw runtime_error("invalid register type");
         }
 
         TRegisterValue value;
-        if (reg->Format == RegisterFormat::String) {
+        if (reg.IsString()) {
             std::string str;
-            for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
+            for (uint32_t i = 0; i < reg.Get16BitWidth(); ++i) {
                 auto ch = static_cast<char>(Registers[addr + i]);
                 if (ch != '\0') {
                     str.push_back(ch);
@@ -100,22 +97,23 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
             }
             value.Set(str);
         } else {
-            value.Set(GetValue(&Registers[addr], reg->Get16BitWidth()));
+            value.Set(GetValue(&Registers[addr], reg.Get16BitWidth()));
         }
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg.GetAddress()
                                       << "' value '" << value << "'";
         return value;
     } catch (const exception& e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg.GetAddress()
                                       << "' failed: '" << e.what() << "'";
 
         throw;
     }
 }
 
-void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TFakeSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value)
 {
+    CheckFakePort();
     try {
         if (!FakePort->IsOpen()) {
             throw TSerialDeviceException("port not open");
@@ -125,7 +123,7 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = GetUint32RegisterAddress(reg->GetAddress());
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
 
         if (Blockings[addr].second) {
             throw TSerialDeviceTransientErrorException("write blocked");
@@ -135,23 +133,23 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
             throw runtime_error("invalid register address");
         }
 
-        if (reg->Type != REG_FAKE) {
+        if (reg.Type != REG_FAKE) {
             throw runtime_error("invalid register type");
         }
 
-        if (reg->Format == RegisterFormat::String) {
+        if (reg.IsString()) {
             auto str = value.Get<std::string>();
-            for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
+            for (uint32_t i = 0; i < reg.Get16BitWidth(); ++i) {
                 Registers[addr + i] = i < str.size() ? str[i] : 0;
             }
         } else {
-            SetValue(&Registers[addr], reg->Get16BitWidth(), value.Get<uint64_t>());
+            SetValue(&Registers[addr], reg.Get16BitWidth(), value.Get<uint64_t>());
         }
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
-                                      << reg->GetAddress() << "' value '" << value << "'";
+                                      << reg.GetAddress() << "' value '" << value << "'";
 
     } catch (const exception& e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress()
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg.GetAddress()
                                       << "' failed: '" << e.what() << "'";
 
         throw;
@@ -160,6 +158,7 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
 
 void TFakeSerialDevice::SetTransferResult(bool ok)
 {
+    CheckFakePort();
     auto initialConnectionState = GetConnectionState();
     if ((initialConnectionState != TDeviceConnectionState::CONNECTED) && ok) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': transfer OK";
@@ -181,6 +180,7 @@ void TFakeSerialDevice::SetTransferResult(bool ok)
 
 void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 {
+    CheckFakePort();
     Blockings[addr].first = block;
     FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr
                                   << "' for reading";
@@ -188,6 +188,7 @@ void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 
 void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
 {
+    CheckFakePort();
     Blockings[addr].second = block;
     FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr
                                   << "' for writing";
@@ -233,17 +234,31 @@ void TFakeSerialDevice::SetSessionLogEnabled(bool enabled)
     SessionLogEnabled = enabled;
 }
 
-void TFakeSerialDevice::PrepareImpl()
+void TFakeSerialDevice::PrepareImpl(TPort& port)
 {
-    TSerialDevice::PrepareImpl();
+    CheckFakePort();
+    TSerialDevice::PrepareImpl(port);
     if (SessionLogEnabled) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': prepare";
     }
 }
 
-void TFakeSerialDevice::EndSession()
+void TFakeSerialDevice::EndSession(TPort& port)
 {
+    CheckFakePort();
     if (SessionLogEnabled) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': end session";
+    }
+}
+
+void TFakeSerialDevice::SetFakePort(PFakeSerialPort fakePort)
+{
+    FakePort = fakePort;
+}
+
+void TFakeSerialDevice::CheckFakePort() const
+{
+    if (!FakePort) {
+        throw runtime_error("not fake serial port passed to fake serial device");
     }
 }

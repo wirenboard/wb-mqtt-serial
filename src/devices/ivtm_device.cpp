@@ -21,14 +21,14 @@ void TIVTMDevice::Register(TSerialDeviceFactory& factory)
         new TBasicDeviceFactory<TIVTMDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
-TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TIVTMDevice::TIVTMDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId)
 {}
 
-void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)
+void TIVTMDevice::WriteCommand(TPort& port, uint16_t addr, uint16_t data_addr, uint8_t data_len)
 {
-    Port()->CheckPortOpen();
+    port.CheckPortOpen();
     uint8_t buf[16];
     buf[0] = '$';
 
@@ -51,7 +51,7 @@ void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_l
     snprintf((char*)&buf[13], 3, "%02X", crc8);
     buf[15] = 0x0d;
 
-    Port()->WriteBytes(buf, 16);
+    port.WriteBytes(buf, 16);
 }
 
 static const int MAX_LEN = 100;
@@ -78,16 +78,15 @@ uint16_t TIVTMDevice::DecodeASCIIWord(uint8_t* buf)
     return (decoded_buf[0] << 8) | decoded_buf[1];
 }
 
-void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
+void TIVTMDevice::ReadResponse(TPort& port, uint16_t addr, uint8_t* payload, uint16_t len)
 {
     uint8_t buf[MAX_LEN];
 
-    auto nread = Port()
-                     ->ReadFrame(buf,
-                                 MAX_LEN,
-                                 DeviceConfig()->ResponseTimeout,
-                                 DeviceConfig()->FrameTimeout,
-                                 [](uint8_t* buf, int size) { return size > 0 && buf[size - 1] == '\r'; })
+    auto nread = port.ReadFrame(buf,
+                                MAX_LEN,
+                                GetResponseTimeout(port),
+                                GetFrameTimeout(port),
+                                [](uint8_t* buf, int size) { return size > 0 && buf[size - 1] == '\r'; })
                      .Count;
     if (nread < 10)
         throw TSerialDeviceTransientErrorException("frame too short");
@@ -124,14 +123,14 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     DecodeASCIIBytes(buf + 7, payload, len);
 }
 
-TRegisterValue TIVTMDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TIVTMDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    Port()->SkipNoise();
+    port.SkipNoise();
 
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    WriteCommand(SlaveId, addr, reg->GetByteWidth());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    WriteCommand(port, SlaveId, addr, reg.GetByteWidth());
     uint8_t response[4];
-    ReadResponse(SlaveId, response, reg->GetByteWidth());
+    ReadResponse(port, SlaveId, response, reg.GetByteWidth());
 
     uint8_t* p = response; //&response[(address % 2) * 4];
 

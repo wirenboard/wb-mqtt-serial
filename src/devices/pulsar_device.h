@@ -16,11 +16,11 @@ public:
         REG_SYSTIME
     };
 
-    TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TPulsarDevice(PDeviceConfig config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
 
 private:
     void WriteBCD(uint64_t data, uint8_t* buffer, size_t size, bool big_endian = true);
@@ -31,13 +31,13 @@ private:
 
     uint16_t CalculateCRC16(const uint8_t* buffer, size_t size);
 
-    void WriteDataRequest(uint32_t addr, uint32_t mask, uint16_t id);
-    void WriteSysTimeRequest(uint32_t addr, uint16_t id);
+    void WriteDataRequest(TPort& port, uint32_t addr, uint32_t mask, uint16_t id);
+    void WriteSysTimeRequest(TPort& port, uint32_t addr, uint16_t id);
 
-    void ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id);
+    void ReadResponse(TPort& port, uint32_t addr, uint8_t* payload, size_t size, uint16_t id);
 
-    TRegisterValue ReadDataRegister(PRegister reg);
-    TRegisterValue ReadSysTimeRegister(PRegister reg);
+    TRegisterValue ReadDataRegister(TPort& port, const TRegisterConfig& reg);
+    TRegisterValue ReadSysTimeRegister(TPort& port, const TRegisterConfig& reg);
 
     uint16_t RequestID;
 };

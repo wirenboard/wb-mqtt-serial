@@ -3,6 +3,7 @@
 #include "file_utils.h"
 #include "json_common.h"
 #include "log.h"
+#include "rpc_exception.h"
 #include "wblib/exceptions.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
@@ -12,6 +13,8 @@ namespace
     const std::string CUSTOM_GROUP_NAME = "g-custom";
     const std::string WB_GROUP_NAME = "g-wb";
     const std::string WB_OLD_GROUP_NAME = "g-wb-old";
+
+    const std::string PROTOCOL_PREFIX = "protocol:";
 
     struct TDeviceTypeGroup
     {
@@ -29,6 +32,7 @@ namespace
         res["type"] = dt->Type;
         res["protocol"] = dt->GetProtocol();
         res["mqtt-id"] = dt->GetMqttId();
+        res["with-subdevices"] = dt->WithSubdevices();
         if (!dt->GetHardware().empty()) {
             auto& hwJsonArray = MakeArray("hw", res);
             for (const auto& hw: dt->GetHardware()) {
@@ -47,7 +51,10 @@ namespace
     {
         Json::Value res;
         res["name"] = schema.GetTitle(lang);
-        res["type"] = schema.Type;
+        res["deprecated"] = false;
+        res["type"] = PROTOCOL_PREFIX + schema.Type;
+        res["protocol"] = schema.Type;
+        res["mqtt-id"] = schema.Type;
         return res;
     }
 
@@ -133,7 +140,7 @@ namespace
 
 TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
                                      const Json::Value& portsSchema,
-                                     std::shared_ptr<TTemplateMap> templates,
+                                     PTemplateMap templates,
                                      TDevicesConfedSchemasMap& deviceConfedSchemas,
                                      TProtocolConfedSchemasMap& protocolConfedSchemas,
                                      const Json::Value& groupTranslations,
@@ -192,9 +199,15 @@ Json::Value TRPCConfigHandler::GetDeviceTypes(const Json::Value& request)
 Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
 {
     std::string type = request.get("type", "").asString();
+    if (type.find(PROTOCOL_PREFIX) == 0) {
+        type = type.substr(PROTOCOL_PREFIX.size());
+        return ProtocolConfedSchemas.GetSchema(type);
+    }
     try {
         return *DeviceConfedSchemas.GetSchema(type);
-    } catch (const std::out_of_range&) {
-        return ProtocolConfedSchemas.GetSchema(type);
+    } catch (const std::runtime_error& e) {
+        LOG(Error) << e.what();
+        throw TRPCException("Template \"" + type + "\" schema validation failed",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 }

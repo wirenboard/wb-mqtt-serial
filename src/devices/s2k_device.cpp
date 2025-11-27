@@ -27,8 +27,8 @@ void TS2KDevice::Register(TSerialDeviceFactory& factory)
         new TBasicDeviceFactory<TS2KDevice>("#/definitions/simple_device_with_setup", "#/definitions/common_channel"));
 }
 
-TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TS2KDevice::TS2KDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId)
 {
     RelayState[1] = 2;
@@ -70,10 +70,10 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t* array, int size)
     return crc;
 }
 
-void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TS2KDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    if (reg->Type != REG_RELAY) {
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    if (reg.Type != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
     }
 
@@ -81,7 +81,7 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
         throw TSerialDeviceException("S2K protocol: invalid register address");
     }
 
-    Port()->CheckPortOpen();
+    port.CheckPortOpen();
     uint8_t command[7] = {/* Address = */ (uint8_t)SlaveId,
                           /* Command length = */ 0x06,
                           /* Key = */ 0x00,
@@ -90,9 +90,9 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
                           /* Relay program = */ (uint8_t)(value.Get<uint64_t>() ? 0x1 /* ON */ : 0x2 /* OFF */),
                           /* CRC placeholder */ 0x0};
     command[6] = CrcS2K(command, 6);
-    Port()->WriteBytes(command, 7);
+    port.WriteBytes(command, 7);
     uint8_t response[256];
-    int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout).Count;
+    int size = port.ReadFrame(response, 256, GetResponseTimeout(port), GetFrameTimeout(port)).Count;
     if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 5 || response[2] != 0x16) {
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
@@ -102,33 +102,32 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
     RelayState[response[3]] = response[4];
 }
 
-TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TS2KDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
-    switch (reg->Type) {
+    switch (reg.Type) {
         case REG_RELAY:
             return TRegisterValue{RelayState[addr] != 0 && RelayState[addr] != 2};
         case REG_RELAY_MODE:
             return TRegisterValue{RelayState[addr]};
         case REG_RELAY_DEFAULT:
         case REG_RELAY_DELAY: {
-            Port()->CheckPortOpen();
+            port.CheckPortOpen();
             /* Default state of relays is stored in configs 1-4,
                Default delay for relays - in configs 5-8 */
             uint8_t command[7] = {/* Address = */ (uint8_t)SlaveId,
                                   /* Command length = */ 0x06,
                                   /* Key = */ 0x00,
-                                  /* Command = */ 0x05, /* Read configutation */
-                                  /* Config No = */ (uint8_t)(addr + (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
+                                  /* Command = */ 0x05, /* Read configuration */
+                                  /* Config No = */ (uint8_t)(addr + (reg.Type == REG_RELAY_DELAY ? 4 : 0)),
                                   /* Unused */ 0x0,
                                   /* CRC placeholder */ 0x0};
             command[6] = CrcS2K(command, 6);
-            Port()->WriteBytes(command, 7);
+            port.WriteBytes(command, 7);
             uint8_t response[256];
-            int size =
-                Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout).Count;
+            int size = port.ReadFrame(response, 256, GetResponseTimeout(port), GetFrameTimeout(port)).Count;
             if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 0x5 || response[2] != 0x6) {
                 throw TSerialDeviceTransientErrorException("incorrect response for 0x5 command");
             }

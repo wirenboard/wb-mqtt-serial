@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "port.h"
+#include "port/port.h"
 #include "register.h"
 #include "serial_exc.h"
 
@@ -30,14 +30,14 @@ struct TDeviceChannelConfig
     double Precision = 0;
     bool ReadOnly = false;
     std::string Units;
-    std::vector<PRegisterConfig> RegisterConfigs;
+    std::vector<PRegister> Registers;
 
     TDeviceChannelConfig(const std::string& type = "text",
                          const std::string& deviceId = "",
                          int order = 0,
                          bool readOnly = false,
                          const std::string& mqttId = "",
-                         const std::vector<PRegisterConfig>& regs = std::vector<PRegisterConfig>());
+                         const std::vector<PRegister>& regs = std::vector<PRegister>());
 
     //! Will be published in /devices/+/meta/name and used in log messages
     const std::string& GetName() const;
@@ -61,12 +61,17 @@ class TDeviceSetupItemConfig
     PRegisterConfig RegisterConfig;
     std::string Value;
     TRegisterValue RawValue;
+    std::string ParameterId;
 
 public:
-    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
+    TDeviceSetupItemConfig(const std::string& name,
+                           PRegisterConfig reg,
+                           const std::string& value,
+                           const std::string& parameterId = std::string());
 
     const std::string& GetName() const;
     const std::string& GetValue() const;
+    const std::string& GetParameterId() const;
     TRegisterValue GetRawValue() const;
     PRegisterConfig GetRegisterConfig() const;
 };
@@ -76,8 +81,6 @@ typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 const int DEFAULT_ACCESS_LEVEL = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
-const std::chrono::milliseconds DefaultFrameTimeout(20);
-const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
@@ -93,12 +96,15 @@ struct TDeviceConfig
     std::string SlaveId;
     std::string DeviceType;
     std::string Protocol;
-    std::vector<PDeviceChannelConfig> DeviceChannelConfigs;
-    std::vector<PDeviceSetupItemConfig> SetupItemConfigs;
     std::vector<uint8_t> Password;
 
-    //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
-    std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
+    /**
+     *  Maximum allowed time from request to response.
+     *  Less than 0, if not set.
+     *  If not set, response timeout from port settings will be used.
+     *  If port settings also do not have response timeout, DEFAULT_RESPONSE_TIMEOUT will be used.
+     */
+    std::chrono::milliseconds ResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 
     //! Minimum inter-frame delay.
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
@@ -118,25 +124,15 @@ struct TDeviceConfig
     int MaxRegHole = 0;
     int MaxBitHole = 0;
     int MaxReadRegisters = 1;
-    int MinReadRegisters = 1;
+    size_t MinReadRegisters = 1;
+    size_t MaxWriteRegisters = 1;
     int Stride = 0;
     int Shift = 0;
-    PRegisterTypeMap TypeMap = 0;
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
 
     explicit TDeviceConfig(const std::string& name = "",
                            const std::string& slave_id = "",
                            const std::string& protocol = "");
-
-    int NextOrderValue() const;
-    void AddChannel(PDeviceChannelConfig channel);
-    void AddSetupItem(PDeviceSetupItemConfig item, const std::string& deviceTemplateTitle = std::string());
-
-    std::string GetDescription() const;
-
-private:
-    // map key is setup item address
-    std::unordered_map<std::string, PDeviceSetupItemConfig> SetupItemsByAddress;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -144,22 +140,28 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 class IProtocol;
 typedef IProtocol* PProtocol;
 
-struct TDeviceSetupItem
+class TDeviceSetupItem
 {
-    TDeviceSetupItem(PDeviceSetupItemConfig config, PRegister reg)
-        : Name(config->GetName()),
-          RawValue(config->GetRawValue()),
-          HumanReadableValue(config->GetValue()),
-          Register(reg)
-    {}
-
+public:
     std::string Name;
+    std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
-    PRegister Register;
+    PRegisterConfig RegisterConfig;
+    PSerialDevice Device;
+
+    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device);
+    std::string ToString();
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
+
+struct TDeviceSetupItemComparePredicate
+{
+    bool operator()(const PDeviceSetupItem& a, const PDeviceSetupItem& b) const;
+};
+
+typedef std::set<PDeviceSetupItem, TDeviceSetupItemComparePredicate> TDeviceSetupItems;
 
 struct TUInt32SlaveId
 {
@@ -178,10 +180,18 @@ enum class TDeviceConnectionState
     DISCONNECTED
 };
 
+enum class TDevicePrepareMode
+{
+    WITH_SETUP_IF_WAS_DISCONNECTED,
+    WITHOUT_SETUP
+};
+
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice>
 {
 public:
-    TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
+
+    TSerialDevice(PDeviceConfig config, PProtocol protocol);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice() = default;
@@ -191,35 +201,52 @@ public:
      */
     virtual PRegisterRange CreateRegisterRange() const;
 
-    // Prepare to access device (pauses for configured delay by default)
-    // i.e. "StartSession". Called before any read/write/etc after communicating with another device
-    void Prepare();
+    /**
+     * @brief Prepare to access device (pauses for configured delay by default) i.e. "StartSession".
+     *        Called before any read/write/etc after communicating with another device.
+     *
+     * @throws exceptions inherited from TSerialDeviceException on internal errors
+     */
+    void Prepare(TPort& port, TDevicePrepareMode setupMode = TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED);
 
     // Ends communication session with the device. Called before communicating with another device
-    virtual void EndSession();
+    virtual void EndSession(TPort& port);
 
     // Write register value
-    void WriteRegister(PRegister reg, const TRegisterValue& value);
+    void WriteRegister(TPort& port, PRegister reg, const TRegisterValue& value);
 
-    void WriteRegister(PRegister reg, uint64_t value);
+    void WriteRegister(TPort& port, PRegister reg, uint64_t value);
 
-    // Read multiple registers
-    virtual void ReadRegisterRange(PRegisterRange range);
+    /**
+     * Reads multiple registers.
+     * Throws exceptions inherited from TSerialDeviceException.
+     */
+    virtual void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false);
 
     virtual std::string ToString() const;
 
-    // Initialize setup items' registers
-    void InitSetupItems();
-
-    PPort Port() const;
     PDeviceConfig DeviceConfig() const;
     PProtocol Protocol() const;
 
+    /**
+     * @brief Sets the result of the last data transfer operation.
+     *        Successful transfer indicates that a device is connected and responding.
+     *
+     * @warning When reading a register, this method must be called before TRegister::SetValue
+     *          because it clears SnRegister's value.
+     *
+     * @param ok A boolean value indicating whether the transfer was successful (true) or not (false).
+     */
     virtual void SetTransferResult(bool ok);
+
     TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();
+
     bool GetSupportsHoles() const;
     void SetSupportsHoles(bool supportsHoles);
+
+    bool IsSporadicOnly() const;
+    void SetSporadicOnly(bool sporadicOnly);
 
     // Reset values caches
     virtual void InvalidateReadCache();
@@ -231,24 +258,42 @@ public:
     std::chrono::steady_clock::time_point GetLastReadTime() const;
     void SetLastReadTime(std::chrono::steady_clock::time_point readTime);
 
-protected:
-    std::vector<PDeviceSetupItem> SetupItems;
+    void AddOnConnectionStateChangedCallback(TDeviceCallback callback);
 
-    virtual void PrepareImpl();
-    virtual TRegisterValue ReadRegisterImpl(PRegister reg);
-    virtual void WriteRegisterImpl(PRegister reg, const TRegisterValue& value);
-    virtual void WriteSetupRegisters();
+    PRegister GetSnRegister() const;
+    void SetSnRegister(PRegisterConfig regConfig);
+
+    void AddSetupItem(PDeviceSetupItemConfig item);
+    const TDeviceSetupItems& GetSetupItems() const;
+
+    virtual void WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError = false);
+
+    virtual std::chrono::milliseconds GetFrameTimeout(TPort& port) const;
+    virtual std::chrono::milliseconds GetResponseTimeout(TPort& port) const;
+
+protected:
+    virtual void PrepareImpl(TPort& port);
+    virtual TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg);
+    virtual void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value);
 
 private:
-    PPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     TDeviceConnectionState ConnectionState;
     int RemainingFailCycles;
     bool SupportsHoles;
+    bool SporadicOnly;
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
+    std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
+    PRegister SnRegister;
+
+    // map key is setup item address
+    std::unordered_map<std::string, PDeviceSetupItem> SetupItemsByAddress;
+    TDeviceSetupItems SetupItems;
+
+    void SetConnectionState(TDeviceConnectionState state);
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

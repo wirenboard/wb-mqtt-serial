@@ -3,6 +3,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 // EBNF:
@@ -130,6 +131,7 @@ namespace Expressions
          *
          * @param str string containing expression to parse
          * @return resulting AST
+         * @throw std::runtime_error on parsing error
          */
         std::unique_ptr<TAstNode> Parse(const std::string& str);
     };
@@ -151,4 +153,17 @@ namespace Expressions
      * @return result of expression evaluation
      */
     bool Eval(const TAstNode* expression, const IParams& params);
+
+    /**
+     * @brief Extracts a list of variable dependencies from the given expression AST node.
+     *
+     * This function analyzes the provided abstract syntax tree (AST) node representing an expression
+     * and returns a vector containing the names of all variables or identifiers that the expression depends on.
+     *
+     * @param expression Pointer to the root AST node of the expression to analyze.
+     * @return std::vector<std::string> List of variable names that are dependencies of the expression.
+     */
+    std::vector<std::string> GetDependencies(const TAstNode* expression);
+
+    typedef std::unordered_map<std::string, std::unique_ptr<Expressions::TAstNode>> TExpressionsCache;
 }

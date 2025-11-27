@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/modbus-io-1-1/meta: '{"driver":"em-test","title":{"en":"ModbusIO_1_1"}}' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta/name: 'ModbusIO_1_1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta: '{"order":1,"readonly":false,"type":"switch"}' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/error: '' (QoS 1, retained)
@@ -40,6 +41,7 @@ Subscribe: /devices/modbus-io-1-1/controls/# (QoS 0)
 Unsubscribe -- em-test: /devices/modbus-io-1-1/controls/#
 Publish: /devices/modbus-io-1-2/meta: '{"driver":"em-test","title":{"en":"ModbusIO_1_2"}}' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-io-1-2/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/meta/name: 'ModbusIO_1_2' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/meta: '{"order":1,"readonly":false,"type":"switch"}' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/meta/error: '' (QoS 1, retained)
@@ -84,90 +86,96 @@ EnqueueSetupSectionWriteResponse()
 >> 01 06 00 72 00 01 E8 11
 << 01 06 00 72 00 01 E8 11
 EnqueueSetupSectionWriteResponse()
->> 01 06 2A F8 FF FF 01 93
-<< 01 06 2A F8 FF FF 01 93
+>> 01 06 2A F7 FF FF 31 90
+<< 01 06 2A F7 FF FF 31 90
 EnqueueSetupSectionWriteResponse()
->> 01 06 2A F7 00 01 F1 E0
+>> 01 06 2A F8 00 01 C1 E3
+<< 01 86 04 43 A3
+Publish: /devices/modbus-io-1-1/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/meta/error: 'r' (QoS 1, retained)
-<< 01 86 04 43 A3
 Sleep(5000)
 EnqueueSetupSectionWriteResponse()
->> 01 06 30 D4 FF FF C7 42
-<< 01 06 30 D4 FF FF C7 42
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11
 EnqueueSetupSectionWriteResponse()
->> 01 06 30 D3 00 01 B6 F3
+>> 01 06 30 D3 FF FF 76 83
+<< 01 06 30 D3 FF FF 76 83
+EnqueueSetupSectionWriteResponse()
+>> 01 06 30 D4 00 01 07 32
 << 01 86 02 C3 A1
 EnqueueCoilReadResponse()
 >> 01 01 09 C4 00 03 3E 6A
+<< 01 01 01 01 90 48
 Publish: /devices/modbus-io-1-2/controls/Coil 0: '1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 1: '0' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 2: '0' (QoS 1, retained)
 >>> LoopOnce() [all are ok]
-<< 01 01 01 01 90 48
 Sleep(5000)
 EnqueueSetupSectionWriteResponse()
->> 01 06 2A F8 FF FF 01 93
-<< 01 06 2A F8 FF FF 01 93
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11
 EnqueueSetupSectionWriteResponse()
->> 01 06 2A F7 00 01 F1 E0
-<< 01 06 2A F7 00 01 F1 E0
+>> 01 06 2A F7 FF FF 31 90
+<< 01 06 2A F7 FF FF 31 90
+EnqueueSetupSectionWriteResponse()
+>> 01 06 2A F8 00 01 C1 E3
+<< 01 06 2A F8 00 01 C1 E3
+Publish: /devices/modbus-io-1-1/meta/error: '' (QoS 1, retained)
 EnqueueCoilReadResponse()
 >> 01 01 03 E8 00 03 FC 7B
-Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/controls/Coil 0: '1' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/controls/Input 1/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/controls/Input 1: '0' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/controls/Input 2/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/controls/Input 2: '0' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/meta/error: '' (QoS 1, retained)
 << 01 01 01 01 90 48
+Publish: /devices/modbus-io-1-1/controls/Coil 0: '1' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Input 1: '0' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Input 1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Input 2: '0' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Input 2/meta/error: '' (QoS 1, retained)
 Sleep(5000)
 EnqueueCoilReadResponse()
 >> 01 01 09 C4 00 03 3E 6A
 << 01 01 01 01 90 48
 Close()
-Publish: /devices/modbus-io-1-1/controls/Input 2: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Input 2: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-io-1-1/controls/Input 1: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Input 1: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-io-1-1/controls/Coil 0/on
-Publish: /devices/modbus-io-1-1/controls/Coil 0: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-1/controls/Coil 0: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta/driver: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta/name: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-io-1-2/controls/Input 2: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 2/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 2/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 2/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 2/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-io-1-2/controls/Input 1: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-2/controls/Input 2: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 1/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 1/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 1/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 1/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-2/controls/Input 1: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-io-1-2/controls/Coil 0/on
-Publish: /devices/modbus-io-1-2/controls/Coil 0: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-io-1-2/controls/Coil 0: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/meta/driver: '' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/meta/name: '' (QoS 1, retained)

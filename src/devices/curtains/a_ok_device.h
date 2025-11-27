@@ -17,18 +17,18 @@ namespace Aok
 
         std::unordered_map<uint16_t, TRegisterValue> DataCache;
 
-        TRegisterValue GetCachedResponse(uint8_t command, uint8_t data, size_t bitOffset, size_t bitWidth);
+        TRegisterValue GetCachedResponse(TPort& port, uint8_t command, uint8_t data, size_t bitOffset, size_t bitWidth);
 
-        std::vector<uint8_t> ExecCommand(const TRequest& request);
+        std::vector<uint8_t> ExecCommand(TPort& port, const TRequest& request);
 
     public:
-        TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+        TDevice(PDeviceConfig config, PProtocol protocol);
 
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue) override;
         void InvalidateReadCache() override;
     };
 

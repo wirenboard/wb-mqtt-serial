@@ -15,13 +15,15 @@ class TPollableDevice
     PSerialDevice Device;
     TPriorityQueueSchedule<PRegister, TRegisterComparePredicate> Registers;
     TPriority Priority;
+    std::chrono::milliseconds DisconnectedPollDelay;
 
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point currentTime);
 
 public:
     TPollableDevice(PSerialDevice device, std::chrono::steady_clock::time_point currentTime, TPriority priority);
 
-    PRegisterRange ReadRegisterRange(std::chrono::milliseconds pollLimit,
+    PRegisterRange ReadRegisterRange(TFeaturePort& port,
+                                     std::chrono::milliseconds pollLimit,
                                      bool readAtLeastOneRegister,
                                      const util::TSpentTimeMeter& sessionTime,
                                      TSerialClientDeviceAccessHandler& lastAccessedDevice);
@@ -31,13 +33,16 @@ public:
 
     std::chrono::steady_clock::time_point GetDeadline() const;
 
+    std::chrono::milliseconds GetDisconnectedPollDelay() const;
+    void SetDisconnectedPollDelay(const std::chrono::milliseconds& delay);
+
     TPriority GetPriority() const;
 
     PSerialDevice GetDevice() const;
 
     bool HasRegisters() const;
 
-    void RescheduleAllRegisters(std::chrono::steady_clock::time_point currentTime);
+    void RescheduleAllRegisters();
 };
 
 typedef std::shared_ptr<TPollableDevice> PPollableDevice;

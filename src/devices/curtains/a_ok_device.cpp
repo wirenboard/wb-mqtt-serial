@@ -61,6 +61,10 @@ namespace
     const size_t MOTOR_STATUS_POSITION_OFFSET = 3;
     const size_t MOTOR_STATUS_ZONEBIT_OFFSET = 4;
 
+    const size_t MOTOR_ID_POS = 1;
+    const size_t LOW_CHANNEL_ID_POS = 2;
+    const size_t HIGH_CHANNEL_ID_POS = 3;
+
     uint8_t CalcCrc(const std::vector<uint8_t>& bytes)
     {
         uint8_t xorResult = 0;
@@ -94,15 +98,19 @@ void Aok::TDevice::Register(TSerialDeviceFactory& factory)
                              new TBasicDeviceFactory<Aok::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
-Aok::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+Aok::TDevice::TDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId),
       MotorId((SlaveId >> 16) & 0xFF),
       LowChannelId((SlaveId >> 8) & 0xFF),
       HighChannelId(SlaveId & 0xFF)
 {}
 
-TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command, uint8_t data, size_t bitOffset, size_t bitWidth)
+TRegisterValue Aok::TDevice::GetCachedResponse(TPort& port,
+                                               uint8_t command,
+                                               uint8_t data,
+                                               size_t bitOffset,
+                                               size_t bitWidth)
 {
     TRegisterValue val;
     uint16_t key = (command << 8) | data;
@@ -113,7 +121,14 @@ TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command, uint8_t data, si
         TRequest req;
         req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, command, data);
         req.ResponseSize = MOTOR_STATUS_RESPONSE_SIZE;
-        auto resp = ExecCommand(req);
+        auto resp = ExecCommand(port, req);
+        // some tabular motors can answer any request,
+        // so check that motor id in the response matches the requested one
+        if (resp[MOTOR_ID_POS] != MotorId || resp[LOW_CHANNEL_ID_POS] != LowChannelId ||
+            resp[HIGH_CHANNEL_ID_POS] != HighChannelId)
+        {
+            throw TSerialDeviceTransientErrorException("Invalid response");
+        }
         val.Set(Get<uint64_t>(resp.begin() + MOTOR_STATUS_DATA_OFFSET, resp.end() - CRC_SIZE));
         DataCache[key] = val;
     }
@@ -123,41 +138,38 @@ TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command, uint8_t data, si
     return val;
 }
 
-std::vector<uint8_t> Aok::TDevice::ExecCommand(const TRequest& request)
+std::vector<uint8_t> Aok::TDevice::ExecCommand(TPort& port, const TRequest& request)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
-    Port()->SkipNoise();
-    Port()->WriteBytes(request.Data);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    port.SkipNoise();
+    port.WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
     if (request.ResponseSize != 0) {
-        auto bytesRead = Port()
-                             ->ReadFrame(respBytes.data(),
-                                         respBytes.size(),
-                                         DeviceConfig()->ResponseTimeout,
-                                         DeviceConfig()->FrameTimeout,
-                                         ExpectNBytes(request.ResponseSize))
+        auto bytesRead = port.ReadFrame(respBytes.data(),
+                                        respBytes.size(),
+                                        GetResponseTimeout(port),
+                                        GetFrameTimeout(port),
+                                        ExpectNBytes(request.ResponseSize))
                              .Count;
         respBytes.resize(bytesRead);
     }
     return respBytes;
 }
 
-TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Aok::TDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    switch (reg->Type) {
-        case COMMAND: {
-            return TRegisterValue{1};
-        }
+    switch (reg.Type) {
         case POSITION: {
-            return GetCachedResponse(MOTOR_STATUS, 0, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
+            return GetCachedResponse(port, MOTOR_STATUS, 0, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
         }
         case STATUS: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
-            return GetCachedResponse((addr >> 8) & 0xFF, addr & 0xFF, reg->GetDataOffset(), reg->GetDataWidth());
+            auto addr = GetUint32RegisterAddress(reg.GetAddress());
+            return GetCachedResponse(port, (addr >> 8) & 0xFF, addr & 0xFF, reg.GetDataOffset(), reg.GetDataWidth());
         }
         case ZONEBIT: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
-            return GetCachedResponse(CURTAIN_MOTOR_STATUS,
+            auto addr = GetUint32RegisterAddress(reg.GetAddress());
+            return GetCachedResponse(port,
+                                     CURTAIN_MOTOR_STATUS,
                                      CURTAIN_MOTOR_STATUS,
                                      MOTOR_STATUS_ZONEBIT_OFFSET * 8 + addr,
                                      1);
@@ -166,41 +178,41 @@ TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void Aok::TDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
-    switch (reg->Type) {
+    switch (reg.Type) {
         case COMMAND: {
-            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, CONTROL, addr);
-            ExecCommand(req);
+            ExecCommand(port, req);
             return;
         }
         case POSITION: {
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, SET_POSITION, value);
-            ExecCommand(req);
+            ExecCommand(port, req);
             return;
         }
         case PARAM: {
-            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, addr, value);
-            ExecCommand(req);
+            ExecCommand(port, req);
             return;
         }
         case ZONEBIT: {
-            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRegisterValue val =
-                GetCachedResponse(CURTAIN_MOTOR_STATUS, CURTAIN_MOTOR_STATUS, MOTOR_STATUS_ZONEBIT_OFFSET * 8, 8);
+                GetCachedResponse(port, CURTAIN_MOTOR_STATUS, CURTAIN_MOTOR_STATUS, MOTOR_STATUS_ZONEBIT_OFFSET * 8, 8);
             TRequest req;
             req.Data = MakeRequest(MotorId,
                                    LowChannelId,
                                    HighChannelId,
                                    SET_CURTAIN_MOTOR_SETTING,
                                    (val.Get<uint8_t>() & ~(1 << addr)) | (value << addr));
-            ExecCommand(req);
+            ExecCommand(port, req);
             return;
         }
     }

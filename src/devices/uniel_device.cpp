@@ -38,14 +38,14 @@ void TUnielDevice::Register(TSerialDeviceFactory& factory)
                                                                    "#/definitions/common_channel"));
 }
 
-TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TUnielDevice::TUnielDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId)
 {}
 
-void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
+void TUnielDevice::WriteCommand(TPort& port, uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
-    Port()->CheckPortOpen();
+    port.CheckPortOpen();
     uint8_t buf[8];
     buf[0] = 0xff;
     buf[1] = 0xff;
@@ -55,30 +55,30 @@ void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2
     buf[5] = b2;
     buf[6] = b3;
     buf[7] = (cmd + mod + b1 + b2 + b3) & 0xff;
-    Port()->WriteBytes(buf, 8);
+    port.WriteBytes(buf, 8);
 }
 
-void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
+void TUnielDevice::ReadResponse(TPort& port, uint8_t cmd, uint8_t* response)
 {
     uint8_t buf[5];
     for (;;) {
-        uint8_t first = Port()->ReadByte(DeviceConfig()->ResponseTimeout);
+        uint8_t first = port.ReadByte(GetResponseTimeout(port));
         if (first != 0xff) {
             LOG(Warn) << "resync";
             continue;
         }
-        uint8_t second = Port()->ReadByte(DeviceConfig()->FrameTimeout);
+        uint8_t second = port.ReadByte(GetFrameTimeout(port));
         if (second == 0xff) {
-            second = Port()->ReadByte(DeviceConfig()->FrameTimeout);
+            second = port.ReadByte(GetFrameTimeout(port));
         }
         buf[0] = second;
         uint8_t s = second;
         for (int i = 1; i < 5; ++i) {
-            buf[i] = Port()->ReadByte(DeviceConfig()->FrameTimeout);
+            buf[i] = port.ReadByte(GetFrameTimeout(port));
             s += buf[i];
         }
 
-        if (Port()->ReadByte(DeviceConfig()->FrameTimeout) != s)
+        if (port.ReadByte(GetFrameTimeout(port)) != s)
             throw TSerialDeviceTransientErrorException("uniel: warning: checksum failure");
 
         break;
@@ -94,17 +94,17 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-TRegisterValue TUnielDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TUnielDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     TRegisterValue retVal;
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(addr), 0);
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    WriteCommand(port, READ_CMD, SlaveId, 0, uint8_t(addr), 0);
     uint8_t response[3] = {0};
-    ReadResponse(READ_CMD, response);
+    ReadResponse(port, READ_CMD, response);
     if (response[1] != uint8_t(addr))
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
-    if (reg->Type == REG_RELAY) {
+    if (reg.Type == REG_RELAY) {
         response[0] ? retVal.Set(1) : retVal.Set(0);
     } else {
         retVal.Set(response[0]);
@@ -112,22 +112,22 @@ TRegisterValue TUnielDevice::ReadRegisterImpl(PRegister reg)
     return retVal;
 }
 
-void TUnielDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void TUnielDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     auto value = regValue.Get<uint64_t>();
     uint8_t cmd;
-    if (reg->Type == REG_BRIGHTNESS) {
+    if (reg.Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;
         addr >>= 8;
     } else {
         cmd = WRITE_CMD;
     }
-    if (reg->Type == REG_RELAY && value != 0)
+    if (reg.Type == REG_RELAY && value != 0)
         value = 255;
-    WriteCommand(cmd, SlaveId, value, addr, 0);
+    WriteCommand(port, cmd, SlaveId, value, addr, 0);
     uint8_t response[3];
-    ReadResponse(cmd, response);
+    ReadResponse(port, cmd, response);
     if (response[1] != addr)
         throw TSerialDeviceTransientErrorException("register index mismatch");
     if (response[0] != value)
