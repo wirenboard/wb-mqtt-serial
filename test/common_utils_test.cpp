@@ -28,4 +28,9 @@ TEST(CommonUtilsTest, CompareVersionStrings)
     EXPECT_EQ(util::CompareVersionStrings("1.2.3-rc2", "1.2.3-rc1"), 1);
     EXPECT_EQ(util::CompareVersionStrings("1.2.3-rc2", "1.2.3+wb10"), -1);
     EXPECT_EQ(util::CompareVersionStrings("1.2.3+wb2", "1.2.3+wb10"), -1);
+    EXPECT_EQ(util::CompareVersionStrings("", "1.2.3+wb10"), -1);
+    EXPECT_EQ(util::CompareVersionStrings("1.2.3+wb2", ""), 1);
+    EXPECT_EQ(util::CompareVersionStrings("", ""), 0);
+    EXPECT_EQ(util::CompareVersionStrings("0.0.0-rc26", ""), 1);
+    EXPECT_EQ(util::CompareVersionStrings("", "0.0.0-rc26"), -1);
 }

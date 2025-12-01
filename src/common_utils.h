@@ -17,7 +17,7 @@ namespace util
 
     /// Compares strings containing version data according to semver
     /// Uses simplified algorithm for WB devices: https://wirenboard.com/wiki/Modbus-hardware-version
-    /// For example: 1.2.3-rc1 < 1.2.3-rc10 < 1.2.3 < 1.2.3+wb1 < 1.2.3+wb10
+    /// For example: empty string < 1.2.3-rc1 < 1.2.3-rc10 < 1.2.3 < 1.2.3+wb1 < 1.2.3+wb10
     /// \param v1 first version string
     /// \param v2 second version string
     /// \return -1 if v1 is lower than v2, 1 if v1 is higher than v2 and 0 if v1 and v2 are equal
