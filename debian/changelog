@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.180.2-wb103) stable; urgency=medium
+
+  * New WB-MAI2 config with conversion of current into a physical quantity
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 02 Dec 2025 09:16:57 +0300
+
 wb-mqtt-serial (2.180.2-wb102) stable; urgency=medium
 
   * config-wb-mwac2_ver2.json.jinja:
