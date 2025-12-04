@@ -33,7 +33,6 @@
             }
         ],
 
-
         "channels": [
             {
                 "name": "drive_targeting",
@@ -85,7 +84,7 @@
                 "condition": "double_speed_activate_id==1"
             },
 
-             {
+            {
                 "name": "drive_current_position",
                 "address": 30,
                 "reg_type": "input",
@@ -359,6 +358,7 @@
                 "group": "control_settings",
                 "default": 0,
                 "order": 2,
+                "description": "wifi_description",
                 "required": true
             },
             {
@@ -380,7 +380,7 @@
                 "address": 59,
                  "reg_type": "coil",
                 "enum": [ 0, 1 ],
-                "enum_titles": [ "Off", "On" ],
+                "enum_titles": [ "close_at_startup_off", "close_at_startup_on" ],
                 "enabled": true,
                 "group": "control_settings",
                 "default": 0,
@@ -455,25 +455,25 @@
                 "polling_settings_title": "General",
                 "settings_title": "Drive Control",
                 "control_settings_title": "Control Settings",
-                "protections_settings_title": "Protections Settings",
+                "protections_settings_title": "Drive Protection",
                 "modbus_settings_title": "HW Settings",
                 "drive_targeting": "Position Setpoint",
                 "drive_speed": "Drive Speed",
-                "drive_speed_modbus": "ModBus Speed Setpoint",
-                "speed_of_buttons": "Manual Drive Speed Setpoint",
+                "drive_speed_modbus": "Drive Speed: Modbus Control",
+                "speed_of_buttons": "Drive Speed: Manual Control",
                 "drive_current_position": "Current Position",
                 "reset_locks": "Reset Locks",
                 "auto_close_timer": "Auto-Close Timer",
                 "reset_end_positions": "Reset The End Positions",
                 "remember_open": "Remember The Open Position",
                 "remember_closed": "Remember The Close Position",
-                "wifi": "Turn Off WiFi After 5 Minutes",
+                "wifi": "Turn Off Wi-Fi After 5 Minutes",
                 "auto_calibration": "Auto-Calibration",
                 "autocalibration_error": "Autocalibration Error",
                 "error_overload": "Error: The Drive Cannot Move",
                 "multiple_overloads": "Lock: Multiple Failed Movement Attempts",
                 "frequent_movement": "Lock: Frequent Movement",
-                "double_speed_activate": "Activate Two Speeds",
+                "double_speed_activate": "Two Drive Speeds",
                 "button_revers_control": "Reverse Direction By Manual Control",
                 "protection_opening_25": "Protection On Opening At 25% Speed",
                 "protection_closing_25": "Protection On Closing At 25% Speed",
@@ -484,38 +484,41 @@
                 "protection_opening_100": "Protection On Opening At 100% Speed",
                 "protection_closing_100": "Protection On Closing At 100% Speed",
                 "protection_description": "Drive protection level when barrier is detected",
-                "close_at_startup": "Close After Power Supply",
+                "close_at_startup": "Drive Position After Power-Up",
                 "modbus_set_id": "Slave ID Of The Device",
                 "modbus_stop_bit": "Stop Bits",
                 "modbus_baud_rate": "Baud Rate",
-                "double_speed_activate_description": "Ability to configure different speed setpoint for controller command and for manual command using buttons",
-                "version": "FW Version"
+                "double_speed_activate_description": "Set Different Drive Speeds For Modbus Control And Manual Control",
+                "version": "FW Version",
+                "close_at_startup_off": "Leave in Current Position",
+                "close_at_startup_on": "Set to Closed",
+                "wifi_description": "Set Automatically Turn Off Access Point And Drivent Wi-Fi Connection After 5 Minutes Of Inactivity In Drivetn Web Interface."
             },
             "ru": {
                 "DriventV2_title": "Оконный привод Drivent V2",
                 "polling_settings_title": "Общее",
                 "settings_title": "Управление приводом",
                 "control_settings_title": "Настройки управления",
-                "protections_settings_title": "Настройка защит",
+                "protections_settings_title": "Защита привода",
                 "modbus_settings_title": "Данные привода",
-                "drive_targeting": "Уставка положения",
-                "drive_speed": "Уставка скорости",
-                "drive_speed_modbus": "Уставка скорости: управление ModBus",
-                "speed_of_buttons": "Уставка скорости: ручное управление",
-                "drive_current_position": "Текущее положение привода",
+                "drive_targeting": "Положение",
+                "drive_speed": "Скорость",
+                "drive_speed_modbus": "Скорость: управление Modbus",
+                "speed_of_buttons": "Скорость: ручное управление",
+                "drive_current_position": "Текущее положение",
                 "reset_locks": "Сброс блокировок",
                 "auto_close_timer": "Таймер автозакрытия",
                 "reset_end_positions": "Сбросить крайние положения",
                 "remember_open": "Запомнить положение открыто",
                 "remember_closed": "Запомнить положение закрыто",
-                "wifi": "Выключить WiFi спустя 5 мин.",
+                "wifi": "Выключить Wi-Fi спустя 5 мин.",
                 "auto_calibration": "Запуск автокалибровки",
                 "autocalibration_error": "Ошибка автокалибровки",
                 "error_overload": "Ошибка: двигатель не может двигаться",
                 "multiple_overloads": "Блокировка: несколько неудачных попыток перемещения",
                 "frequent_movement": "Блокировка: частое перемещение",
-                "double_speed_activate": "Активировать две скорости",
-                "button_revers_control": "Реверс направления при упавлении с кнопок",
+                "double_speed_activate": "Две скорости привода",
+                "button_revers_control": "Реверс направления при управлении с кнопок",
                 "protection_opening_25": "Защита при открытии на скорости 25%",
                 "protection_closing_25": "Защита при закрытии на скорости 25%",
                 "protection_opening_50": "Защита при открытии на скорости 50%",
@@ -524,23 +527,22 @@
                 "protection_closing_75": "Защита при закрытии на скорости 75%",
                 "protection_opening_100": "Защита при открытии на скорости 100%",
                 "protection_closing_100": "Защита при закрытии на скорости 100%",
-                "protection_description": "Уровень срабатывания защиты привода при обнаружении припятствия",
-                "close_at_startup": "Закрыть после подачи питания",
+                "protection_description": "Уровень срабатывания защиты привода при обнаружении препятствия",
+                "close_at_startup": "Положение привода после подачи питания",
                 "modbus_set_id": "Адрес устройства",
                 "modbus_stop_bit": "Стоп биты",
                 "modbus_baud_rate": "Скорость обмена",
-                "double_speed_activate_description": "Позволяет настроить различные уставки скорости для управления с контроллера и для ручного управления с кнопок",
+                "double_speed_activate_description": "Задать разную скорость привода для управления по Modbus и ручного управления",
                 "min": "мин",
                 "version": "Версия прошивки",
                 "No Error": "Нет ошибки",
                 "Error": "Ошибка",
                 "Off": "Отключёно",
-                "On": "Включёно"
+                "On": "Включёно",
+                "close_at_startup_off": "Оставить в текущем положении",
+                "close_at_startup_on": "Установить в положение «Закрыто»",
+                "wifi_description": "Автоматическое отключение точки доступа и Wi-Fi соединения Drivent через 5 минут бездействия в веб интерфейсе Drivent"
             }
         }
     }
 }
-
-
-
-
