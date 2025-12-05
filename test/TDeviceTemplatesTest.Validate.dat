@@ -273,6 +273,22 @@ Dooya DM35EQ-X
 	Position  =>  Position
 	Stop  =>  Stop
 Drivent V2
+	auto_calibration  =>  auto_calibration
+	auto_close_timer  =>  auto_close_timer
+	autocalibration_error  =>  autocalibration_error
+	drive_current_position  =>  drive_current_position
+	drive_speed  =>  drive_speed
+	drive_speed_modbus  =>  drive_speed_modbus
+	drive_targeting  =>  drive_targeting
+	error_overload  =>  error_overload
+	frequent_movement  =>  frequent_movement
+	multiple_overloads  =>  multiple_overloads
+	remember_closed  =>  remember_closed
+	remember_open  =>  remember_open
+	reset_end_positions  =>  reset_end_positions
+	reset_locks  =>  reset_locks
+	speed_of_buttons  =>  speed_of_buttons
+	version  =>  version
 ESCORT DB-2
 	Conversion Factor  =>  Conversion Factor
 	Empty  =>  Empty
