@@ -221,11 +221,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 25,
-                "order": 1,
-                "required": true
+                "order": 1
             },
             {
                 "id": "protection_closing_25",
@@ -236,11 +234,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 25,
-                "order": 2,
-                "required": true
+                "order": 2
             },
             {
                 "id": "protection_opening_50",
@@ -251,11 +247,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 10,
-                "order": 3,
-                "required": true
+                "order": 3
             },
             {
                 "id": "protection_closing_50",
@@ -266,11 +260,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 30,
-                "order": 4,
-                "required": true
+                "order": 4
             },
             {
                 "id": "protection_opening_75",
@@ -281,11 +273,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 10,
-                "order": 5,
-                "required": true
+                "order": 5
             },
             {
                 "id": "protection_closing_75",
@@ -296,11 +286,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 30,
-                "order": 6,
-                "required": true
+                "order": 6
             },
             {
                 "id": "protection_opening_100",
@@ -311,11 +299,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 10,
-                "order": 7,
-                "required": true
+                "order": 7
             },
             {
                 "id": "protection_closing_100",
@@ -326,11 +312,9 @@
                 "type": "range",
                 "min": 0,
                 "max": 100,
-                "enabled": true,
                 "group": "protections_settings",
                 "default": 35,
-                "order": 8,
-                "required": true
+                "order": 8
             },
             {
                 "id": "double_speed_activate_id",
@@ -340,12 +324,10 @@
                 "enum": [ 0, 1 ],
                 "enum_titles": [ "Off", "On" ],
                 "on_value": 1,
-                "enabled": true,
                 "group": "control_settings",
                 "default": 0,
                 "order": 1,
-                "description": "double_speed_activate_description",
-                "required": true
+                "description": "double_speed_activate_description"
             },
             {
                 "id": "wifi",
@@ -354,12 +336,10 @@
                 "reg_type": "coil",
                 "enum": [ 0, 1 ],
                 "enum_titles": [ "Off", "On" ],
-                "enabled": true,
                 "group": "control_settings",
                 "default": 0,
                 "order": 2,
-                "description": "wifi_description",
-                "required": true
+                "description": "wifi_description"
             },
             {
                 "id": "button_revers_control",
@@ -368,11 +348,9 @@
                 "reg_type": "coil",
                 "enum": [ 0, 1 ],
                 "enum_titles": [ "Off", "On" ],
-                "enabled": true,
                 "group": "control_settings",
                 "default": 0,
-                "order": 3,
-                "required": true
+                "order": 3
             },
             {
                 "id": "close_at_startup",
@@ -381,11 +359,9 @@
                  "reg_type": "coil",
                 "enum": [ 0, 1 ],
                 "enum_titles": [ "close_at_startup_off", "close_at_startup_on" ],
-                "enabled": true,
                 "group": "control_settings",
                 "default": 0,
-                "order": 4,
-                "required": true
+                "order": 4
             },
             {
                 "id": "modbus_set_id",
