@@ -395,10 +395,8 @@
                 "format": "u16",
                 "min": 1,
                 "max": 247,
-                "enabled": true,
                 "group": "modbus_settings",
-                "order": 1,
-                "required": true
+                "order": 1
             },
             {
                 "id": "modbus_stop_bit",
@@ -408,11 +406,9 @@
                 "format": "u16",
                 "enum": [ 1, 2 ],
                 "enum_titles": [ "1", "2" ],
-                "enabled": true,
                 "group": "modbus_settings",
                 "default": 1,
-                "order": 2,
-                "required": true
+                "order": 2
             },
             {
                 "id": "modbus_baud_rate",
@@ -440,11 +436,9 @@
                         "57600",
                         "115200"
                         ],
-                "enabled": true,
                 "group": "modbus_settings",
                 "default": 96,
-                "order": 3,
-                "required": true
+                "order": 3
             }
 
         ],
