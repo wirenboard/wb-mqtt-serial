@@ -1,6 +1,7 @@
 {
     "title": "XY-MD0X (XY-MD03, XY-MD04)",
     "device_type": "XY-MD0X",
+    "deprecated": true,
     "group": "g-climate-sensor",
     "device": {
         "name": "XY-MD0X",

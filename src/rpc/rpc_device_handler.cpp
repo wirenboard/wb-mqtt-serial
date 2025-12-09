@@ -369,6 +369,11 @@ void ReadRegisterList(TPort& port,
             try {
                 device->ReadRegisterRange(port, range, true);
                 break;
+            } catch (const TSerialDevicePermanentRegisterException& e) {
+                LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
+                          << "Failed to read " << std::to_string(range->RegisterList().size())
+                          << " registers starting from <" << first->GetConfig()->ToString() + ">: " + e.what();
+                break;
             } catch (const TSerialDeviceException& e) {
                 if (i == maxRetries) {
                     error = "Failed to read " + std::to_string(range->RegisterList().size()) +

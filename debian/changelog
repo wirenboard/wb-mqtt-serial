@@ -1,3 +1,28 @@
+wb-mqtt-serial (2.204.0) stable; urgency=medium
+
+  * Set config-xy-md0x template deprecate
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 09 Dec 2025 09:45:00 +0300
+
+wb-mqtt-serial (2.203.2) stable; urgency=medium
+
+  * Fix template discovery for old WB-MRGBW-D devices
+  * Fix reading settings from old WB-MRGBW-D devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 03 Dec 2025 13:05:46 +0500
+
+wb-mqtt-serial (2.203.1) stable; urgency=medium
+
+  * Fix device/LoadConfig RPC error when reading from devices with 0.0.0-rcX firmware version
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 26 Nov 2025 16:54:42 +0500
+
+wb-mqtt-serial (2.203.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in WB-MIR v.2, WB-MIR v.3 and WB-MR6C templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 26 Nov 2025 12:32:47 +0500
+
 wb-mqtt-serial (2.202.0) stable; urgency=medium
 
   * Set default "max_write_registers" parameter for Wiren Board devices to Modbus frame maximum value (123)

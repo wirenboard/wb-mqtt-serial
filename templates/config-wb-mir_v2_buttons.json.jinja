@@ -65,7 +65,6 @@
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
-                "description": "mode_description",
                 "address": {{275 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -99,6 +98,7 @@
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
+                "fw": "4.32.0",
                 "condition": "in{{in_num}}_mode==1"
             },
             "in{{in_num}}_secp_waiting_time": {
@@ -111,6 +111,7 @@
                 "default": 300,
                 "min": 0,
                 "max": 2000,
+                "fw": "4.32.0",
                 "condition": "in{{in_num}}_mode==1"
             },
             {% endfor -%}
@@ -333,6 +334,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
+                "fw": "4.32.0",
                 "condition": "in{{in_num}}_mode==1"
             },
             {
@@ -342,6 +344,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
+                "fw": "4.32.0",
                 "condition": "in{{in_num}}_mode==1"
             },
             {
@@ -352,6 +355,7 @@
                 "enabled": false,
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
+                "fw": "4.32.0",
                 "condition": "in{{in_num}}_mode==1"
             },
             {
@@ -362,6 +366,7 @@
                 "enabled": false,
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
+                "fw": "4.32.0",
                 "condition": "in{{in_num}}_mode==1"
             },
             {% endfor -%}
@@ -481,7 +486,6 @@
                 "temperature_readings_period_s_title": "Temperature sensor poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
 
-                "mode_description": "For press detection, firmware version 4.32.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
@@ -549,7 +553,6 @@
 
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
-                "mode_description": "Для детектирования нажатий требуется прошивка версии 4.32.0 или новее",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
 

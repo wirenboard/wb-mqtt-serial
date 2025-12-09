@@ -59,6 +59,15 @@ std::string util::ConvertToValidMqttTopicString(const std::string& src)
 
 int util::CompareVersionStrings(const std::string& v1, const std::string& v2)
 {
+    if (v1.empty() && v2.empty()) {
+        return 0;
+    }
+    if (v1.empty()) {
+        return -1;
+    }
+    if (v2.empty()) {
+        return 1;
+    }
     std::vector<int> l1 = ParseVersionString(v1);
     std::vector<int> l2 = ParseVersionString(v2);
     for (size_t i = 0; i < std::max(l1.size(), l2.size()); ++i) {
