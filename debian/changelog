@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.204.0) stable; urgency=medium
+
+  * Set config-xy-md0x template deprecate
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 09 Dec 2025 09:45:00 +0300
+
 wb-mqtt-serial (2.203.2) stable; urgency=medium
 
   * Fix template discovery for old WB-MRGBW-D devices
