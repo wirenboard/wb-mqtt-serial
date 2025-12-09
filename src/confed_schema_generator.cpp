@@ -76,7 +76,7 @@ namespace
 void AddUnitTypes(Json::Value& schema)
 {
     auto& values = MakeArray("enum_values", schema["definitions"]["units"]["options"]);
-    for (const auto& unit: WBMQTT::TControl::GetUnitTypes()) {
+    for (const auto& unit: WBMQTT::GetUnitTypes()) {
         values.append(unit);
     }
 }
