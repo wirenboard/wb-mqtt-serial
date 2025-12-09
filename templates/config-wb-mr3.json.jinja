@@ -101,6 +101,7 @@
             {
                 "title": "Curtains Control",
                 "fw": "1.21.0",
+                "description": "curtains_control_description",
                 "id": "g_curtains_control"
             },
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -933,7 +934,7 @@
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
 
-                "curtains_control_description": "Для использования режима штор требуется прошивка 1.21.0 или новее. Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",

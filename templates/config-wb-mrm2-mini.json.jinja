@@ -102,6 +102,7 @@
             {
                 "title": "Curtains Control",
                 "fw": "1.21.0",
+                "description": "curtains_control_description",
                 "id": "g_curtains_control"
             },
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -817,7 +818,8 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms"
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
+                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
 
             },
             "ru": {
@@ -943,10 +945,11 @@
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа",
 
 
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
                 "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.1 или новее",
                 "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
 

@@ -147,6 +147,7 @@
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
+                "description": "g_safety_description"
                 "fw": "2.5.0"
             },
             {
@@ -158,6 +159,7 @@
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "fw": "2.5.0",
+                "description": "g_power_up_behaviour_description"
                 "group": "g_safety"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -895,6 +897,7 @@
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.5.0",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
@@ -986,6 +989,7 @@
                 {% endfor -%}
 
                 "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
@@ -996,6 +1000,7 @@
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
 
                 "Power Up Behaviour": "Поведение при включении питания",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
