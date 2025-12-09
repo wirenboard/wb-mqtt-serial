@@ -1,6 +1,6 @@
 #include "confed_schema_generator.h"
 
-#include <wblib/control.h>
+#include <wblib/unit_types.h>
 
 #include "json_common.h"
 
