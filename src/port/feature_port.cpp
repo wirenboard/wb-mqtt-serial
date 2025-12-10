@@ -16,12 +16,16 @@ namespace
 TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge)
     : BasePort(basePort),
       ModbusTcp(modbusTcp),
-      FastModbus(modbusTcp && connectedToMge)
+      ConnectedToMge(connectedToMge),
+      FastModbus(!modbusTcp)
 {}
 
 void TFeaturePort::Open()
 {
     BasePort->Open();
+    if (ModbusTcp && ConnectedToMge) {
+        FastModbus = true;
+    }
 }
 
 void TFeaturePort::Close()
