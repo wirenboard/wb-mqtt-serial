@@ -210,6 +210,19 @@
           "options": {
             "hidden": true
           }
+        },
+        "connected_to_mge": {
+          "type": "boolean",
+          "title": "This port connected to WB-MGE v.3 gateway",
+          "default": false,
+          "format": "checkbox",
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true
+            }
+          }
         }
       },
       "required": ["port_type"],
@@ -306,6 +319,7 @@
       "Zero means no timeout.": "Ноль - без таймаута.",
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
       "guard_interval_description": "",
+      "This port connected to WB-MGE v.3 gateway": "К этому порту подключен шлюз WB-MGE v.3",
       "Serial port": "Последовательный порт",
       "Path to device": "Путь до устройства",
       "Baud rate": "Скорость обмена",
