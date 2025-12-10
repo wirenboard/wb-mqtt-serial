@@ -8,7 +8,7 @@
 TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge)
     : BasePort(basePort),
       ModbusTcp(modbusTcp),
-      FastModbus(modbusTcp ? connectedToMge : true)
+      FastModbus(!modbusTcp || connectedToMge)
 {}
 
 void TFeaturePort::Open()
