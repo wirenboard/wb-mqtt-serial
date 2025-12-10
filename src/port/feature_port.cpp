@@ -5,27 +5,15 @@
 
 #define LOG(logger) ::logger.Log() << "[port] "
 
-namespace
-{
-    const std::vector<uint8_t> MGE_CHECK_REQUEST =
-        {0x47, 'W', 'B', '-', 'F', 'A', 'S', 'T', '-', 'M', 'O', 'D', 'B', 'U', 'S', '?'};
-    const std::vector<uint8_t> MGE_CHECK_RESPONSE =
-        {0x47, 'W', 'B', '-', 'F', 'A', 'S', 'T', '-', 'M', 'O', 'D', 'B', 'U', 'S', '-', 'O', 'K'};
-}
-
 TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge)
     : BasePort(basePort),
       ModbusTcp(modbusTcp),
-      ConnectedToMge(connectedToMge),
-      FastModbus(!modbusTcp)
+      FastModbus(modbusTcp ? connectedToMge : true)
 {}
 
 void TFeaturePort::Open()
 {
     BasePort->Open();
-    if (ModbusTcp && ConnectedToMge) {
-        FastModbus = true;
-    }
 }
 
 void TFeaturePort::Close()

@@ -47,7 +47,6 @@ public:
 private:
     PPort BasePort;
     bool ModbusTcp;
-    bool ConnectedToMge;
     bool FastModbus;
 };
 
