@@ -170,6 +170,7 @@
                 "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
                     "No Action",
@@ -188,6 +189,7 @@
                 "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
                     "Turn Off",
@@ -207,6 +209,7 @@
                 "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 "enum": [0, 1, 3, 4],
                 "enum_titles": [
                     "Turn Off",
@@ -226,6 +229,7 @@
                 "title": "Output Number",
                 "address": {{704 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
                     "No Action",
@@ -244,6 +248,7 @@
                 "title": "Action",
                 "address": {{736 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -260,6 +265,7 @@
                 "title": "Action",
                 "address": {{736 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "enum": [0, 1],
                 "enum_titles": [
                     "Turn Off",
@@ -279,6 +285,7 @@
                 "address": 8,
                 "order": 2,
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "min": 1,
                 "max": 65534,
                 "default": 10
@@ -288,6 +295,7 @@
                 "id": "safety_mode_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -303,6 +311,7 @@
                 "id": "safety_mode_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "address": {{656 + ch_number - 1}},
                 "min": 1,
                 "max": 100,
@@ -315,6 +324,7 @@
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "address": {{664 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -330,6 +340,7 @@
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "address": {{672 + ch_number - 1}},
                 "min": 1,
                 "max": 100,
@@ -346,6 +357,7 @@
                 "group": "gg_safety_input_control",
                 "address": {{640 + in_number - 1}},
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -364,6 +376,7 @@
                 "description": "input_mode_description",
                 "address": {{416 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.8.0",
                 "enum": [0, 1],
                 "enum_titles": [
                     "Button",
@@ -380,6 +393,7 @@
                 "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
@@ -393,6 +407,7 @@
                 "description": "input_double_time_description",
                 "address": {{1140 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 "default": 300,
                 "min": 0,
                 "max": 2000,
@@ -406,6 +421,7 @@
                 "description": "input_debounce_time_description",
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 "default": 50,
                 "min": 5,
                 "max": 200,
@@ -473,6 +489,7 @@
                 "description": "increase_rate_description",
                 "address": {{140 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.1.0",
                 "min": 0,
                 "max": 100,
                 "default": 10,
@@ -485,6 +502,7 @@
                 "description": "decrease_rate_description",
                 "address": {{150 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.1.0",
                 "min": 0,
                 "max": 100,
                 "default": 10,
@@ -498,6 +516,7 @@
                 "group": "channel_{{ch_number + 1}}",
                 "address": {{896 + ch_number}},
                 "reg_type": "holding",
+                "fw": "2.7.0",
                 "default": 20,
                 "min": 5,
                 "max": 500,
@@ -546,6 +565,7 @@
                 "name": "Input {{ch_number + 1}} Single Press Counter",
                 "reg_type": "press_counter",
                 "address": {{464 + ch_number}},
+                "fw": "2.7.0",
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
                 "condition": "input_{{ch_number + 1}}_mode!=1",
@@ -555,6 +575,7 @@
                 "name": "Input {{ch_number + 1}} Long Press Counter",
                 "reg_type": "press_counter",
                 "address": {{480 + ch_number}},
+                "fw": "2.7.0",
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
                 "condition": "input_{{ch_number + 1}}_mode!=1",
@@ -564,6 +585,7 @@
                 "name": "Input {{ch_number + 1}} Double Press Counter",
                 "reg_type": "press_counter",
                 "address": {{496 + ch_number}},
+                "fw": "2.7.0",
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
@@ -574,6 +596,7 @@
                 "name": "Input {{ch_number + 1}} Shortlong Press Counter",
                 "reg_type": "press_counter",
                 "address": {{512 + ch_number}},
+                "fw": "2.7.0",
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
@@ -674,6 +697,7 @@
             {
                 "name": "Overcurrent",
                 "reg_type": "input",
+                "fw": "2.4.0",
                 "address": 100,
                 "type": "switch",
                 "group": "gg_general_channels"
@@ -711,12 +735,12 @@
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.8.0",
-                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.8.0",
+                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.8.0",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "g_power_up_behaviour_description": "Actions when Power is On. Supported since firmware version 2.8.0",
+                "g_power_up_behaviour_description": "Actions when Power is On",
 
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
@@ -806,7 +830,7 @@
                 "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
 
                 "Safety Mode": "Безопасный режим",
-                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером. Доступно с версии прошивки 2.8.0",
+                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
@@ -817,7 +841,7 @@
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
 
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 2.8.0",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",

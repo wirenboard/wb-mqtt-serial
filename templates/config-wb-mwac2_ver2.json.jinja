@@ -175,9 +175,9 @@
             },
             "in{{ in_num }}_sensor_type": {
                 "title": "Sensor Type",
-                "description": "sensor_type_description",
                 "address": {{ 521 + in_num }},
                 "reg_type": "holding",
+                "fw": "1.22.0",
                 "enum": [0, 1],
                 "enum_titles": [
                     "Normally Open (NO)",
@@ -416,6 +416,7 @@
                 "description": "safety_buzzer_description",
                 "address": 952,
                 "reg_type": "holding",
+                "fw": "1.22.0",
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
@@ -778,15 +779,13 @@
                 "safety_mode_description": "If the RS-485 connection is lost, the module will work autonomously, but you can additionally set its behavior in this case",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab",
                 "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10s",
-                "safety_buzzer_description": "\"Does not affect\" - the buzzer behaves according to the input settings. \"On\" - the buzzer will be ON regardless of the input settings when the device is in safety mode and the leakage sensor is triggered. Supported since firmware 1.22.0",
+                "safety_buzzer_description": "\"Does not affect\" - the buzzer behaves according to the input settings. \"On\" - the buzzer will be ON regardless of the input settings when the device is in safety mode and the leakage sensor is triggered",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately",
                 "relays_state_after_poweron_description": "Default - Switch To the Safety State",
 
                 "Cleaning Mode": "Wet Cleaning Mode",
                 "wet_cleaning_mode_description": "In the Wet Cleaning mode the module does not respond to leakage sensors",
                 "wet_cleaning_mode_timer_description": "1 - 360 min",
-
-                "sensor_type_description": "Supported since firmware 1.22.0",
 
                 "debounce_description": "For button press detection, the value must be 5-10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50ms",
                 "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50ms",
@@ -821,8 +820,6 @@
                 "Sensor Type": "Тип датчика",
                 "Normally Open (NO)": "Нормально открытый (NO)",
                 "Normally Closed (NC)": "Нормально закрытый (NC)",
-
-                "sensor_type_description": "Поддерживается с версии прошивки 1.22.0",
 
                 "Mode": "Режим работы",
                 "Debounce (ms)": "Время подавления дребезга (мс)",
@@ -891,7 +888,7 @@
                 "Buzzer Behaviour": "Поведение зуммера при срабатывании датчика протечки",
                 "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно дополнительно задать его поведение в этом случае",
                 "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с",
-                "safety_buzzer_description": "\"Не менять поведение\" - зуммер ведет себя в соответствии с настройками входов. \"Включен\" - зуммер будет включен независимо от настроек входов, когда устройство находится в безопасном режиме и срабатывает датчик протечки. Поддерживается с версии прошивки 1.22.0",
+                "safety_buzzer_description": "\"Не менять поведение\" - зуммер ведет себя в соответствии с настройками входов. \"Включен\" - зуммер будет включен независимо от настроек входов, когда устройство находится в безопасном режиме и срабатывает датчик протечки",
                 "restore_outputs_state_after_leakage_fix_description": "\"Включен\" - реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" - сразу анализируются настройки взаимодействия входов с реле",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\"",
                 "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\"",

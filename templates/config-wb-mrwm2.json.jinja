@@ -97,17 +97,20 @@
             {
                 "title": "Protective Functions",
                 "description": "protective_functions_description",
+                "fw": "1.21.0",
                 "id": "g_voltage_control"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Delays K{{out_num}}",
                 "id": "gg_out{{out_num}}_delay_params",
+                "fw": "1.21.0",
                 "group": "g_voltage_control"
             },
             {
                 "title": "Voltage Control K{{out_num}}",
                 "id": "gg_out{{out_num}}_voltage_params",
+                "fw": "1.21.0",
                 "group": "g_voltage_control"
             },
             {% endfor -%}
@@ -621,6 +624,7 @@
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "group": "gg_outputs_channels"
             },
             {% endfor -%}
@@ -660,6 +664,7 @@
                 "reg_type": "discrete",
                 "address": {{80 + out_num - 1}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "group": "gg_voltage_control_channels"
             },
             {
@@ -667,12 +672,14 @@
                 "reg_type": "discrete",
                 "address": {{88 + out_num - 1}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "group": "gg_voltage_control_channels",
                 "condition": "(startup_delay_ctrl_dis_{{out_num}}>0)||(startup_delay_ctrl_en_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
                 "reg_type": "input",
+                "fw": "1.21.0",
                 "address": {{1744 + out_num - 1}},
                 "units": "s",
                 "format": "u16",
@@ -684,6 +691,7 @@
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
                 "reg_type": "input",
+                "fw": "1.21.0",
                 "address": {{1752 + out_num - 1}},
                 "units": "s",
                 "format": "u16",
