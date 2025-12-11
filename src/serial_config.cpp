@@ -619,7 +619,7 @@ namespace
 
         rpcConfig->AddModbusTCPPort(settings);
 
-        return std::make_shared<TFeaturePort>(port, true);
+        return std::make_shared<TFeaturePort>(port, true, port_data["connected_to_mge"].asBool());
     }
 
     void LoadPort(PHandlerConfig handlerConfig,

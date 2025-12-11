@@ -1,8 +1,15 @@
-wb-mqtt-serial (2.205.0) stable; urgency=medium
+wb-mqtt-serial (2.206.0) stable; urgency=medium
 
   * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 01 Dec 2025 17:07:03 +0300
+
+wb-mqtt-serial (2.205.0) stable; urgency=medium
+
+  * Add "connected_to_mge" configuration property for Modbus TCP ports
+  * Fix Modbus TCP bug for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 10 Dec 2025 17:02:26 +0300
 
 wb-mqtt-serial (2.204.0) stable; urgency=medium
 
