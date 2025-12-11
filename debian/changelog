@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.206.0) stable; urgency=medium
+
+  * Add Drivent V2 Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 11 Dec 2025 13:00:00 +0300
+
 wb-mqtt-serial (2.205.0) stable; urgency=medium
 
   * Add "connected_to_mge" configuration property for Modbus TCP ports

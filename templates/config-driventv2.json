@@ -1,0 +1,509 @@
+{
+    "title": "DriventV2_title",
+    "device_type": "Drivent V2",
+    "group": "g-climate-control",
+
+    "device": {
+        "name": "Drivent V2",
+        "id": "driventV2",
+
+        "groups": [
+            {
+                "title": "polling_settings_title",
+                "id": "polling_settings"
+            },
+            {
+                "title": "settings_title",
+                "id": "settings"
+            },
+            {
+                "title": "control_settings_title",
+                "id": "control_settings",
+                "group": "settings"
+            },
+            {
+                "title": "protections_settings_title",
+                "id": "protections_settings",
+                "description": "protection_description",
+                "group": "settings"
+            },
+            {
+                "title": "modbus_settings_title",
+                "id": "modbus_settings"
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "drive_targeting",
+                "address": 1,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "units": "%",
+                "group": "polling_settings",
+                "enabled": true
+            },
+
+            {
+                "name": "drive_speed",
+                "address": 2,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [ 25, 50, 75, 100 ],
+                "enum_titles": [ "25", "50", "75", "100" ],
+                "units": "%",
+                "enabled": true,
+                "group": "polling_settings",
+                "condition": "double_speed_activate_id==0"
+            },
+            {
+                "name": "drive_speed_modbus",
+                "address": 2,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [ 25, 50, 75, 100 ],
+                "enum_titles": [ "25", "50", "75", "100" ],
+                "units": "%",
+                "enabled": true,
+                "group": "polling_settings",
+                "condition": "double_speed_activate_id==1"
+            },
+            {
+                "name": "speed_of_buttons",
+                "address": 3,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [ 25, 50, 75, 100 ],
+                "enum_titles": [ "25", "50", "75", "100" ],
+                "units": "%",
+                "enabled": true,
+                "group": "polling_settings",
+                "condition": "double_speed_activate_id==1"
+            },
+
+            {
+                "name": "drive_current_position",
+                "address": 30,
+                "reg_type": "input",
+                "format": "u16",
+                "type": "value",
+                "units": "%",
+                "readonly": true,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "reset_locks",
+                "address": 50,
+                "reg_type": "coil",
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "reset_end_positions",
+                "address": 51,
+                "reg_type": "coil",
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "remember_open",
+                "address": 52,
+                "reg_type": "coil",
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "remember_closed",
+                "address": 53,
+                "reg_type": "coil",
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "auto_close_timer",
+                "address": 12,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 2500,
+                "round_to": 10,
+                "units": "min",
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "auto_calibration",
+                "address": 56,
+                "reg_type": "coil",
+                "type": "switch",
+                "on_value": 1,
+                "off_value": 0,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "autocalibration_error",
+                "address": 70,
+                "reg_type": "discrete",
+                "type": "switch",
+                "readonly": true,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "error_overload",
+                "address": 71,
+                "reg_type": "discrete",
+                "type": "switch",
+                "readonly": true,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "multiple_overloads",
+                "address": 72,
+                "reg_type": "discrete",
+                "type": "switch",
+                "readonly": true,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "frequent_movement",
+                "address": 73,
+                "reg_type": "discrete",
+                "type": "switch",
+                "readonly": true,
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "version",
+                "address": 36,
+                "reg_type": "input",
+                "format": "u16",
+                "type": "text",
+                "readonly": true,
+                "group": "polling_settings",
+                "enabled": true
+            }
+        ],
+
+        "parameters": [
+           
+            {
+                "id": "protection_opening_25",
+                "title": "protection_opening_25",
+                "address": 4,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 25,
+                "order": 1
+            },
+            {
+                "id": "protection_closing_25",
+                "title": "protection_closing_25",
+                "address": 5,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 25,
+                "order": 2
+            },
+            {
+                "id": "protection_opening_50",
+                "title": "protection_opening_50",
+                "address": 6,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 10,
+                "order": 3
+            },
+            {
+                "id": "protection_closing_50",
+                "title": "protection_closing_50",
+                "address": 7,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 30,
+                "order": 4
+            },
+            {
+                "id": "protection_opening_75",
+                "title": "protection_opening_75",
+                "address": 8,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 10,
+                "order": 5
+            },
+            {
+                "id": "protection_closing_75",
+                "title": "protection_closing_75",
+                "address": 9,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 30,
+                "order": 6
+            },
+            {
+                "id": "protection_opening_100",
+                "title": "protection_opening_100",
+                "address": 10,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 10,
+                "order": 7
+            },
+            {
+                "id": "protection_closing_100",
+                "title": "protection_closing_100",
+                "address": 11,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "group": "protections_settings",
+                "default": 35,
+                "order": 8
+            },
+            {
+                "id": "double_speed_activate_id",
+                "title": "double_speed_activate",
+                "address": 54,
+                "reg_type": "coil",
+                "enum": [ 0, 1 ],
+                "enum_titles": [ "Off", "On" ],
+                "group": "control_settings",
+                "default": 0,
+                "order": 1,
+                "description": "double_speed_activate_description"
+            },
+            {
+                "id": "wifi",
+                "title": "wifi",
+                "address": 55,
+                "reg_type": "coil",
+                "enum": [ 0, 1 ],
+                "enum_titles": [ "Off", "On" ],
+                "group": "control_settings",
+                "default": 0,
+                "order": 2,
+                "description": "wifi_description"
+            },
+            {
+                "id": "button_revers_control",
+                "title": "button_revers_control",
+                "address": 57,
+                "reg_type": "coil",
+                "enum": [ 0, 1 ],
+                "enum_titles": [ "Off", "On" ],
+                "group": "control_settings",
+                "default": 0,
+                "order": 3
+            },
+            {
+                "id": "close_at_startup",
+                "title": "close_at_startup",
+                "address": 59,
+                "reg_type": "coil",
+                "enum": [ 0, 1 ],
+                "enum_titles": [ "close_at_startup_off", "close_at_startup_on" ],
+                "group": "control_settings",
+                "default": 0,
+                "order": 4
+            },
+            {
+                "id": "modbus_set_id",
+                "title": "modbus_set_id",
+                "address": 100,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "max": 247,
+                "group": "modbus_settings",
+                "order": 1
+            },
+            {
+                "id": "modbus_stop_bit",
+                "title": "modbus_stop_bit",
+                "address": 101,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [ 1, 2 ],
+                "enum_titles": [ "1", "2" ],
+                "group": "modbus_settings",
+                "default": 1,
+                "order": 2
+            },
+            {
+                "id": "modbus_baud_rate",
+                "title": "modbus_baud_rate",
+                "address": 102,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [
+                        12,
+                        24,
+                        48,
+                        96,
+                        192,
+                        384,
+                        576,
+                        1152
+                        ],
+                "enum_titles": [
+                        "1200",
+                        "2400",
+                        "4800",
+                        "9600",
+                        "19200",
+                        "38400",
+                        "57600",
+                        "115200"
+                        ],
+                "group": "modbus_settings",
+                "default": 96,
+                "order": 3
+            }
+
+        ],
+
+        "translations": {
+            "en": {
+                "DriventV2_title": "Window drive Drivent V2",        
+                "polling_settings_title": "General",
+                "settings_title": "Drive Control",
+                "control_settings_title": "Control Settings",
+                "protections_settings_title": "Drive Protection",
+                "modbus_settings_title": "HW Settings",
+                "drive_targeting": "Position Setpoint",
+                "drive_speed": "Drive Speed",
+                "drive_speed_modbus": "Drive Speed: Modbus Control",
+                "speed_of_buttons": "Drive Speed: Manual Control",
+                "drive_current_position": "Current Position",
+                "reset_locks": "Reset Locks",
+                "auto_close_timer": "Auto-Close Timer",
+                "reset_end_positions": "Reset The End Positions",
+                "remember_open": "Remember The Open Position",
+                "remember_closed": "Remember The Close Position",
+                "wifi": "Turn Off Wi-Fi After 5 Minutes",
+                "auto_calibration": "Auto-Calibration",
+                "autocalibration_error": "Autocalibration Error",
+                "error_overload": "Error: The Drive Cannot Move",
+                "multiple_overloads": "Lock: Multiple Failed Movement Attempts",
+                "frequent_movement": "Lock: Frequent Movement",
+                "double_speed_activate": "Two Drive Speeds",
+                "button_revers_control": "Reverse Direction By Manual Control",
+                "protection_opening_25": "Protection On Opening At 25% Speed",
+                "protection_closing_25": "Protection On Closing At 25% Speed",
+                "protection_opening_50": "Protection On Opening At 50% Speed",
+                "protection_closing_50": "Protection On Closing At 50% Speed",
+                "protection_opening_75": "Protection On Opening At 75% Speed",
+                "protection_closing_75": "Protection On Closing At 75% Speed",
+                "protection_opening_100": "Protection On Opening At 100% Speed",
+                "protection_closing_100": "Protection On Closing At 100% Speed",
+                "protection_description": "Drive protection level when barrier is detected",
+                "close_at_startup": "Drive Position After Power-Up",
+                "modbus_set_id": "Slave ID Of The Device",
+                "modbus_stop_bit": "Stop Bits",
+                "modbus_baud_rate": "Baud Rate",
+                "double_speed_activate_description": "Set Different Drive Speeds For Modbus Control And Manual Control",
+                "version": "FW Version",
+                "close_at_startup_off": "Leave in Current Position",
+                "close_at_startup_on": "Set to Closed",
+                "wifi_description": "Set Automatically Turn Off Access Point And Drivent Wi-Fi Connection After 5 Minutes Of Inactivity In Drivetn Web Interface."
+            },
+            "ru": {
+                "DriventV2_title": "Оконный привод Drivent V2",
+                "polling_settings_title": "Общее",
+                "settings_title": "Управление приводом",
+                "control_settings_title": "Настройки управления",
+                "protections_settings_title": "Защита привода",
+                "modbus_settings_title": "Данные привода",
+                "drive_targeting": "Положение",
+                "drive_speed": "Скорость",
+                "drive_speed_modbus": "Скорость: управление Modbus",
+                "speed_of_buttons": "Скорость: ручное управление",
+                "drive_current_position": "Текущее положение",
+                "reset_locks": "Сброс блокировок",
+                "auto_close_timer": "Таймер автозакрытия",
+                "reset_end_positions": "Сбросить крайние положения",
+                "remember_open": "Запомнить положение открыто",
+                "remember_closed": "Запомнить положение закрыто",
+                "wifi": "Выключить Wi-Fi спустя 5 мин.",
+                "auto_calibration": "Запуск автокалибровки",
+                "autocalibration_error": "Ошибка автокалибровки",
+                "error_overload": "Ошибка: двигатель не может двигаться",
+                "multiple_overloads": "Блокировка: несколько неудачных попыток перемещения",
+                "frequent_movement": "Блокировка: частое перемещение",
+                "double_speed_activate": "Две скорости привода",
+                "button_revers_control": "Реверс направления при управлении с кнопок",
+                "protection_opening_25": "Защита при открытии на скорости 25%",
+                "protection_closing_25": "Защита при закрытии на скорости 25%",
+                "protection_opening_50": "Защита при открытии на скорости 50%",
+                "protection_closing_50": "Защита при закрытии на скорости 50%",
+                "protection_opening_75": "Защита при открытии на скорости 75%",
+                "protection_closing_75": "Защита при закрытии на скорости 75%",
+                "protection_opening_100": "Защита при открытии на скорости 100%",
+                "protection_closing_100": "Защита при закрытии на скорости 100%",
+                "protection_description": "Уровень срабатывания защиты привода при обнаружении препятствия",
+                "close_at_startup": "Положение привода после подачи питания",
+                "modbus_set_id": "Адрес устройства",
+                "modbus_stop_bit": "Стоп биты",
+                "modbus_baud_rate": "Скорость обмена",
+                "double_speed_activate_description": "Задать разную скорость привода для управления по Modbus и ручного управления",
+                "min": "мин",
+                "version": "Версия прошивки",
+                "No Error": "Нет ошибки",
+                "Error": "Ошибка",
+                "Off": "Отключёно",
+                "On": "Включёно",
+                "close_at_startup_off": "Оставить в текущем положении",
+                "close_at_startup_on": "Установить в положение «Закрыто»",
+                "wifi_description": "Автоматическое отключение точки доступа и Wi-Fi соединения Drivent через 5 минут бездействия в веб интерфейсе Drivent"
+            }
+        }
+    }
+}
