@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.206.0) stable; urgency=medium
+
+  * MS and MSW templates: Add sht40 cleaning mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 11 Dec 2025 13:25:00 +0300
+
 wb-mqtt-serial (2.205.0) stable; urgency=medium
 
   * Add "connected_to_mge" configuration property for Modbus TCP ports
