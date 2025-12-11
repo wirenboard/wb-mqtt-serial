@@ -74,7 +74,7 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
     } else {
         Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);
-        ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
+        ProtocolParams = deviceFactory.GetProtocolParams(Device->Protocol()->GetName());
         DeviceFromConfig = true;
     }
     if (DeviceTemplate->WithSubdevices()) {
@@ -364,6 +364,11 @@ void ReadRegisterList(TPort& port,
         for (int i = 0; i <= maxRetries; ++i) {
             try {
                 device->ReadRegisterRange(port, range, true);
+                break;
+            } catch (const TSerialDevicePermanentRegisterException& e) {
+                LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
+                          << "Failed to read " << std::to_string(range->RegisterList().size())
+                          << " registers starting from <" << first->GetConfig()->ToString() + ">: " + e.what();
                 break;
             } catch (const TSerialDeviceException& e) {
                 if (i == maxRetries) {
