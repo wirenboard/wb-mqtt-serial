@@ -16,17 +16,17 @@
                 "title": "settings_title",
                 "id": "settings"
             },
-                {
-                    "title": "control_settings_title",
-                    "id": "control_settings",
-                    "group": "settings"
-                },
-                {
-                    "title": "protections_settings_title",
-                    "id": "protections_settings",
-                    "description": "protection_description",
-                    "group": "settings"
-                },
+            {
+                "title": "control_settings_title",
+                "id": "control_settings",
+                "group": "settings"
+            },
+            {
+                "title": "protections_settings_title",
+                "id": "protections_settings",
+                "description": "protection_description",
+                "group": "settings"
+            },
             {
                 "title": "modbus_settings_title",
                 "id": "modbus_settings"
