@@ -23111,10 +23111,10 @@ WB-MS v.2
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Serial  =>  Serial
 	Successful TH Readings  =>  Successful TH Readings
-	Temperature  =>  Temperature
-	Temperature Without Compensation  =>  Temperature Without Compensation
 	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
 	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
+	Temperature  =>  Temperature
+	Temperature Without Compensation  =>  Temperature Without Compensation
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
@@ -23320,11 +23320,11 @@ WB-MSW v.3
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	Temperature  =>  Temperature
 	Temperature (High Res)  =>  Temperature (High Res)
 	Temperature Without Compensation  =>  Temperature Without Compensation
-	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
-	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Raw  =>  VOC Raw

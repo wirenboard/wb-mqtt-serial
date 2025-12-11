@@ -104,7 +104,6 @@
             },
             "th_sensor_heater_enabled": {
                 "title": "TH Sensor Heater Enabled",
-                "description": "Only for SHT40 temperature and humidity sensor",
                 "address": 2,
                 "reg_type": "coil",
                 "enum": [0, 1],
