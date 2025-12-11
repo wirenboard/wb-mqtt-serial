@@ -23090,6 +23090,7 @@ WB-MS v.2
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	FW Version  =>  FW Version
 	Humidity  =>  Humidity
+	Humidity Without Compensation  =>  Humidity Without Compensation
 	Illuminance  =>  Illuminance
 	Illuminance Mode  =>  Illuminance Mode
 	Input 1: input1_1wire
@@ -23111,6 +23112,9 @@ WB-MS v.2
 	Serial  =>  Serial
 	Successful TH Readings  =>  Successful TH Readings
 	Temperature  =>  Temperature
+	Temperature Without Compensation  =>  Temperature Without Compensation
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration

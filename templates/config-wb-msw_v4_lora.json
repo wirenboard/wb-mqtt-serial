@@ -1636,7 +1636,7 @@
                 "CO₂ Measurement Range (ppm)": "Диапазон измерения концентрации CO₂ (ppm)",
                 "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
                 "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
-                "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки",
+                "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",
                 "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",
                 "selfheating_compensation_deg_description": "Значение компенсации вычитается из измеренной температуры",
                 "Low-pass Filter Time Constant (ms)": "Время усреднения шума (мс)",
