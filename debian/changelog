@@ -1,3 +1,23 @@
+wb-mqtt-serial (2.205.0) stable; urgency=medium
+
+  * Add "connected_to_mge" configuration property for Modbus TCP ports
+  * Fix Modbus TCP bug for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 10 Dec 2025 17:02:26 +0300
+
+wb-mqtt-serial (2.204.0) stable; urgency=medium
+
+  * Set config-xy-md0x template deprecate
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 09 Dec 2025 09:45:00 +0300
+
+wb-mqtt-serial (2.203.2) stable; urgency=medium
+
+  * Fix template discovery for old WB-MRGBW-D devices
+  * Fix reading settings from old WB-MRGBW-D devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 03 Dec 2025 13:05:46 +0500
+
 wb-mqtt-serial (2.203.1) stable; urgency=medium
 
   * Fix device/LoadConfig RPC error when reading from devices with 0.0.0-rcX firmware version

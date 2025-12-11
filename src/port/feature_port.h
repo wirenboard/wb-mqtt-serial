@@ -6,7 +6,7 @@
 class TFeaturePort: public TPort
 {
 public:
-    TFeaturePort(PPort basePort, bool modbusTcp);
+    TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge = false);
 
     // TPort interface
 
@@ -48,7 +48,6 @@ private:
     PPort BasePort;
     bool ModbusTcp;
     bool FastModbus;
-    bool ModbusTcpFastModbusChecked;
 };
 
 using PFeaturePort = std::shared_ptr<TFeaturePort>;
