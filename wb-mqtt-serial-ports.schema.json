@@ -150,7 +150,7 @@
           "type": "string",
           "title": "IPv4 address or hostname of device",
           "minLength": 1,
-          "propertyOrder": 3,
+          "propertyOrder": 4,
           "options": {
             "grid_columns": 10
           }
@@ -160,7 +160,7 @@
           "title": "TCP port number",
           "minimum": 1,
           "maximum": 65536,
-          "propertyOrder": 4,
+          "propertyOrder": 5,
           "options": {
             "grid_columns": 2
           }
@@ -171,7 +171,7 @@
           "description": "connection_timeout_description",
           "minimum": -1,
           "default": 5000,
-          "propertyOrder": 5,
+          "propertyOrder": 6,
           "options": {
             "grid_columns": 12,
             "wb": {
@@ -186,7 +186,7 @@
           "description": "connection_max_fail_description",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 6,
+          "propertyOrder": 7,
           "options": {
             "grid_columns": 12,
             "wb": {
@@ -209,6 +209,19 @@
           "propertyOrder": 1,
           "options": {
             "hidden": true
+          }
+        },
+        "connected_to_mge": {
+          "type": "boolean",
+          "title": "This port is connected to WB-MGE v.3 gateway",
+          "default": false,
+          "format": "checkbox",
+          "propertyOrder": 3,
+          "options": {
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true
+            }
           }
         }
       },
@@ -306,6 +319,7 @@
       "Zero means no timeout.": "Ноль - без таймаута.",
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
       "guard_interval_description": "",
+      "This port is connected to WB-MGE v.3 gateway": "К этому порту подключен шлюз WB-MGE v.3",
       "Serial port": "Последовательный порт",
       "Path to device": "Путь до устройства",
       "Baud rate": "Скорость обмена",
