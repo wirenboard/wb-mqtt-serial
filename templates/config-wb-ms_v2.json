@@ -181,6 +181,28 @@
                 "group": "air_quality"
             },
             {
+                "name": "TH Sensor Heater Cleaning Mode Enabled",
+                "description": "Only for SHT40 temperature and humidity sensor",
+                "address": 8,
+                "fw": "4.35.0",
+                "reg_type": "coil",
+                "type": "switch",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
+                "name": "TH Sensor Heater Cleaning Mode Countdown",
+                "description": "Only for SHT40 temperature and humidity sensor",
+                "address": 975,
+                "fw": "4.35.0",
+                "reg_type": "input",
+                "type": "value",
+                "units": "s",
+                "format": "u16",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
                 "name": "Illuminance",
                 "reg_type": "input",
                 "address": 2,
@@ -405,6 +427,8 @@
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
                 "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
+                "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
+                "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",
                 "no": "нет",
                 "yes": "да",
                 "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",

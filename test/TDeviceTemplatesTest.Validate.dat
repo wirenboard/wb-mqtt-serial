@@ -23319,6 +23319,8 @@ WB-MSW v.3
 	Temperature  =>  Temperature
 	Temperature (High Res)  =>  Temperature (High Res)
 	Temperature Without Compensation  =>  Temperature Without Compensation
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Raw  =>  VOC Raw
@@ -23490,6 +23492,8 @@ WB-MSW v.4
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	TH Sensor Heater Enabled  =>  TH Sensor Heater Enabled
 	Temperature  =>  Temperature
 	Temperature Without Compensation  =>  Temperature Without Compensation
@@ -23667,6 +23671,8 @@ WB-MSW-LORA v.4
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	TH Sensor Heater Enabled  =>  TH Sensor Heater Enabled
 	Temperature  =>  Temperature
 	Temperature Without Compensation  =>  Temperature Without Compensation
