@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.206.0) stable; urgency=medium
+wb-mqtt-serial (2.207.0) stable; urgency=medium
 
   * MS and MSW templates: Add sht40 cleaning mode
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 11 Dec 2025 13:25:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 11 Dec 2025 14:15:00 +0300
+
+wb-mqtt-serial (2.206.0) stable; urgency=medium
+
+  * Add Drivent V2 Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 11 Dec 2025 13:00:00 +0300
 
 wb-mqtt-serial (2.205.0) stable; urgency=medium
 
