@@ -49,6 +49,7 @@
         "parameters": {
             "th_sensor_heater_enabled": {
                 "title": "TH Sensor Heater Enabled",
+                "description": "Only for SHT40 temperature and humidity sensor",
                 "address": 2,
                 "reg_type": "coil",
                 "enum": [0, 1],
@@ -429,6 +430,7 @@
                 "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
                 "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
                 "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",
+                "Only for SHT40 temperature and humidity sensor": "Только для датчика температуры и влажности SHT40",
                 "no": "нет",
                 "yes": "да",
                 "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",
