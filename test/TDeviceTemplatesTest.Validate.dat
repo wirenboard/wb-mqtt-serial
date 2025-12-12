@@ -23333,6 +23333,8 @@ WB-MSW v.3
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	Temperature  =>  Temperature
 	Temperature (High Res)  =>  Temperature (High Res)
 	Temperature Without Compensation  =>  Temperature Without Compensation
@@ -23507,6 +23509,8 @@ WB-MSW v.4
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	TH Sensor Heater Enabled  =>  TH Sensor Heater Enabled
 	Temperature  =>  Temperature
 	Temperature Without Compensation  =>  Temperature Without Compensation
@@ -23684,6 +23688,8 @@ WB-MSW-LORA v.4
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	TH Sensor Heater Enabled  =>  TH Sensor Heater Enabled
 	Temperature  =>  Temperature
 	Temperature Without Compensation  =>  Temperature Without Compensation
@@ -27521,6 +27527,7 @@ tpl1_wb_ms_v2
 	External Sensor 2  =>  External Sensor 2
 	FW Version  =>  FW Version
 	Humidity  =>  Humidity
+	Humidity Without Compensation  =>  Humidity Without Compensation
 	Illuminance  =>  Illuminance
 	Illuminance Mode  =>  Illuminance Mode
 	Input 1  =>  Input 1
@@ -27533,7 +27540,10 @@ tpl1_wb_ms_v2
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Serial  =>  Serial
 	Successful TH Readings  =>  Successful TH Readings
+	TH Sensor Heater Cleaning Mode Countdown  =>  TH Sensor Heater Cleaning Mode Countdown
+	TH Sensor Heater Cleaning Mode Enabled  =>  TH Sensor Heater Cleaning Mode Enabled
 	Temperature  =>  Temperature
+	Temperature Without Compensation  =>  Temperature Without Compensation
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
