@@ -249,7 +249,7 @@
             },
             {
                 "name": "TH Sensor Heater Cleaning Mode Countdown",
-                "address": 975,
+                "address": 365,
                 "fw": "4.35.0",
                 "reg_type": "input",
                 "type": "value",
