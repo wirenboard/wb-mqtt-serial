@@ -74,7 +74,7 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
     } else {
         Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);
-        ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
+        ProtocolParams = deviceFactory.GetProtocolParams(Device->Protocol()->GetName());
         DeviceFromConfig = true;
     }
     if (DeviceTemplate->WithSubdevices()) {
