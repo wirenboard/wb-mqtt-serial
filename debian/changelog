@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.207.0) stable; urgency=medium
+
+  *Set compatible firmware parameters for MAP12H and WB-MR6CU templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:31:34 +0300
+
 wb-mqtt-serial (2.206.0) stable; urgency=medium
 
   * Add Drivent V2 Template
