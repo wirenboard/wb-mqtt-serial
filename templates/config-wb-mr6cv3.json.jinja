@@ -101,6 +101,7 @@
             {
                 "title": "Curtains Control",
                 "description": "curtains_control_description",
+                "fw": "1.21.0",
                 "id": "g_curtains_control"
             },
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -335,6 +336,7 @@
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1400 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
@@ -347,6 +349,7 @@
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1432 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
@@ -359,6 +362,7 @@
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1464 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
@@ -371,6 +375,7 @@
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1496 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
@@ -429,6 +434,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1280 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
@@ -442,6 +448,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "scale": 0.1,
                 "default": 10.0,
                 "min": 1.0,
@@ -454,6 +461,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "scale": 0.1,
                 "default": 10.0,
                 "min": 1.0,
@@ -466,6 +474,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1336 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 500,
                 "min": 50,
                 "max": 10000,
@@ -477,6 +486,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1288 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -492,6 +502,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1284 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -508,6 +519,7 @@
                 "order": {{curtain_num}},
                 "address": {{1292 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -808,7 +820,7 @@
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "safety_behaviour_description": "Action when module switches into safe mode",
-                "outputs_safe_state_description": "Outputs state after module power on (if the \"Set output to safe state\" item is selected in the \"States of the relay on power up\" setting) and in the safe mode, if the transition to the safe state is activated.",
+                "outputs_safe_state_description": "Outputs state after module power on (if the \"Set output to safe state\" item is selected in the \"States of the relay on power up\" setting) and in the safe mode, if the transition to the safe state is activated",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -822,8 +834,8 @@
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
+                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
 
-                "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required. For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
             },
             "ru": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
@@ -953,8 +965,8 @@
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа",
 
-                "curtains_control_description": "Для использования режима штор требуется прошивка 1.21.0 или новее. Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",

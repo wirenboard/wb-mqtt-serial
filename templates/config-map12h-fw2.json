@@ -121,7 +121,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel1_l1",
                 "order": 3
             },
@@ -154,7 +154,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel1_l2",
                 "order": 3
             },
@@ -187,7 +187,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel1_l3",
                 "order": 3
             },
@@ -220,7 +220,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel2_l1",
                 "order": 3
             },
@@ -253,7 +253,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel2_l2",
                 "order": 3
             },
@@ -286,7 +286,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel2_l3",
                 "order": 3
             },
@@ -319,7 +319,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel3_l1",
                 "order": 3
             },
@@ -352,7 +352,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel3_l2",
                 "order": 3
             },
@@ -385,7 +385,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel3_l3",
                 "order": 3
             },
@@ -418,7 +418,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel4_l1",
                 "order": 3
             },
@@ -451,7 +451,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel4_l2",
                 "order": 3
             },
@@ -484,7 +484,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel4_l3",
                 "order": 3
             }
