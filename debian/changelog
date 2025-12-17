@@ -1,6 +1,14 @@
+wb-mqtt-serial (2.209.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in MAP3H, WB-MSW v3,
+    WB-MSW v4 and MAP6S templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Wed, 17 Dec 2025 17:34:29 +0300
+
 wb-mqtt-serial (2.208.0) stable; urgency=medium
 
-  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
+  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, 
+    WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:37:03 +0300
  
