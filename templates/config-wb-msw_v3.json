@@ -39,7 +39,7 @@
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
-		"fw": "4.32.0",
+                "fw": "4.32.0",
                 "description": "g_safety_description"
             },
             {
@@ -150,7 +150,7 @@
                 "order": 1,
                 "reg_type": "holding",
                 "min": 1,
-		"fw": "4.32.0",
+                "fw": "4.32.0",
                 "max": 65534,
                 "default": 10
             },
@@ -162,7 +162,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
-		"fw": "4.32.0",
+                "fw": "4.32.0",
                 "enum_titles": [
                     "No Action",
                     "Play IR Command"
@@ -178,7 +178,7 @@
                 "min": 1,
                 "max": 80,
                 "default": 1,
-		"fw": "4.32.0",
+                "fw": "4.32.0",
                 "condition": "safety_action==1"
             },
             "baud_rate": {
