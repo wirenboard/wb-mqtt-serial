@@ -96,22 +96,13 @@
                 "enabled": true
             },
             {
-                "name": "reset_locks",
-                "address": 50,
-                "reg_type": "coil",
-                "type": "pushbutton",
-                "on_value": 1,
-                "group": "polling_settings",
-                "enabled": true
-            },
-            {
                 "name": "reset_end_positions",
                 "address": 51,
                 "reg_type": "coil",
                 "type": "pushbutton",
                 "on_value": 1,
                 "group": "polling_settings",
-                "enabled": true
+                "enabled": false
             },
             {
                 "name": "remember_open",
@@ -120,7 +111,7 @@
                 "type": "pushbutton",
                 "on_value": 1,
                 "group": "polling_settings",
-                "enabled": true
+                "enabled": false
             },
             {
                 "name": "remember_closed",
@@ -129,7 +120,7 @@
                 "type": "pushbutton",
                 "on_value": 1,
                 "group": "polling_settings",
-                "enabled": true
+                "enabled": false
             },
             {
                 "name": "auto_close_timer",
@@ -141,6 +132,15 @@
                 "max": 2500,
                 "round_to": 10,
                 "units": "min",
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "reset_locks",
+                "address": 50,
+                "reg_type": "coil",
+                "type": "pushbutton",
+                "on_value": 1,
                 "group": "polling_settings",
                 "enabled": true
             },

@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.209.0) stable; urgency=medium
+wb-mqtt-serial (2.210.0) stable; urgency=medium
 
   * Set compatible firmwares for parameters and channels in MAP3H, WB-MSW v3,
     WB-MSW v4 and MAP6S templates
 
- -- Alexander Getman <alexander.getman@wirenboard.com>  Wed, 17 Dec 2025 17:34:29 +0300
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 18 Dec 2025 11:34:29 +0300
+
+wb-mqtt-serial (2.209.0) stable; urgency=medium
+
+  * Disabled default polling in Drivent V2 Template for chanells: "Reset The End Positions", "Remember The Open Position", "Remember The Close Position"
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 17 Dec 2025 18:00:00 +0300
 
 wb-mqtt-serial (2.208.0) stable; urgency=medium
 
