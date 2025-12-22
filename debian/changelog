@@ -1,12 +1,26 @@
-wb-mqtt-serial (2.209.0) stable; urgency=medium
+wb-mqtt-serial (2.211.0) stable; urgency=medium
 
   * MS and MSW templates: Add sht40 cleaning mode
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 17 Dec 2025 11:05:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 22 Dec 2025 21:05:00 +0300
+
+wb-mqtt-serial (2.210.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in MAP3H, WB-MSW v3,
+    WB-MSW v4 and MAP6S templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 18 Dec 2025 11:34:29 +0300
+
+wb-mqtt-serial (2.209.0) stable; urgency=medium
+
+  * Disabled default polling in Drivent V2 Template for chanells: "Reset The End Positions", "Remember The Open Position", "Remember The Close Position"
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 17 Dec 2025 18:00:00 +0300
 
 wb-mqtt-serial (2.208.0) stable; urgency=medium
 
-  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
+  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, 
+    WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:37:03 +0300
 
