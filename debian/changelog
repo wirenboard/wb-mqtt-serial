@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.211.0) stable; urgency=medium
+
+  * MS and MSW templates: Add sht40 cleaning mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 22 Dec 2025 21:05:00 +0300
+
 wb-mqtt-serial (2.210.0) stable; urgency=medium
 
   * Set compatible firmwares for parameters and channels in MAP3H, WB-MSW v3,
@@ -17,7 +23,7 @@ wb-mqtt-serial (2.208.0) stable; urgency=medium
     WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:37:03 +0300
- 
+
 wb-mqtt-serial (2.207.0) stable; urgency=medium
 
   *Set compatible firmware parameters for MAP12H and WB-MR6CU templates
