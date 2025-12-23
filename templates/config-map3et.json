@@ -6,6 +6,9 @@
         {
             "signature": "MAP3E",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3ET"
         }
     ],
     "device": {
@@ -238,7 +241,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l1"
-            }, 
+            },
             {
                 "name": "Phase angle L1",
                 "reg_type": "input",
@@ -399,7 +402,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l2"
-            }, 
+            },
             {
                 "name": "Phase angle L2",
                 "reg_type": "input",
@@ -632,7 +635,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "total"
-            }, 
+            },
             {
                 "name": "Total RP energy",
                 "reg_type": "input",
@@ -654,7 +657,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "total"
-            }, 
+            },
             {
                 "name": "Frequency",
                 "reg_type": "input",
