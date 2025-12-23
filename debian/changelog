@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.212.0) stable; urgency=medium
+
+  * Set unsupported registers value to "unsupported" for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 23 Dec 2025 12:53:37 +0300
+
 wb-mqtt-serial (2.211.0) stable; urgency=medium
 
   * MS and MSW templates: Add sht40 cleaning mode
@@ -19,7 +25,7 @@ wb-mqtt-serial (2.209.0) stable; urgency=medium
 
 wb-mqtt-serial (2.208.0) stable; urgency=medium
 
-  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, 
+  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3,
     WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:37:03 +0300

@@ -9,6 +9,7 @@
 namespace
 {
     const auto MAX_RETRIES = 2;
+    const auto UNSUPPORTED_VALUE = "unsupported";
 
     void ReadModbusRegister(TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
@@ -167,10 +168,10 @@ namespace
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    void ClearUnsupportedParameters(TPort& port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    TRPCRegisterList& registerList,
-                                    Json::Value& parameters)
+    void MarkUnsupportedParameters(TPort& port,
+                                   PRPCDeviceLoadConfigRequest rpcRequest,
+                                   TRPCRegisterList& registerList,
+                                   Json::Value& parameters)
     {
         auto continuousRead = true;
         for (auto it = registerList.begin(); it != registerList.end(); ++it) {
@@ -186,7 +187,7 @@ namespace
                     TRegisterValue value;
                     ReadModbusRegister(port, rpcRequest, item.Register->GetConfig(), value);
                 } catch (const Modbus::TModbusExceptionError& err) {
-                    parameters.removeMember(item.Id);
+                    parameters[item.Id] = UNSUPPORTED_VALUE;
                 }
             }
         }
@@ -241,7 +242,7 @@ namespace
             fwVersion,
             rpcRequest->IsWBDevice);
         ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
-        ClearUnsupportedParameters(*port, rpcRequest, registerList, parameters);
+        MarkUnsupportedParameters(*port, rpcRequest, registerList, parameters);
 
         Json::Value result(Json::objectValue);
         if (!deviceModel.empty()) {
@@ -252,9 +253,7 @@ namespace
         }
         if (!paramsList.empty()) {
             for (const auto& id: paramsList) {
-                if (parameters.isMember(id)) {
-                    result["parameters"][id] = parameters[id];
-                }
+                result["parameters"][id] = parameters[id];
             }
         } else {
             result["parameters"] = parameters;
