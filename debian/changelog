@@ -1,8 +1,8 @@
 wb-mqtt-serial (2.212.0) stable; urgency=medium
 
-  * MAP3E and MAP3ET templates: Add hw signatures and all parameters
+  * MAP3E and MAP3ET templates: Add new device signatures
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 22 Dec 2025 21:05:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 24 Dec 2025 13:22:00 +0300
 
 wb-mqtt-serial (2.211.0) stable; urgency=medium
 
