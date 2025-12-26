@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.180.2-wb104) stable; urgency=medium
+
+  * MAP3E and MAP3ET templates: Add new device signatures
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 26 Dec 2025 11:43:00 +0300
+
 wb-mqtt-serial (2.180.2-wb103) stable; urgency=medium
 
   * New WB-MAI2 config with conversion of current into a physical quantity
