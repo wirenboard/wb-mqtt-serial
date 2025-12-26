@@ -1063,7 +1063,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel enegry meter)",
+                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
