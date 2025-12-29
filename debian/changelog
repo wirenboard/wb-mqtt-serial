@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.212.2) stable; urgency=medium
+
+  * Fix firmware version in WB-M1W2 template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Mon, 29 Dec 2025 15:28:14 +0300
+
 wb-mqtt-serial (2.212.1) stable; urgency=medium
 
   * Update README.md
