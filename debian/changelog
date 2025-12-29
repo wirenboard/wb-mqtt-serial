@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.212.3) stable; urgency=medium
 
-  * MAP6S: Add unsupported values for peaks
+  * MAP6S and MAP3E: Add unsupported values for peaks
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 29 Dec 2025 17:22:00 +0300
 
