@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.180.2-wb105) stable; urgency=medium
+
+  * MAP6S and MAP3E: Add unsupported values for peaks
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Dec 2025 11:06:00 +0300
+
 wb-mqtt-serial (2.180.2-wb104) stable; urgency=medium
 
   * MAP3E and MAP3ET templates: Add new device signatures
