@@ -2,12 +2,10 @@
     "title": "engo_title",
     "device_type": "ENGO EFAN",
     "group": "g-thermostat",
-
     "device": {
         "name": "ENGO EFAN",
         "id": "engo_efan",
 	    "force_frame_timeout": true,
-
         "groups": [
             {
                 "title": "polling_settings_title",
@@ -23,7 +21,6 @@
                 "group": "settings"
             }
         ],
-
         "channels": [
             {
                 "name": "temp_sens_internal",
@@ -47,7 +44,6 @@
                 "enabled": true,
                 "group": "polling_settings"
             },
-
             {
                 "name": "operation_mode",
                 "address": 258,
@@ -69,7 +65,6 @@
                 "enabled": true,
                 "group": "polling_settings"
             },
-
             {
                 "name": "schedule_mode_temp_setpoint",
                 "address": 273,
@@ -109,7 +104,6 @@
                 "enabled": true,
                 "group": "polling_settings"
             },
-
             {
                 "name": "display_bright",
                 "address": 263,
@@ -214,9 +208,7 @@
                 "group": "polling_settings"
             }
         ],
-
         "parameters": [
-
             {
                 "id": "temp_setpoint_max",
                 "title": "temp_setpoint_max",
@@ -257,7 +249,6 @@
                 "order": 1
             }
         ],
-
         "translations": {
             "en": {
                 "engo_title": "ENGO EFAN",        
@@ -303,8 +294,6 @@
                 "modbus_settings_title": "Modbus Setting",
                 "pin_for_settings_off": "Off",
                 "pin_for_settings_on": "On"
-
-
             },
             "ru": {
                 "engo_title": "ENGO EFAN",        
