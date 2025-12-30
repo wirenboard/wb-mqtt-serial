@@ -1,8 +1,14 @@
 wb-mqtt-serial (2.213.0) stable; urgency=medium
 
-  * Add ENGO EFAN 24B/230W Template
+  * Add ENGO EFAN Template
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 30 Dec 2025 13:00:00 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 30 Dec 2025 18:00:00 +0300
+
+wb-mqtt-serial (2.212.3) stable; urgency=medium
+
+  * MAP6S and MAP3E: Add unsupported values for peaks
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 29 Dec 2025 17:22:00 +0300
 
 wb-mqtt-serial (2.212.2) stable; urgency=medium
 
