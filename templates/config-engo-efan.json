@@ -1,0 +1,356 @@
+{
+    "title": "engo_title",
+    "device_type": "ENGO EFAN",
+    "group": "g-thermostat",
+
+    "device": {
+        "name": "ENGO EFAN",
+        "id": "engo_efan",
+	    "force_frame_timeout": true,
+
+        "groups": [
+            {
+                "title": "polling_settings_title",
+                "id": "polling_settings"
+            },
+            {
+                "title": "settings_title",
+                "id": "settings"
+            },
+            {
+                "title": "modbus_settings_title",
+                "id": "modbus_settings",
+                "group": "settings"
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "temp_sens_internal",
+                "address": 3,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "temperature",
+                "scale": 0.1,
+                "readonly": true,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "humidity",
+                "address": 10,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "value",
+                "units": "%",
+                "readonly": true,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+
+            {
+                "name": "operation_mode",
+                "address": 258,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": 
+                [ 
+                    0, 
+                    1,
+                    3
+                ],
+                "enum_titles": 
+                [ 
+                    "operation_mode_enum0", 
+                    "operation_mode_enum1", 
+                    "operation_mode_enum3"
+                ],
+                "readonly": false,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+
+            {
+                "name": "schedule_mode_temp_setpoint",
+                "address": 273,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "value",
+                "min": 5,
+                "max": 45,
+                "scale": 0.1,
+                "readonly": false,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "manual_mode_temp_setpoint",
+                "address": 274,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "value",
+                "min": 5,
+                "max": 45,
+                "scale": 0.1,
+                "readonly": false,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "frost_mode_frost_setpoint",
+                "address": 275,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "value",
+                "min": 5,
+                "max": 45,
+                "scale": 0.1,
+                "readonly": false,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+
+            {
+                "name": "display_bright",
+                "address": 263,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "units": "%",
+                "group": "polling_settings",
+                "enabled": true
+            },
+            {
+                "name": "valve_1_status",
+                "address": 8,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "scale": 0.1,
+                "units": "%",
+                "min": 0,
+                "max": 100,
+                "readonly": true,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "valve_2_status",
+                "address": 9,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "range",
+                "scale": 0.1,
+                "units": "%",
+                "min": 0,
+                "max": 100,
+                "readonly": true,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "fan_status",
+                "address": 7,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": 
+                [ 
+                    0, 
+                    1,
+                    2,
+                    4,
+                    8,
+                    9,
+                    10,
+                    12
+                ],
+                "enum_titles": 
+                [ 
+                    "fan_status_enum0", 
+                    "fan_status_enum1", 
+                    "fan_status_enum2", 
+                    "fan_status_enum4", 
+                    "fan_status_enum8",
+                    "fan_status_enum9",
+                    "fan_status_enum10",
+                    "fan_status_enum12"
+                ],
+                "readonly": true,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "key_lock",
+                "address": 262,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "switch",
+                "on_value": 1,
+                "off_value": 0,
+                "readonly": false,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "power_control",
+                "address": 257,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "readonly": false,
+                "enabled": true,
+                "group": "polling_settings"
+            },
+            {
+                "name": "version",
+                "address": 1,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "text",
+                "group": "polling_settings"
+            }
+        ],
+
+        "parameters": [
+
+            {
+                "id": "temp_setpoint_max",
+                "title": "temp_setpoint_max",
+                "address": 279,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "value",
+                "min": 5,
+                "max": 45,
+                "scale": 0.1,
+                "group": "settings",
+                "default": 35,
+                "order": 2
+            },
+            {
+                "id": "temp_setpoint_min",
+                "title": "temp_setpoint_min",
+                "address": 280,
+                "reg_type": "holding",
+                "format": "u16",
+                "type": "value",
+                "min": 5,
+                "max": 45,
+                "scale": 0.1,
+                "group": "settings",
+                "default": 5,
+                "order": 1
+            },
+            {
+                "id": "modbus_set_id",
+                "title": "modbus_set_id",
+                "address": 0,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "max": 247,
+                "group": "modbus_settings",
+                "order": 1
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "engo_title": "ENGO EFAN",        
+                "polling_settings_title": "General",
+                "settings_title": "Termostat Settings",
+                "settings": "Settings",
+                "version":"FW Version",
+                "working_status":"Working Status",
+                "working_status_enum2":"Termostat OFF",
+                "working_status_enum0":"Idle: Room Meet Temperature",
+                "working_status_enum129":"Heating",
+                "working_status_enum136":"Cooling",
+                "working_status_enum8":"Sensor Error",
+                "temp_sens_internal":"Temperature: Internal Sensor",
+                "fan_status":"Fan State",
+                "fan_status_enum0":"Manual Set - Turn OFF",
+                "fan_status_enum1":"Manual Set: Low Fan Speed",
+                "fan_status_enum2":"Manual Set: Medium Fan Speed",
+                "fan_status_enum4":"Manual Set: High Fan Speed",
+                "fan_status_enum8":"Automatic - Turn OFF",
+                "fan_status_enum9":"Automatic: 1st Speed",
+                "fan_status_enum10":"Automatic: 2nd Speed",
+                "fan_status_enum12":"Automatic: 3rd Speed",
+                "valve_1_status":"Valve 1 Stat",
+                "valve_2_status":"Valve 2 Stat",
+                "humidity":"Humidity",
+                "key_lock":"Key Lock",
+                "operation_mode":"Operation Mode",
+                "operation_mode_enum0":"Schedule",
+                "operation_mode_enum1":"Manual",
+                "operation_mode_enum3":"FROST - Anti-Freeze Mode",
+                "modbus_set_id":"Slave ID Of The Device",
+                "floor_protect_max_temp":"Floor Potection: Max Heating Temperature (P25)",
+                "floor_protect_min_temp":"Floor Potection: Min Cooling Temperature (P26)",
+                "pin_for_settings":"PIN For Settings",
+                "display_bright":"Display Brightness",
+                "temp_setpoint_max":"Temperature Range: Max Set Point",
+                "temp_setpoint_min":"Temperature Range: Min Set Point",
+                "power_control": "Thrmostat Power OFF",
+                "schedule_mode_temp_setpoint": "Temperature Set Point",
+                "manual_mode_temp_setpoint": "Temperature Set Point",
+                "frost_mode_frost_setpoint": "Temperature Set Point",
+                "modbus_settings_title": "Modbus Setting",
+                "pin_for_settings_off": "Off",
+                "pin_for_settings_on": "On"
+
+
+            },
+            "ru": {
+                "engo_title": "ENGO EFAN",        
+                "polling_settings_title": "Общее",
+                "settings_title": "Настройки термостата",
+                "settings": "Настройки",
+                "version":"Версия прошивки",
+                "working_status":"Статус",
+                "working_status_enum2":"Термостат отключен",
+                "working_status_enum0":"Температура в норме",
+                "working_status_enum129":"Нагрев",
+                "working_status_enum136":"Охлаждение",
+                "working_status_enum8":"Ошибка датчика",
+                "temp_sens_internal":"Температура: внутренний датчик",
+                "fan_status":"Состоние вентилятора",
+                "fan_status_enum0":"Ручное управление - отключено",
+                "fan_status_enum1":"Ручное управление - низкая скорость вентилятора",
+                "fan_status_enum2":"Ручное управление - средняя скорость вентилятора",
+                "fan_status_enum4":"Ручное управление - высокая скорость вентилятора",
+                "fan_status_enum8":"Авто - отключено",
+                "fan_status_enum9":"Авто: 1-я скорость",
+                "fan_status_enum10":"Авто: 2-я скорость",
+                "fan_status_enum12":"Авто: 3-я скорость",
+                "valve_1_status":"Состояние клапана №1",
+                "valve_2_status":"Состояние клапана №2",
+                "humidity":"Влажность",
+                "key_lock":"Блокировка клавиш",
+                "operation_mode":"Способ управления",
+                "operation_mode_enum0":"По расписанию",
+                "operation_mode_enum1":"Ручное управление",
+                "operation_mode_enum3":"FROST - Защита от замерзания",
+                "modbus_set_id":"Адрес устройства",
+                "floor_protect_max_temp":"Защита пола: максимальная температура нагрева (P25)",
+                "floor_protect_min_temp":"Защита пола: минимальная температура охлаждения (P26)",
+                "pin_for_settings":"PIN-код для кнопок (P28)",
+                "display_bright":"Яркость дисплея",
+                "temp_setpoint_max":"Диапазон температур: максимальная уставка",
+                "temp_setpoint_min":"Диапазон температур: минимальная уставка",
+                "power_control": "Отключить термостат",
+                "schedule_mode_temp_setpoint": "Уставка температуры - по расписанию",
+                "manual_mode_temp_setpoint": "Уставка температуры - ручной режим",
+                "frost_mode_frost_setpoint": "Уставка температуры - FROST",
+                "modbus_settings_title": "Настройки Modbus",
+                "pin_for_settings_off": "Отключить",
+                "pin_for_settings_on": "Включить"
+            }
+        }
+    }
+}

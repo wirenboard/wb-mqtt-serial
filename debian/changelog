@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.213.0) stable; urgency=medium
+
+  * Add ENGO EFAN 24B/230W Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 30 Dec 2025 13:00:00 +0300
+
 wb-mqtt-serial (2.212.2) stable; urgency=medium
 
   * Fix firmware version in WB-M1W2 template
