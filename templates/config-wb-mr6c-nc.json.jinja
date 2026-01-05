@@ -81,7 +81,25 @@
                 "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
-
+            {
+                "title": "Delays",
+                "fw": "1.24.0",
+                "id": "g_delays"
+            },
+            {
+                "title": "Startup Delay (s)",
+                "id": "gg_startup_delay_params",
+                "description": "startup_delay_description",
+                "fw": "1.24.0",
+                "group": "g_delays"
+            },
+            {
+                "title": "Restart Delay (s)",
+                "id": "gg_restart_delay_params",
+                "description": "restart_delay_description",
+                "fw": "1.24.0",
+                "group": "g_delays"
+            },
             {
                 "title": "General",
                 "id": "g_general"
@@ -89,7 +107,7 @@
             {
                 "title": "HW Info",
                 "id": "g_hw_info"
-            }            
+            }
         ],
 
         "setup": [
@@ -326,6 +344,30 @@
                     "Enable only in safety mode"
                 ]
             },
+            "out{{out_num}}_startup_delay_params": {
+                "title": "Output {{out_num}}",
+                "group": "gg_delays_startup_delay",
+                "order": {{out_num}},
+                "address": {{1728 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "fw": "1.24.0"
+            },
+            "out{{out_num}}_restart_delay_params": {
+                "title": "Output {{out_num}}",
+                "group": "gg_delays_restart_delay",
+                "order": {{out_num}},
+                "address": {{1736 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "fw": "1.24.0"
+            },
             {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
@@ -484,6 +526,39 @@
                 "offset": 1,
                 "group": "gg_outputs_channels"
             },
+            {
+                "name": "Real State K{{out_num}}",
+                "reg_type": "discrete",
+                "address": {{96 + out_num - 1}},
+                "type": "switch",
+                "enabled": false,
+                "scale": -1,
+                "offset": 1,
+                "fw": "1.24.0",
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Startup Delay Countdown K{{out_num}}",
+                "reg_type": "input",
+                "address": {{1744 + out_num - 1}},
+                "type": "value",
+                "scale": 0.1,
+                "enabled": false,
+                "condition": "isDefined(out{{out_num}}_startup_delay_params)&&out{{out_num}}_startup_delay_params>0",
+                "fw": "1.24.0",
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Restart Delay Countdown K{{out_num}}",
+                "reg_type": "input",
+                "address": {{1752 + out_num - 1}},
+                "type": "value",
+                "scale": 0.1,
+                "enabled": false,
+                "condition": "isDefined(out{{out_num}}_restart_delay_params)&&out{{out_num}}_restart_delay_params>0",
+                "fw": "1.24.0",
+                "group": "gg_outputs_channels"
+            },
             {% endfor -%}
             {
                 "name": "Serial",
@@ -574,7 +649,14 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms"
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
+
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "K{{out_num}}": "Command K{{out_num}}",
+                {% endfor -%}
+
+                "startup_delay_description": "0...999, factory default - 0",
+                "restart_delay_description": "0...999, factory default - 0"
             },
             "ru": {
                 "WB-MR6C-NC_template_title": "WB-MR6C/NC (6-канальный модуль реле)",
@@ -591,6 +673,7 @@
 
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
+                "Delays": "Задержки",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -602,6 +685,12 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
+
+                "K{{out_num}}": "Команда K{{out_num}}",
+                "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
+
+                "Startup Delay Countdown K{{out_num}}": "Таймер задержки включения K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Таймер задержки повторного включения K{{out_num}}",
 
                 {% endfor -%}
 
@@ -674,6 +763,11 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
+                "Startup Delay (s)": "Задержка включения (с)",
+                "startup_delay_description": "0...999, заводское - 0",
+                "Restart Delay (s)": "Задержка повторного включения (с)",
+                "restart_delay_description": "0...999, заводское - 0",
+
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.0 или новее",
@@ -690,4 +784,3 @@
         }
     }
 }
-
