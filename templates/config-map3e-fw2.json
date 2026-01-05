@@ -6,6 +6,9 @@
         {
             "signature": "MAP3E",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3E"
         }
     ],
     "device": {
@@ -256,6 +259,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -288,6 +292,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -417,6 +422,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -449,6 +455,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -578,6 +585,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -610,6 +618,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -859,7 +868,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase enegry meter)",
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
@@ -873,15 +882,15 @@
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
                 "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
-                "Actual Phase L1": "Фаза транформатора L1",
+                "Actual Phase L1": "Фаза трансформатора L1",
                 "Turns L2": "Коэффициент трансформации L2",
                 "Phi L2": "Фазовая задержка L2",
                 "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
-                "Actual Phase L2": "Фаза транформатора L2",
+                "Actual Phase L2": "Фаза трансформатора L2",
                 "Turns L3": "Коэффициент трансформации L3",
                 "Phi L3": "Фазовая задержка L3",
                 "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
-                "Actual Phase L3": "Фаза транформатора L3",
+                "Actual Phase L3": "Фаза трансформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
