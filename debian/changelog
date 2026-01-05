@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.213.0) stable; urgency=medium
+
+  * MR templates: Add delays, change min time for cutains
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 5 Jan 2026 14:05:00 +0300
+
 wb-mqtt-serial (2.212.3) stable; urgency=medium
 
   * MAP6S and MAP3E: Add unsupported values for peaks
