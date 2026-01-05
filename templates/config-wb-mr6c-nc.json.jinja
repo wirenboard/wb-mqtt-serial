@@ -346,7 +346,7 @@
             },
             "out{{out_num}}_startup_delay_params": {
                 "title": "Output {{out_num}}",
-                "group": "gg_delays_startup_delay",
+                "group": "gg_startup_delay_params",
                 "order": {{out_num}},
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
@@ -358,7 +358,7 @@
             },
             "out{{out_num}}_restart_delay_params": {
                 "title": "Output {{out_num}}",
-                "group": "gg_delays_restart_delay",
+                "group": "gg_restart_delay_params",
                 "order": {{out_num}},
                 "address": {{1736 + out_num - 1}},
                 "reg_type": "holding",
@@ -540,24 +540,24 @@
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
                 "reg_type": "input",
+                "fw": "1.24.0",
                 "address": {{1744 + out_num - 1}},
-                "type": "value",
+                "units": "s",
+                "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
-                "condition": "isDefined(out{{out_num}}_startup_delay_params)&&out{{out_num}}_startup_delay_params>0",
-                "fw": "1.24.0",
-                "group": "gg_outputs_channels"
+                "group": "gg_startup_delay_params"
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
                 "reg_type": "input",
+                "fw": "1.24.0",
                 "address": {{1752 + out_num - 1}},
-                "type": "value",
+                "units": "s",
+                "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
-                "condition": "isDefined(out{{out_num}}_restart_delay_params)&&out{{out_num}}_restart_delay_params>0",
-                "fw": "1.24.0",
-                "group": "gg_outputs_channels"
+                "group": "gg_restart_delay_params"
             },
             {% endfor -%}
             {

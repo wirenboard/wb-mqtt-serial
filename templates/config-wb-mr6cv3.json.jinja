@@ -448,7 +448,7 @@
             },
             "out{{out_num}}_startup_delay_params": {
                 "title": "Output {{out_num}}",
-                "group": "gg_startup_delay",
+                "group": "gg_startup_delay_params",
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
@@ -460,7 +460,7 @@
             },
             "out{{out_num}}_restart_delay_params": {
                 "title": "Output {{out_num}}",
-                "group": "gg_restart_delay",
+                "group": "gg_restart_delay_params",
                 "address": {{1736 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
@@ -773,26 +773,30 @@
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
                 "reg_type": "input",
-                "address": {{1744 + out_num - 1}},
-                "type": "value",
-                "scale": 0.1,
-                "round_to": 0.1,
                 "fw": "1.24.0",
+                "address": {{1744 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 0.1,
                 "enabled": false,
-                "group": "gg_outputs_channels",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+                "group": "gg_startup_delay_params",
+                {% if curtain_num <= CURTAINS_NUMBER -%}
+                "condition": "out{{out_num}}_startup_delay_params>0"
+                {% endif -%}
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
                 "reg_type": "input",
-                "address": {{1752 + out_num - 1}},
-                "type": "value",
-                "scale": 0.1,
-                "round_to": 0.1,
                 "fw": "1.24.0",
+                "address": {{1752 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 0.1,
                 "enabled": false,
-                "group": "gg_outputs_channels",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+                "group": "gg_restart_delay_params",
+                {% if curtain_num <= CURTAINS_NUMBER -%}
+                "condition": "out{{out_num}}_restart_delay_params>0"
+                {% endif -%}
             },
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -914,10 +918,10 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
-                "curtain_zero_time_description": "If the time is 0, the curtain will run until a stop command is received",
+                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), and any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Command K{{out_num}}": "Command K{{out_num}}",
+                "K{{out_num}}": "Command K{{out_num}}",
                 {% endfor -%}
 
                 "startup_delay_description": "0...999, factory default - 0",
@@ -1047,7 +1051,7 @@
                 "restart_delay_description": "0...999, заводское - 0",
 
                 "Curtains Control": "Управление шторами",
-                "curtain_zero_time_description": "Если время равно 0, штора будет двигаться до получения команды остановки",
+                "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
