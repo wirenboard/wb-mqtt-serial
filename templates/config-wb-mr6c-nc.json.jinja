@@ -546,7 +546,8 @@
                 "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
-                "group": "gg_startup_delay_params"
+                "group": "gg_startup_delay_params",
+                "condition": "out{{out_num}}_startup_delay_params>0"
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
@@ -557,7 +558,8 @@
                 "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
-                "group": "gg_restart_delay_params"
+                "group": "gg_restart_delay_params",
+                "condition": "out{{out_num}}_restart_delay_params>0"
             },
             {% endfor -%}
             {

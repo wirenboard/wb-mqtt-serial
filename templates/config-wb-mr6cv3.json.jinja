@@ -452,9 +452,10 @@
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
-                "default": 0,
                 "min": 0,
                 "max": 999,
+                "default": 0,
+                "order": {{out_num}},
                 "fw": "1.24.0",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
@@ -464,9 +465,10 @@
                 "address": {{1736 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
-                "default": 0,
                 "min": 0,
                 "max": 999,
+                "default": 0,
+                "order": {{out_num}},
                 "fw": "1.24.0",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
@@ -780,9 +782,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_startup_delay_params",
-                {% if curtain_num <= CURTAINS_NUMBER -%}
                 "condition": "out{{out_num}}_startup_delay_params>0"
-                {% endif -%}
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
@@ -794,9 +794,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_restart_delay_params",
-                {% if curtain_num <= CURTAINS_NUMBER -%}
                 "condition": "out{{out_num}}_restart_delay_params>0"
-                {% endif -%}
             },
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -942,6 +940,7 @@
 
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
+                "Delays": "Задержки",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -1044,7 +1043,6 @@
                 "closing while pressed": "закрывать пока кнопка нажата",
                 "opening/closing while pressed": "открывать/закрывать пока кнопка нажата",
 
-                "Delays": "Задержки",
                 "Startup Delay (s)": "Задержка включения (с)",
                 "startup_delay_description": "0...999, заводское - 0",
                 "Restart Delay (s)": "Задержка повторного включения (с)",

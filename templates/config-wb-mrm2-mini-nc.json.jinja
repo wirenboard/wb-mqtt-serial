@@ -546,22 +546,26 @@
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
                 "reg_type": "input",
+                "fw": "1.24.0",
                 "address": {{1744 + out_num - 1}},
-                "type": "value",
+                "units": "s",
+                "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
-                "condition": "isDefined(out{{out_num}}_startup_delay_params)&&out{{out_num}}_startup_delay_params>0",
-                "group": "gg_outputs_channels"
+                "group": "gg_startup_delay_params",
+                "condition": "out{{out_num}}_startup_delay_params>0"
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
                 "reg_type": "input",
+                "fw": "1.24.0",
                 "address": {{1752 + out_num - 1}},
-                "type": "value",
+                "units": "s",
+                "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
-                "condition": "isDefined(out{{out_num}}_restart_delay_params)&&out{{out_num}}_restart_delay_params>0",
-                "group": "gg_outputs_channels"
+                "group": "gg_restart_delay_params",
+                "condition": "out{{out_num}}_restart_delay_params>0"
             },
             {% endfor -%}
             {
