@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.213.0) stable; urgency=medium
 
-  * MAP3E and MAP3ET templates: Add parameters
+  * MAP3ET template: Add parameters
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 12 Jan 2026 14:40:00 +0300
 
