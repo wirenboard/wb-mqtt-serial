@@ -23051,15 +23051,9 @@ WB-MRM2-mini
 	Button 2 freq  =>  Button 2 freq
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
-	Real State K1  =>  Real State K1
-	Real State K2  =>  Real State K2
 	Relay 1  =>  Relay 1
 	Relay 2  =>  Relay 2
-	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
-	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
-	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
-	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NC
@@ -23098,7 +23092,13 @@ WB-MRM2-mini-NC-inputs
 	MCU Voltage  =>  MCU Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NO-inputs
@@ -27302,7 +27302,25 @@ tpl1_oni_plc_w_emd_0706
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 tpl1_wb_mao4
