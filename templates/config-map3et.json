@@ -862,7 +862,7 @@
                 "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases",
-                "ct_params_description": "Warning! Current transformer parameters are preset at factory. Changing them is not recommended unless absolutely necessary.",
+                "ct_params_description": "Warning! Current transformer parameters (turns and phi) are preset at factory. Changing them is not recommended unless absolutely necessary.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -871,7 +871,7 @@
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
-                "ct_params_description": "Внимание! Параметры токовых трансформаторов заданы на заводе. Изменение без крайней необходимости не рекомендуется.",
+                "ct_params_description": "Внимание! Коэффициенты трансформации и фазовые задержки предустановлены на заводе. Изменение без крайней необходимости не рекомендуется.",
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
                 "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
