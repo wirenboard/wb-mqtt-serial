@@ -259,6 +259,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -291,6 +292,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -420,6 +422,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -452,6 +455,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -581,6 +585,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -613,6 +618,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {

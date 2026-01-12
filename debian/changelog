@@ -1,8 +1,32 @@
-wb-mqtt-serial (2.212.0) stable; urgency=medium
+wb-mqtt-serial (2.213.0) stable; urgency=medium
 
-  * MAP3E and MAP3ET templates: Add hw signatures and all parameters
+  * MAP3E and MAP3ET templates: Add parameters
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 22 Dec 2025 21:05:00 +0300
+
+wb-mqtt-serial (2.212.3) stable; urgency=medium
+
+  * MAP6S and MAP3E: Add unsupported values for peaks
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 29 Dec 2025 17:22:00 +0300
+
+wb-mqtt-serial (2.212.2) stable; urgency=medium
+
+  * Fix firmware version in WB-M1W2 template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Mon, 29 Dec 2025 15:28:14 +0300
+
+wb-mqtt-serial (2.212.1) stable; urgency=medium
+
+  * Update README.md
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Sun, 28 Dec 2025 17:53:26 +0500
+
+wb-mqtt-serial (2.212.0) stable; urgency=medium
+
+  * MAP3E and MAP3ET templates: Add new device signatures
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 24 Dec 2025 13:22:00 +0300
 
 wb-mqtt-serial (2.211.0) stable; urgency=medium
 
