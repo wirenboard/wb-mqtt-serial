@@ -289,6 +289,20 @@ Drivent V2
 	reset_locks  =>  reset_locks
 	speed_of_buttons  =>  speed_of_buttons
 	version  =>  version
+ENGO EFAN
+	display_bright  =>  display_bright
+	fan_status  =>  fan_status
+	frost_mode_frost_setpoint  =>  frost_mode_frost_setpoint
+	humidity  =>  humidity
+	key_lock  =>  key_lock
+	manual_mode_temp_setpoint  =>  manual_mode_temp_setpoint
+	operation_mode  =>  operation_mode
+	power_control  =>  power_control
+	schedule_mode_temp_setpoint  =>  schedule_mode_temp_setpoint
+	temp_sens_internal  =>  temp_sens_internal
+	valve_1_status  =>  valve_1_status
+	valve_2_status  =>  valve_2_status
+	version  =>  version
 ESCORT DB-2
 	Conversion Factor  =>  Conversion Factor
 	Empty  =>  Empty
@@ -342,20 +356,6 @@ Energomera CE303
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
-ENGO EFAN
-	display_bright  =>  display_bright
-	fan_status  =>  fan_status
-	frost_mode_frost_setpoint  =>  frost_mode_frost_setpoint
-	humidity  =>  humidity
-	key_lock  =>  key_lock
-	manual_mode_temp_setpoint  =>  manual_mode_temp_setpoint
-	operation_mode  =>  operation_mode
-	power_control  =>  power_control
-	schedule_mode_temp_setpoint  =>  schedule_mode_temp_setpoint
-	temp_sens_internal  =>  temp_sens_internal
-	valve_1_status  =>  valve_1_status
-	valve_2_status  =>  valve_2_status
-	version  =>  version
 Ensystec-Leak-Protect
 	external_led_control  =>  external_led_control
 	external_power_220_ac  =>  external_power_220_ac
