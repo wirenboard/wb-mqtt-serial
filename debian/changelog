@@ -1,8 +1,8 @@
 wb-mqtt-serial (2.213.0) stable; urgency=medium
 
-  * MAP3ET template: Add parameters
+  * MAP3ET template: Add parameters: turns, phi, actual phase, CT reverse
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 12 Jan 2026 14:40:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 13 Jan 2026 09:25:00 +0300
 
 wb-mqtt-serial (2.212.3) stable; urgency=medium
 
