@@ -226,6 +226,7 @@ public:
     };
     EAccessType AccessType{EAccessType::READ_WRITE};
 
+    std::string FwVersion;
     std::string TypeName;
 
     // Minimal interval between register reads, if ReadPeriod is not set
@@ -345,6 +346,7 @@ struct TRegister
         ReadError = 0,
         WriteError,
         PollIntervalMissError,
+        UnsupportedError,
         MAX_ERRORS
     };
 

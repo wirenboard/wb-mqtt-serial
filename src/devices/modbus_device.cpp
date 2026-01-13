@@ -68,9 +68,25 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
 void TModbusDevice::PrepareImpl(TPort& port)
 {
     TSerialDevice::PrepareImpl(port);
-    if (GetConnectionState() != TDeviceConnectionState::CONNECTED && EnableWbContinuousRead) {
+    if (GetConnectionState() != TDeviceConnectionState::CONNECTED) {
+
+        // read fw version here
+        auto fwVersion = "1.2.2";
+
+        for (const auto& reg: GetRegisters()) {
+            const auto& fw = reg->GetConfig()->FwVersion;
+            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+                reg->SetError(TRegister::TError::UnsupportedError);
+                reg->ExcludeFromPolling();
+            } else {
+                reg->ClearError(TRegister::TError::UnsupportedError);
+            }
+        }
+
         ContinuousReadEnabled =
-            Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
+            EnableWbContinuousRead
+                ? Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache)
+                : false;
     }
 }
 

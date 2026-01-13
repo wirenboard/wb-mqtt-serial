@@ -329,6 +329,9 @@ namespace
                                               context.factory,
                                               context.device_base_address,
                                               context.stride);
+                if (channel_data.isMember("fw")) {
+                    reg.RegisterConfig->FwVersion = channel_data["fw"].asString();
+                }
                 default_type_str = reg.DefaultControlType;
                 registers.push_back(deviceWithChannels.Device->AddRegister(reg.RegisterConfig));
             } catch (const std::exception& e) {
