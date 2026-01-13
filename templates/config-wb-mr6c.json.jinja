@@ -727,6 +727,16 @@
                 "group": "g_hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -938,6 +948,7 @@
                 "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
 
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",

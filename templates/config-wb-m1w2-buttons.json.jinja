@@ -261,6 +261,16 @@
                 "group": "g_hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -391,6 +401,7 @@
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
                 "Reset All Counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения",
