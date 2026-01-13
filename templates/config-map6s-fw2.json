@@ -305,6 +305,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_1"
             },
             {
@@ -421,6 +422,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_2"
             },
             {
@@ -537,6 +539,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_3"
             },
             {
@@ -653,6 +656,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_4"
             },
             {
@@ -769,6 +773,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_5"
             },
             {
@@ -885,6 +890,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_6"
             },
             {
@@ -1004,6 +1010,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "general"
             },
             {
@@ -1075,7 +1082,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel enegry meter)",
+                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
