@@ -22,14 +22,17 @@
         "groups": [
             {
                 "title": "L1",
+                "description": "ct_params_description",
                 "id": "l1"
             },
             {
                 "title": "L2",
+                "description": "ct_params_description",
                 "id": "l2"
             },
             {
                 "title": "L3",
+                "description": "ct_params_description",
                 "id": "l3"
             },
             {
@@ -47,6 +50,135 @@
         ],
 
         "parameters": {
+            "l1_turns": {
+                "title": "Turns L1",
+                "address": "0x1460",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "default": 0,
+                "group": "l1",
+                "order": 1
+            },
+            "l1_phi": {
+                "title": "Phi L1",
+                "address": "0x1463",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "default": 0,
+                "group": "l1",
+                "order": 2
+            },
+            "l1_phase": {
+                "title": "Actual Phase L1",
+                "address": "0x14A0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 1,
+                "enum_titles": ["L1", "L2", "L3"],
+                "group": "l1",
+                "order": 3
+            },
+            "l1_ct_reverse": {
+                "title": "Current Transformer Reverse L1",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l1",
+                "order": 4
+            },
+            "l2_turns": {
+                "title": "Turns L2",
+                "address": "0x1461",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "default": 0,
+                "group": "l2",
+                "order": 1
+            },
+            "l2_phi": {
+                "title": "Phi L2",
+                "address": "0x1464",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "default": 0,
+                "group": "l2",
+                "order": 2
+            },
+            "l2_phase": {
+                "title": "Actual Phase L2",
+                "address": "0x14A1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 2,
+                "enum_titles": ["L1", "L2", "L3"],
+                "group": "l2",
+                "order": 3
+            },
+            "l2_ct_reverse": {
+                "title": "Current Transformer Reverse L2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l2",
+                "order": 4
+            },
+            "l3_turns": {
+                "title": "Turns L3",
+                "address": "0x1462",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "default": 0,
+                "group": "l3",
+                "order": 1
+            },
+            "l3_phi": {
+                "title": "Phi L3",
+                "address": "0x1465",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "default": 0,
+                "group": "l3",
+                "order": 2
+            },
+            "l3_phase": {
+                "title": "Actual Phase L3",
+                "address": "0x14A2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 3,
+                "enum_titles": ["L1", "L2", "L3"],
+                "group": "l3",
+                "order": 3
+            },
+            "l3_ct_reverse": {
+                "title": "Current Transformer Reverse L3",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l3",
+                "order": 4
+            },
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -729,7 +861,8 @@
             "en": {
                 "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases.",
+                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases",
+                "ct_params_description": "Warning! Current transformer parameters (turns and phi) are preset at factory. Changing them is not recommended unless absolutely necessary.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -738,13 +871,28 @@
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "ct_params_description": "Внимание! Коэффициенты трансформации и фазовые задержки предустановлены на заводе. Изменение без крайней необходимости не рекомендуется.",
+                "Turns L1": "Коэффициент трансформации L1",
+                "Phi L1": "Фазовая задержка L1",
+                "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
+                "Actual Phase L1": "Фаза трансформатора L1",
+                "Turns L2": "Коэффициент трансформации L2",
+                "Phi L2": "Фазовая задержка L2",
+                "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
+                "Actual Phase L2": "Фаза трансформатора L2",
+                "Turns L3": "Коэффициент трансформации L3",
+                "Phi L3": "Фазовая задержка L3",
+                "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
+                "Actual Phase L3": "Фаза трансформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
                 "Disabled": "Выключено",
-                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз.",
+                "Yes": "Да",
+                "No": "Нет",
+                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "AP energy L1": "Энергия AP L1",
                 "RP energy L1": "Энергия RP L1",
