@@ -55,6 +55,7 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
     bool EnableWbContinuousRead;
     bool ContinuousReadEnabled;
+    std::string FwVersion;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
