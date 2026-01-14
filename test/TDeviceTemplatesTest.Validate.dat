@@ -24469,7 +24469,6 @@ carel_mu_rack
 	Excessive Prevent Frequency  =>  Excessive Prevent Frequency
 	Fan Thermal Overload  =>  Fan Thermal Overload
 	General Discharge Pressure Switch  =>  General Discharge Pressure Switch
-	HW Batch Number  =>  HW Batch Number
 	High Outside Temperature  =>  High Outside Temperature
 	High Room Temperature  =>  High Room Temperature
 	Inverter Output  =>  Inverter Output
@@ -24538,7 +24537,6 @@ carel_pj_easy
 	Defrost status  =>  Defrost status
 	Digital input status  =>  Digital input status
 	Fan relay status  =>  Fan relay status
-	HW Batch Number  =>  HW Batch Number
 	High temperature alarm  =>  High temperature alarm
 	Low temperature alarm  =>  Low temperature alarm
 	OFF-ON command  =>  OFF-ON command
@@ -25245,7 +25243,6 @@ danfoss_erc_211_wb_ref
 	Controller State  =>  Controller State
 	DI1 Status  =>  DI1 Status
 	Defrost Temperature Sensor   =>  Defrost Temperature Sensor 
-	HW Batch Number  =>  HW Batch Number
 	Night Mode Active  =>  Night Mode Active
 	Relay 1 Turn On Counter  =>  Relay 1 Turn On Counter
 	Temperature Setpoint  =>  Temperature Setpoint
@@ -25263,7 +25260,6 @@ danfoss_erc_213_wb_ref
 	Defrost Relay Status  =>  Defrost Relay Status
 	Defrost Temperature Sensor   =>  Defrost Temperature Sensor 
 	Fan Relay Status  =>  Fan Relay Status
-	HW Batch Number  =>  HW Batch Number
 	Night Mode Active  =>  Night Mode Active
 	Relay 1 Turn On Counter  =>  Relay 1 Turn On Counter
 	Relay 2 Turn On Counter  =>  Relay 2 Turn On Counter
@@ -25283,7 +25279,6 @@ danfoss_erc_214_wb_ref
 	Defrost Relay Status  =>  Defrost Relay Status
 	Defrost Temperature Sensor   =>  Defrost Temperature Sensor 
 	Fan Relay Status  =>  Fan Relay Status
-	HW Batch Number  =>  HW Batch Number
 	Light Relay Status  =>  Light Relay Status
 	Night Mode Active  =>  Night Mode Active
 	Relay 1 Turn On Counter  =>  Relay 1 Turn On Counter
@@ -26076,7 +26071,6 @@ eliwell_id_974_lx_wb_ref
 	Device Family Address  =>  Device Family Address
 	Economy Mode  =>  Economy Mode
 	External Alarm  =>  External Alarm
-	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Low Temperature Alarm  =>  Low Temperature Alarm
 	Open Door Alarm  =>  Open Door Alarm
@@ -26109,7 +26103,6 @@ eliwell_id_985_lx_wb_ref
 	Economy Off  =>  Economy Off
 	Economy On  =>  Economy On
 	External Alarm  =>  External Alarm
-	HW Batch Number  =>  HW Batch Number
 	Input 1 High Temperature Alarm  =>  Input 1 High Temperature Alarm
 	Input 1 Low Temperature Alarm  =>  Input 1 Low Temperature Alarm
 	Input 3 High Temperature Alarm  =>  Input 3 High Temperature Alarm
@@ -26159,7 +26152,6 @@ eliwell_idplus_9xx
 	Evaporator Fans On  =>  Evaporator Fans On
 	External Alarm  =>  External Alarm
 	HACCP Alarm  =>  HACCP Alarm
-	HW Batch Number  =>  HW Batch Number
 	Manual Defrost Start  =>  Manual Defrost Start
 	Overtemperature Alarm  =>  Overtemperature Alarm
 	Parameters Changed  =>  Parameters Changed
@@ -26200,7 +26192,6 @@ eliwell_idplus_9xx_wb_ref
 	Evaporator Fans Status  =>  Evaporator Fans Status
 	External Alarm  =>  External Alarm
 	HACCP Alarm  =>  HACCP Alarm
-	HW Batch Number  =>  HW Batch Number
 	Manual Defrost Start  =>  Manual Defrost Start
 	Overtemperature Alarm  =>  Overtemperature Alarm
 	Parameters Changed  =>  Parameters Changed
@@ -26654,7 +26645,6 @@ tpl1_carel_pj_basic
 	Defrost status  =>  Defrost status
 	Digital input status  =>  Digital input status
 	Fan relay status  =>  Fan relay status
-	HW Batch Number  =>  HW Batch Number
 	High temperature alarm  =>  High temperature alarm
 	Low temperature alarm  =>  Low temperature alarm
 	OFF-ON command  =>  OFF-ON command
@@ -26684,7 +26674,6 @@ tpl1_danfoss_ekc_202b
 	Door Alarm  =>  Door Alarm
 	EKC Error  =>  EKC Error
 	Fan Relay Status  =>  Fan Relay Status
-	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Hold After Defrost Active  =>  Hold After Defrost Active
 	Low Temperature Alarm  =>  Low Temperature Alarm
@@ -26763,7 +26752,6 @@ tpl1_danfoss_ekc_202d
 	EKC Error  =>  EKC Error
 	Fan Relay Status  =>  Fan Relay Status
 	Forced Cooling Start  =>  Forced Cooling Start
-	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Hold After Defrost Active  =>  Hold After Defrost Active
 	Low Temperature Alarm  =>  Low Temperature Alarm
@@ -26861,7 +26849,6 @@ tpl1_danfoss_ekc_204a1
 	HACCP Alarm  =>  HACCP Alarm
 	HACCP Peak Temperature  =>  HACCP Peak Temperature
 	HACCP Temperature  =>  HACCP Temperature
-	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Hold After Defrost Active  =>  Hold After Defrost Active
 	Low Temperature Alarm  =>  Low Temperature Alarm
