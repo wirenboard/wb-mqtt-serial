@@ -38,10 +38,6 @@
             {
                 "title": "Control",
                 "id": "control"
-            },
-            {
-                "title": "HW Info",
-                "id": "hw_info"
             }
         ],
 
@@ -508,17 +504,6 @@
                 "scale": 0.1,
                 "round_to": 0.1,
                 "format": "s16"
-            },
-            {
-                "name": "HW Batch Number",
-                "reg_type": "input",
-                "address": 304,
-                "type": "text",
-                "format": "string",
-                "string_data_size": 16,
-                "fw": "1.5.0",
-                "group": "hw_info",
-                "enabled": false
             }
         ]
     }

@@ -49,10 +49,6 @@
             {
                 "title": "Setpoint",
                 "id": "setpoint"
-            },
-            {
-                "title": "HW Info",
-                "id": "hw_info"
             }
         ],
         "parameters": [
@@ -2499,17 +2495,6 @@
                 "units": "%",
                 "address": 500,
                 "format": "u16"
-            },
-            {
-                "name": "HW Batch Number",
-                "reg_type": "input",
-                "address": 304,
-                "type": "text",
-                "format": "string",
-                "string_data_size": 16,
-                "fw": "1.5.0",
-                "group": "hw_info",
-                "enabled": false
             }
         ],
         "translations": {
@@ -2772,8 +2757,7 @@
                 "Only if prevent active": "Только если активно предотвращение",
                 "MANUAL": "Ручной",
                 "AUTO": "Автоматический",
-                "NO ROTATION": "Без чередования",
-                "HW Batch Number": "Номер партии"
+                "NO ROTATION": "Без чередования"
             }
         }
     }

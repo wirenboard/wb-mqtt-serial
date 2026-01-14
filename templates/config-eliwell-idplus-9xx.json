@@ -53,10 +53,6 @@
             {
                 "title": "Configuration (Cnf)",
                 "id": "configuration"
-            },
-            {
-                "title": "HW Info",
-                "id": "hw_info"
             }
         ],
 
@@ -1448,17 +1444,6 @@
                 "format": "u16",
                 "min": 0,
                 "group": "control"
-            },
-            {
-                "name": "HW Batch Number",
-                "reg_type": "input",
-                "address": 304,
-                "type": "text",
-                "format": "string",
-                "string_data_size": 16,
-                "fw": "1.2.0",
-                "group": "hw_info",
-                "enabled": false
             }
         ]
     }
