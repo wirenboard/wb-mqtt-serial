@@ -15,6 +15,7 @@ namespace
         for (int i = 0; i < 2; i++) {
             auto registerList = i ? rpcRequest->GetParametersRegisterList() : rpcRequest->GetChannelsRegisterList();
             if (!registerList.empty()) {
+                PrepareSession(*port, rpcRequest->Device);
                 ReadRegisterList(*port, rpcRequest->Device, registerList, result[i ? "parameters" : "channels"]);
             }
         }

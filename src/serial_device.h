@@ -248,8 +248,11 @@ public:
     bool IsSporadicOnly() const;
     void SetSporadicOnly(bool sporadicOnly);
 
-    bool IsWBDevice() const;
-    void SetWBDevice(bool wbDevice);
+    bool IsWbDevice() const;
+    void SetWbDevice(bool wbDevice);
+
+    const std::string& GetWbFwVersion() const;
+    void SetWbFwVersion(const std::string& wbFwVersion);
 
     // Reset values caches
     virtual void InvalidateReadCache();
@@ -287,7 +290,9 @@ private:
     int RemainingFailCycles;
     bool SupportsHoles;
     bool SporadicOnly;
-    bool WBDevice;
+    bool WbDevice;
+    std::string WbFwVersion;
+
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;

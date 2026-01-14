@@ -91,7 +91,7 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PProtocol protocol)
       RemainingFailCycles(0),
       SupportsHoles(true),
       SporadicOnly(true),
-      WBDevice(false)
+      WbDevice(false)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -271,14 +271,24 @@ void TSerialDevice::SetSporadicOnly(bool sporadicOnly)
     SporadicOnly = sporadicOnly;
 }
 
-bool TSerialDevice::IsWBDevice() const
+bool TSerialDevice::IsWbDevice() const
 {
-    return WBDevice;
+    return WbDevice;
 }
 
-void TSerialDevice::SetWBDevice(bool wbDevice)
+void TSerialDevice::SetWbDevice(bool wbDevice)
 {
-    WBDevice = wbDevice;
+    WbDevice = wbDevice;
+}
+
+const std::string& TSerialDevice::GetWbFwVersion() const
+{
+    return WbFwVersion;
+}
+
+void TSerialDevice::SetWbFwVersion(const std::string& wbFwVersion)
+{
+    WbFwVersion = wbFwVersion;
 }
 
 void TSerialDevice::SetDisconnected()

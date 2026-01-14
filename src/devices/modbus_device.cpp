@@ -68,18 +68,18 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
 void TModbusDevice::PrepareImpl(TPort& port)
 {
     TSerialDevice::PrepareImpl(port);
-    if (GetConnectionState() != TDeviceConnectionState::CONNECTED && IsWBDevice()) {
+    if (GetConnectionState() != TDeviceConnectionState::CONNECTED && IsWbDevice()) {
         if (EnableWbContinuousRead) {
             ContinuousReadEnabled =
                 Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
         }
-        FwVersion = Modbus::ReadWbFwVersion(shared_from_this(), *ModbusTraits, port, SlaveId);
-        if (FwVersion.empty()) {
+        SetWbFwVersion(Modbus::ReadWbFwVersion(shared_from_this(), *ModbusTraits, port, SlaveId));
+        if (GetWbFwVersion().empty()) {
             return;
         }
         for (const auto& reg: GetRegisters()) {
             const auto& fw = reg->GetConfig()->FwVersion;
-            if (!fw.empty() && util::CompareVersionStrings(fw, FwVersion) > 0) {
+            if (!fw.empty() && util::CompareVersionStrings(fw, GetWbFwVersion()) > 0) {
                 reg->SetError(TRegister::TError::UnsupportedError);
                 reg->ExcludeFromPolling();
             } else {
