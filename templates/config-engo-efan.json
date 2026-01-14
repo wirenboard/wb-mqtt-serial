@@ -8,8 +8,8 @@
 	    "force_frame_timeout": true,
         "groups": [
             {
-                "title": "polling_settings_title",
-                "id": "polling_settings"
+                "title": "General",
+                "id": "general"
             },
             {
                 "title": "settings_title",
@@ -25,30 +25,21 @@
             {
                 "name": "temp_sens_internal",
                 "address": 3,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "temperature",
+                "units": "deg C",
                 "scale": 0.1,
                 "readonly": true,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "humidity",
                 "address": 10,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
                 "units": "%",
                 "readonly": true,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "operation_mode",
                 "address": 258,
-                "reg_type": "holding",
-                "format": "u16",
                 "enum": 
                 [ 
                     0, 
@@ -61,94 +52,66 @@
                     "operation_mode_enum1", 
                     "operation_mode_enum3"
                 ],
-                "readonly": false,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "schedule_mode_temp_setpoint",
                 "address": 273,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
                 "min": 5,
                 "max": 45,
                 "scale": 0.1,
-                "readonly": false,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "manual_mode_temp_setpoint",
                 "address": 274,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
                 "min": 5,
                 "max": 45,
                 "scale": 0.1,
-                "readonly": false,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "frost_mode_frost_setpoint",
                 "address": 275,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
                 "min": 5,
                 "max": 45,
                 "scale": 0.1,
-                "readonly": false,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "display_bright",
                 "address": 263,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "range",
                 "min": 0,
                 "max": 100,
                 "units": "%",
-                "group": "polling_settings",
-                "enabled": true
+                "group": "general"
             },
             {
                 "name": "valve_1_status",
                 "address": 8,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "range",
                 "scale": 0.1,
                 "units": "%",
                 "min": 0,
                 "max": 100,
                 "readonly": true,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "valve_2_status",
                 "address": 9,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "range",
                 "scale": 0.1,
                 "units": "%",
                 "min": 0,
                 "max": 100,
                 "readonly": true,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "fan_status",
                 "address": 7,
-                "reg_type": "holding",
-                "format": "u16",
                 "enum": 
                 [ 
                     0, 
@@ -172,40 +135,29 @@
                     "fan_status_enum12"
                 ],
                 "readonly": true,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "key_lock",
                 "address": 262,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "switch",
                 "on_value": 1,
                 "off_value": 0,
-                "readonly": false,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "power_control",
                 "address": 257,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "switch",
                 "on_value": 0,
                 "off_value": 1,
-                "readonly": false,
-                "enabled": true,
-                "group": "polling_settings"
+                "group": "general"
             },
             {
                 "name": "version",
                 "address": 1,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "text",
-                "group": "polling_settings"
+                "group": "general"
             }
         ],
         "parameters": [
@@ -213,9 +165,6 @@
                 "id": "temp_setpoint_max",
                 "title": "temp_setpoint_max",
                 "address": 279,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
                 "min": 5,
                 "max": 45,
                 "scale": 0.1,
@@ -227,9 +176,6 @@
                 "id": "temp_setpoint_min",
                 "title": "temp_setpoint_min",
                 "address": 280,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
                 "min": 5,
                 "max": 45,
                 "scale": 0.1,
@@ -241,8 +187,6 @@
                 "id": "modbus_set_id",
                 "title": "modbus_set_id",
                 "address": 0,
-                "reg_type": "holding",
-                "format": "u16",
                 "min": 1,
                 "max": 247,
                 "group": "modbus_settings",
@@ -252,7 +196,6 @@
         "translations": {
             "en": {
                 "engo_title": "ENGO EFAN",        
-                "polling_settings_title": "General",
                 "settings_title": "Termostat Settings",
                 "settings": "Settings",
                 "version":"FW Version",
@@ -288,16 +231,16 @@
                 "temp_setpoint_max":"Temperature Range: Max Set Point",
                 "temp_setpoint_min":"Temperature Range: Min Set Point",
                 "power_control": "Thrmostat Power OFF",
-                "schedule_mode_temp_setpoint": "Temperature Set Point",
-                "manual_mode_temp_setpoint": "Temperature Set Point",
-                "frost_mode_frost_setpoint": "Temperature Set Point",
+                "schedule_mode_temp_setpoint": "Schedule Temperature Set Point",
+                "manual_mode_temp_setpoint": "Manual Temperature Set Point",
+                "frost_mode_frost_setpoint": "Frost Temperature Set Point",
                 "modbus_settings_title": "Modbus Setting",
                 "pin_for_settings_off": "Off",
                 "pin_for_settings_on": "On"
             },
             "ru": {
                 "engo_title": "ENGO EFAN",        
-                "polling_settings_title": "Общее",
+                "General": "Общее",
                 "settings_title": "Настройки термостата",
                 "settings": "Настройки",
                 "version":"Версия прошивки",
