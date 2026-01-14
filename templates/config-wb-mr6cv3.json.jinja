@@ -765,6 +765,7 @@
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
+                "sporadic": true,
                 "fw": "1.24.0",
                 "enabled": false,
                 "group": "gg_outputs_channels",
@@ -914,7 +915,7 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
-                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), and any values > 0 and < 1 will be ignored.",
+                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",

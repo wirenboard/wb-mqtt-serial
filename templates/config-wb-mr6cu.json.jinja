@@ -313,6 +313,7 @@
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
+                "sporadic": true,
                 "fw": "1.24.0",
                 "enabled": false,
                 "group": "gg_outputs_channels",
@@ -437,7 +438,7 @@
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
 
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
-                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), and any values > 0 and < 1 will be ignored.",
+                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
