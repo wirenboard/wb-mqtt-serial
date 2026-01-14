@@ -1078,6 +1078,16 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
         "translations": {
@@ -1097,6 +1107,7 @@
                 "Channel 6": "Канал 6",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "Turns 1": "Коэффициент трансформации 1",
                 "Phi 1": "Фазовая задержка 1",
                 "Current Transformer Reverse 1": "Инвертировать токовый трансформатор 1",

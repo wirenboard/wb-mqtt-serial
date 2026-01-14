@@ -259,6 +259,16 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
         "translations": {
@@ -273,6 +283,7 @@
                 "Measured Values": "Измеряемые параметры",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",

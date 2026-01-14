@@ -855,6 +855,16 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
         "translations": {
@@ -871,6 +881,7 @@
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "ct_params_description": "Внимание! Коэффициенты трансформации и фазовые задержки предустановлены на заводе. Изменение без крайней необходимости не рекомендуется.",
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
