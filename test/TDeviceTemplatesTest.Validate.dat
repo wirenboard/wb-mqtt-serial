@@ -16530,7 +16530,6 @@ WB-MAI6
 	ADC Loop Duration  =>  ADC Loop Duration
 	AVCC Reference  =>  AVCC Reference
 	FW Version  =>  FW Version
-	HW Batch Number  =>  HW Batch Number
 	IN 1 N Current  =>  IN 1 N Current
 	IN 1 N Resistance  =>  IN 1 N Resistance
 	IN 1 N State  =>  IN 1 N State
@@ -16643,6 +16642,7 @@ WB-MAI6-since-fw-2.2
 	ADC Loop Duration  =>  ADC Loop Duration
 	AVCC Reference  =>  AVCC Reference
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	IN 1 N Current  =>  IN 1 N Current
 	IN 1 N Resistance  =>  IN 1 N Resistance
 	IN 1 N State  =>  IN 1 N State
@@ -24514,7 +24514,6 @@ carel_pj_basic
 	Defrost status  =>  Defrost status
 	Digital input status  =>  Digital input status
 	Fan relay status  =>  Fan relay status
-	HW Batch Number  =>  HW Batch Number
 	High temperature alarm  =>  High temperature alarm
 	Low temperature alarm  =>  Low temperature alarm
 	OFF-ON command  =>  OFF-ON command
@@ -24539,6 +24538,7 @@ carel_pj_easy
 	Defrost status  =>  Defrost status
 	Digital input status  =>  Digital input status
 	Fan relay status  =>  Fan relay status
+	HW Batch Number  =>  HW Batch Number
 	High temperature alarm  =>  High temperature alarm
 	Low temperature alarm  =>  Low temperature alarm
 	OFF-ON command  =>  OFF-ON command
