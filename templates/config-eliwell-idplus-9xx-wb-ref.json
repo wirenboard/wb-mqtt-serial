@@ -1485,6 +1485,7 @@
                 "type": "text",
                 "format": "string",
                 "string_data_size": 16,
+                "fw": "1.2.0",
                 "group": "hw_info",
                 "enabled": false
             },

@@ -1262,6 +1262,7 @@
                 "type": "text",
                 "format": "string",
                 "string_data_size": 16,
+                "fw": "1.2.0",
                 "group": "card_info",
                 "enabled": false
             },
