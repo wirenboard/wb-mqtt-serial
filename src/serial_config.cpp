@@ -543,7 +543,7 @@ namespace
             LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
         }
 
-        if (isWBDevice || device_data["enable_wb_continuous_read"].asBool()) {
+        if (isWBDevice) {
             device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
         }
 
@@ -999,7 +999,8 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
             MergeDeviceConfigWithTemplate(deviceConfigJson, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
         loadParams.Translations = &deviceTemplate->GetTemplate()["translations"];
-        isWBDevice = !deviceTemplate->GetHardware().empty();
+        isWBDevice = !deviceTemplate->GetHardware().empty() ||
+                     deviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
@@ -1015,6 +1016,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams, isWBDevice);
     auto deviceWithChannels = std::make_shared<TSerialDeviceWithChannels>();
     deviceWithChannels->Device = protocolParams.factory->CreateDevice(*cfg, deviceConfig, protocolParams.protocol);
+    deviceWithChannels->Device->SetWBDevice(isWBDevice);
     TLoadingContext context(*protocolParams.factory,
                             protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress());
     context.translations = loadParams.Translations;
