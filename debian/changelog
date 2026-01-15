@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.214.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in
+    MAP12H-fw2-harmonics, MAP3E-fw2, MAP3H-fw2-basic and  WB-MSW-LORA v4 templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>   Thu, 15 Jan 2026 16:11:29 +0300
+
 wb-mqtt-serial (2.213.0) stable; urgency=medium
 
   * MAP3ET template: Add parameters: turns, phi, actual phase, CT reverse
