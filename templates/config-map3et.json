@@ -810,6 +810,17 @@
                 "group": "hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -853,17 +864,6 @@
                 "address": 123,
                 "scale": 0.001,
                 "type": "voltage",
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "HW Batch Number",
-                "reg_type": "input",
-                "address": 304,
-                "type": "text",
-                "format": "string",
-                "string_data_size": 16,
-                "fw": "2.12.0",
                 "enabled": false,
                 "group": "hw_info"
             }
