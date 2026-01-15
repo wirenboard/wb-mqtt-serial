@@ -38,7 +38,7 @@
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
-                "description": "g_safety_description"
+                "fw": "4.32.0"
             },
             {
                 "title": "General",
@@ -1612,7 +1612,6 @@
                 "CO2 Sensor Type": "CO₂ Sensor Type",
                 "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
                 "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)",
-                "g_safety_description": "Safety mode is activated if there is no Modbus polling within the specified timeout. Supported since firmware 4.32.0",
                 "poll_timeout_description": "Timeout without Modbus polling after which safety mode will be activated",
                 "safety_command_description": "IR Command that will be played in safety mode"
             },
@@ -1793,7 +1792,6 @@
                 "Humidity Without Compensation": "Влажность до компенсации",
 
                 "Safety Mode": "Безопасный режим",
-                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus. Доступно с версии прошивки 4.32.0",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
                 "Safety Action": "Действие в безопасном режиме",

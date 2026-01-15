@@ -76,7 +76,7 @@
                 "enum": [1, 2, 3],
                 "default": 1,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l1",
                 "order": 3
             },
@@ -88,7 +88,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l1",
                 "order": 4
             },
@@ -121,7 +121,7 @@
                 "enum": [1, 2, 3],
                 "default": 2,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l2",
                 "order": 3
             },
@@ -133,7 +133,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l2",
                 "order": 4
             },
@@ -166,7 +166,7 @@
                 "enum": [1, 2, 3],
                 "default": 3,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l3",
                 "order": 3
             },
@@ -178,7 +178,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l3",
                 "order": 4
             },
@@ -932,9 +932,7 @@
                 "Supply Voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
-                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }
