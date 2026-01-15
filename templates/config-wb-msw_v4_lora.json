@@ -38,6 +38,7 @@
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
+                "description": "g_safety_description",
                 "fw": "4.32.0"
             },
             {
@@ -1792,6 +1793,7 @@
                 "Humidity Without Compensation": "Влажность до компенсации",
 
                 "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
                 "Safety Action": "Действие в безопасном режиме",
