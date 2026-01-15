@@ -1613,7 +1613,8 @@
                 "CO2 Sensor Type": "CO₂ Sensor Type",
                 "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
                 "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)",
-                "poll_timeout_description": "Timeout without Modbus polling after which safety mode will be activated",
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling within the specified timeout",
+		"poll_timeout_description": "Timeout without Modbus polling after which safety mode will be activated",
                 "safety_command_description": "IR Command that will be played in safety mode"
             },
             "ru": {
