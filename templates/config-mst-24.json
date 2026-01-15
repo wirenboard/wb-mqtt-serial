@@ -5,6 +5,7 @@
   "device": {
     "name": "MST24/NT60",
     "id": "mst24_v1",
+    "guard_interval_us": 500,
     "groups": [
       {
         "title": "General",
