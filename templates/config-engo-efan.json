@@ -1,5 +1,5 @@
 {
-    "title": "engo_title",
+    "title": "ENGO EFAN",
     "device_type": "ENGO EFAN",
     "group": "g-thermostat",
     "device": {
@@ -12,11 +12,11 @@
                 "id": "general"
             },
             {
-                "title": "settings_title",
+                "title": "Termostat Settings",
                 "id": "settings"
             },
             {
-                "title": "modbus_settings_title",
+                "title": "Modbus Setting",
                 "id": "modbus_settings",
                 "group": "settings"
             }
@@ -194,9 +194,7 @@
             }
         ],
         "translations": {
-            "en": {
-                "engo_title": "ENGO EFAN",        
-                "settings_title": "Termostat Settings",
+            "en": {       
                 "settings": "Settings",
                 "version":"FW Version",
                 "working_status":"Working Status",
@@ -234,14 +232,12 @@
                 "schedule_mode_temp_setpoint": "Schedule Temperature Set Point",
                 "manual_mode_temp_setpoint": "Manual Temperature Set Point",
                 "frost_mode_frost_setpoint": "Frost Temperature Set Point",
-                "modbus_settings_title": "Modbus Setting",
                 "pin_for_settings_off": "Off",
                 "pin_for_settings_on": "On"
             },
-            "ru": {
-                "engo_title": "ENGO EFAN",        
+            "ru": {      
                 "General": "Общее",
-                "settings_title": "Настройки термостата",
+                "Termostat Settings": "Настройки термостата",
                 "settings": "Настройки",
                 "version":"Версия прошивки",
                 "working_status":"Статус",
@@ -279,7 +275,7 @@
                 "schedule_mode_temp_setpoint": "Уставка температуры - по расписанию",
                 "manual_mode_temp_setpoint": "Уставка температуры - ручной режим",
                 "frost_mode_frost_setpoint": "Уставка температуры - FROST",
-                "modbus_settings_title": "Настройки Modbus",
+                "Modbus Setting": "Настройки Modbus",
                 "pin_for_settings_off": "Отключить",
                 "pin_for_settings_on": "Включить"
             }
