@@ -2,7 +2,7 @@ wb-mqtt-serial (2.213.1) stable; urgency=medium
 
   * Fix translations for mst-24 template
 
- -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 15 Jan 2025 15:30:00 +0300
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 15 Jan 2026 15:30:00 +0300
 
 wb-mqtt-serial (2.213.0) stable; urgency=medium
 
