@@ -7,7 +7,7 @@ wb-mqtt-serial (2.215.0) stable; urgency=medium
  
 wb-mqtt-serial (2.214.0) stable; urgency=medium
 
- * Add HW Batch Number channel
+  * Add HW Batch Number channel
 
  -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Wed, 14 Jan 2026 17:47:00 +0300
 
