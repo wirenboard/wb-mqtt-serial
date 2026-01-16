@@ -303,17 +303,18 @@
                     "No Action",
                     "Turn Off",
                     "Turn On",
-                    "Turn On and Set Brightness"
+                    "Set Brightness"
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
+                "description": "level_after_actions_description",
                 "reg_type": "holding",
                 "fw": "2.8.0",
                 "address": {{656 + ch_number - 1}},
-                "min": 1,
+                "min": 0,
                 "max": 100,
                 "default": 50,
                 "required": true,
@@ -332,17 +333,18 @@
                     "Turn Off",
                     "Set Previous State",
                     "Turn On",
-                    "Turn On and Set Brightness"
+                    "Set Brightness"
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
+                "description": "level_after_actions_description",
                 "reg_type": "holding",
                 "fw": "2.8.0",
                 "address": {{672 + ch_number - 1}},
-                "min": 1,
+                "min": 0,
                 "max": 100,
                 "default": 50,
                 "required": true,
@@ -738,6 +740,8 @@
                 "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.8.0",
 
+                "level_after_actions_description": "Starting from firmware v2.11.0 it is possible to set the brightness level to 0% (channel off)",
+
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "g_power_up_behaviour_description": "Actions when Power is On",
@@ -762,7 +766,7 @@
                 "Action when Switch is On": "Действие в положении \"включено\"",
                 "Action when Switch is Off": "Действие в положении \"выключено\"",
 
-                "Turn On and Set Brightness": "Включить и установить яркость",
+                "Set Brightness": "Установить яркость",
                 "Brightness (%)": "Яркость (%)",
 
                 "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
@@ -843,6 +847,8 @@
                 "Power Up Behaviour": "Поведение при включении питания",
                 "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
+
+                "level_after_actions_description": "Начиная с версии прошивки 2.11.0 возможно установить уровень яркости на 0% (канал выключен)",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",

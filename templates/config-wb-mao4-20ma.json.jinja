@@ -412,16 +412,17 @@
                     "No Action",
                     "Turn Off",
                     "Turn On",
-                    "Turn On and Set Level"
+                    "Set Level"
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
                 "title": "Level (%)",
+                "description": "level_after_actions_description",
                 "reg_type": "holding",
                 "address": {{656 + ch_number - 1}},
-                "min": 0.1,
+                "min": 0,
                 "max": 100,
                 "scale": 0.1,
                 "default": 50,
@@ -440,16 +441,17 @@
                     "Turn Off",
                     "Set Previous State",
                     "Turn On",
-                    "Turn On and Set Level"
+                    "Set Level"
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
                 "title": "Level (%)",
+                "description": "level_after_actions_description",
                 "reg_type": "holding",
                 "address": {{672 + ch_number - 1}},
-                "min": 0.1,
+                "min": 0,
                 "max": 100,
                 "default": 50,
                 "scale": 0.1,
@@ -693,6 +695,8 @@
                 "level_0_current_description": "If channel is turned off or level is set to 0%, output current will be equal to the specified value",
                 "level_100_current_description": "If level is set to 100% and channel is turned on, output current will be equal to the specified value",
 
+                "level_after_actions_description": "Starting from firmware v2.8.0 it is possible to set the level to 0% (channel off)",
+
                 "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
                 "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
                 "action_repeat_time_description": "When button is held for a long time, level will change with specified rate.",
@@ -758,7 +762,7 @@
                 "Increase/Decrease Level": "Увеличить/уменьшить уровень",
                 "Output Number": "Номер выхода",
                 "Action": "Действие",
-                "Turn On and Set Level": "Включить и установить уровень",
+                "Set Level": "Установить уровень",
 
                 "output_description": "Управлять выходом можно:<br>1) указанием уровня в процентах между границами рабочего диапазона<br>2) прямым заданием тока выхода в мА (при этом уровень канала не изменяется)",
                 "Working Range": "Рабочий диапазон",
@@ -770,7 +774,7 @@
                 "Current at 100% Level (mA)": "Значение выходного тока при 100% уровне (мА)",
                 "level_0_current_description": "Если канал выключен либо уровень установлен на 0%, выходной ток будет соответствовать заданному значению",
                 "level_100_current_description": "Если уровень установлен на 100% и канал включен, выходной ток будет соответствовать заданному значению",
-
+                "level_after_actions_description": "Начиная с версии прошивки 2.8.0 возможно установить уровень на 0% (канал выключен)",
                 "Level Rates": "Плавное изменение уровня",
                 "Decrement Rate (ms/%)": "Темп изменения уровня в сторону уменьшения (мс/%)",
                 "Increment Rate (ms/%)": "Темп изменения уровня в сторону увеличения (мс/%)",
