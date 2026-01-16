@@ -149,8 +149,8 @@
                 "name": "power_control",
                 "address": 257,
                 "type": "switch",
-                "on_value": 0,
-                "off_value": 1,
+                "on_value": 1,
+                "off_value": 0,
                 "group": "general"
             },
             {
@@ -229,7 +229,7 @@
                 "display_bright":"Display Brightness",
                 "temp_setpoint_max":"Temperature Range: Max Set Point",
                 "temp_setpoint_min":"Temperature Range: Min Set Point",
-                "power_control": "Thrmostat Power OFF",
+                "power_control": "Power",
                 "schedule_mode_temp_setpoint": "Schedule Temperature Set Point",
                 "manual_mode_temp_setpoint": "Manual Temperature Set Point",
                 "frost_mode_frost_setpoint": "Frost Temperature Set Point",
@@ -272,7 +272,7 @@
                 "display_bright":"Яркость дисплея",
                 "temp_setpoint_max":"Диапазон температур: максимальная уставка",
                 "temp_setpoint_min":"Диапазон температур: минимальная уставка",
-                "power_control": "Отключить термостат",
+                "power_control": "Питание",
                 "schedule_mode_temp_setpoint": "Уставка температуры - по расписанию",
                 "manual_mode_temp_setpoint": "Уставка температуры - ручной режим",
                 "frost_mode_frost_setpoint": "Уставка температуры - FROST",

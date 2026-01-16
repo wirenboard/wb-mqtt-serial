@@ -1,8 +1,21 @@
-wb-mqtt-serial (2.214.0) stable; urgency=medium
+wb-mqtt-serial (2.216.0) stable; urgency=medium
 
   * Add ENGO EFAN Template
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Wed, 14 Jan 2026 19:00:00 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Fri, 16 Jan 2026 15:33:00 +0300
+
+wb-mqtt-serial (2.215.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in
+    MAP12H-fw2-harmonics, MAP3E-fw2, MAP3H-fw2-basic and  WB-MSW-LORA v4 templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 15 Jan 2026 16:11:29 +0300
+ 
+wb-mqtt-serial (2.214.0) stable; urgency=medium
+
+  * Add HW Batch Number channel
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Wed, 14 Jan 2026 17:47:00 +0300
 
 wb-mqtt-serial (2.213.0) stable; urgency=medium
 
