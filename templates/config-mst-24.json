@@ -254,7 +254,7 @@
         "group": "general"
       },
       {
-        "name": "Model",
+        "name": "model",
         "id": "model",
         "reg_type": "holding",
         "address": 93,
@@ -284,7 +284,8 @@
         "c_r_acceleration": "Const Rot Acceleration",
         "c_r_deceleration": "Const Rot Deceleration",
         "c_r_speed": "Const Rot Speed",
-        "c_r_emerg_deceleration": "Const Rot Emerg Deceleration"
+        "c_r_emerg_deceleration": "Const Rot Emerg Deceleration",
+        "model": "Model"
       },
       "ru": {
         "mst24_title": "Драйвер шагового двигателя ОВЕН (Meyertec) MST-24/Rtelligent NT60",
@@ -330,7 +331,7 @@
         "c_r_deceleration": "Замедление постоянного вращения",
         "c_r_speed": "Скорость постоянного вращения",
         "c_r_emerg_deceleration": "Замедление экстренного останова",
-        "Model": "Модель"
+        "model": "Модель"
       }
     }
   }
