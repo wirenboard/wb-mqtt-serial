@@ -26546,7 +26546,6 @@ milur305
 	Total reactive energy  =>  Total reactive energy
 	Total reactive power  =>  Total reactive power
 mst24_v1
-    Model  =>  model
 	acceleration  =>  acceleration
 	c_r_acceleration  =>  c_r_accelerationtion
 	c_r_deceleration  =>  c_r_deceleration
@@ -26556,6 +26555,7 @@ mst24_v1
 	deceleration  =>  deceleration
 	direction  =>  direction
 	errors  =>  errors
+    model  =>  model
 	position  =>  position
 	positioning_mode  =>  positioning_mode
 	speed  =>  speed
