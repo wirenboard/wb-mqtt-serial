@@ -333,6 +333,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "l1"
             },
             {
@@ -398,6 +399,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "l1"
             },
             {
@@ -409,6 +411,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "l1"
             },
             {
@@ -528,6 +531,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "l2"
             },
             {
@@ -593,6 +597,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "l2"
             },
             {
@@ -604,6 +609,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "l2"
             },
             {
@@ -723,6 +729,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "l3"
             },
             {
@@ -788,6 +795,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "l3"
             },
             {
@@ -799,6 +807,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "l3"
             },
             {
@@ -849,6 +858,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "total"
             },
             {
@@ -914,6 +924,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "total"
             },
             {
@@ -925,6 +936,7 @@
                 "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "total"
             },
             {

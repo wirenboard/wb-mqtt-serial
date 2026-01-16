@@ -346,6 +346,7 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_1"
             },
             {
@@ -411,6 +412,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_1"
             },
             {
@@ -422,6 +424,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_1"
             },
             {
@@ -495,6 +498,7 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_2"
             },
             {
@@ -560,6 +564,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_2"
             },
             {
@@ -571,6 +576,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_2"
             },
             {
@@ -644,6 +650,7 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_3"
             },
             {
@@ -709,6 +716,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_3"
             },
             {
@@ -720,6 +728,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_3"
             },
             {
@@ -793,6 +802,7 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_4"
             },
             {
@@ -858,6 +868,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_4"
             },
             {
@@ -869,6 +880,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_4"
             },
             {
@@ -942,6 +954,7 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_5"
             },
             {
@@ -1007,6 +1020,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_5"
             },
             {
@@ -1018,6 +1032,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_5"
             },
             {
@@ -1091,6 +1106,7 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_6"
             },
             {
@@ -1156,6 +1172,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_6"
             },
             {
@@ -1167,6 +1184,7 @@
                 "scale": 6.781694e-11,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
+                "enabled": false,
                 "group": "channel_6"
             },
             {
