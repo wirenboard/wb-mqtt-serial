@@ -1388,6 +1388,17 @@
                 "enabled": false
             },
             {
+                "name": "HW Batch Number",
+                "address": 304,
+                "reg_type": "input",
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "1.2.0",
+                "group": "card_info",
+                "enabled": false
+            },
+            {
                 "name": "Supply Voltage",
                 "address": 121,
                 "reg_type": "input",
