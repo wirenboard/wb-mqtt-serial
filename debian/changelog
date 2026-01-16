@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.216.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in
+    MAP12H-fw2-all-harmonics, MAP12H-fw2-basic, MAP3H-fw2-basic, WB-MCM8 and
+    WB-M1W2-buttons templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Fri, 16 Jan 2026 18:51:38 +0300
+
 wb-mqtt-serial (2.215.0) stable; urgency=medium
 
   * Set compatible firmwares for parameters and channels in
