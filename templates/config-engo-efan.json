@@ -157,6 +157,7 @@
                 "name": "version",
                 "address": 1,
                 "type": "text",
+				"readonly": true,
                 "group": "general"
             }
         ],
@@ -282,3 +283,4 @@
         }
     }
 }
+
