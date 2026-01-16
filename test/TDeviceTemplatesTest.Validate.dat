@@ -26555,7 +26555,7 @@ mst24_v1
 	deceleration  =>  deceleration
 	direction  =>  direction
 	errors  =>  errors
-    model  =>  model
+	model  =>  model
 	position  =>  position
 	positioning_mode  =>  positioning_mode
 	speed  =>  speed
