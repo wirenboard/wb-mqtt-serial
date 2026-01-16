@@ -8,15 +8,15 @@
     "guard_interval_us": 500,
     "groups": [
       {
-        "title": "general_title",
+        "title": "General",
         "id": "general"
       },
       {
-        "title": "hw_info_title",
+        "title": "HW Info",
         "id": "hw_info"
       },
       {
-        "title": "settings_title",
+        "title": "Settings",
         "id": "settings"
       }
     ],
@@ -267,9 +267,6 @@
     "translations": {
       "en": {
         "mst24_title": "Oven (Meyertec) MST-24/Rtelligent NT60 Stepper Driver",
-        "general_title": "General",
-        "hw_info_title": "HW Info",
-        "settings_title": "Settings",
         "work_mode": "Work Mode",
         "drive_mode": "Drive Mode",
         "motor_type": "Motor Type",
@@ -292,9 +289,9 @@
       },
       "ru": {
         "mst24_title": "Драйвер шагового двигателя ОВЕН (Meyertec) MST-24/Rtelligent NT60",
-        "general_title": "Общее",
-        "hw_info_title": "Данные модуля",
-        "settings_title": "Настройки",
+        "General": "Общее",
+        "HW Info": "Данные модуля",
+        "Settings": "Настройки",
         "work_mode": "Режим работы драйвера",
         "drive_mode": "Обратная связь",
         "Return": "Возврат на исходную позицию",
