@@ -321,6 +321,16 @@
                 "group": "l1"
             },
             {
+                "name": "N L1",
+                "reg_type": "input",
+                "address": "0x1582",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "l1"
+            },
+            {
                 "name": "PF L1",
                 "reg_type": "input",
                 "address": "0x10bd",
@@ -370,6 +380,28 @@
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l1"
+            },
+            {
+                "name": "NP energy L1",
+                "reg_type": "input",
+                "address": "0x1504",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l1"
+            },
+            {
+                "name": "NN energy L1",
+                "reg_type": "input",
+                "address": "0x1514",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l1"
@@ -482,6 +514,16 @@
                 "group": "l2"
             },
             {
+                "name": "N L2",
+                "reg_type": "input",
+                "address": "0x1584",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "l2"
+            },
+            {
                 "name": "PF L2",
                 "reg_type": "input",
                 "address": "0x10be",
@@ -531,6 +573,28 @@
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l2"
+            },
+            {
+                "name": "NP energy L2",
+                "reg_type": "input",
+                "address": "0x1508",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l2"
+            },
+            {
+                "name": "NN energy L2",
+                "reg_type": "input",
+                "address": "0x1518",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l2"
@@ -643,6 +707,16 @@
                 "group": "l3"
             },
             {
+                "name": "N L3",
+                "reg_type": "input",
+                "address": "0x1586",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "l3"
+            },
+            {
                 "name": "PF L3",
                 "reg_type": "input",
                 "address": "0x10bf",
@@ -697,6 +771,28 @@
                 "group": "l3"
             },
             {
+                "name": "NP energy L3",
+                "reg_type": "input",
+                "address": "0x150c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l3"
+            },
+            {
+                "name": "NN energy L3",
+                "reg_type": "input",
+                "address": "0x151c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l3"
+            },
+            {
                 "name": "Phase angle L3",
                 "reg_type": "input",
                 "address": "0x10fb",
@@ -730,6 +826,16 @@
                 "name": "Total S",
                 "reg_type": "input",
                 "address": "0x1310",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "total"
+            },
+            {
+                "name": "Total N",
+                "reg_type": "input",
+                "address": "0x1580",
                 "type": "value",
                 "format": "s32",
                 "scale": 0.00512,
@@ -786,6 +892,28 @@
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "total"
+            },
+            {
+                "name": "Total NP energy",
+                "reg_type": "input",
+                "address": "0x1500",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "total"
+            },
+            {
+                "name": "Total NN energy",
+                "reg_type": "input",
+                "address": "0x1510",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "total"
@@ -910,27 +1038,36 @@
                 "RP energy L1": "Энергия RP L1",
                 "AN energy L1": "Энергия AN L1",
                 "RN energy L1": "Энергия RN L1",
+                "NP energy L1": "Энергия NP L1",
+                "NN energy L1": "Энергия NN L1",
                 "Phase angle L1": "Угол между I и U фазы L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "AP energy L2": "Энергия AP L2",
                 "RP energy L2": "Энергия RP L2",
                 "AN energy L2": "Энергия AN L2",
                 "RN energy L2": "Энергия RN L2",
+                "NP energy L2": "Энергия NP L2",
+                "NN energy L2": "Энергия NN L2",
                 "Phase angle L2": "Угол между I и U фазы L2",
                 "Voltage angle L3": "Фазовый угол L3",
                 "AP energy L3": "Энергия AP L3",
                 "RP energy L3": "Энергия RP L3",
                 "AN energy L3": "Энергия AN L3",
                 "RN energy L3": "Энергия RN L3",
+                "NP energy L3": "Энергия NP L3",
+                "NN energy L3": "Энергия NN L3",
                 "Phase angle L3": "Угол между I и U фазы L3",
                 "Total P": "P по трем фазам",
                 "Total Q": "Q по трем фазам",
                 "Total S": "S по трем фазам",
+                "Total N": "N по трем фазам",
                 "Total PF": "PF по трем фазам",
                 "Total AP energy": "Энергия AP по трем фазам",
                 "Total RP energy": "Энергия RP по трем фазам",
                 "Total AN energy": "Энергия AN по трем фазам",
                 "Total RN energy": "Энергия RN по трем фазам",
+                "Total NP energy": "Энергия NP по трем фазам",
+                "Total NN energy": "Энергия NN по трем фазам",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
