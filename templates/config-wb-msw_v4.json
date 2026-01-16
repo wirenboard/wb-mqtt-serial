@@ -1416,6 +1416,17 @@
                 "group": "hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "4.35.0",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -1795,6 +1806,7 @@
                 "BANK -> RAM":"Редактирование ИК-команд в банке с копированием в RAM",
                 "Learn to BANK": "Записать команду в соответствующий банк ROM",
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения",
