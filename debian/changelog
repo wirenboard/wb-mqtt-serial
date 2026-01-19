@@ -1,3 +1,29 @@
+wb-mqtt-serial (2.218.0) stable; urgency=medium
+
+  * Add ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 19 Jan 2026 16:50:00 +0300
+
+wb-mqtt-serial (2.217.1) stable; urgency=medium
+
+  * Fix translations for mst-24 template
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 19 Jan 2026 16:00:00 +0300
+
+wb-mqtt-serial (2.217.0) stable; urgency=medium
+
+  * MR templates: Add delays, change min time for curtains
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 19 Jan 2026 13:47:00 +0300
+
+wb-mqtt-serial (2.216.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in
+    MAP12H-fw2-all-harmonics, MAP12H-fw2-basic, MAP3H-fw2-basic, WB-MCM8 and
+    WB-M1W2-buttons templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Fri, 16 Jan 2026 18:51:38 +0300
+
 wb-mqtt-serial (2.215.1) stable; urgency=medium
 
   * WB-UPS v.3 template: fix battery temperature register format
@@ -10,7 +36,7 @@ wb-mqtt-serial (2.215.0) stable; urgency=medium
     MAP12H-fw2-harmonics, MAP3E-fw2, MAP3H-fw2-basic and  WB-MSW-LORA v4 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 15 Jan 2026 16:11:29 +0300
- 
+
 wb-mqtt-serial (2.214.0) stable; urgency=medium
 
   * Add HW Batch Number channel

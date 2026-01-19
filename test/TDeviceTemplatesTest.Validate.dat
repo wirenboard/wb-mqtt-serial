@@ -289,6 +289,20 @@ Drivent V2
 	reset_locks  =>  reset_locks
 	speed_of_buttons  =>  speed_of_buttons
 	version  =>  version
+ENGO EFAN
+	display_bright  =>  display_bright
+	fan_status  =>  fan_status
+	frost_mode_frost_setpoint  =>  frost_mode_frost_setpoint
+	humidity  =>  humidity
+	key_lock  =>  key_lock
+	manual_mode_temp_setpoint  =>  manual_mode_temp_setpoint
+	operation_mode  =>  operation_mode
+	power_control  =>  power_control
+	schedule_mode_temp_setpoint  =>  schedule_mode_temp_setpoint
+	temp_sens_internal  =>  temp_sens_internal
+	valve_1_status  =>  valve_1_status
+	valve_2_status  =>  valve_2_status
+	version  =>  version
 ESCORT DB-2
 	Conversion Factor  =>  Conversion Factor
 	Empty  =>  Empty
@@ -22501,7 +22515,16 @@ WB-MR3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR3LV
@@ -22590,7 +22613,25 @@ WB-MR6C
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C v.3
@@ -22661,7 +22702,25 @@ WB-MR6C v.3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C-NC
@@ -22724,7 +22783,25 @@ WB-MR6C-NC
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6CU
@@ -22745,7 +22822,25 @@ WB-MR6CU
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6LV
@@ -23026,7 +23121,13 @@ WB-MRM2-mini-NC-inputs
 	MCU Voltage  =>  MCU Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NO-inputs
@@ -23053,7 +23154,13 @@ WB-MRM2-mini-NO-inputs
 	MCU Voltage  =>  MCU Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-old
@@ -27233,7 +27340,25 @@ tpl1_oni_plc_w_emd_0706
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 tpl1_wb_mao4
