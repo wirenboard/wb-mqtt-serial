@@ -5,6 +5,12 @@ wb-mqtt-serial (2.216.0) stable; urgency=medium
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 19 Jan 2026 11:51:00 +0300
 
+wb-mqtt-serial (2.215.1) stable; urgency=medium
+
+  * WB-UPS v.3 template: fix battery temperature register format
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 16 Jan 2026 11:40:34 +0300
+
 wb-mqtt-serial (2.215.0) stable; urgency=medium
 
   * Set compatible firmwares for parameters and channels in
