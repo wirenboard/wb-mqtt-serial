@@ -1,8 +1,9 @@
 wb-mqtt-serial (2.216.0) stable; urgency=medium
 
-  * MAO4(20) and MDM3 templates: Change lower dimmer level to 0 for powerup and safety actions (was 1).
+  * MAO4(20) and MDM3 templates: Change lower dimmer level to 0 for powerup and safety actions (was 1)
+  * MAO4 template: Change voltage at 1% dimming level to 100 mV (was 1 mV)
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 16 Jan 2026 14:54:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 19 Jan 2026 11:51:00 +0300
 
 wb-mqtt-serial (2.215.0) stable; urgency=medium
 
@@ -10,7 +11,7 @@ wb-mqtt-serial (2.215.0) stable; urgency=medium
     MAP12H-fw2-harmonics, MAP3E-fw2, MAP3H-fw2-basic and  WB-MSW-LORA v4 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 15 Jan 2026 16:11:29 +0300
- 
+
 wb-mqtt-serial (2.214.0) stable; urgency=medium
 
   * Add HW Batch Number channel

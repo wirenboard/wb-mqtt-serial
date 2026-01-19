@@ -232,7 +232,7 @@
                 "group": "output{{ ch_number }}",
                 "address": {{ 912 + ch_number - 1 }},
                 "reg_type": "holding",
-                "default": 1,
+                "default": 100,
                 "min": 0,
                 "max": 10000,
                 "order": 1
@@ -559,7 +559,7 @@
                 "enum_titles": [
                     "Channel not Used in Scene",
                     "Turn Off",
-                    "Set Brightness"
+                    "Set Level"
                 ],
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off"
             },
@@ -618,7 +618,7 @@
                     "No Action",
                     "Turn Off",
                     "Turn On",
-                    "Set Brightness"
+                    "Set Level"
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
@@ -648,7 +648,7 @@
                     "Turn Off",
                     "Set Previous State",
                     "Turn On",
-                    "Set Brightness"
+                    "Set Level"
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
@@ -901,7 +901,7 @@
                 "level_1_voltage_description": "Sets voltage range boundary corresponding to 1% dimming level",
                 "level_100_voltage_description": "Sets voltage range boundary corresponding to 100% dimming level",
 
-                "level_after_actions_description": "Starting from firmware v2.8.0 it is possible to set the brightness level to 0% (channel off)",
+                "level_after_actions_description": "Starting from firmware v2.8.0 it is possible to set level to 0% (channel off)",
 
                 "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will increase instantly",
                 "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will decrease instantly",
@@ -977,7 +977,7 @@
                 "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
                 "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
 
-                "level_after_actions_description": "Начиная с версии прошивки 2.8.0 возможно установить уровень яркости на 0% (канал выключен)",
+                "level_after_actions_description": "Начиная с версии прошивки 2.8.0 возможно установить уровень на 0% (канал выключен)",
 
                 "Input Mode": "Режим работы входа",
                 "Button": "Кнопка без фиксации",
@@ -993,7 +993,7 @@
                 "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
                 "Channel not Used in Scene": "Канал не используется в сцене",
                 "Turn On and Set Brightness": "Включить и установить яркость",
-                "Set Brightness": "Установить яркость",
+                "Set Level": "Установить уровень",
                 "Dimming level rate (ms/%)": "Темп изменения уровня яркости (мс/%)",
                 "Brightness (%)": "Яркость (%)",
                 "Turn Off Scene Light": "Выключить свет сцены",
