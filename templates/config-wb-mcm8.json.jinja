@@ -85,7 +85,7 @@
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
-                "description": "mode_description",
+                "fw": "1.3.2",
                 "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -394,7 +394,6 @@
         "translations": {
             "en": {
                 "template_title": "{{ title_en }}",
-                "mode_description": "For press detection firmware v1.3.2 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -429,7 +428,6 @@
                 "Press Parameters": "Параметры нажатий",
                 "Counting and frequency measurement": "Счет и измерение частоты",
                 "Counting and press detection": "Счет и детектирование нажатий",
-                "mode_description": "Для детектирования нажатий требуется прошивка v1.3.2 или новее",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
