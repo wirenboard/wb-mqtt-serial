@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.218.0) stable; urgency=medium
+
+  * Add ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 19 Jan 2026 16:50:00 +0300
+
 wb-mqtt-serial (2.217.1) stable; urgency=medium
 
   * Fix translations for mst-24 template
