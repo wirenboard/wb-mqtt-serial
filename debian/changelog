@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.219.0) stable; urgency=medium
+
+  * MAO4(20) and MDM3 templates: Change lower dimmer level to 0 for powerup and safety actions (was 1)
+  * MAO4 template: Change voltage at 1% dimming level to 100 mV (was 1 mV)
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 20 Jan 2026 09:24:00 +0300
+
 wb-mqtt-serial (2.218.0) stable; urgency=medium
 
   * Add ENGO EFAN Template
