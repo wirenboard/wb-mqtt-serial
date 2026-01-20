@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.180.2-wb106) stable; urgency=medium
+
+  * WB-UPS v.3 template: fix battery temperature register format
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 20 Jan 2026 17:46:33 +0300
+
 wb-mqtt-serial (2.180.2-wb105) stable; urgency=medium
 
   * MAP6S and MAP3E: Add unsupported values for peaks
