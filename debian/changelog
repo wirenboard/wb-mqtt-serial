@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.219.1) stable; urgency=medium
+
+  * WB-MR templates: Fix translations, change the term "curtain" with "actuator"
+
+ -- Denis Nikolaev <denis.nikolaev@wirenboard.com>  Wed, 21 Jan 2026 15:00:00 +0300
+
 wb-mqtt-serial (2.219.0) stable; urgency=medium
 
   * MAO4(20) and MDM3 templates: Change lower dimmer level to 0 for powerup and safety actions (was 1)

@@ -933,7 +933,17 @@
                 {% endfor -%}
 
                 "startup_delay_description": "0...999, factory default - 0",
-                "restart_delay_description": "0...999, factory default - 0"
+                "restart_delay_description": "0...999, factory default - 0",
+
+                "Curtains Control": "Actuator Control",
+                
+                {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+                "Curtain {{curtain_num}}": "Actuator {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Actuator {{curtain_num}} Open",
+                "Curtain {{curtain_num}} Close": "Actuator {{curtain_num}} Close",
+                "Curtain {{curtain_num}} Actions": "Actuator {{curtain_num}} Actions",
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for actuator {{curtain_num}} control",
+                {% endfor -%}
             },
             "ru": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
@@ -1058,7 +1068,7 @@
                 "Restart Delay (s)": "Задержка повторного включения (с)",
                 "restart_delay_description": "0...999, заводское - 0",
 
-                "Curtains Control": "Управление шторами",
+                "Curtains Control": "Управление приводом",
                 "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
@@ -1067,11 +1077,11 @@
                 "Power up action": "Действие при подаче питания",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-                "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
-                "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
-                "Curtain {{curtain_num}} Close": "Закрыть штору {{curtain_num}}",
-                "Curtain {{curtain_num}} Actions": "Действия для шторы {{curtain_num}}",
-                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления шторой {{curtain_num}}",
+                "Curtain {{curtain_num}}": "Привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Открыть привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Close": "Закрыть привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Actions": "Действия для привода {{curtain_num}}",
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления приводом {{curtain_num}}",
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
