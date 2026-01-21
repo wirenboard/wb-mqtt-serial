@@ -105,6 +105,17 @@
                 "sporadic": true,
                 "group": "g_channel_{{ ch + 1 }}"
             },
+            {
+                "name": "Bus {{ ch + 1 }} monitor sporadic frame",
+                "id": "bus_{{ ch + 1 }}_monitor_sporadic_frame",
+                "reg_type": "input",
+                "address": {{ 1900 + (ch * 1000) }},
+                "type": "value",
+                "format": "u64",
+                "word_order": "little_endian",
+                "sporadic": true,
+                "group": "g_channel_{{ ch + 1 }}"
+            },
             {% for ptr in range(BULK_BUFFER_LEN) -%}
             {
                 "name": "Bus {{ ch + 1 }} bulk send reply {{ ptr }}",
