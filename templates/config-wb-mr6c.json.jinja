@@ -898,7 +898,7 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
 
-                "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required. For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
+                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
                 "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -906,7 +906,17 @@
                 {% endfor -%}
 
                 "startup_delay_description": "0...999, factory default - 0",
-                "restart_delay_description": "0...999, factory default - 0"
+                "restart_delay_description": "0...999, factory default - 0",
+
+                "Curtains Control": "Actuator Control",
+                
+                {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+                "Curtain {{curtain_num}}": "Actuator {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Actuator {{curtain_num}} Open",
+                "Curtain {{curtain_num}} Close": "Actuator {{curtain_num}} Close",
+                "Curtain {{curtain_num}} Actions": "Actuator {{curtain_num}} Actions",
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for actuator {{curtain_num}} control",
+                {% endfor -%}
             },
             "ru": {
                 "template_title": "{{ title_ru}}",
@@ -1017,7 +1027,7 @@
                 "closing while pressed": "закрывать пока кнопка нажата",
                 "opening/closing while pressed": "открывать/закрывать пока кнопка нажата",
 
-                "Curtains Control": "Управление шторами",
+                "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
@@ -1030,16 +1040,16 @@
                 "restart_delay_description": "0...999, заводское - 0",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-                "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
-                "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
-                "Curtain {{curtain_num}} Close": "Закрыть штору {{curtain_num}}",
-                "Curtain {{curtain_num}} Actions": "Действия для шторы {{curtain_num}}",
-                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления шторой {{curtain_num}}",
+                "Curtain {{curtain_num}}": "Привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Открыть привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Close": "Закрыть привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Actions": "Действия для привода {{curtain_num}}",
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления приводом {{curtain_num}}",
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
 
-                "curtains_control_description": "Для использования режима штор требуется прошивка 1.21.0 или новее. Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
                 "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Baud rate": "Скорость обмена",
