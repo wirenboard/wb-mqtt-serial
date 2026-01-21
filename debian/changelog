@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.219.1) stable; urgency=medium
+
+  * Add missing phase voltage error_value to MAP templates
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Tue, 20 Jan 2026 21:10:00 +0300
+
 wb-mqtt-serial (2.219.0) stable; urgency=medium
 
   * MAO4(20) and MDM3 templates: Change lower dimmer level to 0 for powerup and safety actions (was 1)

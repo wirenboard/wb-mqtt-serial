@@ -175,6 +175,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "l1"
             },
             {
@@ -185,6 +186,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "l2"
             },
             {
@@ -195,6 +197,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "l3"
             },
             {

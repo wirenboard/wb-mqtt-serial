@@ -182,6 +182,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "measured_values"
             },
             {
@@ -192,6 +193,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "measured_values"
             },
             {
@@ -202,6 +204,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "measured_values"
             },
             {
