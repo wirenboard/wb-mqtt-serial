@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.219.2) stable; urgency=medium
+
+  * Fix misprint in ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 22 Jan 2026 18:15:00 +0300
+
 wb-mqtt-serial (2.219.1) stable; urgency=medium
 
   * Add missing phase voltage error_value to MAP templates
