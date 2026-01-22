@@ -1,11 +1,13 @@
 {% set device_title = device_title | default("WBIO-DI-HVD-8") -%}
+{% set title_en = title_en | default(device_title) -%}
+{% set title_ru = title_ru | default(device_title) -%}
 {% set device_type = device_type | default("WBIO-DI-HVD-8") -%}
 {% set group = group | default("g-wb") -%}
 {% set device_name = device_name | default("WBIO-DI-HVD-8") -%}
 {% set device_id = device_id | default("wb-mio-gpio") -%}
 
 {
-    "title": "{{ device_title }}",
+    "title": "template_title",
     "device_type": "{{ device_type }}",
     "group": "{{ group }}",
     "device": {
@@ -110,6 +112,14 @@
                 "address": 7,
                 "type": "switch"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}"
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}"
+            }
+        }
     }
 }
