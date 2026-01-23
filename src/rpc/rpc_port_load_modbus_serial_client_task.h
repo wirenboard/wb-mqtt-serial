@@ -6,7 +6,7 @@
 #include "rpc_port_load_request.h"
 #include "serial_client.h"
 
-class TRPCPortLoadModbusRequest: public TRPCPortLoadRequest
+class TRPCPortLoadModbusRequest: public TRPCPortLoadRequestBase
 {
 public:
     TRPCPortLoadModbusRequest(TRPCDeviceParametersCache& parametersCache);
@@ -18,6 +18,7 @@ public:
     uint16_t WriteCount = 1;
     Modbus::EFunction Function;
     std::string Protocol;
+    std::unique_ptr<TSerialPortConnectionSettings> SerialPortSettings;
 };
 
 typedef std::shared_ptr<TRPCPortLoadModbusRequest> PRPCPortLoadModbusRequest;
@@ -25,10 +26,7 @@ typedef std::shared_ptr<TRPCPortLoadModbusRequest> PRPCPortLoadModbusRequest;
 class TRPCPortLoadModbusSerialClientTask: public ISerialClientTask
 {
 public:
-    TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
-                                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                       WBMQTT::TMqttRpcServer::TErrorCallback onError,
-                                       TRPCDeviceParametersCache& parametersCache);
+    TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request);
 
     ISerialClientTask::TRunResult Run(PFeaturePort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,
@@ -38,5 +36,8 @@ private:
     PRPCPortLoadModbusRequest Request;
     std::chrono::steady_clock::time_point ExpireTime;
 };
+
+PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request,
+                                                        TRPCDeviceParametersCache& parametersCache);
 
 typedef std::shared_ptr<TRPCPortLoadModbusSerialClientTask> PRPCPortLoadModbusSerialClientTask;
