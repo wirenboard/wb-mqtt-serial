@@ -1,5 +1,6 @@
 wb-mqtt-serial (2.220.0) stable; urgency=medium
 
+  * Add device_id parameter to port/Load RPC
   [ Radmir Khakimov ]
   * Add WB-MDALI support
 
