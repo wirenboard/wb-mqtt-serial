@@ -85,7 +85,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_1",
                 "order": 3
             },
@@ -118,7 +118,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_2",
                 "order": 3
             },
@@ -151,7 +151,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_3",
                 "order": 3
             },
@@ -184,7 +184,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_4",
                 "order": 3
             },
@@ -217,7 +217,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_5",
                 "order": 3
             },
@@ -250,7 +250,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_6",
                 "order": 3
             },
@@ -279,7 +279,7 @@
                 "min": 1,
                 "default": 60,
                 "group": "general",
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "order": 2
             }
         },
@@ -305,6 +305,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_1"
             },
             {
@@ -421,6 +422,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_2"
             },
             {
@@ -537,6 +539,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_3"
             },
             {
@@ -653,6 +656,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_4"
             },
             {
@@ -769,6 +773,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_5"
             },
             {
@@ -885,6 +890,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_6"
             },
             {
@@ -1004,6 +1010,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "general"
             },
             {
@@ -1023,6 +1030,17 @@
                 "type": "text",
                 "format": "u32",
                 "offset": -4261412864,
+                "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
                 "group": "hw_info"
             },
             {
@@ -1075,7 +1093,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel enegry meter)",
+                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
@@ -1090,6 +1108,7 @@
                 "Channel 6": "Канал 6",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "Turns 1": "Коэффициент трансформации 1",
                 "Phi 1": "Фазовая задержка 1",
                 "Current Transformer Reverse 1": "Инвертировать токовый трансформатор 1",
@@ -1149,9 +1168,7 @@
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
-                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }

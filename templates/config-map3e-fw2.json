@@ -6,6 +6,9 @@
         {
             "signature": "MAP3E",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3E"
         }
     ],
     "device": {
@@ -73,7 +76,7 @@
                 "enum": [1, 2, 3],
                 "default": 1,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l1",
                 "order": 3
             },
@@ -85,7 +88,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l1",
                 "order": 4
             },
@@ -118,7 +121,7 @@
                 "enum": [1, 2, 3],
                 "default": 2,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l2",
                 "order": 3
             },
@@ -130,7 +133,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l2",
                 "order": 4
             },
@@ -163,7 +166,7 @@
                 "enum": [1, 2, 3],
                 "default": 3,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l3",
                 "order": 3
             },
@@ -175,7 +178,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l3",
                 "order": 4
             },
@@ -256,6 +259,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -288,6 +292,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -417,6 +422,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -449,6 +455,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -578,6 +585,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -610,6 +618,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -810,6 +819,17 @@
                 "group": "hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -859,7 +879,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase enegry meter)",
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
@@ -870,18 +890,19 @@
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
                 "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
-                "Actual Phase L1": "Фаза транформатора L1",
+                "Actual Phase L1": "Фаза трансформатора L1",
                 "Turns L2": "Коэффициент трансформации L2",
                 "Phi L2": "Фазовая задержка L2",
                 "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
-                "Actual Phase L2": "Фаза транформатора L2",
+                "Actual Phase L2": "Фаза трансформатора L2",
                 "Turns L3": "Коэффициент трансформации L3",
                 "Phi L3": "Фазовая задержка L3",
                 "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
-                "Actual Phase L3": "Фаза транформатора L3",
+                "Actual Phase L3": "Фаза трансформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
@@ -923,9 +944,7 @@
                 "Supply Voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
-                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }

@@ -1,9 +1,161 @@
-wb-mqtt-serial (2.204.0) stable; urgency=medium
+wb-mqtt-serial (2.220.0) stable; urgency=medium
 
   [ Radmir Khakimov ]
   * Add WB-MDALI support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 28 Nov 2025 09:43:16 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 23 Jan 2026 10:36:06 +0500
+
+wb-mqtt-serial (2.219.2) stable; urgency=medium
+
+  * Fix misprint in ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 22 Jan 2026 18:15:00 +0300
+
+wb-mqtt-serial (2.219.1) stable; urgency=medium
+
+  * Add missing phase voltage error_value to MAP templates
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Tue, 20 Jan 2026 21:10:00 +0300
+
+wb-mqtt-serial (2.219.0) stable; urgency=medium
+
+  * MAO4(20) and MDM3 templates: Change lower dimmer level to 0 for powerup and safety actions (was 1)
+  * MAO4 template: Change voltage at 1% dimming level to 100 mV (was 1 mV)
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 20 Jan 2026 09:24:00 +0300
+
+wb-mqtt-serial (2.218.0) stable; urgency=medium
+
+  * Add ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 19 Jan 2026 16:50:00 +0300
+
+wb-mqtt-serial (2.217.1) stable; urgency=medium
+
+  * Fix translations for mst-24 template
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 19 Jan 2026 16:00:00 +0300
+
+wb-mqtt-serial (2.217.0) stable; urgency=medium
+
+  * MR templates: Add delays, change min time for curtains
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 19 Jan 2026 13:47:00 +0300
+
+wb-mqtt-serial (2.216.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in
+    MAP12H-fw2-all-harmonics, MAP12H-fw2-basic, MAP3H-fw2-basic, WB-MCM8 and
+    WB-M1W2-buttons templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Fri, 16 Jan 2026 18:51:38 +0300
+
+wb-mqtt-serial (2.215.1) stable; urgency=medium
+
+  * WB-UPS v.3 template: fix battery temperature register format
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 16 Jan 2026 11:40:34 +0300
+
+wb-mqtt-serial (2.215.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in
+    MAP12H-fw2-harmonics, MAP3E-fw2, MAP3H-fw2-basic and  WB-MSW-LORA v4 templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 15 Jan 2026 16:11:29 +0300
+
+wb-mqtt-serial (2.214.0) stable; urgency=medium
+
+  * Add HW Batch Number channel
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Wed, 14 Jan 2026 17:47:00 +0300
+
+wb-mqtt-serial (2.213.0) stable; urgency=medium
+
+  * MAP3ET template: Add parameters: turns, phi, actual phase, CT reverse
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 13 Jan 2026 09:25:00 +0300
+
+wb-mqtt-serial (2.212.3) stable; urgency=medium
+
+  * MAP6S and MAP3E: Add unsupported values for peaks
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 29 Dec 2025 17:22:00 +0300
+
+wb-mqtt-serial (2.212.2) stable; urgency=medium
+
+  * Fix firmware version in WB-M1W2 template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Mon, 29 Dec 2025 15:28:14 +0300
+
+wb-mqtt-serial (2.212.1) stable; urgency=medium
+
+  * Update README.md
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Sun, 28 Dec 2025 17:53:26 +0500
+
+wb-mqtt-serial (2.212.0) stable; urgency=medium
+
+  * MAP3E and MAP3ET templates: Add new device signatures
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 24 Dec 2025 13:22:00 +0300
+
+wb-mqtt-serial (2.211.0) stable; urgency=medium
+
+  * MS and MSW templates: Add sht40 cleaning mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 22 Dec 2025 21:05:00 +0300
+
+wb-mqtt-serial (2.210.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in MAP3H, WB-MSW v3,
+    WB-MSW v4 and MAP6S templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Thu, 18 Dec 2025 11:34:29 +0300
+
+wb-mqtt-serial (2.209.0) stable; urgency=medium
+
+  * Disabled default polling in Drivent V2 Template for chanells: "Reset The End Positions", "Remember The Open Position", "Remember The Close Position"
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 17 Dec 2025 18:00:00 +0300
+
+wb-mqtt-serial (2.208.0) stable; urgency=medium
+
+  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, 
+    WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:37:03 +0300
+
+wb-mqtt-serial (2.207.0) stable; urgency=medium
+
+  *Set compatible firmware parameters for MAP12H and WB-MR6CU templates
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:31:34 +0300
+
+wb-mqtt-serial (2.206.0) stable; urgency=medium
+
+  * Add Drivent V2 Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 11 Dec 2025 13:00:00 +0300
+
+wb-mqtt-serial (2.205.0) stable; urgency=medium
+
+  * Add "connected_to_mge" configuration property for Modbus TCP ports
+  * Fix Modbus TCP bug for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 10 Dec 2025 17:02:26 +0300
+
+wb-mqtt-serial (2.204.0) stable; urgency=medium
+
+  * Set config-xy-md0x template deprecate
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 09 Dec 2025 09:45:00 +0300
+
+wb-mqtt-serial (2.203.2) stable; urgency=medium
+
+  * Fix template discovery for old WB-MRGBW-D devices
+  * Fix reading settings from old WB-MRGBW-D devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 03 Dec 2025 13:05:46 +0500
 
 wb-mqtt-serial (2.203.1) stable; urgency=medium
 

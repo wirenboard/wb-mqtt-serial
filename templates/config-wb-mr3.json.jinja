@@ -88,6 +88,22 @@
                 "id": "g_safety"
             },
             {
+                "title": "Delays",
+                "id": "g_delays"
+            },
+            {
+                "title": "Startup Delay (s)",
+                "id": "gg_startup_delay_params",
+                "description": "startup_delay_description",
+                "group": "g_delays"
+            },
+            {
+                "title": "Restart Delay (s)",
+                "id": "gg_restart_delay_params",
+                "description": "restart_delay_description",
+                "group": "g_delays"
+            },
+            {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
@@ -332,6 +348,7 @@
                 "order": 1,
                 "address": {{1400 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
@@ -343,6 +360,7 @@
                 "order": 2,
                 "address": {{1432 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
@@ -354,6 +372,7 @@
                 "order": 3,
                 "address": {{1464 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
@@ -365,6 +384,7 @@
                 "order": 4,
                 "address": {{1496 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
@@ -423,6 +443,32 @@
                     "Enable only in safety mode"
                 ]
             },
+            "out{{out_num}}_startup_delay_params": {
+                "title": "Output {{out_num}}",
+                "group": "gg_startup_delay_params",
+                "address": {{1728 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "order": {{out_num}},
+                "fw": "1.24.0",
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            "out{{out_num}}_restart_delay_params": {
+                "title": "Output {{out_num}}",
+                "group": "gg_restart_delay_params",
+                "address": {{1736 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "order": {{out_num}},
+                "fw": "1.24.0",
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
             {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
@@ -452,6 +498,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1280 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
@@ -462,24 +509,28 @@
             },
             "curtain{{curtain_num}}_open_time": {
                 "title": "Open time (s)",
+                "description": "curtain_zero_time_description",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "scale": 0.1,
                 "default": 10.0,
-                "min": 1.0,
+                "min": 0,
                 "max": 600.0,
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_close_time": {
                 "title": "Close time (s)",
+                "description": "curtain_zero_time_description",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "scale": 0.1,
                 "default": 10.0,
-                "min": 1.0,
+                "min": 0,
                 "max": 600.0,
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
@@ -489,6 +540,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1336 + curtain_num - 1 }},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 500,
                 "min": 50,
                 "max": 10000,
@@ -500,6 +552,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1288 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -515,6 +568,7 @@
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1284 + curtain_num - 1}},
                 "reg_type": "holding",
+                "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -689,6 +743,41 @@
                 "group": "gg_outputs_channels",
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
+            {
+                "name": "Real State K{{out_num}}",
+                "reg_type": "discrete",
+                "address": {{96 + out_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "fw": "1.24.0",
+                "enabled": false,
+                "group": "gg_outputs_channels",
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            {
+                "name": "Startup Delay Countdown K{{out_num}}",
+                "reg_type": "input",
+                "fw": "1.24.0",
+                "address": {{1744 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "gg_startup_delay_params",
+                "condition": "out{{out_num}}_startup_delay_params>0"
+            },
+            {
+                "name": "Restart Delay Countdown K{{out_num}}",
+                "reg_type": "input",
+                "fw": "1.24.0",
+                "address": {{1752 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "gg_restart_delay_params",
+                "condition": "out{{out_num}}_restart_delay_params>0"
+            },
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {
@@ -696,6 +785,7 @@
                 "reg_type": "coil",
                 "address": {{16 + (curtain_num - 1) * 2}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
                 "condition": "curtain{{curtain_num}}_mode==1"
@@ -705,6 +795,7 @@
                 "reg_type": "coil",
                 "address": {{17 + (curtain_num - 1) * 2}},
                 "type": "switch",
+                "fw": "1.21.0",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
                 "condition": "curtain{{curtain_num}}_mode==1"
@@ -716,6 +807,17 @@
                 "reg_type": "input",
                 "address": 270,
                 "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "1.23.0",
+                "enabled": false,
                 "group": "g_hw_info"
             },
             {
@@ -800,7 +902,15 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
 
-                "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required. For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
+                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
+                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
+
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "K{{out_num}}": "Command K{{out_num}}",
+                {% endfor -%}
+
+                "startup_delay_description": "0...999, factory default - 0",
+                "restart_delay_description": "0...999, factory default - 0"
             },
             "ru": {
                 "WB-MR3_template_title": "WB-MR3LV/x, WB-MR3HV/x, WB-MRWL3  (3-канальный модуль реле)",
@@ -817,6 +927,7 @@
 
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
+                "Delays": "Задержки",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -828,6 +939,12 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
+
+                "K{{out_num}}": "Команда K{{out_num}}",
+                "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
+
+                "Startup Delay Countdown K{{out_num}}": "Таймер задержки включения K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Таймер задержки повторного включения K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
@@ -911,6 +1028,11 @@
                 "Action when safety mode is activated": "Действие при переходе в безопасный режим",
                 "Power up action": "Действие при подаче питания",
 
+                "Startup Delay (s)": "Задержка включения (с)",
+                "startup_delay_description": "0...999, заводское - 0",
+                "Restart Delay (s)": "Задержка повторного включения (с)",
+                "restart_delay_description": "0...999, заводское - 0",
+
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
                 "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
                 "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
@@ -921,7 +1043,8 @@
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
 
-                "curtains_control_description": "Для использования режима штор требуется прошивка 1.21.0 или новее. Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
+                "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
@@ -929,6 +1052,7 @@
                 "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
 
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
