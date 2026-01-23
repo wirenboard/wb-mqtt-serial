@@ -83,10 +83,12 @@ void TModbusDevice::PrepareImpl(TPort& port)
         for (const auto& reg: GetRegisters()) {
             const auto& fw = reg->GetConfig()->FwVersion;
             if (!fw.empty() && util::CompareVersionStrings(fw, GetWbFwVersion()) > 0) {
-                reg->SetError(TRegister::TError::UnsupportedError);
+                reg->SetError(TRegister::TError::ReadError);
+                reg->SetSupported(false);
                 reg->ExcludeFromPolling();
             } else {
-                reg->ClearError(TRegister::TError::UnsupportedError);
+                reg->ClearError(TRegister::TError::ReadError);
+                reg->SetSupported(true);
                 reg->IncludeInPolling();
             }
         }

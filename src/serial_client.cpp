@@ -154,6 +154,9 @@ void TSerialClient::ClosedPortCycle()
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
+    if (!reg->IsSupported()) {
+        return;
+    }
     auto handler = GetHandler(reg);
     handler->SetTextValue(value);
     auto serialClientTask =

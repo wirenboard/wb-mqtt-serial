@@ -366,8 +366,7 @@ std::string TDeviceChannel::GetErrorText() const
     const std::unordered_map<TRegister::TError, std::string> errorNames = {
         {TRegister::TError::ReadError, "r"},
         {TRegister::TError::WriteError, "w"},
-        {TRegister::TError::PollIntervalMissError, "p"},
-        {TRegister::TError::UnsupportedError, "u"}};
+        {TRegister::TError::PollIntervalMissError, "p"}};
     std::string errorText;
     for (size_t i = 0; i < TRegister::TError::MAX_ERRORS; ++i) {
         if (errorState.test(i)) {

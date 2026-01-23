@@ -346,7 +346,6 @@ struct TRegister
         ReadError = 0,
         WriteError,
         PollIntervalMissError,
-        UnsupportedError,
         MAX_ERRORS
     };
 
@@ -376,6 +375,9 @@ struct TRegister
 
     void SetLastPollTime(std::chrono::steady_clock::time_point pollTime);
 
+    bool IsSupported() const;
+    void SetSupported(bool supported);
+
     bool IsExcludedFromPolling() const;
     void ExcludeFromPolling();
     void IncludeInPolling();
@@ -389,6 +391,7 @@ private:
     std::string ChannelName;
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
+    bool Supported = true;
     bool ExcludedFromPolling = false;
     PRegisterConfig Config;
 };
