@@ -96,7 +96,7 @@ Sleep(1000)
 Sleep(10000)
 EnqueueReadHoldingError()
 >> 01 03 00 01 00 01 D5 CA
-525670: <modbus:1:(type 0): 1> with errors: 0001
+525670: <modbus:1:(type 0): 1> with errors: 001
 550000: Cycle end
 
 550000: Cycle

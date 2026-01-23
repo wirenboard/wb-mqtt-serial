@@ -97,7 +97,7 @@ EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
 << FD 46 14 D2 5F
 Sleep(335)
-527370: <modbus:1:(type 0): 1> with errors: 0001
+527370: <modbus:1:(type 0): 1> with errors: 001
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 40 00 00 F9 7E
