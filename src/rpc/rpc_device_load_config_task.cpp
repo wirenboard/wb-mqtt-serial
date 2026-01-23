@@ -141,21 +141,21 @@ namespace
 
     void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model)
     {
-        const auto& fwVersion = rpcRequest->Device->GetWbFwVersion();
+        const auto& version = rpcRequest->Device->GetWbFwVersion();
         if (model.empty()) {
             model = ReadDeviceModel(*port, rpcRequest);
         }
         for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
             if (item.Signature == model) {
-                if (util::CompareVersionStrings(fwVersion, item.Fw) >= 0) {
+                if (util::CompareVersionStrings(version, item.Fw) >= 0) {
                     return;
                 }
-                throw TRPCException("Device \"" + model + "\" firmware version " + fwVersion +
+                throw TRPCException("Device \"" + model + "\" firmware version " + version +
                                         " is lower than selected template minimal supported version " + item.Fw,
                                     TRPCResultCode::RPC_WRONG_PARAM_VALUE);
             }
         }
-        throw TRPCException("Device \"" + model + "\" with firmware version " + fwVersion +
+        throw TRPCException("Device \"" + model + "\" with firmware version " + version +
                                 " is incompatible with selected template device models",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
