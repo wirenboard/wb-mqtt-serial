@@ -1,5 +1,8 @@
 {% set CHANNELS_NUMBER = 3 -%}
 {% set BULK_BUFFER_LEN = 16 -%}
+{% set INPUTS_NUMBER = 7 -%}
+{% set FP_BUTTONS_NUMBER = 3 -%}
+
 {
     "title": "WB-DALI_template_title",
     "device_type": "WB-MDALI",
@@ -24,10 +27,33 @@
                 "id": "g_channel_{{ ch + 1 }}"
             },
             {% endfor -%}
+            {% for in_num in range(FP_BUTTONS_NUMBER) -%}
             {
-                "title": "Inputs",
-                "id": "g_inputs"
+                "title": "Front pannel button {{in_num + 1}}",
+                "id": "g_fpb{{in_num}}"
             },
+            {
+                "title": "Button channels",
+                "id": "gg_fpb{{in_num}}_channels",
+                "group": "g_fpb{{in_num}}",
+            },
+            {% endfor -%}
+            {% for in_num in range(INPUTS_NUMBER) -%}
+            {
+                "title": "Input {{in_num + 1}}",
+                "id": "g_in{{in_num}}"
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{in_num}}_press_params",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "Input channels",
+                "id": "gg_in{{in_num}}_channels",
+                "group": "g_in{{in_num}}",
+            },
+            {% endfor -%}
             {
                 "title": "General",
                 "id": "general"
@@ -37,8 +63,42 @@
                 "id": "g_hw_info"
             }
         ],
-
         "parameters": {
+            {% for in_num in range(INPUTS_NUMBER) -%}
+            "in{{in_num}}_debounce_ms": {
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                "address": {{0x180 + in_num}},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "g_in{{in_num}}",
+                "order": 2
+            },
+            "in{{in_num}}_lp_hold_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "order": 1,
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "address": {{0x1A0 + in_num}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000
+            },
+            "in{{in_num}}_secp_waiting_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                "address": {{0x1B0 + in_num}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000
+            },
+            {% endfor -%}
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -57,7 +117,6 @@
                 "order": 1
             }
         },
-
         "channels": [
             {% for ch in range(CHANNELS_NUMBER) -%}
             {
@@ -128,6 +187,116 @@
                 "group": "g_channel_{{ ch + 1 }}"
             },
             {% endfor -%}
+            {% endfor -%}
+
+            {% for in_num in range(FP_BUTTONS_NUMBER) -%}
+            {
+                "name": "Front pannel button {{in_num + 1}}",
+                "reg_type": "discrete",
+                "address": {{16 + in_num}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} counter",
+                "reg_type": "input",
+                "address": {{48 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Single Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 0 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Long Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 16 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Double Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 32 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Shortlong Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 48 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {% endfor -%}
+
+            {% for in_num in range(INPUTS_NUMBER) -%}
+            {
+                "name": "Input {{in_num + 1}}",
+                "reg_type": "discrete",
+                "address": {{in_num}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} counter",
+                "reg_type": "input",
+                "address": {{32 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} Single Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{464 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} Long Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{480 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+            },
+            {
+                "name": "Input {{in_num + 1}} Double Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{496 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+            },
+            {
+                "name": "Input {{in_num + 1}} Shortlong Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{512 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+            },
             {% endfor -%}
             {
                 "name": "Serial",
@@ -211,6 +380,12 @@
         "translations": {
             "en": {
                 "WB-DALI_template_title": "WB-DALI (3-channel RS485-DALI gate)",
+                "debounce_time_title": "Debounce Time (ms)",
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "lp_hold_time_description": "If press is longer than the specified time then it is long",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
                 "baud_rate_description": "Make sure that communication with the device is estabilished before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600"
             },
             "ru": {
