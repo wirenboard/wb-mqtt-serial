@@ -35,7 +35,7 @@
             {
                 "title": "Button channels",
                 "id": "gg_fpb{{in_num}}_channels",
-                "group": "g_fpb{{in_num}}",
+                "group": "g_fpb{{in_num}}"
             },
             {% endfor -%}
             {% for in_num in range(INPUTS_NUMBER) -%}
@@ -51,7 +51,7 @@
             {
                 "title": "Input channels",
                 "id": "gg_in{{in_num}}_channels",
-                "group": "g_in{{in_num}}",
+                "group": "g_in{{in_num}}"
             },
             {% endfor -%}
             {
@@ -277,7 +277,7 @@
                 "address": {{480 + in_num}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_channels"
             },
             {
                 "name": "Input {{in_num + 1}} Double Press Counter",
@@ -286,7 +286,7 @@
                 "address": {{496 + in_num}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_channels"
             },
             {
                 "name": "Input {{in_num + 1}} Shortlong Press Counter",
@@ -295,7 +295,7 @@
                 "address": {{512 + in_num}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_channels"
             },
             {% endfor -%}
             {
