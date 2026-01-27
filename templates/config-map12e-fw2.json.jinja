@@ -1018,6 +1018,17 @@
                 "group": "hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -1083,6 +1094,7 @@
                 {% endfor -%}
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 {% for ch_num in range(1, 5) -%}
                 "Channel {{ch_num}} Turns L1": "Коэффициент трансформации L1",
                 "Channel {{ch_num}} Phi L1": "Фазовая задержка L1",

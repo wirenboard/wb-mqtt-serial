@@ -684,7 +684,6 @@
                 "units": "s",
                 "format": "u16",
                 "scale": 0.1,
-                "sporadic": true,
                 "group": "gg_voltage_control_channels",
                 "condition": "(startup_delay_ctrl_dis_{{out_num}}>0)||(startup_delay_ctrl_en_{{out_num}}>0)"
             },
@@ -696,7 +695,6 @@
                 "units": "s",
                 "format": "u16",
                 "scale": 0.1,
-                "sporadic": true,
                 "group": "gg_voltage_control_channels",
                 "condition": "restart_delay_{{out_num}}>0"
             },
@@ -709,6 +707,17 @@
                 "address": 270,
                 "type": "text",
                 "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "1.23.0",
+                "enabled": false,
                 "group": "g_hw_info"
             },
             {
@@ -936,6 +945,7 @@
                 "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
 
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",

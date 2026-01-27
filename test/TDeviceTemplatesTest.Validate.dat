@@ -289,6 +289,20 @@ Drivent V2
 	reset_locks  =>  reset_locks
 	speed_of_buttons  =>  speed_of_buttons
 	version  =>  version
+ENGO EFAN
+	display_bright  =>  display_bright
+	fan_status  =>  fan_status
+	frost_mode_frost_setpoint  =>  frost_mode_frost_setpoint
+	humidity  =>  humidity
+	key_lock  =>  key_lock
+	manual_mode_temp_setpoint  =>  manual_mode_temp_setpoint
+	operation_mode  =>  operation_mode
+	power_control  =>  power_control
+	schedule_mode_temp_setpoint  =>  schedule_mode_temp_setpoint
+	temp_sens_internal  =>  temp_sens_internal
+	valve_1_status  =>  valve_1_status
+	valve_2_status  =>  valve_2_status
+	version  =>  version
 ESCORT DB-2
 	Conversion Factor  =>  Conversion Factor
 	Empty  =>  Empty
@@ -4286,6 +4300,7 @@ WB-LED
 	Channels 3_4  =>  Channels 3_4
 	Channels 3_4 Brightness  =>  Channels 3_4 Brightness
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
 	Input 1  =>  Input 1
@@ -4350,6 +4365,7 @@ WB-M1W2 BUTTONS
 	External Sensor 2  =>  External Sensor 2
 	External Sensor 2 OK  =>  External Sensor 2 OK
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -16509,6 +16525,7 @@ WB-MAI2-mini/CC
 	Uptime  =>  Uptime
 WB-MAI2-mini/CC-since-fw-4.32
 	FW Version  =>  fw_version
+	HW Batch Number  =>  hw_batch_number
 	Input 1 Current  =>  input_1_current
 	Input 1 Value  =>  input_1_value
 	Input 2 Current  =>  input_2_current
@@ -16639,6 +16656,7 @@ WB-MAI6-since-fw-2.2
 	ADC Loop Duration  =>  ADC Loop Duration
 	AVCC Reference  =>  AVCC Reference
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	IN 1 N Current  =>  IN 1 N Current
 	IN 1 N Resistance  =>  IN 1 N Resistance
 	IN 1 N State  =>  IN 1 N State
@@ -16989,6 +17007,7 @@ WB-MAP12E fw2
 	Ch 4 Total S  =>  Ch 4 Total S
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	HW Batch Number  =>  HW Batch Number
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
@@ -20865,6 +20884,7 @@ WB-MAP3E fw2
 	AP energy L3  =>  AP energy L3
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	HW Batch Number  =>  HW Batch Number
 	Ipeak L1  =>  Ipeak L1
 	Ipeak L2  =>  Ipeak L2
 	Ipeak L3  =>  Ipeak L3
@@ -20926,6 +20946,7 @@ WB-MAP3ET
 	AP energy L3  =>  AP energy L3
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	HW Batch Number  =>  HW Batch Number
 	Ipeak L1  =>  Ipeak L1
 	Ipeak L2  =>  Ipeak L2
 	Ipeak L3  =>  Ipeak L3
@@ -20981,6 +21002,7 @@ WB-MAP3ET
 WB-MAP3EV
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	HW Batch Number  =>  HW Batch Number
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
@@ -21634,6 +21656,7 @@ WB-MAP6S fw2
 	AP energy 6  =>  AP energy 6
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	HW Batch Number  =>  HW Batch Number
 	Ipeak 1  =>  Ipeak 1
 	Ipeak 2  =>  Ipeak 2
 	Ipeak 3  =>  Ipeak 3
@@ -21741,6 +21764,7 @@ WB-MCM8
 	Encoder 2 revolutions  =>  Encoder 2 revolutions
 	Encoder 3 position  =>  Encoder 3 position
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -22089,6 +22113,7 @@ WB-MIR v.3
 	External Temperature Sensor  =>  External Temperature Sensor
 	External Temperature Sensor OK  =>  External Temperature Sensor OK
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
@@ -22455,6 +22480,7 @@ WB-MR3
 	Curtain 1 Close  =>  Curtain 1 Close
 	Curtain 1 Open  =>  Curtain 1 Open
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -22489,7 +22515,16 @@ WB-MR3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR3LV
@@ -22519,6 +22554,7 @@ WB-MR6C
 	Curtain 3 Close  =>  Curtain 3 Close
 	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -22577,7 +22613,25 @@ WB-MR6C
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C v.3
@@ -22589,6 +22643,7 @@ WB-MR6C v.3
 	Curtain 3 Close  =>  Curtain 3 Close
 	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -22647,7 +22702,25 @@ WB-MR6C v.3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C-NC
@@ -22710,7 +22783,25 @@ WB-MR6C-NC
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6CU
@@ -22721,6 +22812,7 @@ WB-MR6CU
 	Curtain 3 Close  =>  Curtain 3 Close
 	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	K1  =>  K1
 	K2  =>  K2
 	K3  =>  K3
@@ -22730,7 +22822,25 @@ WB-MR6CU
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6LV
@@ -23011,7 +23121,13 @@ WB-MRM2-mini-NC-inputs
 	MCU Voltage  =>  MCU Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NO-inputs
@@ -23038,7 +23154,13 @@ WB-MRM2-mini-NO-inputs
 	MCU Voltage  =>  MCU Voltage
 	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-old
@@ -23067,6 +23189,7 @@ WB-MRWM2
 	Blocking K1  =>  Blocking K1
 	Blocking K2  =>  Blocking K2
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -23358,6 +23481,7 @@ WB-MSW v.4
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	FW Version  =>  FW Version
 	Green LED  =>  Green LED
+	HW Batch Number  =>  HW Batch Number
 	Humidity  =>  Humidity
 	Humidity Without Compensation  =>  Humidity Without Compensation
 	Illuminance  =>  Illuminance
@@ -23841,6 +23965,7 @@ WB-MWAC-v2 ver2
 	Buzzer  =>  Buzzer
 	Cleaning Mode  =>  Cleaning Mode
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input F1  =>  Input F1
 	Input F1 Counter  =>  Input F1 Counter
 	Input F1 Double Press Counter  =>  Input F1 Double Press Counter
@@ -26690,6 +26815,7 @@ tpl1_danfoss_ekc_202b_wb_ref
 	Door Alarm  =>  Door Alarm
 	EKC Error  =>  EKC Error
 	Fan Relay Status  =>  Fan Relay Status
+	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Hold After Defrost Active  =>  Hold After Defrost Active
 	Low Temperature Alarm  =>  Low Temperature Alarm
@@ -26778,6 +26904,7 @@ tpl1_danfoss_ekc_202d_wb_ref
 	EKC Error  =>  EKC Error
 	Fan Relay Status  =>  Fan Relay Status
 	Forced Cooling Start  =>  Forced Cooling Start
+	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Hold After Defrost Active  =>  Hold After Defrost Active
 	Low Temperature Alarm  =>  Low Temperature Alarm
@@ -26878,6 +27005,7 @@ tpl1_danfoss_ekc_204a1_wb_ref
 	HACCP Alarm  =>  HACCP Alarm
 	HACCP Peak Temperature  =>  HACCP Peak Temperature
 	HACCP Temperature  =>  HACCP Temperature
+	HW Batch Number  =>  HW Batch Number
 	High Temperature Alarm  =>  High Temperature Alarm
 	Hold After Defrost Active  =>  Hold After Defrost Active
 	Low Temperature Alarm  =>  Low Temperature Alarm
@@ -26919,6 +27047,7 @@ tpl1_oni_plc_w_acs_0800_imp
 	Encoder 2 revolutions  =>  Encoder 2 revolutions
 	Encoder 3 position  =>  Encoder 3 position
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -27000,6 +27129,7 @@ tpl1_oni_plc_w_ema_0304
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	Channel 4 Switch  =>  Channel 4 Switch
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
@@ -27151,6 +27281,7 @@ tpl1_oni_plc_w_emd_0706
 	Curtain 3 Close  =>  Curtain 3 Close
 	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -27209,7 +27340,25 @@ tpl1_oni_plc_w_emd_0706
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Real State K1  =>  Real State K1
+	Real State K2  =>  Real State K2
+	Real State K3  =>  Real State K3
+	Real State K4  =>  Real State K4
+	Real State K5  =>  Real State K5
+	Real State K6  =>  Real State K6
+	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
+	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
+	Restart Delay Countdown K3  =>  Restart Delay Countdown K3
+	Restart Delay Countdown K4  =>  Restart Delay Countdown K4
+	Restart Delay Countdown K5  =>  Restart Delay Countdown K5
+	Restart Delay Countdown K6  =>  Restart Delay Countdown K6
 	Serial  =>  Serial
+	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
+	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
+	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
+	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
+	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
+	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 tpl1_wb_mao4
@@ -27230,6 +27379,7 @@ tpl1_wb_mao4
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	Channel 4 Switch  =>  Channel 4 Switch
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
@@ -27270,6 +27420,7 @@ tpl1_wb_mdm3
 	Channel 3  =>  Channel 3
 	Channel 3 Raw Duty (us)  =>  Channel 3 Raw Duty (us)
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -27526,6 +27677,7 @@ tpl1_wb_ms_v2
 	External Sensor 1  =>  External Sensor 1
 	External Sensor 2  =>  External Sensor 2
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Humidity  =>  Humidity
 	Humidity Without Compensation  =>  Humidity Without Compensation
 	Illuminance  =>  Illuminance
@@ -27919,6 +28071,7 @@ wb_mao4_20ma
 	Channel 4 Fault  =>  channel_4_fault
 	Channel 4 Level  =>  channel_4_level
 	FW Version  =>  fw_version
+	HW Batch Number  =>  hw_batch_number
 	Input 1  =>  input_1
 	Input 1 Counter  =>  input_1_counter
 	Input 1 Double Press Counter  =>  input_1_double_press_counter
@@ -27950,6 +28103,7 @@ wb_mao4_20ma
 	Uptime  =>  uptime
 wb_mio
 	FW Version  =>  fw_version
+	HW Batch Number  =>  hw_batch_number
 	MCU Temperature  =>  mcu_temperature
 	MCU Voltage  =>  mcu_voltage
 	Serial  =>  serial
@@ -27997,6 +28151,7 @@ wb_ups_v3
 	Discharger Vbus Raw  =>  discharger_vbus_raw
 	Discharger Vbus Real  =>  discharger_vbus_real
 	FW Version  =>  fw_version
+	HW Batch Number  =>  hw_batch_number
 	Input Voltage  =>  input_voltage
 	Load Control In Backup Mode  =>  load_control_in_backup_mode
 	Load Current (Battery Powered)  =>  load_current_battery_powered
