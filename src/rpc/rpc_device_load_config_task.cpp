@@ -9,7 +9,6 @@
 namespace
 {
     const auto MAX_RETRIES = 2;
-    const auto UNSUPPORTED_VALUE = "unsupported";
 
     void ReadModbusRegister(TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
@@ -176,19 +175,22 @@ namespace
         auto continuousRead = true;
         for (auto it = registerList.begin(); it != registerList.end(); ++it) {
             const auto& item = *it;
-            // this code checks registers only for 16-bit register unsupported value 0xFFFE
-            // it must be modified to check larger registers like 24, 32 or 64-bits
-            if (item.CheckUnsupported && item.Register->GetValue().Get<uint16_t>() == 0xFFFE) {
-                if (continuousRead) {
-                    SetContinuousRead(port, rpcRequest, false);
-                    continuousRead = false;
+            try {
+                // this code checks registers only for 16-bit register unsupported value 0xFFFE
+                // it must be modified to check larger registers like 24, 32 or 64-bits
+                if (item.CheckUnsupported && item.Register->GetValue().Get<uint16_t>() == 0xFFFE) {
+                    if (continuousRead) {
+                        SetContinuousRead(port, rpcRequest, false);
+                        continuousRead = false;
+                    }
+                    try {
+                        TRegisterValue value;
+                        ReadModbusRegister(port, rpcRequest, item.Register->GetConfig(), value);
+                    } catch (const Modbus::TModbusExceptionError& err) {
+                        parameters[item.Id] = UnsupportedRegisterValue;
+                    }
                 }
-                try {
-                    TRegisterValue value;
-                    ReadModbusRegister(port, rpcRequest, item.Register->GetConfig(), value);
-                } catch (const Modbus::TModbusExceptionError& err) {
-                    parameters[item.Id] = UNSUPPORTED_VALUE;
-                }
+            } catch (const TRegisterValueException& e) {
             }
         }
         if (!continuousRead && rpcRequest->DeviceFromConfig) {
