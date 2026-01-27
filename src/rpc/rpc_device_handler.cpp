@@ -66,9 +66,9 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
         ProtocolParams = deviceFactory.GetProtocolParams(protocolName);
         auto config = std::make_shared<TDeviceConfig>("RPC Device", request["slave_id"].asString(), protocolName);
         if (ProtocolParams.protocol->IsModbus()) {
-            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "max_reg_hole", config->MaxRegHole);
+            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "max_bit_hole", config->MaxBitHole);
+            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "min_read_registers", config->MaxReadRegisters);
         }
         Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
     } else {
@@ -353,6 +353,7 @@ void ReadRegisterList(TPort& port,
     }
 
     size_t index = 0;
+    std::list<PRegister> unsupported;
     while (index < registerList.size() && error.empty()) {
         auto first = registerList[index].Register;
         auto range = device->CreateRegisterRange();
@@ -369,6 +370,12 @@ void ReadRegisterList(TPort& port,
                 LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
                           << "Failed to read " << std::to_string(range->RegisterList().size())
                           << " registers starting from <" << first->GetConfig()->ToString() + ">: " + e.what();
+                auto modbusDevice = dynamic_cast<TModbusDevice*>(device.get());
+                if (modbusDevice != nullptr && !modbusDevice->GetContinuousReadEnabled()) {
+                    for (const auto& reg: range->RegisterList()) {
+                        unsupported.push_back(reg);
+                    }
+                }
                 break;
             } catch (const TSerialDeviceException& e) {
                 if (i == maxRetries) {
@@ -390,9 +397,10 @@ void ReadRegisterList(TPort& port,
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    for (size_t i = 0; i < registerList.size(); ++i) {
-        auto& reg = registerList[i];
-        result[reg.Id] = RawValueToJSON(*reg.Register->GetConfig(), reg.Register->GetValue());
+    for (const auto& reg: registerList) {
+        result[reg.Id] = std::find(unsupported.begin(), unsupported.end(), reg.Register) == unsupported.end()
+                             ? RawValueToJSON(*reg.Register->GetConfig(), reg.Register->GetValue())
+                             : UnsupportedRegisterValue;
     }
 }
 

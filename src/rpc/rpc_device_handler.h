@@ -3,6 +3,7 @@
 #include "templates_map.h"
 
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
+const auto UnsupportedRegisterValue = "unsupported";
 
 class TRPCDeviceParametersCache
 {
