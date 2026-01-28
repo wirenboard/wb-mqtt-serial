@@ -739,7 +739,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=1",
@@ -751,19 +751,17 @@
                 "address": 10011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=1",
                 "original_name": "Vanes swing"
@@ -1332,7 +1330,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=2",
@@ -1344,19 +1342,17 @@
                 "address": 10111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=2",
                 "original_name": "Vanes swing"
@@ -1925,7 +1921,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=3",
@@ -1937,19 +1933,17 @@
                 "address": 10211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=3",
                 "original_name": "Vanes swing"
@@ -2518,7 +2512,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=4",
@@ -2530,19 +2524,17 @@
                 "address": 10311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=4",
                 "original_name": "Vanes swing"
@@ -3111,7 +3103,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=5",
@@ -3123,19 +3115,17 @@
                 "address": 10411,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=5",
                 "original_name": "Vanes swing"
@@ -3704,7 +3694,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=6",
@@ -3716,19 +3706,17 @@
                 "address": 10511,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=6",
                 "original_name": "Vanes swing"
@@ -4297,7 +4285,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=7",
@@ -4309,19 +4297,17 @@
                 "address": 10611,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=7",
                 "original_name": "Vanes swing"
@@ -4890,7 +4876,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=8",
@@ -4902,19 +4888,17 @@
                 "address": 10711,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=8",
                 "original_name": "Vanes swing"
@@ -5483,7 +5467,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=9",
@@ -5495,19 +5479,17 @@
                 "address": 10811,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=9",
                 "original_name": "Vanes swing"
@@ -6076,7 +6058,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=10",
@@ -6088,19 +6070,17 @@
                 "address": 10911,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=10",
                 "original_name": "Vanes swing"
@@ -6669,7 +6649,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=11",
@@ -6681,19 +6661,17 @@
                 "address": 11011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=11",
                 "original_name": "Vanes swing"
@@ -7262,7 +7240,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=12",
@@ -7274,19 +7252,17 @@
                 "address": 11111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=12",
                 "original_name": "Vanes swing"
@@ -7855,7 +7831,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=13",
@@ -7867,19 +7843,17 @@
                 "address": 11211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=13",
                 "original_name": "Vanes swing"
@@ -8448,7 +8422,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=14",
@@ -8460,19 +8434,17 @@
                 "address": 11311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=14",
                 "original_name": "Vanes swing"
@@ -9041,7 +9013,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=15",
@@ -9053,19 +9025,17 @@
                 "address": 11411,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=15",
                 "original_name": "Vanes swing"
@@ -9634,7 +9604,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=16",
@@ -9646,19 +9616,17 @@
                 "address": 11511,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=16",
                 "original_name": "Vanes swing"
@@ -10227,7 +10195,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=17",
@@ -10239,19 +10207,17 @@
                 "address": 11611,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=17",
                 "original_name": "Vanes swing"
@@ -10820,7 +10786,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=18",
@@ -10832,19 +10798,17 @@
                 "address": 11711,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=18",
                 "original_name": "Vanes swing"
@@ -11413,7 +11377,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=19",
@@ -11425,19 +11389,17 @@
                 "address": 11811,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=19",
                 "original_name": "Vanes swing"
@@ -12006,7 +11968,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=20",
@@ -12018,19 +11980,17 @@
                 "address": 11911,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=20",
                 "original_name": "Vanes swing"
@@ -12599,7 +12559,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=21",
@@ -12611,19 +12571,17 @@
                 "address": 12011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=21",
                 "original_name": "Vanes swing"
@@ -13192,7 +13150,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=22",
@@ -13204,19 +13162,17 @@
                 "address": 12111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=22",
                 "original_name": "Vanes swing"
@@ -13785,7 +13741,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=23",
@@ -13797,19 +13753,17 @@
                 "address": 12211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=23",
                 "original_name": "Vanes swing"
@@ -14378,7 +14332,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=24",
@@ -14390,19 +14344,17 @@
                 "address": 12311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=24",
                 "original_name": "Vanes swing"
@@ -14971,7 +14923,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=25",
@@ -14983,19 +14935,17 @@
                 "address": 12411,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=25",
                 "original_name": "Vanes swing"
@@ -15564,7 +15514,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=26",
@@ -15576,19 +15526,17 @@
                 "address": 12511,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=26",
                 "original_name": "Vanes swing"
@@ -16157,7 +16105,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=27",
@@ -16169,19 +16117,17 @@
                 "address": 12611,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=27",
                 "original_name": "Vanes swing"
@@ -16750,7 +16696,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=28",
@@ -16762,19 +16708,17 @@
                 "address": 12711,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=28",
                 "original_name": "Vanes swing"
@@ -17343,7 +17287,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=29",
@@ -17355,19 +17299,17 @@
                 "address": 12811,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=29",
                 "original_name": "Vanes swing"
@@ -17936,7 +17878,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=30",
@@ -17948,19 +17890,17 @@
                 "address": 12911,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=30",
                 "original_name": "Vanes swing"
@@ -18529,7 +18469,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=31",
@@ -18541,19 +18481,17 @@
                 "address": 13011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=31",
                 "original_name": "Vanes swing"
@@ -19122,7 +19060,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=32",
@@ -19134,19 +19072,17 @@
                 "address": 13111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=32",
                 "original_name": "Vanes swing"
@@ -19715,7 +19651,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=33",
@@ -19727,19 +19663,17 @@
                 "address": 13211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=33",
                 "original_name": "Vanes swing"
@@ -20308,7 +20242,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=34",
@@ -20320,19 +20254,17 @@
                 "address": 13311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=34",
                 "original_name": "Vanes swing"
@@ -20901,7 +20833,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=35",
@@ -20913,19 +20845,17 @@
                 "address": 13411,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=35",
                 "original_name": "Vanes swing"
@@ -21494,7 +21424,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=36",
@@ -21506,19 +21436,17 @@
                 "address": 13511,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=36",
                 "original_name": "Vanes swing"
@@ -22087,7 +22015,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=37",
@@ -22099,19 +22027,17 @@
                 "address": 13611,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=37",
                 "original_name": "Vanes swing"
@@ -22680,7 +22606,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=38",
@@ -22692,19 +22618,17 @@
                 "address": 13711,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=38",
                 "original_name": "Vanes swing"
@@ -23273,7 +23197,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=39",
@@ -23285,19 +23209,17 @@
                 "address": 13811,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=39",
                 "original_name": "Vanes swing"
@@ -23866,7 +23788,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=40",
@@ -23878,19 +23800,17 @@
                 "address": 13911,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=40",
                 "original_name": "Vanes swing"
@@ -24459,7 +24379,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=41",
@@ -24471,19 +24391,17 @@
                 "address": 14011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=41",
                 "original_name": "Vanes swing"
@@ -25052,7 +24970,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=42",
@@ -25064,19 +24982,17 @@
                 "address": 14111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=42",
                 "original_name": "Vanes swing"
@@ -25645,7 +25561,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=43",
@@ -25657,19 +25573,17 @@
                 "address": 14211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=43",
                 "original_name": "Vanes swing"
@@ -26238,7 +26152,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=44",
@@ -26250,19 +26164,17 @@
                 "address": 14311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=44",
                 "original_name": "Vanes swing"
@@ -26831,7 +26743,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=45",
@@ -26843,19 +26755,17 @@
                 "address": 14411,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=45",
                 "original_name": "Vanes swing"
@@ -27424,7 +27334,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=46",
@@ -27436,19 +27346,17 @@
                 "address": 14511,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=46",
                 "original_name": "Vanes swing"
@@ -28017,7 +27925,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=47",
@@ -28029,19 +27937,17 @@
                 "address": 14611,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=47",
                 "original_name": "Vanes swing"
@@ -28610,7 +28516,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=48",
@@ -28622,19 +28528,17 @@
                 "address": 14711,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=48",
                 "original_name": "Vanes swing"
@@ -29203,7 +29107,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=49",
@@ -29215,19 +29119,17 @@
                 "address": 14811,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=49",
                 "original_name": "Vanes swing"
@@ -29796,7 +29698,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=50",
@@ -29808,19 +29710,17 @@
                 "address": 14911,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=50",
                 "original_name": "Vanes swing"
@@ -30389,7 +30289,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=51",
@@ -30401,19 +30301,17 @@
                 "address": 15011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=51",
                 "original_name": "Vanes swing"
@@ -30982,7 +30880,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=52",
@@ -30994,19 +30892,17 @@
                 "address": 15111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=52",
                 "original_name": "Vanes swing"
@@ -31575,7 +31471,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=53",
@@ -31587,19 +31483,17 @@
                 "address": 15211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=53",
                 "original_name": "Vanes swing"
@@ -32168,7 +32062,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=54",
@@ -32180,19 +32074,17 @@
                 "address": 15311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=54",
                 "original_name": "Vanes swing"
@@ -32761,7 +32653,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=55",
@@ -32773,19 +32665,17 @@
                 "address": 15411,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=55",
                 "original_name": "Vanes swing"
@@ -33354,7 +33244,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=56",
@@ -33366,19 +33256,17 @@
                 "address": 15511,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=56",
                 "original_name": "Vanes swing"
@@ -33947,7 +33835,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=57",
@@ -33959,19 +33847,17 @@
                 "address": 15611,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=57",
                 "original_name": "Vanes swing"
@@ -34540,7 +34426,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=58",
@@ -34552,19 +34438,17 @@
                 "address": 15711,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=58",
                 "original_name": "Vanes swing"
@@ -35133,7 +35017,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=59",
@@ -35145,19 +35029,17 @@
                 "address": 15811,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=59",
                 "original_name": "Vanes swing"
@@ -35726,7 +35608,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=60",
@@ -35738,19 +35620,17 @@
                 "address": 15911,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=60",
                 "original_name": "Vanes swing"
@@ -36319,7 +36199,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=61",
@@ -36331,19 +36211,17 @@
                 "address": 16011,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=61",
                 "original_name": "Vanes swing"
@@ -36912,7 +36790,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=62",
@@ -36924,19 +36802,17 @@
                 "address": 16111,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=62",
                 "original_name": "Vanes swing"
@@ -37505,7 +37381,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=63",
@@ -37517,19 +37393,17 @@
                 "address": 16211,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=63",
                 "original_name": "Vanes swing"
@@ -38098,7 +37972,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1&&IDU_count>=64",
@@ -38110,19 +37984,17 @@
                 "address": 16311,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
+                "max": 1,
                 "sporadic": false,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1,
-                    2,
-                    3
+                    2
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Swinging horizontal blinds"
                 ],
                 "condition": "Show_vanes_as_range!=1&&IDU_count>=64",
                 "original_name": "Vanes swing"
@@ -38353,9 +38225,6 @@
                 "Swing": "Качание",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Use big speed list": "Использовать большой список скоростей",
                 "Additional": "Дополнительные режимы и функции",
