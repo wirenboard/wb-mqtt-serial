@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.219.3) stable; urgency=medium
+
+  * Fix misprint in ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 29 Jan 2026 17:15:00 +0300
+
 wb-mqtt-serial (2.219.2) stable; urgency=medium
 
   * Fix misprint in ENGO EFAN Template
