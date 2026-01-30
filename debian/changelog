@@ -1,8 +1,15 @@
 wb-mqtt-serial (2.220.0) stable; urgency=medium
 
   * Use default values for parameters that are not present in config
+  * Fix M1W2 default channel polling settings
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 27 Jan 2026 07:52:02 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 30 Jan 2026 16:08:02 +0300
+
+wb-mqtt-serial (2.219.3) stable; urgency=medium
+
+  * Fix misprint in ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 29 Jan 2026 17:15:00 +0300
 
 wb-mqtt-serial (2.219.2) stable; urgency=medium
 
