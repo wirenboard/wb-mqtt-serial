@@ -1,0 +1,41 @@
+{
+    "device_type": "default_params",
+    "device": {
+        "name": "default params",
+        "id": "default params",
+        "channels": [
+            {
+                "name": "Channel 1",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x0001"
+            },
+            {
+                "name": "Channel 2",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x0002",
+                "condition": "condition_param1==1&&condition_param2==1"
+            },
+            {
+                "name": "Channel 3",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x0003",
+                "condition": "condition_param1==1&&condition_param2==2"
+            }
+        ],
+        "parameters": {
+            "condition_param1": {
+                "title": "p1",
+                "address": "0x1001",
+                "default": 0
+            },
+            "condition_param2": {
+                "title": "p1",
+                "address": "0x1002",
+                "default": 2
+            }
+        }
+    }
+}

@@ -3,7 +3,7 @@
 #include "expression_evaluator.h"
 #include "serial_config.h"
 
-Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
+Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
                                           const std::string& deviceType,
                                           const Json::Value& deviceTemplate);
 
