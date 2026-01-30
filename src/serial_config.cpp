@@ -512,8 +512,7 @@ namespace
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
-        device.AddSetupItem(PDeviceSetupItemConfig(
-            new TDeviceSetupItemConfig(name, reg.RegisterConfig, value, item_data["id"].asString())));
+        device.AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
     }
 
     void LoadSetupItems(TSerialDevice& device,
@@ -843,14 +842,10 @@ void TDeviceChannelConfig::SetEnumTitles(const std::string& value, const TTitleT
     }
 }
 
-TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name,
-                                               PRegisterConfig reg,
-                                               const std::string& value,
-                                               const std::string& parameterId)
+TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value)
     : Name(name),
       RegisterConfig(reg),
-      Value(value),
-      ParameterId(parameterId)
+      Value(value)
 {
     try {
         RawValue = ConvertToRawValue(*reg, Value);
@@ -867,11 +862,6 @@ const std::string& TDeviceSetupItemConfig::GetName() const
 const std::string& TDeviceSetupItemConfig::GetValue() const
 {
     return Value;
-}
-
-const std::string& TDeviceSetupItemConfig::GetParameterId() const
-{
-    return ParameterId;
 }
 
 TRegisterValue TDeviceSetupItemConfig::GetRawValue() const

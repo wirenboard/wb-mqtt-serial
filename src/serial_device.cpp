@@ -34,7 +34,6 @@ bool IProtocol::SupportsBroadcast() const
 
 TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device)
     : Name(config->GetName()),
-      ParameterId(config->GetParameterId()),
       RawValue(config->GetRawValue()),
       HumanReadableValue(config->GetValue()),
       RegisterConfig(config->GetRegisterConfig()),

@@ -93,7 +93,8 @@ public:
 class TRPCDeviceHandler
 {
 public:
-    TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+    TRPCDeviceHandler(const std::string& configFileName,
+                      const std::string& requestDeviceLoadConfigSchemaFilePath,
                       const std::string& requestDeviceLoadSchemaFilePath,
                       const std::string& requestDeviceLSetSchemaFilePath,
                       const std::string& requestDeviceProbeSchemaFilePath,
@@ -105,6 +106,7 @@ public:
                       WBMQTT::PMqttRpcServer rpcServer);
 
 private:
+    const std::string& ConfigFileName;
     const TSerialDeviceFactory& DeviceFactory;
 
     Json::Value RequestDeviceLoadConfigSchema;
@@ -139,6 +141,7 @@ private:
 struct TRPCRegister
 {
     std::string Id;
+    std::string Condition;
     PRegister Register;
     bool CheckUnsupported;
 };
@@ -175,13 +178,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
  * @param port - serial port refrence
  * @param device - serial device object pointer
  * @param registerList - named PRegister map
- * @param result - result JSON object reference
  * @param maxRetries - number of request retries in case of error
  */
-void ReadRegisterList(TPort& port,
-                      PSerialDevice device,
-                      TRPCRegisterList& registerList,
-                      Json::Value& result,
-                      int maxRetries = 0);
+void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& registerList, int maxRetries = 0);
 
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
