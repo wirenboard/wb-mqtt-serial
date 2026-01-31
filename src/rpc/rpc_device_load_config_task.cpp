@@ -151,6 +151,7 @@ namespace
             for (auto cfg: port["devices"]) {
                 const auto& dev = rpcRequest->Device->DeviceConfig();
                 if (cfg["device_type"].asString() == dev->DeviceType && cfg["slave_id"].asString() == dev->SlaveId) {
+                    cfg.removeMember("channels");
                     cfg.removeMember("device_type");
                     cfg.removeMember("slave_id");
                     parameters = cfg;
