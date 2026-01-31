@@ -1,9 +1,15 @@
+wb-mqtt-serial (2.220.1) stable; urgency=medium
+
+  * Fix using default values for setup items
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Sat, 31 Jan 2026 14:22:26 +0300
+
 wb-mqtt-serial (2.220.0) stable; urgency=medium
 
   * Use default values for parameters that are not present in config
   * Fix M1W2 default channel polling settings
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 30 Jan 2026 16:08:02 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 30 Jan 2026 16:08:02 +0300
 
 wb-mqtt-serial (2.219.3) stable; urgency=medium
 
