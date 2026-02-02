@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.221.0) stable; urgency=medium
+
+  * Add inactive power regs to map3e, map3et, map6s
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Mon, 01 Feb 2026 15:30:00 +0300
+
 wb-mqtt-serial (2.220.1) stable; urgency=medium
 
   * Fix using default values for setup items
