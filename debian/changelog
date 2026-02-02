@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.221.1) stable; urgency=medium
+
+  * Add firmvare version checks for device channels
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Sat, 31 Jan 2026 14:22:26 +0300
+
 wb-mqtt-serial (2.220.1) stable; urgency=medium
 
   * Fix using default values for setup items
