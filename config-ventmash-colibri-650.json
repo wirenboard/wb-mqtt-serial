@@ -1,0 +1,232 @@
+{
+  "title": "ventmashine_colibri_650_title",
+  "device_type": "colibri_650",
+  "group": "g-climate-control",
+  "device": {
+    "name": "VentMachine Colibri 650 GTC",
+    "id": "colibri_650",
+    "guard_interval_us": 4000,
+    "groups": [
+      {
+        "title": "General",
+        "id": "general"
+      },
+      {
+        "title": "HW Info",
+        "id": "hw_info"
+      },
+      {
+        "title": "Settings",
+        "id": "settings"
+      }
+    ],
+    "setup": [], // Отправляются данные один раз при старте в любом случае
+    "parameters": [], // Отправляются данные один раз при старте, но можно настроить, какие, в настройках подключения
+    "channels": [ // Отображаются в плитке устройства
+      {
+        "name":"unit_status",
+        "reg_type": "input",
+        "address": "2:0:2",
+        "type": "value",
+        "format": "u16",
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "enum_titles": [
+          "Off",
+          "On",
+          "Turns Off",
+          "Turns On"
+        ],
+        "group": "general"
+      },
+      {
+        "name": "errors",
+        "id": "errors",
+        "reg_type": "input",
+        "address": "4:0:32",
+        "type": "value",
+        "format": "u16",
+        "enum": [
+          0,        // Если нет ошибок
+          16,       // Просто читал значение регистра во время имитации аварии и добавил жесткое соответствие
+          32,       
+          134217728,
+          536870912,
+          64,
+          262148,
+          262144,
+          65537,
+          65536,
+          671088640
+        ],
+        "enum_titles": [
+          "no_error",           
+          "T>Tset",             // Температура больше заданной
+          "T<Tset",             // Температура меньше заданной
+          "FIRE",               // Пожар
+          "Heater_overheat",    // Перегрев калорифера
+          "External_stop",      // Внешний стоп
+          "Short_Toutdoor",     // Замыкание Т наружн
+          "Breakage_Toutdoor",  // Обрыв Т наружн
+          "Short_Tindoor",      // Замыкание Т канала
+          "Breakage_Tindoor",   // Обрыв Т канала
+          "FIRE&Heater_overheat" 
+        ],
+        "group": "general",
+        "readonly": true
+      },
+      {
+        "name":"unit_on",
+        "reg_type": "holding",
+        "write_address": "2",
+        "type": "pushbutton",
+        "format": "u16",
+        "on_value":1,
+        "group": "general"
+      },
+      {
+        "name":"unit_off",
+        "reg_type": "holding",
+        "write_address": "2",
+        "type": "pushbutton",
+        "format": "u16",
+        "on_value":0,
+        "group": "general"
+      },
+      {
+        "name":"vent_speed",
+        "reg_type": "holding",
+        "address": "32",
+        "type": "value",
+        "format": "u16",
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "enum_titles": [
+          "1",
+          "2",
+          "3"
+        ],
+        "group": "general"
+      },
+      {
+        "name":"setpoint_temperature",
+        "reg_type": "holding",
+        "address": "31",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1,
+        "group": "general"
+      },
+      {
+        "name":"temperature_1",
+        "reg_type": "input",
+        "address": "7",
+        "type": "value",
+        "units": "deg C",
+        "format": "s16",
+        "scale": 0.1,
+        "group": "general"
+      },
+      {
+        "name":"temperature_2",
+        "reg_type": "input",
+        "address": "11",
+        "type": "value",
+        "units": "deg C",
+        "format": "s16",
+        "scale": 0.1,
+        "group": "general"
+      },
+      {
+        "name":"temperature_3",
+        "reg_type": "input",
+        "address": "57",
+        "type": "value",
+        "units": "deg C",
+        "format": "s16",
+        "scale": 0.1,
+        "group": "general"
+      },
+      {
+        "name":"humidity",
+        "reg_type": "input",
+        "address": "58",
+        "type": "value",
+        "units": "%",
+        "format": "s16",
+        "group": "general"
+      }
+    ],
+    "translations": {
+      "en": {
+        "ventmashine_colibri_650_title": "VentMachine Colibri 650 GTC",
+        "General": "General",
+        "HW Info": "HW Info",
+        "Settings": "Settings",
+        "unit_status": "Status",
+        "Off": "🔴Is disabled",
+        "On": "🟢Is enabled",
+        "Turns Off": "🟡Turns Off...",
+        "Turns On": "🟡Turns On...",
+        "errors": "Error status",
+        "no_error": "🟢No errors",
+        "error_register_dec":"Еrror register DEC",
+        "unit_on": "Turn On",
+        "unit_off": "Turn Off",
+        "vent_speed": "Fan Speed",
+        "setpoint_temperature": "Temperature Setpoint",
+        "temperature_1": "Duct Temperature",
+        "temperature_2": "Outdoor Temperature",
+        "temperature_3": "Room Temperature",
+        "humidity": "Room Humidity",
+        "T>Tset": "🟡Temp is higher than set!",
+        "T<Tset":"🟡Temp is less than set!",
+        "FIRE":"🔴Fire!",
+        "Heater_overheat":"🔴Heater overheat!",
+        "External_stop":"🟡External stop!",
+        "Short_Toutdoor":"🔴Short T outdoor!",
+        "Breakage_Toutdoor":"🔴Breakage T outdoor!",
+        "Short_Tindoor":"🔴Short T indoor!",
+        "Breakage_Tindoor":"🔴Breakage T indoor!"
+      },
+      "ru": {
+        "ventmashine_colibri_650_title": "VentMachine Colibri 650 GTC",
+        "General": "Общее",
+        "HW Info": "Данные модуля",
+        "Settings": "Настройки",
+        "unit_status": "Cтатус работы установки",
+        "Off": "🔴Выключена",
+        "On": "🟢Включена",
+        "Turns Off": "🟡Выключается...",
+        "Turns On": "🟡Включается...",
+        "errors": "Статус ошибки",
+        "no_error": "🟢Ошибок нет",
+        "error_register_dec":"Регистр ошибок DEC",
+        "unit_on": "Включить",
+        "unit_off": "Выключить",
+        "vent_speed": "Скорость вентилятора",
+        "setpoint_temperature": "Уставка температуры",
+        "temperature_1": "Температура в канале",
+        "temperature_2": "Температура на улице",
+        "temperature_3": "Температура в помещении",
+        "humidity": "Влажность в помещении",
+        "T>Tset": "🟡Темп. больше заданной!",
+        "T<Tset":"🟡Темп. меньше заданной!",
+        "FIRE":"🔴Пожар!",
+        "Heater_overheat":"🔴Перегрев калорифера!",
+        "External_stop":"🟡Внешний стоп!",
+        "Short_Toutdoor":"🔴Замыкание Т наружн!",
+        "Breakage_Toutdoor":"🔴Обрыв Т наружн!",
+        "Short_Tindoor":"🔴Замыкание Т канала!",
+        "Breakage_Tindoor":"🔴Обрыв Т канала!"
+      }
+    }
+  }
+}
