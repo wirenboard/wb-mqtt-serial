@@ -1,0 +1,19 @@
+// condition_param2 for channel conditions are not present here
+{
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "devices": [
+                {
+                    "slave_id": 42,
+                    "device_type": "default_params",
+                    "condition_param1": 1
+                }
+            ]
+        }
+    ]
+}

@@ -1,8 +1,27 @@
-wb-mqtt-serial (2.220.0) stable; urgency=medium
+wb-mqtt-serial (2.221.0) stable; urgency=medium
 
   * Add inactive power regs to map3e, map3et, map6s
 
- -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Tue, 27 Jan 2026 22:50:00 +0300
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Mon, 01 Feb 2026 15:30:00 +0300
+
+wb-mqtt-serial (2.220.1) stable; urgency=medium
+
+  * Fix using default values for setup items
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Sat, 31 Jan 2026 14:22:26 +0300
+
+wb-mqtt-serial (2.220.0) stable; urgency=medium
+
+  * Use default values for parameters that are not present in config
+  * Fix M1W2 default channel polling settings
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 30 Jan 2026 16:08:02 +0300
+
+wb-mqtt-serial (2.219.3) stable; urgency=medium
+
+  * Fix misprint in ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 29 Jan 2026 17:15:00 +0300
 
 wb-mqtt-serial (2.219.2) stable; urgency=medium
 
@@ -119,7 +138,7 @@ wb-mqtt-serial (2.209.0) stable; urgency=medium
 
 wb-mqtt-serial (2.208.0) stable; urgency=medium
 
-  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3, 
+  * Set compatible firmwares for parameters and channels in MAP12E, WB-LED, WB-MDM3,
     WB-MWAC, WB-MAO4, WB-MR3, WB-MR6C v.3, WB-MRM2-MINI, WB-MRWM2 and WB-MWAC2 templates
 
  -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 16 Dec 2025 09:37:03 +0300
