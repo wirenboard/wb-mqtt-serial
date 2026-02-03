@@ -360,10 +360,10 @@ struct TRegister
         return _Device.lock();
     }
 
-    //! The register is available in the device. It is allowed to read or write it
+    //! The register is available in the device. It is allowed to read or write it.
     TRegisterAvailability GetAvailable() const;
 
-    //! Set register's availability
+    //! Set register's availability. Register must be read at least once for this.
     void SetAvailable(TRegisterAvailability available);
 
     TRegisterValue GetValue() const;
@@ -377,7 +377,7 @@ struct TRegister
 
     //! The regiser is supported by the current firmware version (firmware version is equal or greater than version
     //! specified in the channel description corresponding to the register). Unsupported registers is not allowed for
-    //! readind or writing, even it is available, and excluded from polling immediately, without attempts to read.
+    //! readind or writing and it must be excluded from polling immediately, without attempts to read.
     bool IsSupported() const;
     void SetSupported(bool supported);
 
