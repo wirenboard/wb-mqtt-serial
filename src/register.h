@@ -377,7 +377,7 @@ struct TRegister
 
     //! The regiser is supported by the current firmware version (firmware version is equal or greater than version
     //! specified in the channel description corresponding to the register). Unsupported registers is not allowed for
-    //! readind or writing, even it is available.
+    //! readind or writing, even it is available, and excluded from polling immediately, without attempts to read.
     bool IsSupported() const;
     void SetSupported(bool supported);
 
