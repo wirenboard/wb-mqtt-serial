@@ -1,8 +1,15 @@
+wb-mqtt-serial (2.222.0) stable; urgency=medium
+
+  * Add firmvare version checks for device channels
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 03 Feb 2026 09:45:58 +0300
+
 wb-mqtt-serial (2.221.1) stable; urgency=medium
 
   * WB-MR templates: Fix translations, change the term "curtain" with "actuator"
 
  -- Denis Nikolaev <denis.nikolaev@wirenboard.com>  Wed, 03 Feb 2026 15:00:00 +0300
+
 wb-mqtt-serial (2.221.0) stable; urgency=medium
 
   * Add inactive power regs to map3e, map3et, map6s

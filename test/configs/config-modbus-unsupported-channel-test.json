@@ -1,0 +1,43 @@
+{
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "enabled": true,
+      "devices" : [
+        {
+            "slave_id": 1,
+            "enabled": true,
+            "name": "Modbus-sample",
+            "id": "modbus-sample",
+            "frame_timeout_ms": 0,
+            "response_timeout_ms": 1,
+            "max_read_registers": 0,
+            "enable_wb_continuous_read": true,
+            "channels": [
+                {
+                    "name" : "R1",
+                    "reg_type" : "holding",
+                    "address" : 1
+                },
+                {
+                    "name" : "R2",
+                    "reg_type" : "holding",
+                    "address" : 8,
+                    "fw": "1.2.3"
+                },
+                {
+                    "name" : "R3",
+                    "reg_type" : "holding",
+                    "address" : 20,
+                    "fw": "1.2.4"
+                }
+            ]
+        }
+      ]
+    }
+  ]
+}
