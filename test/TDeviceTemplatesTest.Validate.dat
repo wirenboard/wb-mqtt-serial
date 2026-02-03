@@ -4248,6 +4248,17 @@ Vakio City Air 250(500)
 	Incoming Air Temperature  =>  incoming_air_temperature
 	Mode  =>  mode
 	State  =>  state
+Ventmachine Colibri 650
+	errors  =>  errors
+	humidity  =>  humidity
+	setpoint_temperature  =>  setpoint_temperature
+	temperature_1  =>  temperature_1
+	temperature_2  =>  temperature_2
+	temperature_3  =>  temperature_3
+	unit_off  =>  unit_off
+	unit_on  =>  unit_on
+	unit_status  =>  unit_status
+	vent_speed  =>  vent_speed
 WB-Domofon
 	Auto open  =>  Auto open
 	Auto open once  =>  Auto open once
