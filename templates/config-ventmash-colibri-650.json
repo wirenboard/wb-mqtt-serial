@@ -25,6 +25,7 @@
     "channels": [
       {
         "name":"unit_status",
+        "id": "unit_status",
         "reg_type": "input",
         "address": "2:0:2",
         "type": "value",
@@ -81,6 +82,7 @@
       },
       {
         "name":"unit_on",
+        "id": "unit_on",
         "reg_type": "holding",
         "write_address": "2",
         "type": "pushbutton",
@@ -90,6 +92,7 @@
       },
       {
         "name":"unit_off",
+        "id": "unit_off",
         "reg_type": "holding",
         "write_address": "2",
         "type": "pushbutton",
@@ -99,6 +102,7 @@
       },
       {
         "name":"vent_speed",
+        "id": "vent_speed",
         "reg_type": "holding",
         "address": "32",
         "type": "value",
@@ -117,6 +121,7 @@
       },
       {
         "name":"setpoint_temperature",
+        "id": "setpoint_temperature",
         "reg_type": "holding",
         "address": "31",
         "type": "value",
@@ -126,6 +131,7 @@
       },
       {
         "name":"temperature_1",
+        "id": "temperature_1",
         "reg_type": "input",
         "address": "7",
         "type": "value",
@@ -136,6 +142,7 @@
       },
       {
         "name":"temperature_2",
+        "id": "temperature_2",
         "reg_type": "input",
         "address": "11",
         "type": "value",
@@ -146,6 +153,7 @@
       },
       {
         "name":"temperature_3",
+        "id": "temperature_3",
         "reg_type": "input",
         "address": "57",
         "type": "value",
@@ -156,6 +164,7 @@
       },
       {
         "name":"humidity",
+        "id": "humidity",
         "reg_type": "input",
         "address": "58",
         "type": "value",
