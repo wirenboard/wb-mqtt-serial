@@ -455,6 +455,15 @@
                 "K{{out_num}}": "Command K{{out_num}}",
                 {% endfor -%}
 
+                "Curtains Control": "Actuator Control",
+                
+                {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+                "Curtain {{curtain_num}}": "Actuator {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Actuator {{curtain_num}} Open",
+                "Curtain {{curtain_num}} Close": "Actuator {{curtain_num}} Close",                
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for actuator {{curtain_num}} control",
+                {% endfor -%}
+
                 "startup_delay_description": "0...999, factory default - 0",
                 "restart_delay_description": "0...999, factory default - 0"
             },
@@ -494,7 +503,7 @@
                 "open": "открыть",
                 "close": "закрыть",
 
-                "Curtains Control": "Управление шторами",
+                "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
@@ -507,10 +516,10 @@
                 "restart_delay_description": "0...999, заводское - 0",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-                "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
-                "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
-                "Curtain {{curtain_num}} Close": "Закрыть штору {{curtain_num}}",
-                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления шторой {{curtain_num}}",
+                "Curtain {{curtain_num}}": "Привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Открыть привод {{curtain_num}}",
+                "Curtain {{curtain_num}} Close": "Закрыть привод {{curtain_num}}",                
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления приводом {{curtain_num}}",
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
