@@ -147,6 +147,15 @@ typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;
 typedef std::vector<TRPCRegister> TRPCRegisterList;
 
 /**
+ * @brief Prepares device communication session.
+ *
+ * @param port - serial port refrence
+ * @param device - serial device object pointer
+ * @param maxRetries - number of request retries in case of error
+ */
+void PrepareSession(TPort& port, PSerialDevice device, int maxRetries = 0);
+
+/**
  * @brief Creates named PRegister map based on template items (channels/parameters) JSON array or object.
  *
  * @param protocolParams - device protocol params for LoadRegisterConfig call

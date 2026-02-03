@@ -21,7 +21,6 @@ public:
                                 TRPCDeviceParametersCache& parametersCache);
 
     TRPCDeviceParametersCache& ParametersCache;
-    bool IsWBDevice = false;
     std::string Group;
 };
 

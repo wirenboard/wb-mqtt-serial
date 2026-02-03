@@ -71,6 +71,8 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
         Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
+        Device->SetWbDevice(!DeviceTemplate->GetHardware().empty() ||
+                            DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool());
     } else {
         Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);
@@ -261,6 +263,22 @@ Json::Value TRPCDeviceHandler::SetPoll(const Json::Value& request)
     return Json::Value(Json::objectValue);
 }
 
+void PrepareSession(TPort& port, PSerialDevice device, int maxRetries)
+{
+    for (int i = 0; i <= maxRetries; i++) {
+        try {
+            device->Prepare(port, TDevicePrepareMode::WITHOUT_SETUP);
+            break;
+        } catch (const TSerialDeviceException& e) {
+            if (i == maxRetries) {
+                auto error = std::string("Failed to prepare session: ") + e.what();
+                LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
+                throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
+        }
+    }
+}
+
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateItems,
@@ -338,21 +356,8 @@ void ReadRegisterList(TPort& port,
         return compare(b.Register, a.Register);
     });
 
-    std::string error;
-    for (int i = 0; i <= maxRetries; i++) {
-        try {
-            device->Prepare(port, TDevicePrepareMode::WITHOUT_SETUP);
-            break;
-        } catch (const TSerialDeviceException& e) {
-            if (i == maxRetries) {
-                error = std::string("Failed to prepare session: ") + e.what();
-                LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
-                throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-            }
-        }
-    }
-
     size_t index = 0;
+    std::string error;
     while (index < registerList.size() && error.empty()) {
         auto first = registerList[index].Register;
         auto range = device->CreateRegisterRange();
