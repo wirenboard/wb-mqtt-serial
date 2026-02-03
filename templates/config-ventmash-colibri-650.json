@@ -20,9 +20,9 @@
         "id": "settings"
       }
     ],
-    "setup": [], // Отправляются данные один раз при старте в любом случае
-    "parameters": [], // Отправляются данные один раз при старте, но можно настроить, какие, в настройках подключения
-    "channels": [ // Отображаются в плитке устройства
+    "setup": [],
+    "parameters": [],
+    "channels": [
       {
         "name":"unit_status",
         "reg_type": "input",
@@ -51,9 +51,9 @@
         "type": "value",
         "format": "u16",
         "enum": [
-          0,        // Если нет ошибок
-          16,       // Просто читал значение регистра во время имитации аварии и добавил жесткое соответствие
-          32,       
+          0,
+          16,
+          32,
           134217728,
           536870912,
           64,
@@ -65,15 +65,15 @@
         ],
         "enum_titles": [
           "no_error",           
-          "T>Tset",             // Температура больше заданной
-          "T<Tset",             // Температура меньше заданной
-          "FIRE",               // Пожар
-          "Heater_overheat",    // Перегрев калорифера
-          "External_stop",      // Внешний стоп
-          "Short_Toutdoor",     // Замыкание Т наружн
-          "Breakage_Toutdoor",  // Обрыв Т наружн
-          "Short_Tindoor",      // Замыкание Т канала
-          "Breakage_Tindoor",   // Обрыв Т канала
+          "T>Tset",
+          "T<Tset",
+          "FIRE",
+          "Heater_overheat",
+          "External_stop",
+          "Short_Toutdoor",
+          "Breakage_Toutdoor",
+          "Short_Tindoor",
+          "Breakage_Tindoor",
           "FIRE&Heater_overheat" 
         ],
         "group": "general",
