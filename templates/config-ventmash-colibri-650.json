@@ -1,6 +1,6 @@
 {
   "title": "ventmashine_colibri_650_title",
-  "device_type": "colibri_650",
+  "device_type": "ventmashine_colibri_650",
   "group": "g-climate-control",
   "device": {
     "name": "VentMachine Colibri 650 GTC",
