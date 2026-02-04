@@ -380,7 +380,7 @@
                 "type": "range",
                 "format": "s16",
                 "min": 16,
-                "max": 32,
+                "max": 30,
                 "scale": 0.01,
                 "sporadic": true,
                 "group": "temperatureControl",
@@ -426,7 +426,7 @@
                 "address": 9,
                 "type": "range",
                 "format": "u16",
-                "min": 1,
+                "min": 0,
                 "max": 8,
                 "sporadic": true,
                 "group": "vanes",
@@ -438,11 +438,12 @@
                 "address": 9,
                 "type": "value",
                 "format": "u16",
-                "min": 1,
+                "min": 0,
                 "max": 8,
                 "sporadic": true,
                 "group": "vanes",
                 "enum": [
+                    0,
                     1,
                     2,
                     3,
@@ -453,6 +454,7 @@
                     8
                 ],
                 "enum_titles": [
+                    "Stop",
                     "Swing",
                     "Lowest",
                     "Low",
@@ -534,9 +536,9 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -755,9 +757,9 @@
                 "Vertical vanes": "Вертикальные жалюзи",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Additional": "Дополнительные режимы и функции",
                 "1 Speed": "1 Скорость",
