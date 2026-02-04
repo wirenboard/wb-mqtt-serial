@@ -1,9 +1,17 @@
+wb-mqtt-serial (2.222.2) stable; urgency=medium
+
+  * Fix 64-bit integers precision bug for Device/Load and Device/LoadConfig RPC
+  * Fix 64-bit integers precision bug for setup items
+  * Fix setup item condition parameters with default value bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 04 Feb 2026 16:06:12 +0300
+
 wb-mqtt-serial (2.222.1) stable; urgency=medium
 
   * Fix readonly flags in WBE2-I-EBUS
 
  -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Tue, 03 Feb 2026 11:51:00 +0300
- 
+
 wb-mqtt-serial (2.222.0) stable; urgency=medium
 
   * Add firmvare version checks for device channels
