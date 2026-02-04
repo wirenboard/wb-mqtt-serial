@@ -4248,7 +4248,7 @@ Vakio City Air 250(500)
 	Incoming Air Temperature  =>  incoming_air_temperature
 	Mode  =>  mode
 	State  =>  state
-Ventmachine Colibri 650
+ventmashine_colibri_650
 	errors  =>  errors
 	humidity  =>  humidity
 	setpoint_temperature  =>  setpoint_temperature
