@@ -28092,16 +28092,16 @@ veda_vf_51
 	Voltage P.Control  =>  Voltage P.Control
 	Work  =>  Work
 ventmashine_colibri_650
-	errors  =>  errors
-	humidity  =>  humidity
-	setpoint_temperature  =>  setpoint_temperature
-	temperature_1  =>  temperature_1
-	temperature_2  =>  temperature_2
-	temperature_3  =>  temperature_3
-	unit_off  =>  unit_off
-	unit_on  =>  unit_on
-	unit_status  =>  unit_status
-	vent_speed  =>  vent_speed
+    duct_temp  =>  duct_temp
+    errors  =>  errors
+    outdoor_temp  =>  outdoor_temp
+    room_humidity  =>  room_humidity
+    room_temp  =>  room_temp
+    set_temp  =>  set_temp
+    unit_off  =>  unit_off
+    unit_on  =>  unit_on
+    unit_status  =>  unit_status
+    vent_speed  =>  vent_speed
 wb_mao4_20ma
 	Channel 1  =>  channel_1
 	Channel 1 Current  =>  channel_1_current
