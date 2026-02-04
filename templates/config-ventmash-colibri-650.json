@@ -1,9 +1,8 @@
 {
-  "title": "ventmashine_colibri_650_title",
-  "device_type": "ventmashine_colibri_650",
+  "device_type": "Ventmachine-Colibri-650",
   "group": "g-climate-control",
   "device": {
-    "name": "VentMachine Colibri 650 GTC",
+    "name": "Ventmachine Colibri 650",
     "id": "colibri_650",
     "guard_interval_us": 4000,
     "groups": [
@@ -12,11 +11,9 @@
         "id": "general"
       }
     ],
-    "setup": [],
-    "parameters": [],
     "channels": [
       {
-        "name": "unit_status",
+        "name": "Unit Status",
         "id": "unit_status",
         "reg_type": "input",
         "address": "2:0:2",
@@ -37,7 +34,7 @@
         "group": "general"
       },
       {
-        "name": "errors",
+        "name": "Error Status",
         "id": "errors",
         "reg_type": "input",
         "address": "4:0:32",
@@ -73,7 +70,7 @@
         "readonly": true
       },
       {
-        "name": "unit_on",
+        "name": "Turn On",
         "id": "unit_on",
         "reg_type": "holding",
         "write_address": "2",
@@ -83,7 +80,7 @@
         "group": "general"
       },
       {
-        "name": "unit_off",
+        "name": "Turn Off",
         "id": "unit_off",
         "reg_type": "holding",
         "write_address": "2",
@@ -93,8 +90,8 @@
         "group": "general"
       },
       {
-        "name": "vent_speed",
-        "id": "vent_speed",
+        "name": "Fan Speed",
+        "id": "fan_speed",
         "reg_type": "holding",
         "address": "32",
         "type": "value",
@@ -112,7 +109,7 @@
         "group": "general"
       },
       {
-        "name": "set_temp",
+        "name": "Temperature Setpoint",
         "id": "set_temp",
         "reg_type": "holding",
         "address": "31",
@@ -122,7 +119,7 @@
         "group": "general"
       },
       {
-        "name": "duct_temp",
+        "name": "Duct Temperature",
         "id": "duct_temp",
         "reg_type": "input",
         "address": "7",
@@ -133,7 +130,7 @@
         "group": "general"
       },
       {
-        "name": "outdoor_temp",
+        "name": "Outdoor Temperature",
         "id": "outdoor_temp",
         "reg_type": "input",
         "address": "11",
@@ -144,7 +141,7 @@
         "group": "general"
       },
       {
-        "name": "room_temp",
+        "name": "Room Temperature",
         "id": "room_temp",
         "reg_type": "input",
         "address": "57",
@@ -155,7 +152,7 @@
         "group": "general"
       },
       {
-        "name": "room_humidity",
+        "name": "Room Humidity",
         "id": "room_humidity",
         "reg_type": "input",
         "address": "58",
@@ -166,33 +163,19 @@
       }
     ],
     "translations": {
-      "en": {
-        "ventmashine_colibri_650_title": "VentMachine Colibri 650 GTC",
-        "General": "General",
-        "unit_status": "Status",
-        "errors": "Error status",
-        "unit_on": "Turn On",
-        "unit_off": "Turn Off",
-        "vent_speed": "Fan Speed",
-        "set_temp": "Set Temp",
-        "duct_temp": "Duct Temp",
-        "outdoor_temp": "Outdoor Temperature",
-        "room_temp": "Room Temperature",
-        "room_humidity": "Room Humidity"
-      },
       "ru": {
-        "ventmashine_colibri_650_title": "VentMachine Colibri 650 GTC",
+        "ventmashine_colibri_650_title": "VentMachine Colibri 650",
         "General": "Общее",
-        "unit_status": "Cтатус работы",
-        "errors": "Статус ошибки",
-        "unit_on": "Включить",
-        "unit_off": "Выключить",
-        "vent_speed": "Скорость вентилятора",
-        "set_temp": "Уставка температуры",
-        "duct_temp": "Температура в канале",
-        "outdoor_temp": "Температура на улице",
-        "room_temp": "Температура в помещении",
-        "room_humidity": "Влажность в помещении",
+        "Unit Status": "Cтатус работы",
+        "Error Status": "Статус ошибки",
+        "Turn On": "Включить",
+        "Turn Off": "Выключить",
+        "Fan Speed": "Скорость вентилятора",
+        "Temperature Setpoint": "Уставка температуры",
+        "Duct Temperature": "Температура в канале",
+        "Outdoor Temperature": "Температура на улице",
+        "Room Temperature": "Температура в помещении",
+        "Room Humidity": "Влажность в помещении",
         "Off": "Выключена",
         "On": "Включена",
         "Turns Off": "Выключается",
