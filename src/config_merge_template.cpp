@@ -32,11 +32,14 @@ void UpdateChannels(Json::Value& dst,
                     TSubDevicesTemplateMap& channelTemplates,
                     const std::string& logPrefix);
 
-void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TExpressionsCache* exprs = nullptr)
+//! mergedConfig is device config data merged with default parameter values from device template
+void AppendSetupItems(Json::Value& deviceTemplate,
+                      const Json::Value& config,
+                      const Json::Value& mergedConfig = Json::Value(),
+                      TExpressionsCache* exprs = nullptr)
 {
     Json::Value newSetup(Json::arrayValue);
-
-    TJsonParams params(config);
+    TJsonParams params(mergedConfig);
 
     if (config.isMember("setup")) {
         for (const auto& item: config["setup"]) {
@@ -243,15 +246,14 @@ void UpdateChannels(Json::Value& channelsFromTemplate,
     }
 }
 
-Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
+Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
                                           const std::string& deviceType,
                                           const Json::Value& deviceTemplate)
 {
     if (deviceTemplate.empty()) {
-        return deviceConfigJson;
+        return deviceData;
     }
 
-    auto deviceData(deviceConfigJson);
     auto res(deviceTemplate);
 
     TSubDevicesTemplateMap subDevicesTemplates(deviceType, deviceTemplate);
@@ -282,19 +284,20 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
         }
     }
 
-    TExpressionsCache expressionsCache;
-    AppendSetupItems(res, deviceData, &expressionsCache);
-    UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
-
+    auto mergedData(deviceData); // device config data merged with default parameter values from device template
     const auto& parameters = deviceTemplate["parameters"];
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         const auto& item = *it;
         auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
-        if (!deviceData.isMember(id) && item.isMember("default")) {
-            deviceData[id] = item["default"];
+        if (!mergedData.isMember(id) && item.isMember("default")) {
+            mergedData[id] = item["default"];
         }
     }
-    RemoveDisabledChannels(res, deviceData, expressionsCache);
+
+    TExpressionsCache expressionsCache;
+    AppendSetupItems(res, deviceData, mergedData, &expressionsCache);
+    UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+    RemoveDisabledChannels(res, mergedData, expressionsCache);
 
     return res;
 }
