@@ -4248,7 +4248,7 @@ Vakio City Air 250(500)
 	Incoming Air Temperature  =>  incoming_air_temperature
 	Mode  =>  mode
 	State  =>  state
-Ventmachine-Colibri-650
+Ventmachine-Colibri-650-GTC
 	Duct Temperature  =>  duct_temp
 	Error Status  =>  errors
 	Fan Speed  =>  fan_speed
