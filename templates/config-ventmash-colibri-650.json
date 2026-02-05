@@ -60,10 +60,10 @@
           "Fire",
           "Heater Overheat",
           "External Stop",
-          "Short T-outdoor",
-          "Breakage T-outdoor",
-          "Short T-Duct",
-          "Breakage T-Duct",
+          "T-outdoor Sensor Short",
+          "T-outdoor Sensor Break",
+          "T-Duct Sensor Short",
+          "T-Duct Sensor Break",
           "Fire&Heater Overheat"
         ],
         "group": "general",
@@ -186,10 +186,10 @@
         "Fire": "Пожар",
         "Heater Overheat": "Перегрев калорифера",
         "External Stop": "Внешний стоп",
-        "Short T-outdoor": "Замыкание Т наружного",
-        "Breakage T-indoor": "Обрыв Т наружного",
-        "Short T-Duct": "Замыкание Т канала",
-        "Breakage T-Duct": "Обрыв Т канала",
+        "T-outdoor Sensor Short": "Замыкание Т наружного",
+        "T-indoor Sensor Break": "Обрыв Т наружного",
+        "T-Duct Sensor Short": "Замыкание Т канала",
+        "T-Duct Sensor Break": "Обрыв Т канала",
         "Fire&Heater Overheat": "Пожар&Перегрев калорифера"
       }
     }
