@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.222.2) stable; urgency=medium
+
+  * Add retry for reading device information in port/Scan RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 05 Feb 2026 10:49:02 +0500
+
 wb-mqtt-serial (2.222.1) stable; urgency=medium
 
   * Fix readonly flags in WBE2-I-EBUS
