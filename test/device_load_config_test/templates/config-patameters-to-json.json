@@ -1,0 +1,43 @@
+{
+    "device_type": "parameters_to_json",
+    "device": {
+        "name": "parameters to json",
+        "id": "parameters to json",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": {
+            "p1": {
+                "title": "p1",
+                "address": 1,
+                "format": "s16"
+            },
+            "p2": {
+                "title": "p2",
+                "address": 2,
+                "format": "s64"
+            },
+            "p3": {
+                "title": "p3",
+                "address": 3,
+                "format": "u64"
+            },
+            "p4": {
+                "title": "p4",
+                "address": 4,
+                "format": "double"
+            },
+            "p5": {
+                "title": "p5",
+                "address": 5,
+                "format": "string",
+                "string_data_size": 4
+            }
+        }
+    }
+}

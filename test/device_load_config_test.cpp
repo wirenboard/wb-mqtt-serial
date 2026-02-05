@@ -91,3 +91,44 @@ TEST(TDeviceLoadConfigTest, CheckParametersConditions)
         ASSERT_TRUE(JsonsMatch(json, match)) << type;
     }
 }
+
+/**
+ * Checks that the register values passed to json without loss of precision.
+ */
+TEST(TDeviceLoadConfigTest, RawValueToJson)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    auto deviceTemplate = templateMap.GetTemplate("parameters_to_json")->GetTemplate();
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    TRPCRegisterList registerList =
+        CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value());
+
+    int index = 0;
+    std::string stringValue;
+    for (const auto& item: registerList) {
+        switch (index++) {
+            case 0:
+                stringValue = "21472.0";
+                break;
+            case 1:
+                stringValue = "-459234512454223413";
+                break;
+            case 2:
+                stringValue = "257080185625143217";
+                break;
+            case 3:
+                stringValue = "524673325613.12";
+                break;
+            case 4:
+                stringValue = "test";
+                break;
+        }
+        item.Register->SetValue(ConvertToRawValue(*item.Register->GetConfig(), stringValue));
+        ASSERT_EQ(RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue()).asString(), stringValue);
+    }
+}
