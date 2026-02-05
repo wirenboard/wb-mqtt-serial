@@ -1,8 +1,9 @@
 {% set INPUTS_NUMBER = 2 -%}
 {% set FIRST_INPUT = 1 -%}
-{% set SENSORS_NUMBER = 5 -%}
+{% set SENSORS_NUMBER = 20 -%}
 {% set FIRST_SENSOR = 1 -%}
 {% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
+{% set DEBUG_REGISTERS = 1 -%}
 {
     "title": "WB-M1W2_template_title",
     "device_type": "WB-M1W2 MULTIPLE W1",
@@ -10,11 +11,11 @@
     "hw": [
         {
             "signature": "WBM1W2",
-            "fw": "4.35.0-rc1"
+            "fw": "4.35.0-rc2"
         },
         {
             "signature": "WB-M1W2 v.3",
-            "fw": "4.35.0-rc1"
+            "fw": "4.35.0-rc2"
         }
     ],
     "device": {
@@ -67,7 +68,7 @@
                     }
                 }
             },
-
+            {% if DEBUG_REGISTERS -%}
             {# Debug begin -> #}    {# TODO: Delete it #}
             {
                 "title": "Debug",
@@ -84,7 +85,7 @@
                 }
             },
             {# <- Debug end #}
-
+            {% endif -%}
             {
                 "title": "General",
                 "id": "g_general"
@@ -152,7 +153,7 @@
             "in{{in_num}}_sensor{{sens_num}}_id": {
                 "title": "Sensor {{sens_num}} ID",
                 "reg_type": "holding",
-                "address": {{2048 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "address": {{5632 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "format": "u64",
                 "group": "gg_in{{in_num}}_sensors",
                 "order": {{1 + (sens_num - FIRST_SENSOR)}},
@@ -178,29 +179,6 @@
                 "group": "g_general",
                 "order": 1
             },
-            {#
-            "temperature_readings_filter_deg": {
-                "title": "temperature_readings_filter_deg_title",
-                "description": "temperature_readings_filter_deg_description",
-                "address": 99,
-                "reg_type": "holding",
-                "scale": 0.0625,
-                "default": 1,
-                "group": "g_general",
-                "order": 2
-            },
-            "temperature_readings_period_s": {
-                "title": "temperature_readings_period_s_title",
-                "description": "temperature_readings_period_s_description",
-                "address": 101,
-                "reg_type": "holding",
-                "default": 2,
-                "min": 1,
-                "max": 60,
-                "group": "g_general",
-                "order": 3
-            },
-            #}
             "disable_indication": {
                 "title": "Status LED",
                 "address": 130,
@@ -211,7 +189,6 @@
                 "group": "g_general",
                 "order": 4
             },
-
             {# 1-Wire Bus settings begin #}
             "temperature_readings_period_s": {
                 "title": "temperature_readings_period_s_title",
@@ -317,7 +294,7 @@
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-
+            {% if DEBUG_REGISTERS -%}
             {# Debug begin -> #}   {# TODO: Delete it #}
             {
                 "name": "External Sensor {{in_num}} Last Valid Temperature",
@@ -342,14 +319,38 @@
                 "group": "gg_debug_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
+            {
+                "name": "External Sensor {{in_num}} Supply",
+                "reg_type": "input",
+                "address": {{448 + (in_num - FIRST_INPUT)}},
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Parasite",
+                    "External"
+                ],
+                "enabled": false,
+                "format": "u8",
+                "group": "gg_debug_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "name": "Bus {{in_num}}: Busy Error Counter",
+                "reg_type": "input",
+                "address": {{456 + (in_num - FIRST_INPUT)}},
+                "enabled": false,
+                "format": "u16",
+                "group": "gg_debug_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
             {# <- Debug end #}
-
+            {% endif -%}
             {# Multiple sensors registers start #}
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
                 "name": "Bus {{in_num}}: Sensor {{sens_num}}",
                 "reg_type": "input",
-                "address": {{3584 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "address": {{1536 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "units": "deg C",
                 "format": "s16",
@@ -361,18 +362,18 @@
             {
                 "name": "Bus {{in_num}}: Sensor {{sens_num}} OK",
                 "reg_type": "discrete",
-                "address": {{160 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "address": {{128 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "switch",
                 "enabled": false,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-
+            {% if DEBUG_REGISTERS -%}
             {# Debug begin -> #}    {# TODO: Delete it #}
             {
                 "name": "Bus {{in_num}}: Sensor {{sens_num}} Last Valid Temperature",
                 "reg_type": "input",
-                "address": {{3664 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "address": {{3584 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "enabled": false,
                 "units": "deg C",
@@ -382,18 +383,8 @@
                 "group": "gg_debug_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {
-                "name": "Bus {{in_num}}: Sensor {{sens_num}} Presense",
-                "reg_type": "input",
-                "address": {{3744 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                "type": "switch",
-                "enabled": false,
-                "format": "u8",
-                "group": "gg_debug_channels",
-                "condition": "in{{in_num}}_mode==0"
-            },
             {# <- Debug end #}
-
+            {% endif -%}
             {% endfor -%}
             {# Multiple sensors registers end #}
 
@@ -409,13 +400,13 @@
                 "group": "gg_w1_bus_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-
+            {% if DEBUG_REGISTERS -%}
             {# Debug begin -> #}    {# TODO: Delete it #}
             {
                 "name": "Bus {{in_num}}: Number Of New Sensors Saved",
                 "reg_type": "input",
                 "format": "u8",
-                "address": {{3344 + (in_num - FIRST_INPUT)}},
+                "address": {{3336 + (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "default": 0,
                 "enabled": false,
@@ -423,11 +414,12 @@
                 "condition": "in{{in_num}}_mode==0"
             },
             {# <- Debug end #}
+            {% endif -%}
 
             {
                 "name": "Bus {{in_num}}: Save New Sensors",
                 "reg_type": "coil",
-                "address": {{128 + (in_num - FIRST_INPUT)}},
+                "address": {{24 + (in_num - FIRST_INPUT)}},
                 "type": "pushbutton",
                 "value": 1,
                 "enabled": false,
@@ -448,13 +440,13 @@
             },
             {% endfor -%}
             {# New sensors registers end #}
-
+            {% if DEBUG_REGISTERS -%}
             {# Debug begin -> #}    {# TODO: Delete it #}
             {
                 "name": "Bus {{in_num}}: Number Of Sensors Found",
                 "reg_type": "input",
                 "format": "u8",
-                "address": {{4672 + (in_num - FIRST_INPUT)}},
+                "address": {{3344 + (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "default": 0,
                 "enabled": false,
@@ -475,7 +467,7 @@
             },
             {% endfor -%}
             {# <- Debug end #}
-
+            {% endif -%}
             {% endfor -%}
             {
                 "name": "Reset All Counters",
