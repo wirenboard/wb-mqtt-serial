@@ -113,7 +113,7 @@ TEST(TDeviceLoadConfigTest, RawValueToJson)
     for (const auto& item: registerList) {
         switch (index++) {
             case 0:
-                stringValue = "21472.0";
+                stringValue = "21472";
                 break;
             case 1:
                 stringValue = "-459234512454223413";
