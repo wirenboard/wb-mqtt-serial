@@ -52,9 +52,9 @@ namespace
     std::string GetDeviceSignature(RpcPortScan::TRegisterReader& reader)
     {
         try {
-            return reader.Read<std::string>(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME);
+            return reader.Read<std::string>(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME, 3);
         } catch (const std::exception& e) {
-            return reader.Read<std::string>(WbRegisters::DEVICE_MODEL_REGISTER_NAME);
+            return reader.Read<std::string>(WbRegisters::DEVICE_MODEL_REGISTER_NAME, 3);
         }
     }
 
@@ -76,7 +76,7 @@ namespace
         deviceJson["sn"] = stringSn;
 
         try {
-            deviceJson["fw_signature"] = reader.Read<std::string>(WbRegisters::FW_SIGNATURE_REGISTER_NAME);
+            deviceJson["fw_signature"] = reader.Read<std::string>(WbRegisters::FW_SIGNATURE_REGISTER_NAME, 3);
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_FW_SIGNATURE_ERROR_ID, e.what());
         }
@@ -86,17 +86,17 @@ namespace
         cfgJson["data_bits"] = 8;
         std::string serialParamsReadError;
         try {
-            cfgJson["baud_rate"] = reader.Read<uint64_t>(WbRegisters::BAUD_RATE_REGISTER_NAME) * 100;
+            cfgJson["baud_rate"] = reader.Read<uint64_t>(WbRegisters::BAUD_RATE_REGISTER_NAME, 3) * 100;
         } catch (const std::exception& e) {
             serialParamsReadError = e.what();
         }
         try {
-            cfgJson["stop_bits"] = reader.Read<uint64_t>(WbRegisters::STOP_BITS_REGISTER_NAME);
+            cfgJson["stop_bits"] = reader.Read<uint64_t>(WbRegisters::STOP_BITS_REGISTER_NAME, 3);
         } catch (const std::exception& e) {
             serialParamsReadError = e.what();
         }
         try {
-            cfgJson["parity"] = GetParityChar(reader.Read<uint64_t>(WbRegisters::PARITY_REGISTER_NAME));
+            cfgJson["parity"] = GetParityChar(reader.Read<uint64_t>(WbRegisters::PARITY_REGISTER_NAME, 3));
         } catch (const std::exception& e) {
             serialParamsReadError = e.what();
         }
@@ -107,7 +107,7 @@ namespace
 
         try {
             Json::Value fwJson;
-            fwJson["version"] = reader.Read<std::string>(WbRegisters::FW_VERSION_REGISTER_NAME);
+            fwJson["version"] = reader.Read<std::string>(WbRegisters::FW_VERSION_REGISTER_NAME, 3);
             deviceJson["fw"] = fwJson;
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_FW_VERSION_ERROR_ID, e.what());

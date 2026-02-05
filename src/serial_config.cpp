@@ -329,6 +329,9 @@ namespace
                                               context.factory,
                                               context.device_base_address,
                                               context.stride);
+                if (channel_data.isMember("fw")) {
+                    reg.RegisterConfig->FwVersion = channel_data["fw"].asString();
+                }
                 default_type_str = reg.DefaultControlType;
                 registers.push_back(deviceWithChannels.Device->AddRegister(reg.RegisterConfig));
             } catch (const std::exception& e) {
@@ -527,7 +530,7 @@ namespace
         }
     }
 
-    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWBDevice)
+    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWbDevice)
     {
         if (device_data.isMember("password")) {
             device_config.Password.clear();
@@ -540,7 +543,7 @@ namespace
             LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
         }
 
-        if (isWBDevice || device_data["enable_wb_continuous_read"].asBool()) {
+        if (isWbDevice) {
             device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
         }
 
@@ -987,7 +990,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     loadParams.Defaults = params.Defaults;
     const auto* cfg = &deviceConfigJson;
     unique_ptr<Json::Value> mergedConfig;
-    auto isWBDevice = false;
+    auto isWbDevice = false;
     if (deviceConfigJson.isMember("device_type")) {
         auto deviceType = deviceConfigJson["device_type"].asString();
         auto deviceTemplate = templates.GetTemplate(deviceType);
@@ -996,7 +999,8 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
             MergeDeviceConfigWithTemplate(deviceConfigJson, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
         loadParams.Translations = &deviceTemplate->GetTemplate()["translations"];
-        isWBDevice = !deviceTemplate->GetHardware().empty();
+        isWbDevice = !deviceTemplate->GetHardware().empty() ||
+                     deviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
@@ -1009,9 +1013,10 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     }
 
     TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName);
-    auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams, isWBDevice);
+    auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams, isWbDevice);
     auto deviceWithChannels = std::make_shared<TSerialDeviceWithChannels>();
     deviceWithChannels->Device = protocolParams.factory->CreateDevice(*cfg, deviceConfig, protocolParams.protocol);
+    deviceWithChannels->Device->SetWbDevice(isWbDevice);
     TLoadingContext context(*protocolParams.factory,
                             protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress());
     context.translations = loadParams.Translations;
@@ -1048,7 +1053,7 @@ const IRegisterAddressFactory& IDeviceFactory::GetRegisterAddressFactory() const
 PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
                                PProtocol protocol,
                                const TDeviceConfigLoadParams& parameters,
-                               bool isWBDevice)
+                               bool isWbDevice)
 {
     auto res = std::make_shared<TDeviceConfig>();
 
@@ -1061,7 +1066,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
         res->SlaveId = dev["slave_id"].asString();
     }
 
-    LoadCommonDeviceParameters(*res, dev, isWBDevice);
+    LoadCommonDeviceParameters(*res, dev, isWbDevice);
 
     if (res->RequestDelay.count() == 0) {
         res->RequestDelay = parameters.Defaults.RequestDelay;

@@ -1,8 +1,57 @@
-wb-mqtt-serial (2.220.0) stable; urgency=medium
+wb-mqtt-serial (2.223.0) stable; urgency=medium
 
   * Set unsupported registers value to "unsupported" for device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 27 Jan 2026 13:44:21 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 05 Feb 2026 18:09:19 +0500
+
+wb-mqtt-serial (2.222.2) stable; urgency=medium
+
+  * Add retry for reading device information in port/Scan RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 05 Feb 2026 10:49:02 +0500
+
+wb-mqtt-serial (2.222.1) stable; urgency=medium
+
+  * Fix readonly flags in WBE2-I-EBUS
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Tue, 03 Feb 2026 11:51:00 +0300
+ 
+wb-mqtt-serial (2.222.0) stable; urgency=medium
+
+  * Add firmvare version checks for device channels
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 03 Feb 2026 09:45:58 +0300
+
+wb-mqtt-serial (2.221.1) stable; urgency=medium
+
+  * WB-MR templates: Fix translations, change the term "curtain" with "actuator"
+
+ -- Denis Nikolaev <denis.nikolaev@wirenboard.com>  Wed, 03 Feb 2026 15:00:00 +0300
+
+wb-mqtt-serial (2.221.0) stable; urgency=medium
+
+  * Add inactive power regs to map3e, map3et, map6s
+
+ -- Sergey Nikitenko <siarhei.nikitsenka@wirenboard.com>  Mon, 01 Feb 2026 15:30:00 +0300
+
+wb-mqtt-serial (2.220.1) stable; urgency=medium
+
+  * Fix using default values for setup items
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Sat, 31 Jan 2026 14:22:26 +0300
+
+wb-mqtt-serial (2.220.0) stable; urgency=medium
+
+  * Use default values for parameters that are not present in config
+  * Fix M1W2 default channel polling settings
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 30 Jan 2026 16:08:02 +0300
+
+wb-mqtt-serial (2.219.3) stable; urgency=medium
+
+  * Fix misprint in ENGO EFAN Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 29 Jan 2026 17:15:00 +0300
 
 wb-mqtt-serial (2.219.2) stable; urgency=medium
 

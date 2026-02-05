@@ -296,3 +296,15 @@ TEST_F(TConfigParserTest, ParseEnum)
     EXPECT_EQ(titles2["2"]["en"], "two");
     EXPECT_EQ(titles2["3"]["en"], "three");
 }
+
+TEST_F(TConfigParserTest, DefaultParams)
+{
+    auto portConfigs = GetConfig("configs/config-default-params.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->Channels;
+    EXPECT_EQ(deviceChannels.size(), 2);
+    EXPECT_EQ(deviceChannels[0]->GetName(), "Channel 1");
+    EXPECT_EQ(deviceChannels[1]->GetName(), "Channel 3");
+}
