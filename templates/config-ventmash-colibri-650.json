@@ -81,7 +81,7 @@
       },
       {
         "name": "Turn Off",
-        "id": "turn_on",
+        "id": "turn_off",
         "reg_type": "holding",
         "write_address": "2",
         "type": "pushbutton",
