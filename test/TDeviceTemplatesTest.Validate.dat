@@ -4256,8 +4256,8 @@ Ventmachine-Colibri-650
 	Room Humidity  =>  room_humidity
 	Room Temperature  =>  room_temp
 	Temperature Setpoint  =>  set_temp
-	Turn Off  =>  unit_off
-	Turn On  =>  unit_on
+	Turn Off  =>  turn_off
+	Turn On  =>  turn_on
 	Unit Status  =>  unit_status
 WB-Domofon
 	Auto open  =>  Auto open
