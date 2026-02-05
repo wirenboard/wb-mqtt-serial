@@ -93,7 +93,7 @@ TEST(TDeviceLoadConfigTest, CheckParametersConditions)
 }
 
 /**
- * Checks that the register values passed to json without loss of precision.
+ * Checks that the register values passed to JSON without loss of precision.
  */
 TEST(TDeviceLoadConfigTest, RawValueToJson)
 {
