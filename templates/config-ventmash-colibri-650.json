@@ -71,7 +71,7 @@
       },
       {
         "name": "Turn On",
-        "id": "unit_on",
+        "id": "turn_on",
         "reg_type": "holding",
         "write_address": "2",
         "type": "pushbutton",
@@ -81,7 +81,7 @@
       },
       {
         "name": "Turn Off",
-        "id": "unit_off",
+        "id": "turn_on",
         "reg_type": "holding",
         "write_address": "2",
         "type": "pushbutton",
