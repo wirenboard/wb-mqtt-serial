@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.223.0) stable; urgency=medium
+
+  * Add template for Ventmachine Colibri 650 GTC
+
+ -- Aleksey Golovchenko <Aleksey.golovchenko@wirenboard.com>  Thu, 05 Feb 2026 18:00:00 +0300
+ 
 wb-mqtt-serial (2.222.2) stable; urgency=medium
 
   * Add retry for reading device information in port/Scan RPC
