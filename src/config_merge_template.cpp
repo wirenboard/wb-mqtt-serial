@@ -246,12 +246,12 @@ void UpdateChannels(Json::Value& channelsFromTemplate,
     }
 }
 
-Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
+Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
                                           const std::string& deviceType,
                                           const Json::Value& deviceTemplate)
 {
     if (deviceTemplate.empty()) {
-        return deviceData;
+        return deviceConfigJson;
     }
 
     auto res(deviceTemplate);
@@ -260,44 +260,45 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
     res.removeMember("subdevices");
 
     std::string deviceName;
-    if (deviceData.isMember("name")) {
-        deviceName = deviceData["name"].asString();
+    if (deviceConfigJson.isMember("name")) {
+        deviceName = deviceConfigJson["name"].asString();
     } else {
-        deviceName = deviceTemplate["name"].asString() + DecorateIfNotEmpty(" ", deviceData["slave_id"].asString());
+        deviceName =
+            deviceTemplate["name"].asString() + DecorateIfNotEmpty(" ", deviceConfigJson["slave_id"].asString());
     }
     res["name"] = deviceName;
 
     if (deviceTemplate.isMember("id")) {
-        res["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
+        res["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceConfigJson["slave_id"].asString());
     }
 
-    if (deviceData.isMember("protocol")) {
+    if (deviceConfigJson.isMember("protocol")) {
         LOG(Warn)
             << "\"" << deviceName
             << "\" has \"protocol\" property set in config. It is ignored. Protocol from device template will be used.";
     }
 
     const std::unordered_set<std::string> specialProperties({"channels", "setup", "name", "protocol"});
-    for (auto itProp = deviceData.begin(); itProp != deviceData.end(); ++itProp) {
+    for (auto itProp = deviceConfigJson.begin(); itProp != deviceConfigJson.end(); ++itProp) {
         if (!specialProperties.count(itProp.name())) {
             SetPropertyWithNotification(res, itProp, deviceName);
         }
     }
 
-    auto mergedData(deviceData); // device config data merged with default parameter values from device template
+    auto mergedConfig(deviceConfigJson); // device config data merged with default parameter values from device template
     const auto& parameters = deviceTemplate["parameters"];
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         const auto& item = *it;
         auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
-        if (!mergedData.isMember(id) && item.isMember("default")) {
-            mergedData[id] = item["default"];
+        if (!mergedConfig.isMember(id) && item.isMember("default")) {
+            mergedConfig[id] = item["default"];
         }
     }
 
     TExpressionsCache expressionsCache;
-    AppendSetupItems(res, deviceData, mergedData, &expressionsCache);
-    UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
-    RemoveDisabledChannels(res, mergedData, expressionsCache);
+    AppendSetupItems(res, deviceConfigJson, mergedConfig, &expressionsCache);
+    UpdateChannels(res["channels"], deviceConfigJson["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+    RemoveDisabledChannels(res, mergedConfig, expressionsCache);
 
     return res;
 }
