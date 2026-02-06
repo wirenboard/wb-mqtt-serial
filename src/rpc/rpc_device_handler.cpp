@@ -405,21 +405,14 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
 {
     auto str = ConvertFromRawValue(reg, val);
     try {
-        switch (reg.Format) {
-            case RegisterFormat::S8:
-            case RegisterFormat::S16:
-            case RegisterFormat::S24:
-            case RegisterFormat::S32:
-            case RegisterFormat::S64:
+        if (str.find('.') == std::string::npos) {
+            if (str.at(0) == '-') {
                 return static_cast<Json::Int64>(std::stoll(str.c_str(), 0));
-            case RegisterFormat::U8:
-            case RegisterFormat::U16:
-            case RegisterFormat::U24:
-            case RegisterFormat::U32:
-            case RegisterFormat::U64:
+            } else {
                 return static_cast<Json::UInt64>(std::stoull(str.c_str(), 0));
-            default:
-                return std::stod(str.c_str(), 0);
+            }
+        } else {
+            return std::stod(str.c_str(), 0);
         }
     } catch (const std::invalid_argument&) {
         return str;

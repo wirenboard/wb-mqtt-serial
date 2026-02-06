@@ -15,7 +15,8 @@
             "p1": {
                 "title": "p1",
                 "address": 1,
-                "format": "s16"
+                "format": "s16",
+                "scale": 0.01
             },
             "p2": {
                 "title": "p2",

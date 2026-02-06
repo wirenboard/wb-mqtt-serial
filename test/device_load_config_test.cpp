@@ -113,19 +113,19 @@ TEST(TDeviceLoadConfigTest, RawValueToJson)
     for (const auto& item: registerList) {
         switch (index++) {
             case 0:
-                stringValue = "21472";
+                stringValue = "214.72"; // s16 with 0.01 scale
                 break;
             case 1:
-                stringValue = "-459234512454223413";
+                stringValue = "-459234512454223413"; // s64
                 break;
             case 2:
-                stringValue = "257080185625143217";
+                stringValue = "257080185625143217"; // u64
                 break;
             case 3:
-                stringValue = "524673325613.12";
+                stringValue = "524673325613.12"; // double
                 break;
             case 4:
-                stringValue = "test";
+                stringValue = "test"; // string
                 break;
         }
         item.Register->SetValue(ConvertToRawValue(*item.Register->GetConfig(), stringValue));
