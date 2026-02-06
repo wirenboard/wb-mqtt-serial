@@ -15,26 +15,43 @@
                 "reg_type": "input",
                 "format": "s16",
                 "address": "0x0002",
-                "condition": "condition_param1==1&&condition_param2==1"
+                "condition": "condition_param_1==1&&condition_param_2==1"
             },
             {
                 "name": "Channel 3",
                 "reg_type": "input",
                 "format": "s16",
                 "address": "0x0003",
-                "condition": "condition_param1==1&&condition_param2==2"
+                "condition": "condition_param_1==1&&condition_param_2==2"
             }
         ],
         "parameters": {
-            "condition_param1": {
+            "condition_param_1": {
                 "title": "p1",
                 "address": "0x1001",
                 "default": 0
             },
-            "condition_param2": {
+            "condition_param_2": {
                 "title": "p1",
                 "address": "0x1002",
                 "default": 2
+            },
+            "param_1": {
+                "title": "s1",
+                "address": "0x2001",
+                "default": 1
+            },
+            "param_2": {
+                "title": "s2",
+                "address": "0x2002",
+                "default": 2,
+                "condition": "condition_param_1==1&&condition_param_2==1"
+            },
+            "param_3": {
+                "title": "s3",
+                "address": "0x2003",
+                "default": 3,
+                "condition": "condition_param_1==1&&condition_param_2==2"
             }
         }
     }

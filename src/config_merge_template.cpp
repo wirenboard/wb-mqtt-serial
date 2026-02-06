@@ -32,11 +32,14 @@ void UpdateChannels(Json::Value& dst,
                     TSubDevicesTemplateMap& channelTemplates,
                     const std::string& logPrefix);
 
-void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TExpressionsCache* exprs = nullptr)
+//! mergedConfig is device config data merged with default parameter values from device template
+void AppendSetupItems(Json::Value& deviceTemplate,
+                      const Json::Value& config,
+                      const Json::Value& mergedConfig = Json::Value(),
+                      TExpressionsCache* exprs = nullptr)
 {
     Json::Value newSetup(Json::arrayValue);
-
-    TJsonParams params(config);
+    TJsonParams params(mergedConfig);
 
     if (config.isMember("setup")) {
         for (const auto& item: config["setup"]) {
@@ -251,50 +254,51 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
         return deviceConfigJson;
     }
 
-    auto deviceData(deviceConfigJson);
     auto res(deviceTemplate);
 
     TSubDevicesTemplateMap subDevicesTemplates(deviceType, deviceTemplate);
     res.removeMember("subdevices");
 
     std::string deviceName;
-    if (deviceData.isMember("name")) {
-        deviceName = deviceData["name"].asString();
+    if (deviceConfigJson.isMember("name")) {
+        deviceName = deviceConfigJson["name"].asString();
     } else {
-        deviceName = deviceTemplate["name"].asString() + DecorateIfNotEmpty(" ", deviceData["slave_id"].asString());
+        deviceName =
+            deviceTemplate["name"].asString() + DecorateIfNotEmpty(" ", deviceConfigJson["slave_id"].asString());
     }
     res["name"] = deviceName;
 
     if (deviceTemplate.isMember("id")) {
-        res["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
+        res["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceConfigJson["slave_id"].asString());
     }
 
-    if (deviceData.isMember("protocol")) {
+    if (deviceConfigJson.isMember("protocol")) {
         LOG(Warn)
             << "\"" << deviceName
             << "\" has \"protocol\" property set in config. It is ignored. Protocol from device template will be used.";
     }
 
     const std::unordered_set<std::string> specialProperties({"channels", "setup", "name", "protocol"});
-    for (auto itProp = deviceData.begin(); itProp != deviceData.end(); ++itProp) {
+    for (auto itProp = deviceConfigJson.begin(); itProp != deviceConfigJson.end(); ++itProp) {
         if (!specialProperties.count(itProp.name())) {
             SetPropertyWithNotification(res, itProp, deviceName);
         }
     }
 
-    TExpressionsCache expressionsCache;
-    AppendSetupItems(res, deviceData, &expressionsCache);
-    UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
-
+    auto mergedConfig(deviceConfigJson); // device config data merged with default parameter values from device template
     const auto& parameters = deviceTemplate["parameters"];
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         const auto& item = *it;
         auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
-        if (!deviceData.isMember(id) && item.isMember("default")) {
-            deviceData[id] = item["default"];
+        if (!mergedConfig.isMember(id) && item.isMember("default")) {
+            mergedConfig[id] = item["default"];
         }
     }
-    RemoveDisabledChannels(res, deviceData, expressionsCache);
+
+    TExpressionsCache expressionsCache;
+    AppendSetupItems(res, deviceConfigJson, mergedConfig, &expressionsCache);
+    UpdateChannels(res["channels"], deviceConfigJson["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+    RemoveDisabledChannels(res, mergedConfig, expressionsCache);
 
     return res;
 }
