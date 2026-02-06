@@ -4,13 +4,8 @@
   "device": {
     "name": "Ventmachine Colibri 650 GTC",
     "id": "colibri_650_gtc",
-    "guard_interval_us": 4000,
-    "groups": [
-      {
-        "title": "General",
-        "id": "general"
-      }
-    ],
+    "force_frame_timeout": true,
+
     "channels": [
       {
         "name": "Unit Status",
@@ -30,8 +25,7 @@
           "On",
           "Turns Off",
           "Turns On"
-        ],
-        "group": "general"
+        ]
       },
       {
         "name": "Error Status",
@@ -39,12 +33,12 @@
         "reg_type": "input",
         "address": "4:0:32",
         "type": "value",
-        "format": "u16",
+        "format": "u32",
         "enum": [
           0,
           16,
           32,
-          134217728,
+          2048,
           536870912,
           64,
           262148,
@@ -66,7 +60,6 @@
           "T-Duct Sensor Break",
           "Fire&Heater Overheat"
         ],
-        "group": "general",
         "readonly": true
       },
       {
@@ -76,8 +69,7 @@
         "write_address": "2",
         "type": "pushbutton",
         "format": "u16",
-        "on_value": 1,
-        "group": "general"
+        "on_value": 1
       },
       {
         "name": "Turn Off",
@@ -86,8 +78,7 @@
         "write_address": "2",
         "type": "pushbutton",
         "format": "u16",
-        "on_value": 0,
-        "group": "general"
+        "on_value": 0
       },
       {
         "name": "Fan Speed",
@@ -105,8 +96,7 @@
           "1",
           "2",
           "3"
-        ],
-        "group": "general"
+        ]
       },
       {
         "name": "Temperature Setpoint",
@@ -115,8 +105,7 @@
         "address": "31",
         "type": "value",
         "format": "s16",
-        "scale": 0.1,
-        "group": "general"
+        "scale": 0.1
       },
       {
         "name": "Duct Temperature",
@@ -126,8 +115,7 @@
         "type": "value",
         "units": "deg C",
         "format": "s16",
-        "scale": 0.1,
-        "group": "general"
+        "scale": 0.1
       },
       {
         "name": "Outdoor Temperature",
@@ -137,8 +125,7 @@
         "type": "value",
         "units": "deg C",
         "format": "s16",
-        "scale": 0.1,
-        "group": "general"
+        "scale": 0.1
       },
       {
         "name": "Room Temperature",
@@ -148,8 +135,7 @@
         "type": "value",
         "units": "deg C",
         "format": "s16",
-        "scale": 0.1,
-        "group": "general"
+        "scale": 0.1
       },
       {
         "name": "Room Humidity",
@@ -158,14 +144,11 @@
         "address": "58",
         "type": "value",
         "units": "%",
-        "format": "s16",
-        "group": "general"
+        "format": "s16"
       }
     ],
     "translations": {
       "ru": {
-        "ventmashine_colibri_650_title": "VentMachine Colibri 650",
-        "General": "Общее",
         "Unit Status": "Cтатус работы",
         "Error Status": "Статус ошибки",
         "Turn On": "Включить",
