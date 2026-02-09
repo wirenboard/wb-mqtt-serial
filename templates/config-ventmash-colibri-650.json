@@ -31,7 +31,7 @@
         "name": "Error Status",
         "id": "errors",
         "reg_type": "input",
-        "address": "4:0:32",
+        "address": "4",
         "type": "value",
         "format": "u32",
         "enum": [
