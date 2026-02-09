@@ -52,4 +52,4 @@ private:
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
 
-void CheckParametersConditions(const TRPCRegisterList& registerList, Json::Value& parameters);
+void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value& parameters);

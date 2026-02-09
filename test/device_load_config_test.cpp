@@ -25,8 +25,7 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
         TRPCRegisterList registerList =
             CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3");
         Json::Value json;
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            auto& reg = registerList[i];
+        for (const auto& reg: registerList) {
             json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
         }
         auto match(
@@ -39,20 +38,31 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
  * Checks that the parameter list is not contains items unmatched with template conditions.
  * Uses JSON-objects containig fake read values and result data for matching.
  */
-// TEST(TDeviceLoadConfigTest, CheckParametersConditions)
-// {
-//     TTemplateMap templateMap(GetTemplatesSchema());
-//     templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+TEST(TDeviceLoadConfigTest, GetRegisterListParameters)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
 
-//     std::vector<std::string> typeList = {"parameters_array", "parameters_object"};
-//     for (size_t i = 0; i < typeList.size(); ++i) {
-//         const std::string& type = typeList[i];
-//         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
-//         auto json(
-//             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_read_values.json")));
-//         CheckParametersConditions(deviceTemplate["parameters"], json);
-//         auto match(
-//             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
-//         ASSERT_TRUE(JsonsMatch(json, match)) << type;
-//     }
-// }
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    std::vector<std::string> typeList = {"parameters_array", "parameters_object"};
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    for (size_t i = 0; i < typeList.size(); ++i) {
+        const std::string& type = typeList[i];
+        auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
+        TRPCRegisterList registerList = CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"]);
+        auto data(
+            JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_read_values.json")));
+        for (const auto& reg: registerList) {
+            if (data.isMember(reg.Id)) {
+                reg.Register->SetValue(TRegisterValue(data[reg.Id].asInt()));
+            }
+        }
+        Json::Value json;
+        GetRegisterListParameters(registerList, json);
+        auto match(
+            JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
+        ASSERT_TRUE(JsonsMatch(json, match)) << type;
+    }
+}

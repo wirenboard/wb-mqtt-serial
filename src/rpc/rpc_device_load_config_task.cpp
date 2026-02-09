@@ -244,7 +244,7 @@ namespace
                                                rpcRequest->Device->GetWbFwVersion(),
                                                rpcRequest->Device->IsWbDevice());
         ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RETRIES);
-        CheckParametersConditions(registerList, parameters);
+        GetRegisterListParameters(registerList, parameters);
         ClearUnsupportedParameters(*port, rpcRequest, registerList, parameters);
 
         Json::Value result(Json::objectValue);
@@ -331,7 +331,7 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     return ISerialClientTask::TRunResult::OK;
 }
 
-void CheckParametersConditions(const TRPCRegisterList& registerList, Json::Value& parameters)
+void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value& parameters)
 {
     TJsonParams jsonParams(parameters);
     Expressions::TExpressionsCache expressionsCache;
@@ -339,7 +339,10 @@ void CheckParametersConditions(const TRPCRegisterList& registerList, Json::Value
     while (check) {
         check = false;
         for (const auto& item: registerList) {
-            if (CheckCondition(item.Condition, jsonParams, &expressionsCache) && !parameters.isMember(item.Id)) {
+            if (item.Register->GetValue().GetType() == TRegisterValue::ValueType::Undefined) {
+                continue;
+            }
+            if (!parameters.isMember(item.Id) && CheckCondition(item.Condition, jsonParams, &expressionsCache)) {
                 parameters[item.Id] = RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
                 check = true;
             }
