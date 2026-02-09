@@ -1,5 +1,5 @@
 // result data for "parameters_array" template conditions test
 {
-    "p1": 1.0,
-    "p2": 12.0
+    "p1": 1,
+    "p2": 12
 }

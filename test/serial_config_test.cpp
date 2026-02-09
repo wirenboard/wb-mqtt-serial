@@ -297,7 +297,7 @@ TEST_F(TConfigParserTest, ParseEnum)
     EXPECT_EQ(titles2["3"]["en"], "three");
 }
 
-TEST_F(TConfigParserTest, DefaultParams)
+TEST_F(TConfigParserTest, DefaultParamsForChannels)
 {
     auto portConfigs = GetConfig("configs/config-default-params.json")->PortConfigs;
     EXPECT_FALSE(portConfigs.empty());
@@ -307,4 +307,58 @@ TEST_F(TConfigParserTest, DefaultParams)
     EXPECT_EQ(deviceChannels.size(), 2);
     EXPECT_EQ(deviceChannels[0]->GetName(), "Channel 1");
     EXPECT_EQ(deviceChannels[1]->GetName(), "Channel 3");
+}
+
+TEST_F(TConfigParserTest, DefaultParamsForSetupItems)
+{
+    auto portConfigs = GetConfig("configs/config-default-params.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+
+    auto setupItems = devices[0]->Device->GetSetupItems();
+    EXPECT_EQ(setupItems.size(), 3);
+
+    int index = 0;
+    for (const auto& item: setupItems) {
+        switch (index++) {
+            case 0:
+                EXPECT_EQ(item->Name, "p1");
+                EXPECT_EQ(item->HumanReadableValue, "1");
+                break;
+            case 1:
+                EXPECT_EQ(item->Name, "s1");
+                EXPECT_EQ(item->HumanReadableValue, "10");
+                break;
+            case 2:
+                EXPECT_EQ(item->Name, "s3");
+                EXPECT_EQ(item->HumanReadableValue, "30");
+                break;
+        }
+    }
+}
+
+TEST_F(TConfigParserTest, BigIntegers)
+{
+    auto portConfigs = GetConfig("configs/config-big-integers.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+
+    auto setupItems = devices[0]->Device->GetSetupItems();
+    EXPECT_EQ(setupItems.size(), 2);
+
+    int index = 0;
+    for (const auto& item: setupItems) {
+        switch (index++) {
+            case 0:
+                EXPECT_EQ(item->RawValue.Get<int64_t>(), -459234512454223413);
+                break;
+            case 1:
+                EXPECT_EQ(item->RawValue.Get<uint64_t>(), 257080185625143217);
+                break;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 // result data for "parameters_object" template conditions test
 {
-    "p1": 0.0,
-    "p5": 1.0,
-    "p7": 42.0
+    "p1": 0,
+    "p5": 1,
+    "p7": 42
 }

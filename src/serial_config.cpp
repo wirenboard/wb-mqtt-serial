@@ -513,8 +513,11 @@ namespace
                                       context.device_base_address,
                                       context.stride);
         const auto& valueItem = item_data["value"];
+        auto value = valueItem.asString();
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
-        auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
+        if (valueItem.isDouble() && value.find('.') != std::string::npos) {
+            value = WBMQTT::StringFormat("%.15g", valueItem.asDouble());
+        }
         device.AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
     }
 

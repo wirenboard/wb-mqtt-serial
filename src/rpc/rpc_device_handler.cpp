@@ -394,7 +394,15 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
 {
     auto str = ConvertFromRawValue(reg, val);
     try {
-        return std::stod(str.c_str(), 0);
+        if (str.find('.') == std::string::npos) {
+            if (str.at(0) == '-') {
+                return static_cast<Json::Int64>(std::stoll(str.c_str(), 0));
+            } else {
+                return static_cast<Json::UInt64>(std::stoull(str.c_str(), 0));
+            }
+        } else {
+            return std::stod(str.c_str(), 0);
+        }
     } catch (const std::invalid_argument&) {
         return str;
     }
