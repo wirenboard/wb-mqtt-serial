@@ -1,0 +1,181 @@
+{
+  "device_type": "Ventmachine-Colibri-650-GTC",
+  "group": "g-climate-control",
+  "device": {
+    "name": "Ventmachine Colibri 650 GTC",
+    "id": "colibri_650_gtc",
+    "guard_interval_us": 4000,
+    
+
+    "channels": [
+      {
+        "name": "Unit Status",
+        "id": "unit_status",
+        "reg_type": "input",
+        "address": "2:0:2",
+        "type": "value",
+        "format": "u16",
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "enum_titles": [
+          "Off",
+          "On",
+          "Turns Off",
+          "Turns On"
+        ]
+      },
+      {
+        "name": "Error Status",
+        "id": "errors",
+        "reg_type": "input",
+        "address": "4",
+        "type": "value",
+        "format": "u32",
+        "enum": [
+          0,
+          16,
+          32,
+          2048,
+          536870912,
+          64,
+          262148,
+          262144,
+          65537,
+          65536,
+          671088640
+        ],
+        "enum_titles": [
+          "No Errors",
+          "T>Tset",
+          "T<Tset",
+          "Fire",
+          "Heater Overheat",
+          "External Stop",
+          "T-outdoor Sensor Short",
+          "T-outdoor Sensor Break",
+          "T-Duct Sensor Short",
+          "T-Duct Sensor Break",
+          "Fire&Heater Overheat"
+        ],
+        "readonly": true
+      },
+      {
+        "name": "Turn On",
+        "id": "turn_on",
+        "reg_type": "holding",
+        "write_address": "2",
+        "type": "pushbutton",
+        "format": "u16",
+        "on_value": 1
+      },
+      {
+        "name": "Turn Off",
+        "id": "turn_off",
+        "reg_type": "holding",
+        "write_address": "2",
+        "type": "pushbutton",
+        "format": "u16",
+        "on_value": 0
+      },
+      {
+        "name": "Fan Speed",
+        "id": "fan_speed",
+        "reg_type": "holding",
+        "address": "32",
+        "type": "value",
+        "format": "u16",
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "enum_titles": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      {
+        "name": "Temperature Setpoint",
+        "id": "set_temp",
+        "reg_type": "holding",
+        "address": "31",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Duct Temperature",
+        "id": "duct_temp",
+        "reg_type": "input",
+        "address": "7",
+        "type": "value",
+        "units": "deg C",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Outdoor Temperature",
+        "id": "outdoor_temp",
+        "reg_type": "input",
+        "address": "11",
+        "type": "value",
+        "units": "deg C",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Room Temperature",
+        "id": "room_temp",
+        "reg_type": "input",
+        "address": "57",
+        "type": "value",
+        "units": "deg C",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Room Humidity",
+        "id": "room_humidity",
+        "reg_type": "input",
+        "address": "58",
+        "type": "value",
+        "units": "%",
+        "format": "s16"
+      }
+    ],
+    "translations": {
+      "ru": {
+        "Unit Status": "Cтатус работы",
+        "Error Status": "Статус ошибки",
+        "Turn On": "Включить",
+        "Turn Off": "Выключить",
+        "Fan Speed": "Скорость вентилятора",
+        "Temperature Setpoint": "Уставка температуры",
+        "Duct Temperature": "Температура в канале",
+        "Outdoor Temperature": "Температура на улице",
+        "Room Temperature": "Температура в помещении",
+        "Room Humidity": "Влажность в помещении",
+        "Off": "Выключена",
+        "On": "Включена",
+        "Turns Off": "Выключается",
+        "Turns On": "Включается",
+        "No Errors": "Ошибок нет",
+        "T>Tset": "Высокая температура",
+        "T<Tset": "Низкая температура",
+        "Fire": "Пожар",
+        "Heater Overheat": "Перегрев калорифера",
+        "External Stop": "Внешний стоп",
+        "T-outdoor Sensor Short": "Замыкание Т наружного",
+        "T-indoor Sensor Break": "Обрыв Т наружного",
+        "T-Duct Sensor Short": "Замыкание Т канала",
+        "T-Duct Sensor Break": "Обрыв Т канала",
+        "Fire&Heater Overheat": "Пожар&Перегрев калорифера"
+      }
+    }
+  }
+}
