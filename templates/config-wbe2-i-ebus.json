@@ -235,7 +235,6 @@
                 "format": "u16",
                 "min": 0,
                 "max": 85,
-                "readonly": true,
                 "group": "heating_settings",
                 "condition": "(heating_options==1)||(heating_options==2)||(heating_options==3)"
             },
@@ -250,6 +249,7 @@
                 "offset": -100,
                 "min": -50,
                 "max": 50,
+                "readonly": true,
                 "group": "heating_settings",
                 "condition": "heating_options==1"
             },

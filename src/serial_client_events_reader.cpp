@@ -301,7 +301,7 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
 
     try {
         for (const auto& regArray: Regs) {
-            if (regArray.first.SlaveId == slaveId) {
+            if (regArray.first.SlaveId == slaveId && regArray.second.front()->IsSupported()) {
                 ev.AddRegister(regArray.first.Addr,
                                static_cast<ModbusExt::TEventType>(regArray.first.Type),
                                regArray.second.front()->GetConfig()->IsHighPriority() ? ModbusExt::TEventPriority::HIGH

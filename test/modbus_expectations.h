@@ -96,14 +96,15 @@ public:
     /*--------------------------------------*/
 
     void EnqueueContinuousReadEnableResponse(bool ok = true);
-    void EnqueueContinuousReadHoldingResponse(bool separated = true);
+    void EnqueueContinuousReadHoldingResponse(bool separated = true, bool unsupported = false);
     void EnqueueContinuousReadCoilResponse(bool separated = true);
 
     void EnqueueContinuousWriteResponse();
 
     void EnqueuePartialWriteReadCacheDataResponse();
     void EnqueuePartialWriteResponse();
-    void EnqueuePartialWriteReadChannelResponse();
+
+    void EnqueueFwVersionReadResponse();
 
     void EnqueueSimpleChannelReadResponse();
     void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);

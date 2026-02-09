@@ -248,17 +248,8 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
         return deviceConfigJson;
     }
 
-    const auto& parameters = deviceTemplate["parameters"];
     auto deviceData(deviceConfigJson);
     auto res(deviceTemplate);
-
-    for (auto it = parameters.begin(); it != parameters.end(); ++it) {
-        const auto& item = *it;
-        auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
-        if (!deviceData.isMember(id) && item.isMember("default")) {
-            deviceData[id] = item["default"];
-        }
-    }
 
     TSubDevicesTemplateMap subDevicesTemplates(deviceType, deviceTemplate);
     res.removeMember("subdevices");
@@ -291,6 +282,15 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
     TExpressionsCache expressionsCache;
     AppendSetupItems(res, deviceData, &expressionsCache);
     UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+
+    const auto& parameters = deviceTemplate["parameters"];
+    for (auto it = parameters.begin(); it != parameters.end(); ++it) {
+        const auto& item = *it;
+        auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
+        if (!deviceData.isMember(id) && item.isMember("default")) {
+            deviceData[id] = item["default"];
+        }
+    }
     RemoveDisabledChannels(res, deviceData, expressionsCache);
 
     return res;

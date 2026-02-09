@@ -170,7 +170,7 @@ struct TDeviceProtocolParams
 PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
                                PProtocol protocol,
                                const TDeviceConfigLoadParams& parameters,
-                               bool isWBDevice);
+                               bool isWbDevice);
 
 struct TLoadRegisterConfigResult
 {

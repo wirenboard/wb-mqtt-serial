@@ -120,11 +120,6 @@ namespace
         }
     }
 
-    std::string ReadFwVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
-    {
-        return ReadWbRegister(port, rpcRequest, WbRegisters::FW_VERSION_REGISTER_NAME);
-    }
-
     void SetContinuousRead(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, bool enabled)
     {
         std::string error;
@@ -161,13 +156,11 @@ namespace
         }
     }
 
-    void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model, std::string& version)
+    void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model)
     {
+        const auto& version = rpcRequest->Device->GetWbFwVersion();
         if (model.empty()) {
             model = ReadDeviceModel(*port, rpcRequest);
-        }
-        if (version.empty()) {
-            version = ReadFwVersion(*port, rpcRequest);
         }
         for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
             if (item.Signature == model) {
@@ -226,12 +219,10 @@ namespace
 
         std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
         std::string deviceModel;
-        std::string fwVersion;
         Json::Value parameters;
         if (rpcRequest->ParametersCache.Contains(id)) {
             Json::Value cache = rpcRequest->ParametersCache.Get(id);
             deviceModel = cache["model"].asString();
-            fwVersion = cache["fw"].asString();
             parameters = cache["parameters"];
         }
         if (parameters.isNull()) {
@@ -239,9 +230,10 @@ namespace
         }
 
         port->SkipNoise();
+        PrepareSession(*port, rpcRequest->Device, MAX_RETRIES);
 
-        if (rpcRequest->IsWBDevice) {
-            CheckTemplate(port, rpcRequest, deviceModel, fwVersion);
+        if (rpcRequest->Device->IsWbDevice()) {
+            CheckTemplate(port, rpcRequest, deviceModel);
         }
 
         std::list<std::string> paramsList;
@@ -249,8 +241,8 @@ namespace
                                                rpcRequest->Device,
                                                templateParams,
                                                parameters,
-                                               fwVersion,
-                                               rpcRequest->IsWBDevice);
+                                               rpcRequest->Device->GetWbFwVersion(),
+                                               rpcRequest->Device->IsWbDevice());
         ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RETRIES);
         CheckParametersConditions(registerList, parameters);
         ClearUnsupportedParameters(*port, rpcRequest, registerList, parameters);
@@ -261,8 +253,8 @@ namespace
         if (!deviceModel.empty()) {
             result["model"] = deviceModel;
         }
-        if (!fwVersion.empty()) {
-            result["fw"] = fwVersion;
+        if (!rpcRequest->Device->GetWbFwVersion().empty()) {
+            result["fw"] = rpcRequest->Device->GetWbFwVersion();
         }
         if (rpcRequest->DeviceFromConfig) {
             rpcRequest->ParametersCache.Add(id, result);
@@ -281,10 +273,7 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolPa
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig),
       ConfigFileName(configFileName),
       ParametersCache(parametersCache)
-{
-    IsWBDevice =
-        !DeviceTemplate->GetHardware().empty() || DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
-}
+{}
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TDeviceProtocolParams& protocolParams,

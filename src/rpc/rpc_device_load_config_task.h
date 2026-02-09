@@ -23,7 +23,6 @@ public:
 
     const std::string& ConfigFileName;
     TRPCDeviceParametersCache& ParametersCache;
-    bool IsWBDevice = false;
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
