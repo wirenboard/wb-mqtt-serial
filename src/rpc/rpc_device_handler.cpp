@@ -285,7 +285,7 @@ void PrepareSession(TPort& port, PSerialDevice device, int maxRetries)
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateItems,
-                                    const Json::Value& knownItems,
+                                    Json::Value* parameters,
                                     const std::string& fwVersion,
                                     bool checkUnsupported)
 {
@@ -293,7 +293,10 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
     for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
         const auto& item = *it;
         auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
-        if (item["address"].isNull() || item["readonly"].asBool() || !knownItems[id].isNull()) {
+        if (parameters && item["no_cache"].asBool()) {
+            (*parameters).removeMember(id);
+        }
+        if (item["address"].isNull() || item["readonly"].asBool() || (parameters && (*parameters).isMember(id))) {
             continue;
         }
         if (!fwVersion.empty()) {
@@ -396,9 +399,14 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
     try {
         if (str.find('.') == std::string::npos) {
             if (str.at(0) == '-') {
-                return static_cast<Json::Int64>(std::stoll(str.c_str(), 0));
+                return static_cast<int64_t>(std::stoll(str.c_str(), 0));
             } else {
-                return static_cast<Json::UInt64>(std::stoull(str.c_str(), 0));
+                auto value = std::stoull(str.c_str(), 0);
+                if (value <= INT64_MAX) {
+                    // cast value to signed integer to match default Json::Value type for integers
+                    return static_cast<int64_t>(value);
+                }
+                return value;
             }
         } else {
             return std::stod(str.c_str(), 0);

@@ -163,10 +163,13 @@ void PrepareSession(TPort& port, PSerialDevice device, int maxRetries = 0);
  *
  * @param protocolParams - device protocol params for LoadRegisterConfig call
  * @param device - serial device object pointer for TRegister object creation
- * @param templateItems - device template items JSON array or object
- * @param knownItems - known items JSON object, where the key is the item id and the value is the known
- *                     item value, for example: {"baudrate": 96, "in1_mode": 2},
- *                     used to exclule known items from regiter list
+ * @param templateItems - device template parameters JSON array or object
+ * @param parameters - pointer to known parameters JSON object, where the key is the parameter id and the value is the
+ *                     known parameter value, for example: {"baudrate": 96, "in1_mode": 2}
+ *
+ * Parameters will be removed from this list if corresponding template items is marked as "no_cache", otherwise they
+ * will be excluded from register list.
+ *
  * @param fwVersion - device firmvare version string, used to exclude items unsupporterd by firmware
  * @param checkUnsupported - if set as true, template item's enums and ranges will be checked for presense of
  *                           default Wiren Board devices unsupported register value 0xFFFE,
@@ -177,7 +180,7 @@ void PrepareSession(TPort& port, PSerialDevice device, int maxRetries = 0);
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateItems,
-                                    const Json::Value& knownItems = Json::Value(),
+                                    Json::Value* parameters = nullptr,
                                     const std::string& fwVersion = std::string(),
                                     bool checkUnsupported = false);
 

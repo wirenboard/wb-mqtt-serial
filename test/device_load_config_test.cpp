@@ -23,7 +23,7 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
         const std::string& type = typeList[i];
         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
         TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3");
+            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], nullptr, "1.2.3");
         Json::Value json;
         for (const auto& reg: registerList) {
             json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
@@ -63,14 +63,6 @@ TEST(TDeviceLoadConfigTest, GetRegisterListParameters)
         Json::Value json;
         GetRegisterListParameters(registerList, json);
 
-        // Convert Json::Value to string and back to Json::Value to make data types match with test data types
-        Json::StreamWriterBuilder writer;
-        Json::CharReaderBuilder reader;
-        Json::String errors;
-        std::stringstream stream(Json::writeString(writer, json));
-        Json::parseFromStream(reader, stream, &json, &errors);
-        //
-
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
         ASSERT_TRUE(JsonsMatch(json, match)) << type;
@@ -90,8 +82,9 @@ TEST(TDeviceLoadConfigTest, RawValueToJson)
 
     auto deviceTemplate = templateMap.GetTemplate("parameters_to_json")->GetTemplate();
     TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
-    TRPCRegisterList registerList =
-        CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value());
+
+    TRPCRegisterList registerList = CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"]);
+    ASSERT_EQ(registerList.size(), 5);
 
     int index = 0;
     std::string stringValue;
@@ -116,4 +109,50 @@ TEST(TDeviceLoadConfigTest, RawValueToJson)
         item.Register->SetValue(ConvertToRawValue(*item.Register->GetConfig(), stringValue));
         ASSERT_EQ(RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue()).asString(), stringValue);
     }
+}
+
+/**
+ * Checks that "no cache" parameters are removed from known parameters list and added to register list
+ */
+TEST(TDeviceLoadConfigTest, NoCache)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    auto deviceTemplate = templateMap.GetTemplate("parameters_no_cache")->GetTemplate();
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+
+    auto json(JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/parameters_no_cache_values.json")));
+    TRPCRegisterList registerList = CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], &json);
+    ASSERT_EQ(registerList.size(), 4);
+
+    int index = 0;
+    for (const auto& item: registerList) {
+        switch (index++) {
+            case 0:
+                ASSERT_EQ(item.Id, "p3");
+                item.Register->SetValue(TRegisterValue(12));
+                break;
+            case 1:
+                ASSERT_EQ(item.Id, "p4");
+                item.Register->SetValue(TRegisterValue(34));
+                break;
+            case 2:
+                ASSERT_EQ(item.Id, "p5");
+                item.Register->SetValue(TRegisterValue(56));
+                break;
+            case 3:
+                ASSERT_EQ(item.Id, "p6");
+                item.Register->SetValue(TRegisterValue(78));
+                break;
+        }
+    }
+
+    GetRegisterListParameters(registerList, json);
+
+    auto match(JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/parameters_no_cache_match.json")));
+    ASSERT_TRUE(JsonsMatch(json, match));
 }

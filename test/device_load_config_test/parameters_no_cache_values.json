@@ -1,0 +1,7 @@
+// fake known values for "parameters_no_cache" test
+{
+    "p1": 4,
+    "p2": 8,
+    "p3": 15,
+    "p4": 16
+}
