@@ -25,43 +25,7 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
         TRPCRegisterList registerList =
             CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3");
         Json::Value json;
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            auto& reg = registerList[i];
-            json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
-        }
-        auto match(
-            JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_register_list.json")));
-        ASSERT_TRUE(JsonsMatch(json, match)) << type;
-    }
-}
-
-/**
- * Checks that the register lists contains only parameters of specified group and their condition parameter
- * (recoursive). Uses JSON-objects containing parameter ids with register addresses for result matching.
- */
-TEST(TDeviceLoadConfigTest, CreateGroupRegisterList)
-{
-    TSerialDeviceFactory deviceFactory;
-    RegisterProtocols(deviceFactory);
-
-    TTemplateMap templateMap(GetTemplatesSchema());
-    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
-
-    std::vector<std::string> typeList = {"parameters_group_array", "parameters_group_object"};
-    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
-    for (size_t i = 0; i < typeList.size(); ++i) {
-        const std::string& type = typeList[i];
-        auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
-        std::list<std::string> paramsList;
-        TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams,
-                               nullptr,
-                               GetTemplateParamsGroup(deviceTemplate["parameters"], "g2", paramsList),
-                               Json::Value(),
-                               std::string());
-        Json::Value json;
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            auto& reg = registerList[i];
+        for (const auto& reg: registerList) {
             json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
         }
         auto match(
@@ -74,18 +38,39 @@ TEST(TDeviceLoadConfigTest, CreateGroupRegisterList)
  * Checks that the parameter list is not contains items unmatched with template conditions.
  * Uses JSON-objects containig fake read values and result data for matching.
  */
-TEST(TDeviceLoadConfigTest, CheckParametersConditions)
+TEST(TDeviceLoadConfigTest, GetRegisterListParameters)
 {
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
     TTemplateMap templateMap(GetTemplatesSchema());
     templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
 
     std::vector<std::string> typeList = {"parameters_array", "parameters_object"};
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
     for (size_t i = 0; i < typeList.size(); ++i) {
         const std::string& type = typeList[i];
         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
-        auto json(
+        TRPCRegisterList registerList = CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"]);
+        auto data(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_read_values.json")));
-        CheckParametersConditions(deviceTemplate["parameters"], json);
+        for (const auto& reg: registerList) {
+            if (data.isMember(reg.Id)) {
+                reg.Register->SetValue(TRegisterValue(data[reg.Id].asInt()));
+            }
+        }
+
+        Json::Value json;
+        GetRegisterListParameters(registerList, json);
+
+        // Convert Json::Value to string and back to Json::Value to make data types match with test data types
+        Json::StreamWriterBuilder writer;
+        Json::CharReaderBuilder reader;
+        Json::String errors;
+        std::stringstream stream(Json::writeString(writer, json));
+        Json::parseFromStream(reader, stream, &json, &errors);
+        //
+
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
         ASSERT_TRUE(JsonsMatch(json, match)) << type;

@@ -61,9 +61,6 @@ void AppendSetupItems(Json::Value& deviceTemplate,
                     if (!it->get("readonly", false).asBool() && CheckCondition(*it, params, exprs)) {
                         Json::Value item(*it);
                         item["value"] = cfgItem;
-                        if (!templateParameters.isArray()) {
-                            item["id"] = name;
-                        }
                         newSetup.append(item);
                     }
                 } else {
@@ -315,12 +312,11 @@ std::optional<int32_t> TJsonParams::Get(const std::string& name) const
     return std::nullopt;
 }
 
-bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)
+bool CheckCondition(const std::string& cond, const TJsonParams& params, TExpressionsCache* exprs)
 {
     if (!exprs) {
         return true;
     }
-    auto cond = item["condition"].asString();
     if (cond.empty()) {
         return true;
     }
@@ -335,4 +331,9 @@ bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpress
         throw TConfigParserException("Error during expression \"" + cond + "\" evaluation: " + e.what());
     }
     return false;
+}
+
+bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)
+{
+    return CheckCondition(item["condition"].asString(), params, exprs);
 }

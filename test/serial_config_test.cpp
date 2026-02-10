@@ -324,15 +324,15 @@ TEST_F(TConfigParserTest, DefaultParamsForSetupItems)
     for (const auto& item: setupItems) {
         switch (index++) {
             case 0:
-                EXPECT_EQ(item->ParameterId, "condition_param_1");
+                EXPECT_EQ(item->Name, "p1");
                 EXPECT_EQ(item->HumanReadableValue, "1");
                 break;
             case 1:
-                EXPECT_EQ(item->ParameterId, "param_1");
+                EXPECT_EQ(item->Name, "s1");
                 EXPECT_EQ(item->HumanReadableValue, "10");
                 break;
             case 2:
-                EXPECT_EQ(item->ParameterId, "param_3");
+                EXPECT_EQ(item->Name, "s3");
                 EXPECT_EQ(item->HumanReadableValue, "30");
                 break;
         }

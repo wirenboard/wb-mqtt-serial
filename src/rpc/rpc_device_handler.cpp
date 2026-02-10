@@ -117,7 +117,8 @@ void TRPCDeviceRequest::ParseSettings(const Json::Value& request,
     OnError = onError;
 }
 
-TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+TRPCDeviceHandler::TRPCDeviceHandler(const std::string& configFileName,
+                                     const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const std::string& requestDeviceLoadSchemaFilePath,
                                      const std::string& requestDeviceSetSchemaFilePath,
                                      const std::string& requestDeviceProbeSchemaFilePath,
@@ -127,7 +128,8 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                      TSerialClientTaskRunner& serialClientTaskRunner,
                                      TRPCDeviceParametersCache& parametersCache,
                                      WBMQTT::PMqttRpcServer rpcServer)
-    : DeviceFactory(deviceFactory),
+    : ConfigFileName(configFileName),
+      DeviceFactory(deviceFactory),
       RequestDeviceLoadConfigSchema(LoadRPCRequestSchema(requestDeviceLoadConfigSchemaFilePath, "device/LoadConfig")),
       RequestDeviceLoadSchema(LoadRPCRequestSchema(requestDeviceLoadSchemaFilePath, "device/Load")),
       RequestDeviceSetSchema(LoadRPCRequestSchema(requestDeviceSetSchemaFilePath, "device/Set")),
@@ -181,6 +183,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
                                                           helper.Device,
                                                           helper.DeviceTemplate,
                                                           helper.DeviceFromConfig,
+                                                          ConfigFileName,
                                                           ParametersCache,
                                                           onResult,
                                                           onError);
@@ -290,14 +293,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
     for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
         const auto& item = *it;
         auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
-        bool duplicate = false;
-        for (const auto& item: registerList) {
-            if (item.Id == id) {
-                duplicate = true;
-                break;
-            }
-        }
-        if (duplicate || item["address"].isNull() || item["readonly"].asBool() || !knownItems[id].isNull()) {
+        if (item["address"].isNull() || item["readonly"].asBool() || !knownItems[id].isNull()) {
             continue;
         }
         if (!fwVersion.empty()) {
@@ -306,14 +302,16 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 continue;
             }
         }
-
         auto config = LoadRegisterConfig(item,
                                          *protocolParams.protocol->GetRegTypes(),
                                          std::string(),
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
-        TRPCRegister reg = {id, std::make_shared<TRegister>(device, config.RegisterConfig), checkUnsupported};
+        TRPCRegister reg = {id,
+                            item["condition"].asString(),
+                            std::make_shared<TRegister>(device, config.RegisterConfig),
+                            checkUnsupported};
         reg.Register->SetAvailable(TRegisterAvailability::AVAILABLE);
 
         // this code checks enums and ranges only for 16-bit register unsupported value 0xFFFE
@@ -341,11 +339,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
     return registerList;
 }
 
-void ReadRegisterList(TPort& port,
-                      PSerialDevice device,
-                      TRPCRegisterList& registerList,
-                      Json::Value& result,
-                      int maxRetries)
+void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& registerList, int maxRetries)
 {
     if (registerList.size() == 0) {
         return;
@@ -393,11 +387,6 @@ void ReadRegisterList(TPort& port,
     if (!error.empty()) {
         LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-
-    for (size_t i = 0; i < registerList.size(); ++i) {
-        auto& reg = registerList[i];
-        result[reg.Id] = RawValueToJSON(*reg.Register->GetConfig(), reg.Register->GetValue());
     }
 }
 
