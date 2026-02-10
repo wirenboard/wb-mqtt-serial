@@ -399,14 +399,14 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
     try {
         if (str.find('.') == std::string::npos) {
             if (str.at(0) == '-') {
-                return static_cast<int64_t>(std::stoll(str.c_str(), 0));
+                return static_cast<Json::Int64>(std::stoll(str.c_str(), 0));
             } else {
                 auto value = std::stoull(str.c_str(), 0);
                 if (value <= INT64_MAX) {
                     // cast value to signed integer to match default Json::Value type for integers
-                    return static_cast<int64_t>(value);
+                    return static_cast<Json::Int64>(value);
                 }
-                return value;
+                return static_cast<Json::UInt64>(value);
             }
         } else {
             return std::stod(str.c_str(), 0);
