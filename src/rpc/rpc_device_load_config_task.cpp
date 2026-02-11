@@ -240,7 +240,7 @@ namespace
         auto registerList = CreateRegisterList(rpcRequest->ProtocolParams,
                                                rpcRequest->Device,
                                                templateParams,
-                                               parameters,
+                                               &parameters,
                                                rpcRequest->Device->GetWbFwVersion(),
                                                rpcRequest->Device->IsWbDevice());
         ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RETRIES);
