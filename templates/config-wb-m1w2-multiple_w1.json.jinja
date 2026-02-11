@@ -3,7 +3,7 @@
 {% set SENSORS_NUMBER = 20 -%}
 {% set FIRST_SENSOR = 1 -%}
 {% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
-{% set DEBUG_REGISTERS = 1 -%}
+{% set DEBUG_REGISTERS = 0 -%}
 {
     "title": "WB-M1W2_template_title",
     "device_type": "WB-M1W2 MULTIPLE W1",
@@ -396,7 +396,6 @@
                 "address": {{3328 + (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "default": 0,
-                "enabled": false,
                 "group": "gg_w1_bus_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
@@ -422,7 +421,6 @@
                 "address": {{24 + (in_num - FIRST_INPUT)}},
                 "type": "pushbutton",
                 "value": 1,
-                "enabled": false,
                 "group": "gg_w1_bus_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
