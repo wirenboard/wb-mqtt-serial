@@ -9,6 +9,7 @@
 namespace
 {
     const auto MAX_RETRIES = 2;
+    const auto UNSUPPORTED_VALUE = "unsupported";
 
     void ReadModbusRegister(TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
@@ -197,7 +198,7 @@ namespace
                         TRegisterValue value;
                         ReadModbusRegister(port, rpcRequest, item.Register->GetConfig(), value);
                     } catch (const Modbus::TModbusExceptionError& err) {
-                        parameters[item.Id] = UnsupportedRegisterValue;
+                        parameters[item.Id] = UNSUPPORTED_VALUE;
                     }
                 }
             } catch (const TRegisterValueException& e) {
@@ -248,7 +249,7 @@ namespace
                                                rpcRequest->Device->IsWbDevice());
         ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RETRIES);
         GetRegisterListParameters(registerList, parameters);
-        ClearUnsupportedParameters(*port, rpcRequest, registerList, parameters);
+        MarkUnsupportedParameters(*port, rpcRequest, registerList, parameters);
 
         Json::Value result(Json::objectValue);
         result["parameters"] = parameters;
@@ -346,7 +347,9 @@ void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value
                 continue;
             }
             if (!parameters.isMember(item.Id) && CheckCondition(item.Condition, jsonParams, &expressionsCache)) {
-                parameters[item.Id] = RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
+                parameters[item.Id] = item.Register->IsSupported()
+                                          ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
+                                          : UNSUPPORTED_VALUE;
                 check = true;
             }
         }
