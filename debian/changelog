@@ -1,8 +1,28 @@
-wb-mqtt-serial (2.223.0) stable; urgency=medium
+wb-mqtt-serial (2.225.0) stable; urgency=medium
 
   * Set unsupported registers value to "unsupported" for device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 05 Feb 2026 18:09:19 +0500
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Feb 2026 11:34:19 +0500
+
+wb-mqtt-serial (2.224.0) stable; urgency=medium
+
+  * Use read only configuration parameters for Device/LoadConfig RPC parameter conditions
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Feb 2026 11:38:21 +0300
+
+wb-mqtt-serial (2.223.0) stable; urgency=medium
+
+  * Add template for Ventmachine Colibri 650 GTC
+
+ -- Aleksey Golovchenko <Aleksey.golovchenko@wirenboard.com>  Thu, 05 Feb 2026 18:00:00 +0300
+ 
+wb-mqtt-serial (2.222.3) stable; urgency=medium
+
+  * Fix 64-bit integers precision bug for Device/Load and Device/LoadConfig RPC
+  * Fix 64-bit integers precision bug for setup items
+  * Fix setup item condition parameters with default value bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 05 Feb 2026 15:09:16 +0300
 
 wb-mqtt-serial (2.222.2) stable; urgency=medium
 
@@ -15,7 +35,7 @@ wb-mqtt-serial (2.222.1) stable; urgency=medium
   * Fix readonly flags in WBE2-I-EBUS
 
  -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Tue, 03 Feb 2026 11:51:00 +0300
- 
+
 wb-mqtt-serial (2.222.0) stable; urgency=medium
 
   * Add firmvare version checks for device channels

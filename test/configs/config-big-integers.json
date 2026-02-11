@@ -1,4 +1,3 @@
-// condition_param2 for channels and setup items conditions are not present here
 {
     "ports": [
         {
@@ -10,11 +9,9 @@
             "devices": [
                 {
                     "slave_id": 42,
-                    "device_type": "default_params",
-                    "condition_param_1": 1,
-                    "param_1": 10,
-                    "param_2": 20,
-                    "param_3": 30
+                    "device_type": "big_integers",
+                    "param_1": -459234512454223413,
+                    "param_2": 257080185625143217
                 }
             ]
         }

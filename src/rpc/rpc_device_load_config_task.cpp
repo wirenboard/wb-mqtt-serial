@@ -139,6 +139,23 @@ namespace
         }
     }
 
+    void LoadConfigParameters(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, Json::Value& parameters)
+    {
+        Json::Value config(WBMQTT::JSON::Parse(rpcRequest->ConfigFileName));
+        for (const auto& port: config["ports"]) {
+            for (auto cfg: port["devices"]) {
+                const auto& dev = rpcRequest->Device->DeviceConfig();
+                if (cfg["device_type"].asString() == dev->DeviceType && cfg["slave_id"].asString() == dev->SlaveId) {
+                    cfg.removeMember("channels");
+                    cfg.removeMember("device_type");
+                    cfg.removeMember("slave_id");
+                    parameters = cfg;
+                    return;
+                }
+            }
+        }
+    }
+
     void CheckTemplate(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, std::string& model)
     {
         const auto& version = rpcRequest->Device->GetWbFwVersion();
@@ -212,11 +229,7 @@ namespace
             parameters = cache["parameters"];
         }
         if (parameters.isNull()) {
-            for (const auto& item: rpcRequest->Device->GetSetupItems()) {
-                if (!item->ParameterId.empty()) {
-                    parameters[item->ParameterId] = RawValueToJSON(*item->RegisterConfig, item->RawValue);
-                }
-            }
+            LoadConfigParameters(port, rpcRequest, parameters);
         }
 
         port->SkipNoise();
@@ -227,38 +240,30 @@ namespace
         }
 
         std::list<std::string> paramsList;
-        auto registerList = CreateRegisterList(
-            rpcRequest->ProtocolParams,
-            rpcRequest->Device,
-            rpcRequest->Group.empty() ? templateParams
-                                      : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
-            parameters,
-            rpcRequest->Device->GetWbFwVersion(),
-            rpcRequest->Device->IsWbDevice());
-        ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
-        MarkUnsupportedParameters(*port, rpcRequest, registerList, parameters);
+        auto registerList = CreateRegisterList(rpcRequest->ProtocolParams,
+                                               rpcRequest->Device,
+                                               templateParams,
+                                               parameters,
+                                               rpcRequest->Device->GetWbFwVersion(),
+                                               rpcRequest->Device->IsWbDevice());
+        ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RETRIES);
+        GetRegisterListParameters(registerList, parameters);
+        ClearUnsupportedParameters(*port, rpcRequest, registerList, parameters);
 
         Json::Value result(Json::objectValue);
+        result["parameters"] = parameters;
+
         if (!deviceModel.empty()) {
             result["model"] = deviceModel;
         }
         if (!rpcRequest->Device->GetWbFwVersion().empty()) {
             result["fw"] = rpcRequest->Device->GetWbFwVersion();
         }
-        if (!paramsList.empty()) {
-            for (const auto& id: paramsList) {
-                result["parameters"][id] = parameters[id];
-            }
-        } else {
-            result["parameters"] = parameters;
-        }
-        CheckParametersConditions(templateParams, result["parameters"]);
-        rpcRequest->OnResult(result);
-
         if (rpcRequest->DeviceFromConfig) {
-            result["parameters"] = parameters;
             rpcRequest->ParametersCache.Add(id, result);
         }
+
+        rpcRequest->OnResult(result);
     }
 } // namespace
 
@@ -266,8 +271,10 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolPa
                                                          PSerialDevice device,
                                                          PDeviceTemplate deviceTemplate,
                                                          bool deviceFromConfig,
+                                                         const std::string& configFileName,
                                                          TRPCDeviceParametersCache& parametersCache)
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig),
+      ConfigFileName(configFileName),
       ParametersCache(parametersCache)
 {}
 
@@ -276,6 +283,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                             PSerialDevice device,
                                                             PDeviceTemplate deviceTemplate,
                                                             bool deviceFromConfig,
+                                                            const std::string& configFileName,
                                                             TRPCDeviceParametersCache& parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
@@ -284,9 +292,9 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                              device,
                                                              deviceTemplate,
                                                              deviceFromConfig,
+                                                             configFileName,
                                                              parametersCache);
     res->ParseSettings(request, onResult, onError);
-    res->Group = request["group"].asString();
     return res;
 }
 
@@ -326,72 +334,21 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     return ISerialClientTask::TRunResult::OK;
 }
 
-Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
-                                   const std::string& group,
-                                   std::list<std::string>& paramsList)
-{
-    Json::Value result;
-    std::list<std::string> conditionList;
-    bool check = true;
-    while (check) {
-        check = false;
-        for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-            const Json::Value& data = *it;
-            std::string id = templateParams.isObject() ? it.key().asString() : data["id"].asString();
-            if (std::find(conditionList.begin(), conditionList.end(), id) == conditionList.end() &&
-                data["group"].asString() != group)
-            {
-                continue;
-            }
-            if (std::find(paramsList.begin(), paramsList.end(), id) == paramsList.end()) {
-                paramsList.push_back(id);
-                result[id] = data;
-            }
-            if (data["condition"].isNull()) {
-                continue;
-            }
-            Expressions::TLexer lexer;
-            auto tokens = lexer.GetTokens(data["condition"].asString());
-            for (const auto& token: tokens) {
-                if (token.Type == Expressions::TTokenType::Ident && token.Value != "isDefined" &&
-                    std::find(conditionList.begin(), conditionList.end(), token.Value) == conditionList.end())
-                {
-                    conditionList.push_back(token.Value);
-                    check = true;
-                }
-            }
-        }
-    }
-    return result;
-}
-
-void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters)
+void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value& parameters)
 {
     TJsonParams jsonParams(parameters);
     Expressions::TExpressionsCache expressionsCache;
     bool check = true;
     while (check) {
-        std::unordered_map<std::string, bool> matches;
-        for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-            const Json::Value& registerData = *it;
-            std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
-            if (!parameters.isMember(id)) {
+        check = false;
+        for (const auto& item: registerList) {
+            if (item.Register->GetValue().GetType() == TRegisterValue::ValueType::Undefined) {
                 continue;
             }
-            bool match = CheckCondition(registerData, jsonParams, &expressionsCache);
-            if (matches.find(id) == matches.end() || match) {
-                matches[id] = match;
-            }
-        }
-        check = false;
-        for (auto it = matches.begin(); it != matches.end(); ++it) {
-            if (!it->second) {
-                parameters.removeMember(it->first);
+            if (!parameters.isMember(item.Id) && CheckCondition(item.Condition, jsonParams, &expressionsCache)) {
+                parameters[item.Id] = RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
                 check = true;
             }
         }
-    }
-    if (parameters.isNull()) {
-        parameters = Json::Value(Json::objectValue);
     }
 }
