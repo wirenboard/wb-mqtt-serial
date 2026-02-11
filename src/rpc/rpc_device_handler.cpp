@@ -66,9 +66,9 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
         ProtocolParams = deviceFactory.GetProtocolParams(protocolName);
         auto config = std::make_shared<TDeviceConfig>("RPC Device", request["slave_id"].asString(), protocolName);
         if (ProtocolParams.protocol->IsModbus()) {
-            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "max_reg_hole", config->MaxRegHole);
+            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "max_bit_hole", config->MaxBitHole);
+            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "min_read_registers", config->MaxReadRegisters);
         }
         Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
         Device->SetWbDevice(!DeviceTemplate->GetHardware().empty() ||
@@ -368,6 +368,12 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
                 LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
                           << "Failed to read " << std::to_string(range->RegisterList().size())
                           << " registers starting from <" << first->GetConfig()->ToString() + ">: " + e.what();
+                auto modbusDevice = dynamic_cast<TModbusDevice*>(device.get());
+                if (modbusDevice != nullptr && !modbusDevice->GetContinuousReadEnabled()) {
+                    for (const auto& reg: range->RegisterList()) {
+                        reg->SetSupported(false);
+                    }
+                }
                 break;
             } catch (const TSerialDeviceException& e) {
                 if (i == maxRetries) {

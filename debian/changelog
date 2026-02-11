@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.225.0) stable; urgency=medium
+
+  * Set unsupported registers value to "unsupported" for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Feb 2026 11:34:19 +0500
+
 wb-mqtt-serial (2.224.0) stable; urgency=medium
 
   * Use read only configuration parameters for Device/LoadConfig RPC parameter conditions
