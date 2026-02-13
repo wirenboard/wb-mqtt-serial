@@ -151,7 +151,7 @@
                 "reg_type": "holding",
                 "address": {{5632 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "format": "u64",
-                {# "type": "w1-id", #}
+                "type": "w1-id",
                 "group": "gg_in{{in_num}}_sensors",
                 "order": {{1 + (sens_num - FIRST_SENSOR)}},
                 "condition": "in{{in_num}}_mode==0"
@@ -417,7 +417,7 @@
                 "reg_type": "input",
                 "format": "u64",
                 "address": {{3680 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                {# "type": "w1-id", #}
+                "type": "w1-id",
                 "default": 0,
                 "enabled": false,
                 "group": "gg_w1_bus{{in_num}}_channels",
@@ -443,7 +443,7 @@
                 "reg_type": "input",
                 "format": "u64",
                 "address": {{4352 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                {# "type": "w1-id", #}
+                "type": "w1-id",
                 "default": 0,
                 "enabled": false,
                 "group": "gg_debug_bus{{in_num}}_channels",
