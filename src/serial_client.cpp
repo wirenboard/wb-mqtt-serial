@@ -154,7 +154,7 @@ void TSerialClient::ClosedPortCycle()
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
-    if (!reg->IsSupported()) {
+    if (reg->Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED || !reg->IsSupported()) {
         reg->SetError(TRegister::WriteError);
         if (RegisterErrorCallback) {
             RegisterErrorCallback(reg);
