@@ -3,7 +3,6 @@
 {% set SENSORS_NUMBER = 20 -%}
 {% set FIRST_SENSOR = 1 -%}
 {% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
-{% set DEBUG_REGISTERS = 0 -%}
 {
     "title": "WB-M1W2_template_title",
     "device_type": "WB-M1W2 MULTIPLE W1",
@@ -26,7 +25,6 @@
         "frame_timeout_ms": 8,
         "enable_wb_continuous_read": true,
         "min_request_interval": 100,
-
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
@@ -53,39 +51,28 @@
                     }
                 }
             },
+            {
+                "title": "Sensors Temperature",
+                "id": "gg_in{{in_num}}_temp",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "Sensors Status",
+                "id": "gg_in{{in_num}}_status",
+                "group": "g_in{{in_num}}"
+            },
             {% endfor -%}
             {
                 "title": "1-Wire Bus",
                 "id": "g_w1_bus"
             },
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "title": "gg_w1_bus_channels",
-                "id": "gg_w1_bus_channels",
-                "group": "g_w1_bus",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
+                "title": "1-Wire Bus {{in_num}}",
+                "id": "gg_w1_bus{{in_num}}_channels",
+                "group": "g_w1_bus"
             },
-            {% if DEBUG_REGISTERS -%}
-            {# Debug begin -> #}    {# TODO: Delete it #}
-            {
-                "title": "Debug",
-                "id": "g_debug"
-            },
-            {
-                "title": "gg_debug_channels",
-                "id": "gg_debug_channels",
-                "group": "g_debug",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {# <- Debug end #}
-            {% endif -%}
+            {% endfor -%}
             {
                 "title": "General",
                 "id": "g_general"
@@ -93,9 +80,19 @@
             {
                 "title": "HW Info",
                 "id": "g_hw_info"
-            }
+            },
+            {
+                "title": "Debug",
+                "id": "g_debug"
+            },
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "1-Wire Bus {{in_num}}",
+                "id": "gg_debug_bus{{in_num}}_channels",
+                "group": "g_debug"
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
         ],
-
         "parameters": {
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             "in{{in_num}}_mode": {
@@ -148,20 +145,18 @@
                 "max": 2000,
                 "condition": "in{{in_num}}_mode==1"
             },
-
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
-            "in{{in_num}}_sensor{{sens_num}}_id": {
+            "bus{{in_num}}_sens{{sens_num}}_id": {
                 "title": "Sensor {{sens_num}} ID",
                 "reg_type": "holding",
                 "address": {{5632 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "format": "u64",
-                "type": "w1-id",
+                {# "type": "w1-id", #}
                 "group": "gg_in{{in_num}}_sensors",
                 "order": {{1 + (sens_num - FIRST_SENSOR)}},
                 "condition": "in{{in_num}}_mode==0"
             },
             {% endfor -%}
-
             {% endfor -%}
             "baud_rate": {
                 "title": "Baud rate",
@@ -190,7 +185,6 @@
                 "group": "g_general",
                 "order": 4
             },
-            {# 1-Wire Bus settings begin #}
             "temperature_readings_period_s": {
                 "title": "temperature_readings_period_s_title",
                 "description": "temperature_readings_period_s_description",
@@ -212,9 +206,7 @@
                 "group": "g_w1_bus",
                 "order": 2
             }
-            {# 1-Wire Bus settings end #}
         },
-
         "channels": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
@@ -283,7 +275,7 @@
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_temp",
                 "condition": "in{{in_num}}_mode==0"
             },
             {
@@ -292,13 +284,12 @@
                 "address": {{16 + in_num - 1}},
                 "type": "switch",
                 "enabled": false,
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_status",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {% if DEBUG_REGISTERS -%}
-            {# Debug begin -> #}   {# TODO: Delete it #}
             {
-                "name": "External Sensor {{in_num}} Last Valid Temperature",
+                "id": "ext_sens{{in_num}}_last_valid_temp",
+                "name": "External Sensor {{in_num}} Last Valid Temp",
                 "reg_type": "input",
                 "address": {{20 + (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -307,49 +298,50 @@
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {
+                "id": "ext_sens{{in_num}}_presense",
                 "name": "External Sensor {{in_num}} Presense",
                 "reg_type": "input",
                 "address": {{376 + (in_num - FIRST_INPUT)}},
                 "type": "switch",
                 "enabled": false,
                 "format": "u8",
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {
+                "id": "ext_sens{{in_num}}_supply",
                 "name": "External Sensor {{in_num}} Supply",
                 "reg_type": "input",
                 "address": {{448 + (in_num - FIRST_INPUT)}},
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Parasite",
+                    "Parasitic",
                     "External"
                 ],
                 "enabled": false,
                 "format": "u8",
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {
-                "name": "Bus {{in_num}}: Busy Error Counter",
+                "id": "bus{{in_num}}_busy_error_conter",
+                "name": "Bus {{in_num}} Busy Error Counter",
                 "reg_type": "input",
                 "address": {{456 + (in_num - FIRST_INPUT)}},
                 "enabled": false,
                 "format": "u16",
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {# <- Debug end #}
-            {% endif -%}
-            {# Multiple sensors registers start #}
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
-                "name": "Bus {{in_num}}: Sensor {{sens_num}}",
+                "id": "bus{{in_num}}_temp{{sens_num}}",
+                "name": "Temperature {{in_num}}:{{sens_num}}",
                 "reg_type": "input",
                 "address": {{1536 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -357,22 +349,22 @@
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_temp",
                 "condition": "in{{in_num}}_mode==0"
             },
             {
-                "name": "Bus {{in_num}}: Sensor {{sens_num}} OK",
+                "id": "bus{{in_num}}_sens{{sens_num}}_ok",
+                "name": "Sensor {{in_num}}:{{sens_num}} OK",
                 "reg_type": "discrete",
                 "address": {{128 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "switch",
                 "enabled": false,
-                "group": "gg_in{{in_num}}_channels",
+                "group": "gg_in{{in_num}}_status",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {% if DEBUG_REGISTERS -%}
-            {# Debug begin -> #}    {# TODO: Delete it #}
             {
-                "name": "Bus {{in_num}}: Sensor {{sens_num}} Last Valid Temperature",
+                "id": "bus{{in_num}}_last_valid_temp{{sens_num}}",
+                "name": "Sensor {{in_num}}:{{sens_num}} Last Valid Temp",
                 "reg_type": "input",
                 "address": {{3584 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -381,92 +373,83 @@
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {# <- Debug end #}
-            {% endif -%}
             {% endfor -%}
-            {# Multiple sensors registers end #}
-
-            {# New sensors registers start #}
             {
-                "name": "Bus {{in_num}}: Number Of New Sensors",
+                "id": "bus{{in_num}}_new_sens_count",
+                "name": "Bus {{in_num}} Number Of New Sensors",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3328 + (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "default": 0,
-                "group": "gg_w1_bus_channels",
+                "group": "gg_w1_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {% if DEBUG_REGISTERS -%}
-            {# Debug begin -> #}    {# TODO: Delete it #}
             {
-                "name": "Bus {{in_num}}: Number Of New Sensors Saved",
+                "id": "bus{{in_num}}_saved_sens_count",
+                "name": "Bus {{in_num}} New Sensors Saved",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3336 + (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "default": 0,
                 "enabled": false,
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {# <- Debug end #}
-            {% endif -%}
-
             {
-                "name": "Bus {{in_num}}: Save New Sensors",
+                "id": "bus{{in_num}}_save_new_sens",
+                "name": "Bus {{in_num}} Save New Sensors",
                 "reg_type": "coil",
                 "address": {{24 + (in_num - FIRST_INPUT)}},
                 "type": "pushbutton",
                 "value": 1,
-                "group": "gg_w1_bus_channels",
+                "group": "gg_w1_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
-                "name": "Bus {{in_num}}: New Sensor {{sens_num}} ID",
+                "id": "bus{{in_num}}_new_sens{{sens_num}}_id",
+                "name": "New Sensor {{in_num}}:{{sens_num}} ID",
                 "reg_type": "input",
                 "format": "u64",
                 "address": {{3680 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                "type": "w1-id",
+                {# "type": "w1-id", #}
                 "default": 0,
                 "enabled": false,
-                "group": "gg_w1_bus_channels",
+                "group": "gg_w1_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {% endfor -%}
-            {# New sensors registers end #}
-            {% if DEBUG_REGISTERS -%}
-            {# Debug begin -> #}    {# TODO: Delete it #}
             {
-                "name": "Bus {{in_num}}: Number Of Sensors Found",
+                "id": "bus{{in_num}}_found_sens_count",
+                "name": "Bus {{in_num}} Number Of Sensors Found",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3344 + (in_num - FIRST_INPUT)}},
                 "type": "value",
                 "default": 0,
                 "enabled": false,
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
-                "name": "Bus {{in_num}}: Found Sensor {{sens_num}} ID",
+                "id": "bus{{in_num}}_found_sens{{sens_num}}_id",
+                "name": "Found Sensor {{in_num}}:{{sens_num}} ID",
                 "reg_type": "input",
                 "format": "u64",
                 "address": {{4352 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                "type": "w1-id",
+                {# "type": "w1-id", #}
                 "default": 0,
                 "enabled": false,
-                "group": "gg_debug_channels",
+                "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {% endfor -%}
-            {# <- Debug end #}
-            {% endif -%}
             {% endfor -%}
             {
                 "name": "Reset All Counters",
@@ -609,6 +592,7 @@
 
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
@@ -641,20 +625,33 @@
                 "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
-                "Sensor {{sens_num}} ID": "Идентификатор датчика {{sens_num}}",
+                "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",
                 {% endfor -%}
 
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
-                "Bus {{in_num}}: Number Of New Sensors": "Шина {{in_num}}: Количество новых датчиков",
-                "Bus {{in_num}}: Save New Sensors": "Шина {{in_num}}: Сохранить новые датчики",
+                "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
+                "External Sensor {{in_num}} Last Valid Temp": "Последняя действительная температура {{in_num}}",
+                "External Sensor {{in_num}} Presense": "Датчик температуры {{in_num}} присутствует",
+                "External Sensor {{in_num}} Supply": "Питание датчика температуры {{in_num}}",
+                "Bus {{in_num}} Number Of New Sensors": "Шина {{in_num}} Количество новых датчиков",
+                "Bus {{in_num}} New Sensors Saved": "Шина {{in_num}} Сохранено новых датчиков",
+                "Bus {{in_num}} Save New Sensors": "Шина {{in_num}} Сохранить новые датчики",
+                "Bus {{in_num}} Busy Error Counter" : "Шина {{in_num}} Счетчик ошибок занятости",
+                "Bus {{in_num}} Number Of Sensors Found": "Шина {{in_num}} Количество обнаруженных датчиков",
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
-                "Bus {{in_num}}: Sensor {{sens_num}}": "Шина {{in_num}}: Датчик {{sens_num}}",
-                "Bus {{in_num}}: Sensor {{sens_num}} OK": "Шина {{in_num}}: Датчик {{sens_num}} подключен",
-                "Bus {{in_num}}: New Sensor {{sens_num}} ID": "Шина {{in_num}}: Идентификатор нового датчика {{sens_num}}",
+                "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
+                "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
+                "Sensor {{in_num}}:{{sens_num}} Last Valid Temp": "Последняя действительная температура {{in_num}}:{{sens_num}}",
+                "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
+                "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
                 {% endfor -%}
                 {% endfor -%}
 
-                "1-Wire Sensors": "Датчики 1-Wire"
+                "1-Wire Sensors": "Датчики 1-Wire",
+                "Sensors Temperature": "Температура датчиков",
+                "Sensors Status": "Состояние датчиков",
+                "Parasitic": "Паразитное",
+                "External": "Внешнее"
             }
         }
     }
