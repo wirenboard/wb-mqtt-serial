@@ -1,4 +1,5 @@
 #pragma once
+#include <atomic>
 #include <bitset>
 #include <chrono>
 #include <cmath>
@@ -392,9 +393,12 @@ private:
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
     TRegisterValue Value;
     std::string ChannelName;
+
+    mutable std::mutex ErrorMutex;
     TErrorState ErrorState;
+
     TReadPeriodMissChecker ReadPeriodMissChecker;
-    bool Supported = true;
+    std::atomic<bool> Supported = true;
     bool ExcludedFromPolling = false;
     PRegisterConfig Config;
 };
