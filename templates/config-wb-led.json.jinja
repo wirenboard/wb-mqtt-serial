@@ -160,6 +160,11 @@
                 "group": "g_outputs"
             },
             {
+                "title": "cct_power_normalization_title",
+                "id": "gg_cct_power_normalization",
+                "group": "g_outputs"
+            },
+            {
                 "title": "params",
                 "id": "gg_out_params",
                 "group": "g_outputs",
@@ -524,6 +529,31 @@
                 "condition": "dimmer_mode==256"
             },
             {% endfor -%}
+            {% endfor -%}
+            {# режим работы CCT лент -#}
+            {% set order = [1, 2] -%}
+            {% set conditions = [
+                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                ] -%}
+            {% for title in ['CCT1', 'CCT2'] -%}
+            {
+                "id": "power_normalization_cct{{order[loop.index0]}}",
+                "group": "gg_cct_power_normalization",
+                "title": "{{title}}",
+                "order": {{order[loop.index0]}},
+                "address": {{3200 + loop.index0}},
+                "fw": "3.7.0-rc2",
+                "reg_type": "holding",
+                "type": "enum",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "condition": "{{conditions[loop.index0]}}"
+            },
             {% endfor -%}
             {
                 "id": "fade_rgb_h",
@@ -1496,6 +1526,8 @@
                 "fader_dec_title": "Time to Decrease Value from 0 to 100% (ms)",
                 "fader_hue_title": "Time to Increase/Decrease Hue from 0 to 360°",
 
+                "cct_power_normalization_title": "CCT Power Normalization",
+
                 "no_act_title": "Nothing",
                 "all_off_act_title": "Disable all channles",
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -1632,6 +1664,8 @@
                 "fader_inc_title": "Время увеличения значения c 0 до 100% в мс",
                 "fader_dec_title": "Время уменьшения значения с 100% до 0 в мс",
                 "fader_hue_title": "Время увеличения/уменьшения оттенка (Hue) с 0 до 360°",
+
+                "cct_power_normalization_title": "Нормализация мощности CCT лент",
 
                 "Actions": "Действия ",
 
@@ -1885,7 +1919,10 @@
                 "Action Hue" : "Действие с оттенком(H)",
                 "Action Saturation" : "Действие с насыщенностью",
                 "Action Brightness" : "Действие с яркостью",
-                "Action Temperature" : "Действие с температурой"
+                "Action Temperature" : "Действие с температурой",
+
+                "Disabled": "Отключено",
+                "Enabled": "Включено"
             }
         }
     }
