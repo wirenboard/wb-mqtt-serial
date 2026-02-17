@@ -721,7 +721,7 @@
       "title": "Control type",
       "enum": [
         "switch", "wo-switch", "pushbutton", "range", "rgb", "text",
-        "value", "w1-id", "temperature", "rel_humidity",
+        "w1-id", "value", "temperature", "rel_humidity",
         "atmospheric_pressure", "rainfall", "wind_speed", "power",
         "power_consumption", "voltage", "water_flow",
         "water_consumption", "resistance", "concentration",
@@ -736,8 +736,8 @@
           "range",
           "rgb",
           "text",
-          "value",
           "1-wire device identifier",
+          "value",
           "temperature (deprecated, use value with units)",
           "rel_humidity (deprecated, use value with units)",
           "atmospheric_pressure (deprecated, use value with units)",
