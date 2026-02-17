@@ -96,7 +96,6 @@
             },
             {
                 "title": "Protective Functions",
-                "description": "protective_functions_description",
                 "fw": "1.21.0",
                 "id": "g_voltage_control"
             },
@@ -804,7 +803,6 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
                 {% endfor -%}
-                "protective_functions_description": "For Protective Functions firmware v1.21.0 or newer is required",
                 "undervoltage_description": "120 to 220, factory default - 207",
                 "overvoltage_description": "230 to 277, factory default - 242",
                 "voltage_dip_duration_description": "0.5 to 10, factory default - 5",
@@ -827,7 +825,6 @@
 
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
-                "Delays": "Задержки включения",
                 "Protective Functions": "Защитные функции",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
@@ -846,8 +843,8 @@
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
                 "Urms Normal K{{out_num}}": "Норма Urms L{{out_num}}",
                 "Blocking K{{out_num}}": "Блокировка/Задержка K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Таймер задержки включения K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Таймер задержки повторного включения K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Оставшееся время ЗВ K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Оставшееся время ЗПВ K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
@@ -931,7 +928,6 @@
                 "Disable": "Не активна",
                 "Enable": "Активна",
 
-                "protective_functions_description": "Для использования защитных функций требуется прошивка версии 1.21.0 и выше",
                 "undervoltage_description": "120...220, заводское - 207",
                 "overvoltage_description": "230...277, заводское - 242",
                 "voltage_dip_duration_description": "0.5...10, заводское - 5",
