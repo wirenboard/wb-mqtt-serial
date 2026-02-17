@@ -1,0 +1,438 @@
+{% set CHANNELS_NUMBER = 3 -%}
+{% set BULK_BUFFER_LEN = 16 -%}
+{% set INPUTS_NUMBER = 7 -%}
+{% set FP_BUTTONS_NUMBER = 3 -%}
+
+{
+    "title": "WB-DALI_template_title",
+    "device_type": "WB-DALI",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WB-DALI"
+        }
+    ],
+    "device": {
+        "name": "WB-DALI",
+        "id": "wb-dali",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {% for ch in range(CHANNELS_NUMBER) -%}
+            {
+                "title": "Channel {{ ch + 1 }}",
+                "id": "g_channel_{{ ch + 1 }}"
+            },
+            {% endfor -%}
+            {% for in_num in range(FP_BUTTONS_NUMBER) -%}
+            {
+                "title": "Front pannel button {{in_num + 1}}",
+                "id": "g_fpb{{in_num}}"
+            },
+            {
+                "title": "Button channels",
+                "id": "gg_fpb{{in_num}}_channels",
+                "group": "g_fpb{{in_num}}"
+            },
+            {% endfor -%}
+            {% for in_num in range(INPUTS_NUMBER) -%}
+            {
+                "title": "Input {{in_num + 1}}",
+                "id": "g_in{{in_num}}"
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{in_num}}_press_params",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "Input channels",
+                "id": "gg_in{{in_num}}_channels",
+                "group": "g_in{{in_num}}"
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info"
+            }
+        ],
+        "parameters": {
+            {% for in_num in range(INPUTS_NUMBER) -%}
+            "in{{in_num}}_debounce_ms": {
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                "address": {{384 + in_num}},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "g_in{{in_num}}",
+                "order": 2
+            },
+            "in{{in_num}}_lp_hold_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "order": 1,
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "address": {{416 + in_num}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000
+            },
+            "in{{in_num}}_secp_waiting_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                "address": {{432 + in_num}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000
+            },
+            {% endfor -%}
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
+        "channels": [
+            {% for ch in range(CHANNELS_NUMBER) -%}
+            {
+                "name": "Bus {{ ch + 1 }} power supply",
+                "id": "bus_{{ ch + 1 }}_power_supply",
+                "reg_type": "coil",
+                "address": {{ 1010 + ch }},
+                "type": "switch",
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {
+                "name": "Bus {{ ch + 1 }} state",
+                "id": "bus_{{ ch + 1 }}_state",
+                "reg_type": "discrete",
+                "address": {{ 1000 + ch }},
+                "type": "switch",
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {
+                "name": "Bus {{ ch + 1 }} overheat",
+                "id": "bus_{{ ch + 1 }}_overheat",
+                "reg_type": "discrete",
+                "address": {{ 1010 + ch }},
+                "type": "switch",
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {
+                "name": "Bus {{ ch + 1 }} temperature",
+                "id": "bus_{{ ch + 1 }}_temperature",
+                "reg_type": "input",
+                "address": {{ 4020 + ch }},
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {
+                "name": "Bus {{ ch + 1 }} bulk send pointer",
+                "id": "bus_{{ ch + 1 }}_bulk_send_pointer",
+                "reg_type": "holding",
+                "address": {{ 1432 + (ch * 1000) }},
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {
+                "name": "Bus {{ ch + 1 }} monitor sporadic frame",
+                "id": "bus_{{ ch + 1 }}_monitor_sporadic_frame",
+                "reg_type": "input",
+                "address": {{ 1900 + (ch * 1000) }},
+                "type": "value",
+                "format": "u64",
+                "word_order": "little_endian",
+                "sporadic": true,
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {% for ptr in range(BULK_BUFFER_LEN) -%}
+            {
+                "name": "Bus {{ ch + 1 }} bulk send reply {{ ptr }}",
+                "id": "bus_{{ ch + 1 }}_bulk_send_reply_{{ ptr }}",
+                "reg_type": "input",
+                "address": {{ 1500 + (ch * 1000) + ptr }},
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {% endfor -%}
+            {% endfor -%}
+
+            {% for in_num in range(FP_BUTTONS_NUMBER) -%}
+            {
+                "name": "Front pannel button {{in_num + 1}}",
+                "reg_type": "discrete",
+                "address": {{16 + in_num}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} counter",
+                "reg_type": "input",
+                "address": {{48 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Single Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 0 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Long Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 16 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Double Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 32 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {
+                "name": "Front pannel button {{in_num + 1}} Shortlong Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{528 + 48 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_fpb{{in_num}}_channels"
+            },
+            {% endfor -%}
+
+            {% for in_num in range(INPUTS_NUMBER) -%}
+            {
+                "name": "Input {{in_num + 1}}",
+                "reg_type": "discrete",
+                "address": {{in_num}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} counter",
+                "reg_type": "input",
+                "address": {{32 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} Single Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{464 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} Long Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{480 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} Double Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{496 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num + 1}} Shortlong Press Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{512 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {% endfor -%}
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "value",
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-DALI_template_title": "WB-DALI (3-channel RS485-DALI gate)",
+                "debounce_time_title": "Debounce Time (ms)",
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "lp_hold_time_description": "If press is longer than the specified time then it is long",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
+                "baud_rate_description": "Make sure that communication with the device is estabilished before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600"
+            },
+            "ru": {
+                "WB-DALI_template_title": "WB-DALI (3-канальный шлюз RS485-DALI)",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
+
+                "Bus states": "Состояние шин",
+                "Error counters": "Счетчики ошибок",
+                "Transparent mode": "Прозрачный режим",
+
+                {% for ch in range(CHANNELS_NUMBER) -%}
+                "Transmit 16bit forward frame over channel {{ ch + 1 }}": "Передать 16-битный forward фрейм по каналу {{ ch + 1 }}",
+                "Transmit 24bit forward frame over channel {{ ch + 1 }}, left aligned": "Передать 24-битный forward фрейм по каналу {{ ch + 1 }}, выровнен по левому краю",
+                "Channel {{ ch + 1 }} reply timeout": "Таймаут ответа канала {{ ch + 1 }}",
+                "Received 8bit backward frame from channel {{ ch + 1 }}, left aligned": "Полученный 8-битный backward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
+                "Received 24bit forward frame from channel {{ ch + 1 }}, left aligned": "Полученный 24-битный forward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
+                "24bit forward frame is received from channel {{ ch + 1 }}": "Получен 24-битный фрейм от канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bus is powered": "Шина канала {{ ch + 1 }} запитана",
+                "Channel {{ ch + 1 }} bus state changed after request": "Состояние шины канала {{ ch + 1 }} изменилось после запроса",
+
+                "Channel {{ ch + 1 }} start bit is not received error counter": "Счетчик ошибок остуствия стартового бита канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bit time error counter": "Счетчик ошибок времени бита канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} frame length error counter": "Счетчик ошибок длины фрейма канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} stop bits are not received error counter": "Счетчик ошибок отсутствия стоп-битов канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} frame receive timeout error counter": "Счетчик ошибок таймаута приема фрейма канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bus is not powered error counter": "Счетчик ошибок незапитанности шины канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} tx busy error counter": "Счетчик ошибок занятости шины {{ ch + 1 }}",
+
+                "Channel {{ ch + 1 }} sent frames counter": "Счетчик отправленных фреймов канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} received frames counter": "Счетчик принятых фреймов канала {{ ch + 1 }}",
+                {% endfor -%}
+
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+
+                "Baud rate": "Скорость обмена"
+
+            }
+        }
+    }
+}
