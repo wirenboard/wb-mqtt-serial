@@ -33,11 +33,17 @@
                 "enum": ["2", "3"],
                 "enum_titles": ["two", "three"],
                 "format": "u8"
+              },
+              {
+                "name": "Relay default 3",
+                "reg_type": "relay_default",
+                "address": "0x03",
+                "enum": [4, 5],
+                "format": "u8"
               }
             ]
           }
         ]
       }
     ]
-  }
-  
+}

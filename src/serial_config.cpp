@@ -364,17 +364,23 @@ namespace
             channel->SetTitle(it.second, it.first);
         }
 
-        if (channel_data.isMember("enum") && channel_data.isMember("enum_titles")) {
+        if (channel_data.isMember("enum")) {
             const auto& enumValues = channel_data["enum"];
-            const auto& enumTitles = channel_data["enum_titles"];
-            if (enumValues.size() == enumTitles.size()) {
-                for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
-                    channel->SetEnumTitles(enumValues[i].asString(),
-                                           Translate(enumTitles[i].asString(), true, context));
+            if (channel_data.isMember("enum_titles")) {
+                const auto& enumTitles = channel_data["enum_titles"];
+                if (enumValues.size() == enumTitles.size()) {
+                    for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                        channel->SetEnumTitles(enumValues[i].asString(),
+                                               Translate(enumTitles[i].asString(), true, context));
+                    }
+                } else {
+                    LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- "
+                              << deviceWithChannels.Device->DeviceConfig()->DeviceType;
                 }
             } else {
-                LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- "
-                          << deviceWithChannels.Device->DeviceConfig()->DeviceType;
+                for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                    channel->SetEnumTitles(enumValues[i].asString(), TTitleTranslations());
+                }
             }
         }
 
