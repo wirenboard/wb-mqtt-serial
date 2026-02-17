@@ -1,14 +1,26 @@
-wb-mqtt-serial (2.225.1) stable; urgency=medium
+wb-mqtt-serial (2.225.3) stable; urgency=medium
 
   * Add "w1-id" control type
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 13 Feb 2026 12:24:02 +0500
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 17 Feb 2026 10:53:23 +0300
+
+wb-mqtt-serial (2.225.2) stable; urgency=medium
+
+  * Fix disconnected device write retries port blocking bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 17 Feb 2026 10:34:23 +0300
+
+wb-mqtt-serial (2.225.1) stable; urgency=medium
+
+  * Fix timeouts to reduce warnings * Rename template
+
+ -- Aleksey Golovchenko <Aleksey.golovchenko@wirenboard.com>  Thu, 12 Feb 2026 16:40:00 +0300
 
 wb-mqtt-serial (2.225.0) stable; urgency=medium
 
   * Set unsupported registers value to "unsupported" for device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Feb 2026 11:34:19 +0500
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Feb 2026 11:34:19 +0300
 
 wb-mqtt-serial (2.224.0) stable; urgency=medium
 

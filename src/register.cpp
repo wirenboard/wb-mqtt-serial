@@ -178,16 +178,19 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 
 void TRegister::SetError(TRegister::TError error)
 {
+    std::unique_lock lock(ErrorMutex);
     ErrorState.set(error);
 }
 
 void TRegister::ClearError(TRegister::TError error)
 {
+    std::unique_lock lock(ErrorMutex);
     ErrorState.reset(error);
 }
 
 const TRegister::TErrorState& TRegister::GetErrorState() const
 {
+    std::unique_lock lock(ErrorMutex);
     return ErrorState;
 }
 

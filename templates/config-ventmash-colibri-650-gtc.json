@@ -4,7 +4,7 @@
   "device": {
     "name": "Ventmachine Colibri 650 GTC",
     "id": "colibri_650_gtc",
-    "guard_interval_us": 4000,
+    "force_frame_timeout": true,
     
 
     "channels": [
