@@ -30,7 +30,7 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
         if (!port->IsOpen()) {
             error = "port is not open";
         } else if (!Handler->Register()->IsSupported()) {
-            error = "register is not supporgted by device firmware";
+            error = "register is not supported by device firmware";
         } else {
             error = "device is disconnected";
         }
