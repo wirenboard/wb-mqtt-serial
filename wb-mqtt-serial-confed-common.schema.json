@@ -737,7 +737,7 @@
           "rgb",
           "text",
           "value",
-          "w1-id",
+          "1-wire device identifier",
           "temperature (deprecated, use value with units)",
           "rel_humidity (deprecated, use value with units)",
           "atmospheric_pressure (deprecated, use value with units)",
