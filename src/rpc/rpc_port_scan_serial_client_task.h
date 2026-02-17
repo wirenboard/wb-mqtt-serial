@@ -14,21 +14,31 @@ namespace RpcPortScan
     public:
         TRegisterReader(TPort& port, Modbus::IModbusTraits& modbusTraits, uint8_t slaveId);
 
-        template<typename T> T Read(const std::string& registerName)
+        template<typename T> T Read(const std::string& registerName, int tryCount = 1)
         {
             auto registerConfig = WbRegisters::GetRegisterConfig(registerName);
             if (!registerConfig) {
                 throw std::runtime_error("Unknown register name: " + registerName);
             }
-            auto res = Modbus::ReadRegister(ModbusTraits,
-                                            Port,
-                                            SlaveId,
-                                            *registerConfig,
-                                            FrameTimeout,
-                                            FrameTimeout,
-                                            FrameTimeout)
-                           .Get<T>();
-            return res;
+            for (int i = 0;; ++i) {
+                try {
+                    auto res = Modbus::ReadRegister(ModbusTraits,
+                                                    Port,
+                                                    SlaveId,
+                                                    *registerConfig,
+                                                    FrameTimeout,
+                                                    FrameTimeout,
+                                                    FrameTimeout)
+                                   .Get<T>();
+                    return res;
+                } catch (const Modbus::TModbusExceptionError& e) {
+                    throw;
+                } catch (const std::exception& e) {
+                    if (i >= tryCount - 1) {
+                        throw;
+                    }
+                }
+            }
         }
 
         TPort& GetPort()

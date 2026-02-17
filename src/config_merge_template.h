@@ -17,4 +17,5 @@ public:
     std::optional<int32_t> Get(const std::string& name) const override;
 };
 
+bool CheckCondition(const std::string& cond, const TJsonParams& params, Expressions::TExpressionsCache* exprs);
 bool CheckCondition(const Json::Value& item, const TJsonParams& params, Expressions::TExpressionsCache* exprs);

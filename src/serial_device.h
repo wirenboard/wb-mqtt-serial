@@ -61,17 +61,12 @@ class TDeviceSetupItemConfig
     PRegisterConfig RegisterConfig;
     std::string Value;
     TRegisterValue RawValue;
-    std::string ParameterId;
 
 public:
-    TDeviceSetupItemConfig(const std::string& name,
-                           PRegisterConfig reg,
-                           const std::string& value,
-                           const std::string& parameterId = std::string());
+    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
 
     const std::string& GetName() const;
     const std::string& GetValue() const;
-    const std::string& GetParameterId() const;
     TRegisterValue GetRawValue() const;
     PRegisterConfig GetRegisterConfig() const;
 };
@@ -144,7 +139,6 @@ class TDeviceSetupItem
 {
 public:
     std::string Name;
-    std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
     PRegisterConfig RegisterConfig;

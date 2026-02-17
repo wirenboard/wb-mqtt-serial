@@ -1,0 +1,29 @@
+{
+    "device_type": "big_integers",
+    "device": {
+        "name": "big integers",
+        "id": "big integers",
+        "channels": [
+            {
+                "name": "Channel 1",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x0001"
+            }
+        ],
+        "parameters": {
+            "param_1": {
+                "title": "p1",
+                "address": "0x1001",
+                "format": "s64",
+                "default": 0
+            },
+            "param_2": {
+                "title": "p2",
+                "address": "0x1002",
+                "format": "u64",
+                "default": 0
+            }
+        }
+    }
+}

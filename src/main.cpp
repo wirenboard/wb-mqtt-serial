@@ -347,7 +347,8 @@ int main(int argc, char* argv[])
                                                                 parametersCache,
                                                                 rpcServer);
         auto rpcDeviceHandler =
-            std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
+            std::make_shared<TRPCDeviceHandler>(configFilename,
+                                                RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH,
