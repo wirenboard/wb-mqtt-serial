@@ -18,11 +18,11 @@ public:
                                 PSerialDevice device,
                                 PDeviceTemplate deviceTemplate,
                                 bool deviceFromConfig,
+                                const std::string& configFileName,
                                 TRPCDeviceParametersCache& parametersCache);
 
+    const std::string& ConfigFileName;
     TRPCDeviceParametersCache& ParametersCache;
-    bool IsWBDevice = false;
-    std::string Group;
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
@@ -32,6 +32,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                             PSerialDevice device,
                                                             PDeviceTemplate deviceTemplate,
                                                             bool deviceFromConfig,
+                                                            const std::string& configFileName,
                                                             TRPCDeviceParametersCache& parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError);
@@ -51,18 +52,4 @@ private:
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
 
-/**
- * @brief Creates JSON object containing template parameters of specified group
- *        and their condition parameters (recoursive)
- *
- * @param templateParams - device template parameters JSON array or object
- * @param group - parameters group name
- * @param paramsList - string list reference to store found parameters names
- *
- * @return TRPCRegisterList - named PRegister list
- */
-Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
-                                   const std::string& group,
-                                   std::list<std::string>& paramsList);
-
-void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters);
+void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value& parameters);

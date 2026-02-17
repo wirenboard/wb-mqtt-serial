@@ -83,10 +83,6 @@
         "device_type": {
           "type": "string",
           "minLength": 1
-        },
-        "group": {
-          "type": "string",
-          "minLength": 1
         }
       },
       "required": [ "slave_id", "device_type" ]
@@ -109,10 +105,6 @@
       "type": "object",
       "properties": {
         "device_id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "group": {
           "type": "string",
           "minLength": 1
         }

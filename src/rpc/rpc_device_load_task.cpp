@@ -15,7 +15,12 @@ namespace
         for (int i = 0; i < 2; i++) {
             auto registerList = i ? rpcRequest->GetParametersRegisterList() : rpcRequest->GetChannelsRegisterList();
             if (!registerList.empty()) {
-                ReadRegisterList(*port, rpcRequest->Device, registerList, result[i ? "parameters" : "channels"]);
+                Json::Value data(Json::objectValue);
+                ReadRegisterList(*port, rpcRequest->Device, registerList);
+                for (const auto& item: registerList) {
+                    data[item.Id] = RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
+                }
+                result[i ? "parameters" : "channels"] = data;
             }
         }
         rpcRequest->OnResult(result);

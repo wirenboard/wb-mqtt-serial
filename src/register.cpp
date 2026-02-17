@@ -170,7 +170,7 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
         SetError(TRegister::TError::ReadError);
         LOG(Debug) << ToString() << " contains error value";
     } else {
-        if (clearReadError) {
+        if (Supported && clearReadError) {
             ClearError(TError::ReadError);
         }
     }
@@ -178,16 +178,19 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 
 void TRegister::SetError(TRegister::TError error)
 {
+    std::unique_lock lock(ErrorMutex);
     ErrorState.set(error);
 }
 
 void TRegister::ClearError(TRegister::TError error)
 {
+    std::unique_lock lock(ErrorMutex);
     ErrorState.reset(error);
 }
 
 const TRegister::TErrorState& TRegister::GetErrorState() const
 {
+    std::unique_lock lock(ErrorMutex);
     return ErrorState;
 }
 
@@ -201,6 +204,16 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
     } else {
         ClearError(TError::PollIntervalMissError);
     }
+}
+
+bool TRegister::IsSupported() const
+{
+    return Supported;
+}
+
+void TRegister::SetSupported(bool supported)
+{
+    Supported = supported;
 }
 
 bool TRegister::IsExcludedFromPolling() const
