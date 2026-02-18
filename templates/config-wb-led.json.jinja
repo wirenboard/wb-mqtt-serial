@@ -530,31 +530,6 @@
             },
             {% endfor -%}
             {% endfor -%}
-            {# режим работы CCT лент -#}
-            {% set order = [1, 2] -%}
-            {% set conditions = [
-                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
-                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
-                ] -%}
-            {% for title in ['CCT1', 'CCT2'] -%}
-            {
-                "id": "power_normalization_cct{{order[loop.index0]}}",
-                "group": "gg_cct_power_normalization",
-                "title": "{{title}}",
-                "order": {{order[loop.index0]}},
-                "address": {{3200 + loop.index0}},
-                "fw": "3.7.0-rc2",
-                "reg_type": "holding",
-                "type": "enum",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Disabled",
-                    "Enabled"
-                ],
-                "condition": "{{conditions[loop.index0]}}"
-            },
-            {% endfor -%}
             {
                 "id": "fade_rgb_h",
                 "group": "gg_fader_hue",
@@ -568,6 +543,31 @@
                 "max": 30000,
                 "condition": "dimmer_mode==256"
             },
+            {# режим работы CCT лент -#}
+            {% set order = [1, 2] -%}
+            {% set conditions = [
+                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                ] -%}
+            {% for title in ['CCT1', 'CCT2'] -%}
+            {
+                "id": "power_normalization_cct{{order[loop.index0]}}",
+                "group": "gg_cct_power_normalization",
+                "title": "{{title}}",
+                "order": {{order[loop.index0]}},
+                "address": {{3200 + loop.index0}},
+                "fw": "3.7.0",
+                "reg_type": "holding",
+                "type": "enum",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "condition": "{{conditions[loop.index0]}}"
+            },
+            {% endfor -%}
             {# опишем в группе входов настройки входа (зависит от типа входа кнопка или переключатель с фиксацией):
                время нажатия длится больше указанного времени - считаем его длинным
                время повторного нажатия
