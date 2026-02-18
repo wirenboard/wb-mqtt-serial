@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.225.5) stable; urgency=medium
+
+  * Fix readonly flag in WBE2-I-EBUS
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 18 Feb 2026 12:34:00 +0300
+
 wb-mqtt-serial (2.225.4) stable; urgency=medium
 
   * Make enum_titles optional for channels
