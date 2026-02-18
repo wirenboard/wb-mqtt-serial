@@ -4248,6 +4248,17 @@ Vakio City Air 250(500)
 	Incoming Air Temperature  =>  incoming_air_temperature
 	Mode  =>  mode
 	State  =>  state
+Ventmachine-Colibri-650-GTC
+	Duct Temperature  =>  duct_temp
+	Error Status  =>  errors
+	Fan Speed  =>  fan_speed
+	Outdoor Temperature  =>  outdoor_temp
+	Room Humidity  =>  room_humidity
+	Room Temperature  =>  room_temp
+	Temperature Setpoint  =>  set_temp
+	Turn Off  =>  turn_off
+	Turn On  =>  turn_on
+	Unit Status  =>  unit_status
 WB-DALI
 	Bus 1 bulk send pointer  =>  bus_1_bulk_send_pointer
 	Bus 1 bulk send reply 0  =>  bus_1_bulk_send_reply_0
@@ -4383,17 +4394,6 @@ WB-DALI
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
-Ventmachine-Colibri-650-GTC
-	Duct Temperature  =>  duct_temp
-	Error Status  =>  errors
-	Fan Speed  =>  fan_speed
-	Outdoor Temperature  =>  outdoor_temp
-	Room Humidity  =>  room_humidity
-	Room Temperature  =>  room_temp
-	Temperature Setpoint  =>  set_temp
-	Turn Off  =>  turn_off
-	Turn On  =>  turn_on
-	Unit Status  =>  unit_status
 WB-Domofon
 	Auto open  =>  Auto open
 	Auto open once  =>  Auto open once
