@@ -2,7 +2,7 @@ wb-mqtt-serial (2.226.0) stable; urgency=medium
 
   * WB-LED and WB-MRGBW-D fw3 templates: Add CCT power normalization parameters
 
--- Maxim Toropov <maxim.toropov@wirenboard.com>  Wed, 18 Feb 2026 16:44:00 +0300
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 19 Feb 2026 19:59:00 +0300
 
 wb-mqtt-serial (2.225.5) stable; urgency=medium
 
