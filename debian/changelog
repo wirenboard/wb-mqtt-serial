@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.226.0) stable; urgency=medium
+
+  * Add "force" option to Device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 20 Feb 2026 09:05:26 +0300
+
 wb-mqtt-serial (2.225.5) stable; urgency=medium
 
   * Fix readonly flag in WBE2-I-EBUS

@@ -23,6 +23,7 @@ public:
 
     const std::string& ConfigFileName;
     TRPCDeviceParametersCache& ParametersCache;
+    bool Force;
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
