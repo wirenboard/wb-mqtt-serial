@@ -6,6 +6,9 @@
         {
             "signature": "MAP3E",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3E"
         }
     ],
     "device": {
@@ -73,7 +76,7 @@
                 "enum": [1, 2, 3],
                 "default": 1,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l1",
                 "order": 3
             },
@@ -85,7 +88,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l1",
                 "order": 4
             },
@@ -118,7 +121,7 @@
                 "enum": [1, 2, 3],
                 "default": 2,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l2",
                 "order": 3
             },
@@ -130,7 +133,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l2",
                 "order": 4
             },
@@ -163,7 +166,7 @@
                 "enum": [1, 2, 3],
                 "default": 3,
                 "enum_titles": ["L1", "L2", "L3"],
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "group": "l3",
                 "order": 3
             },
@@ -175,7 +178,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "l3",
                 "order": 4
             },
@@ -256,6 +259,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -288,6 +292,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
             },
             {
@@ -318,6 +323,17 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "group": "l1"
+            },
+            {
+                "name": "N L1",
+                "reg_type": "input",
+                "address": "0x1582",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "l1"
             },
             {
@@ -375,6 +391,30 @@
                 "group": "l1"
             },
             {
+                "name": "NP energy L1",
+                "reg_type": "input",
+                "address": "0x1504",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l1"
+            },
+            {
+                "name": "NN energy L1",
+                "reg_type": "input",
+                "address": "0x1514",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l1"
+            },
+            {
                 "name": "Phase angle L1",
                 "reg_type": "input",
                 "address": "0x10f9",
@@ -417,6 +457,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -449,6 +490,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
             },
             {
@@ -479,6 +521,17 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "group": "l2"
+            },
+            {
+                "name": "N L2",
+                "reg_type": "input",
+                "address": "0x1584",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "l2"
             },
             {
@@ -536,6 +589,30 @@
                 "group": "l2"
             },
             {
+                "name": "NP energy L2",
+                "reg_type": "input",
+                "address": "0x1508",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l2"
+            },
+            {
+                "name": "NN energy L2",
+                "reg_type": "input",
+                "address": "0x1518",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l2"
+            },
+            {
                 "name": "Phase angle L2",
                 "reg_type": "input",
                 "address": "0x10fa",
@@ -578,6 +655,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -610,6 +688,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
             },
             {
@@ -640,6 +719,17 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "group": "l3"
+            },
+            {
+                "name": "N L3",
+                "reg_type": "input",
+                "address": "0x1586",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "l3"
             },
             {
@@ -697,6 +787,30 @@
                 "group": "l3"
             },
             {
+                "name": "NP energy L3",
+                "reg_type": "input",
+                "address": "0x150c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l3"
+            },
+            {
+                "name": "NN energy L3",
+                "reg_type": "input",
+                "address": "0x151c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l3"
+            },
+            {
                 "name": "Phase angle L3",
                 "reg_type": "input",
                 "address": "0x10fb",
@@ -734,6 +848,17 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
+                "group": "total"
+            },
+            {
+                "name": "Total N",
+                "reg_type": "input",
+                "address": "0x1580",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "total"
             },
             {
@@ -791,6 +916,30 @@
                 "group": "total"
             },
             {
+                "name": "Total NP energy",
+                "reg_type": "input",
+                "address": "0x1500",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "total"
+            },
+            {
+                "name": "Total NN energy",
+                "reg_type": "input",
+                "address": "0x1510",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "total"
+            },
+            {
                 "name": "Frequency",
                 "reg_type": "input",
                 "address": "0x10f8",
@@ -807,6 +956,17 @@
                 "type": "text",
                 "format": "u32",
                 "offset": -4261412864,
+                "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
                 "group": "hw_info"
             },
             {
@@ -859,7 +1019,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase enegry meter)",
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
@@ -870,18 +1030,19 @@
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "Turns L1": "Коэффициент трансформации L1",
                 "Phi L1": "Фазовая задержка L1",
                 "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
-                "Actual Phase L1": "Фаза транформатора L1",
+                "Actual Phase L1": "Фаза трансформатора L1",
                 "Turns L2": "Коэффициент трансформации L2",
                 "Phi L2": "Фазовая задержка L2",
                 "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
-                "Actual Phase L2": "Фаза транформатора L2",
+                "Actual Phase L2": "Фаза трансформатора L2",
                 "Turns L3": "Коэффициент трансформации L3",
                 "Phi L3": "Фазовая задержка L3",
                 "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
-                "Actual Phase L3": "Фаза транформатора L3",
+                "Actual Phase L3": "Фаза трансформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
@@ -896,36 +1057,43 @@
                 "RP energy L1": "Энергия RP L1",
                 "AN energy L1": "Энергия AN L1",
                 "RN energy L1": "Энергия RN L1",
+                "NP energy L1": "Энергия NP L1",
+                "NN energy L1": "Энергия NN L1",
                 "Phase angle L1": "Угол между I и U фазы L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "AP energy L2": "Энергия AP L2",
                 "RP energy L2": "Энергия RP L2",
                 "AN energy L2": "Энергия AN L2",
                 "RN energy L2": "Энергия RN L2",
+                "NP energy L2": "Энергия NP L2",
+                "NN energy L2": "Энергия NN L2",
                 "Phase angle L2": "Угол между I и U фазы L2",
                 "Voltage angle L3": "Фазовый угол L3",
                 "AP energy L3": "Энергия AP L3",
                 "RP energy L3": "Энергия RP L3",
                 "AN energy L3": "Энергия AN L3",
                 "RN energy L3": "Энергия RN L3",
+                "NP energy L3": "Энергия NP L3",
+                "NN energy L3": "Энергия NN L3",
                 "Phase angle L3": "Угол между I и U фазы L3",
                 "Total P": "P по трем фазам",
                 "Total Q": "Q по трем фазам",
                 "Total S": "S по трем фазам",
+                "Total N": "N по трем фазам",
                 "Total PF": "PF по трем фазам",
                 "Total AP energy": "Энергия AP по трем фазам",
                 "Total RP energy": "Энергия RP по трем фазам",
                 "Total AN energy": "Энергия AN по трем фазам",
                 "Total RN energy": "Энергия RN по трем фазам",
+                "Total NP energy": "Энергия NP по трем фазам",
+                "Total NN energy": "Энергия NN по трем фазам",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
-                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }

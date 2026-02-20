@@ -215,6 +215,7 @@
                 "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
+                "fw":"3.5.0",   
                 "enum": [0, 1],
                 "enum_titles": [
                     "Button",
@@ -356,6 +357,7 @@
                 "order": {{in_num}},
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "default": {{ (off_on == "on") | int }},
                 "condition": "(input_{{in_num}}_mode==1)",
                 "enum": [0, 1, 2],
@@ -410,6 +412,7 @@
                 "order": {{in_num + 2}},
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0))",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
@@ -433,6 +436,7 @@
                 "order": {{in_num + 2}},
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)))",
                 "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
@@ -641,6 +645,7 @@
                 "address": 8,
                 "order": 2,
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "min": 1,
                 "max": 65534,
                 "default": 10
@@ -677,6 +682,7 @@
                 "title": "Action",
                 "reg_type": "holding",
                 "address": {{648 + ptr[loop.index0] - 1}},
+                "fw": "3.5.0",
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -693,6 +699,7 @@
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{656 + ptr[loop.index0] - 1}},
+                "fw": "3.5.0",
                 "min": 1,
                 "max": 100,
                 "default": 50,
@@ -705,6 +712,7 @@
                 "title": "Action",
                 "reg_type": "holding",
                 "address": {{664 + ptr[loop.index0] - 1}},
+                "fw": "3.5.0",
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -721,6 +729,7 @@
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{672 + ptr[loop.index0] - 1}},
+                "fw": "3.5.0",
                 "min": 1,
                 "max": 100,
                 "default": 50,
@@ -740,6 +749,7 @@
             {
                 "id": "safety_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "type": "enum",
                 "address": {{648 + loop.index0}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -769,6 +779,7 @@
             {
                 "id": "powerup_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "type": "enum",
                 "address": {{664 + loop.index0}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -803,6 +814,7 @@
                     "title": "Brightness (%)",
                 {% endif -%}
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": {{656 + loop.index0}},
                 "min": 1,
                 "max": 100,
@@ -823,6 +835,7 @@
                     "title": "Brightness (%)",
                 {% endif -%}
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": {{672 + loop.index0}},
                 "min": 1,
                 "max": 100,
@@ -843,6 +856,7 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": {{648 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -867,6 +881,7 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": {{664 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -892,6 +907,7 @@
                 "id": "safety_mode_ch_rgb_h",
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": 656,
                 "min": 0,
                 "max": 360,
@@ -904,6 +920,7 @@
                 "id": "safety_mode_ch_rgb_s",
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": 657,
                 "min": 0,
                 "max": 100,
@@ -916,6 +933,7 @@
                 "id": "safety_mode_ch_rgb_v",
                 "title": "RGB Strip Brightness",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": 658,
                 "min": 1,
                 "max": 100,
@@ -928,6 +946,7 @@
                 "id": "powerup_mode_ch_rgb_h",
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": 672,
                 "min": 0,
                 "max": 360,
@@ -940,6 +959,7 @@
                 "id": "powerup_mode_ch_rgb_s",
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": 673,
                 "min": 0,
                 "max": 100,
@@ -952,6 +972,7 @@
                 "id": "powerup_mode_ch_rgb_v",
                 "title": "RGB Strip Brightness",
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "address": 674,
                 "min": 1,
                 "max": 100,
@@ -968,6 +989,7 @@
                 "group": "ggg_safety_input_control",
                 "address": {{640 + in_number - 1}},
                 "reg_type": "holding",
+                "fw": "3.5.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -1403,6 +1425,17 @@
                 "group": "g_hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "3.6.0",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -1583,10 +1616,10 @@
                 "lp_scene_action" : "Action above the scene",
                 "dp_scene_action" : "Action above the scene",
                 "slp_scene_action" : "Action above the scene",
-                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 3.5.0",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "g_power_up_behaviour_description" : "Setting the behavior of outputs when the device is powered on. Available from firmware version 3.5.0"
+                "g_power_up_behaviour_description" : "Setting the behavior of outputs when the device is powered on"
             },
             "ru": {
                 "WB-LED_template_title": "WB-LED (4-канальный диммер светодиодных лент)",
@@ -1750,6 +1783,7 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
@@ -1790,7 +1824,7 @@
                 "Action_lp" : "Действие для длинного нажатия",
                 "Action_dp" : "Действие для двойного нажатия",
                 "Action_slp" : "Действие для короткого, затем длинного нажатия",
-                "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 3.5.0",
+                "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации",
                 "input_switch_on_title" : "Выход",
                 "input_switch_off_title" : "Выход",
                 "switch_on_scene_title" : "Выбор сцены",
@@ -1817,7 +1851,7 @@
                 {% endfor -%}
                 "Actions when Scene Light Turn on" : "Действие при включении света сцены",
                 "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
-                "g_safety_description" : "Настройка поведения устройства в случае потери связи с контроллером. Доступно с версии прошивки 3.5.0",
+                "g_safety_description" : "Настройка поведения устройства в случае потери связи с контроллером",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
                 "Action" : "Действие",
@@ -1829,7 +1863,7 @@
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 3.5.0",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
                 "Safety Behaviour" : "Действие в безопасном режиме",
                 "switch_action" : "Действие с выходом",

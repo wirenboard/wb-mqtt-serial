@@ -85,7 +85,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_1",
                 "order": 3
             },
@@ -118,7 +118,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_2",
                 "order": 3
             },
@@ -151,7 +151,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_3",
                 "order": 3
             },
@@ -184,7 +184,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_4",
                 "order": 3
             },
@@ -217,7 +217,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_5",
                 "order": 3
             },
@@ -250,7 +250,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
-                "description": "Firmware v2.10.0 or newer is required",
+                "fw": "2.10.0",
                 "group": "channel_6",
                 "order": 3
             },
@@ -279,7 +279,7 @@
                 "min": 1,
                 "default": 60,
                 "group": "general",
-                "description": "Firmware v2.3.0 or newer is required",
+                "fw": "2.3.0",
                 "order": 2
             }
         },
@@ -305,6 +305,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_1"
             },
             {
@@ -335,6 +336,17 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "group": "channel_1"
+            },
+            {
+                "name": "N 1",
+                "reg_type": "input",
+                "address": "0x1586",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.000244141,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_1"
             },
             {
@@ -392,6 +404,30 @@
                 "group": "channel_1"
             },
             {
+                "name": "NP energy 1",
+                "reg_type": "input",
+                "address": "0x150c",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_1"
+            },
+            {
+                "name": "NN energy 1",
+                "reg_type": "input",
+                "address": "0x151c",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_1"
+            },
+            {
                 "name": "Phase angle 1",
                 "reg_type": "input",
                 "address": "0x10fb",
@@ -421,6 +457,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_2"
             },
             {
@@ -451,6 +488,17 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "group": "channel_2"
+            },
+            {
+                "name": "N 2",
+                "reg_type": "input",
+                "address": "0x1584",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.000244141,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_2"
             },
             {
@@ -508,6 +556,30 @@
                 "group": "channel_2"
             },
             {
+                "name": "NP energy 2",
+                "reg_type": "input",
+                "address": "0x1508",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_2"
+            },
+            {
+                "name": "NN energy 2",
+                "reg_type": "input",
+                "address": "0x1518",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_2"
+            },
+            {
                 "name": "Phase angle 2",
                 "reg_type": "input",
                 "address": "0x10fa",
@@ -537,6 +609,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_3"
             },
             {
@@ -567,6 +640,17 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "group": "channel_3"
+            },
+            {
+                "name": "N 3",
+                "reg_type": "input",
+                "address": "0x1582",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.000244141,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_3"
             },
             {
@@ -624,6 +708,30 @@
                 "group": "channel_3"
             },
             {
+                "name": "NP energy 3",
+                "reg_type": "input",
+                "address": "0x1504",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_3"
+            },
+            {
+                "name": "NN energy 3",
+                "reg_type": "input",
+                "address": "0x1514",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_3"
+            },
+            {
                 "name": "Phase angle 3",
                 "reg_type": "input",
                 "address": "0x10f9",
@@ -653,6 +761,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_4"
             },
             {
@@ -683,6 +792,17 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "group": "channel_4"
+            },
+            {
+                "name": "N 4",
+                "reg_type": "input",
+                "address": "0x2586",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.000244141,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_4"
             },
             {
@@ -740,6 +860,30 @@
                 "group": "channel_4"
             },
             {
+                "name": "NP energy 4",
+                "reg_type": "input",
+                "address": "0x250c",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_4"
+            },
+            {
+                "name": "NN energy 4",
+                "reg_type": "input",
+                "address": "0x251c",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_4"
+            },
+            {
                 "name": "Phase angle 4",
                 "reg_type": "input",
                 "address": "0x20fb",
@@ -769,6 +913,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_5"
             },
             {
@@ -799,6 +944,17 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "group": "channel_5"
+            },
+            {
+                "name": "N 5",
+                "reg_type": "input",
+                "address": "0x2584",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.000244141,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_5"
             },
             {
@@ -856,6 +1012,30 @@
                 "group": "channel_5"
             },
             {
+                "name": "NP energy 5",
+                "reg_type": "input",
+                "address": "0x2508",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_5"
+            },
+            {
+                "name": "NN energy 5",
+                "reg_type": "input",
+                "address": "0x2518",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_5"
+            },
+            {
                 "name": "Phase angle 5",
                 "reg_type": "input",
                 "address": "0x20fa",
@@ -885,6 +1065,7 @@
                 "scale": 0.016,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_6"
             },
             {
@@ -915,6 +1096,17 @@
                 "format": "s32",
                 "scale": 0.000244141,
                 "round_to": 0.01,
+                "group": "channel_6"
+            },
+            {
+                "name": "N 6",
+                "reg_type": "input",
+                "address": "0x2582",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.000244141,
+                "round_to": 0.01,
+                "enabled": false,
                 "group": "channel_6"
             },
             {
@@ -972,6 +1164,30 @@
                 "group": "channel_6"
             },
             {
+                "name": "NP energy 6",
+                "reg_type": "input",
+                "address": "0x2504",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_6"
+            },
+            {
+                "name": "NN energy 6",
+                "reg_type": "input",
+                "address": "0x2514",
+                "type": "value",
+                "format": "u64",
+                "scale": 6.781694e-11,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "channel_6"
+            },
+            {
                 "name": "Phase angle 6",
                 "reg_type": "input",
                 "address": "0x20f9",
@@ -1004,6 +1220,7 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
                 "group": "general"
             },
             {
@@ -1023,6 +1240,17 @@
                 "type": "text",
                 "format": "u32",
                 "offset": -4261412864,
+                "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
                 "group": "hw_info"
             },
             {
@@ -1075,7 +1303,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel enegry meter)",
+                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
@@ -1090,6 +1318,7 @@
                 "Channel 6": "Канал 6",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
                 "Turns 1": "Коэффициент трансформации 1",
                 "Phi 1": "Фазовая задержка 1",
                 "Current Transformer Reverse 1": "Инвертировать токовый трансформатор 1",
@@ -1115,31 +1344,43 @@
                 "RP energy 1": "Энергия RP 1",
                 "AN energy 1": "Энергия AN 1",
                 "RN energy 1": "Энергия RN 1",
+                "NP energy 1": "Энергия NP 1",
+                "NN energy 1": "Энергия NN 1",
                 "Phase angle 1": "Угол между I1 и U",
                 "AP energy 2": "Энергия AP 2",
                 "RP energy 2": "Энергия RP 2",
                 "AN energy 2": "Энергия AN 2",
                 "RN energy 2": "Энергия RN 2",
+                "NP energy 2": "Энергия NP 2",
+                "NN energy 2": "Энергия NN 2",
                 "Phase angle 2": "Угол между I2 и U",
                 "AP energy 3": "Энергия AP 3",
                 "RP energy 3": "Энергия RP 3",
                 "AN energy 3": "Энергия AN 3",
                 "RN energy 3": "Энергия RN 3",
+                "NP energy 3": "Энергия NP 3",
+                "NN energy 3": "Энергия NN 3",
                 "Phase angle 3": "Угол между I3 и U",
                 "AP energy 4": "Энергия AP 4",
                 "RP energy 4": "Энергия RP 4",
                 "AN energy 4": "Энергия AN 4",
                 "RN energy 4": "Энергия RN 4",
+                "NP energy 4": "Энергия NP 4",
+                "NN energy 4": "Энергия NN 4",
                 "Phase angle 4": "Угол между I4 и U",
                 "AP energy 5": "Энергия AP 5",
                 "RP energy 5": "Энергия RP 5",
                 "AN energy 5": "Энергия AN 5",
                 "RN energy 5": "Энергия RN 5",
+                "NP energy 5": "Энергия NP 5",
+                "NN energy 5": "Энергия NN 5",
                 "Phase angle 5": "Угол между I5 и U",
                 "AP energy 6": "Энергия AP 6",
                 "RP energy 6": "Энергия RP 6",
                 "AN energy 6": "Энергия AN 6",
                 "RN energy 6": "Энергия RN 6",
+                "NP energy 6": "Энергия NP 6",
+                "NN energy 6": "Энергия NN 6",
                 "Phase angle 6": "Угол между I6 и U",
                 "Yes": "Да",
                 "No": "Нет",
@@ -1149,9 +1390,7 @@
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
-                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }

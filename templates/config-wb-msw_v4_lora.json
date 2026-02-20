@@ -38,7 +38,8 @@
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
-                "description": "g_safety_description"
+                "description": "g_safety_description",
+                "fw": "4.32.0"
             },
             {
                 "title": "General",
@@ -235,6 +236,26 @@
                 "address": 2,
                 "reg_type": "coil",
                 "type": "switch",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
+                "name": "TH Sensor Heater Cleaning Mode Enabled",
+                "address": 8,
+                "fw": "4.35.0",
+                "reg_type": "coil",
+                "type": "switch",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
+                "name": "TH Sensor Heater Cleaning Mode Countdown",
+                "address": 365,
+                "fw": "4.35.0",
+                "reg_type": "input",
+                "type": "value",
+                "units": "s",
+                "format": "u16",
                 "enabled": false,
                 "group": "air_quality"
             },
@@ -1386,6 +1407,8 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
+                "type": "value",
+                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
@@ -1556,6 +1579,8 @@
                 "name": "Temperature Without Compensation",
                 "reg_type": "input",
                 "address": 284,
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.01,
                 "error_value": "0x7FFF",
@@ -1566,8 +1591,11 @@
                 "name": "Humidity Without Compensation",
                 "reg_type": "input",
                 "address": 285,
+                "type": "value",
+                "units": "%, RH",
+                "format": "s16",
                 "scale": 0.01,
-                "error_value": "0xFFFF",
+                "error_value": "0x7FFF",
                 "enabled": false,
                 "group": "debug"
             }
@@ -1578,16 +1606,14 @@
                 "group_sound_level_title": "Sound Level",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
                 "CO2": "CO₂",
-                "CO2 Force Calibration": "CO₂ Force Calibration",
                 "CO2 Reference Sensor Value": "CO₂ Reference Sensor Value",
                 "CO2 Autocalibration Period": "CO₂ Autocalibration Period",
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
                 "CO2 Sensor Type": "CO₂ Sensor Type",
                 "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
                 "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)",
-                "g_safety_description": "Safety mode is activated if there is no Modbus polling within the specified timeout. Supported since firmware 4.32.0",
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling within the specified timeout",
                 "poll_timeout_description": "Timeout without Modbus polling after which safety mode will be activated",
                 "safety_command_description": "IR Command that will be played in safety mode"
             },
@@ -1610,6 +1636,8 @@
                 "automatic": "включена",
                 "CO₂ Measurement Range (ppm)": "Диапазон измерения концентрации CO₂ (ppm)",
                 "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
+                "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
+                "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",
                 "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",
                 "selfheating_compensation_deg_description": "Значение компенсации вычитается из измеренной температуры",
                 "Low-pass Filter Time Constant (ms)": "Время усреднения шума (мс)",
@@ -1622,7 +1650,6 @@
                 "Temperature": "Температура",
                 "Humidity": "Влажность",
                 "CO2": "Уровень CO₂",
-                "CO2 Force Calibration": "Ручная калибровка датчика CO₂",
                 "Air Quality (VOC)": "Качество воздуха (VOC)",
                 "Air Quality Index": "Индекс качества воздуха (AQI)",
                 "VOC Baseline": "Смещение уровня VOC",
@@ -1767,7 +1794,7 @@
                 "Humidity Without Compensation": "Влажность до компенсации",
 
                 "Safety Mode": "Безопасный режим",
-                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus. Доступно с версии прошивки 4.32.0",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
                 "Safety Action": "Действие в безопасном режиме",

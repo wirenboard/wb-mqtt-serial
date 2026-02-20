@@ -6,6 +6,9 @@
         {
             "signature": "MAP3E",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3ET"
         }
     ],
     "device": {
@@ -19,14 +22,17 @@
         "groups": [
             {
                 "title": "L1",
+                "description": "ct_params_description",
                 "id": "l1"
             },
             {
                 "title": "L2",
+                "description": "ct_params_description",
                 "id": "l2"
             },
             {
                 "title": "L3",
+                "description": "ct_params_description",
                 "id": "l3"
             },
             {
@@ -44,6 +50,135 @@
         ],
 
         "parameters": {
+            "l1_turns": {
+                "title": "Turns L1",
+                "address": "0x1460",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "default": 0,
+                "group": "l1",
+                "order": 1
+            },
+            "l1_phi": {
+                "title": "Phi L1",
+                "address": "0x1463",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "default": 0,
+                "group": "l1",
+                "order": 2
+            },
+            "l1_phase": {
+                "title": "Actual Phase L1",
+                "address": "0x14A0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 1,
+                "enum_titles": ["L1", "L2", "L3"],
+                "group": "l1",
+                "order": 3
+            },
+            "l1_ct_reverse": {
+                "title": "Current Transformer Reverse L1",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l1",
+                "order": 4
+            },
+            "l2_turns": {
+                "title": "Turns L2",
+                "address": "0x1461",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "default": 0,
+                "group": "l2",
+                "order": 1
+            },
+            "l2_phi": {
+                "title": "Phi L2",
+                "address": "0x1464",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "default": 0,
+                "group": "l2",
+                "order": 2
+            },
+            "l2_phase": {
+                "title": "Actual Phase L2",
+                "address": "0x14A1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 2,
+                "enum_titles": ["L1", "L2", "L3"],
+                "group": "l2",
+                "order": 3
+            },
+            "l2_ct_reverse": {
+                "title": "Current Transformer Reverse L2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l2",
+                "order": 4
+            },
+            "l3_turns": {
+                "title": "Turns L3",
+                "address": "0x1462",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "default": 0,
+                "group": "l3",
+                "order": 1
+            },
+            "l3_phi": {
+                "title": "Phi L3",
+                "address": "0x1465",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "default": 0,
+                "group": "l3",
+                "order": 2
+            },
+            "l3_phase": {
+                "title": "Actual Phase L3",
+                "address": "0x14A2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 3,
+                "enum_titles": ["L1", "L2", "L3"],
+                "group": "l3",
+                "order": 3
+            },
+            "l3_ct_reverse": {
+                "title": "Current Transformer Reverse L3",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l3",
+                "order": 4
+            },
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -186,6 +321,17 @@
                 "group": "l1"
             },
             {
+                "name": "N L1",
+                "reg_type": "input",
+                "address": "0x1582",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
+                "group": "l1"
+            },
+            {
                 "name": "PF L1",
                 "reg_type": "input",
                 "address": "0x10bd",
@@ -238,7 +384,31 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l1"
-            }, 
+            },
+            {
+                "name": "NP energy L1",
+                "reg_type": "input",
+                "address": "0x1504",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l1"
+            },
+            {
+                "name": "NN energy L1",
+                "reg_type": "input",
+                "address": "0x1514",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l1"
+            },
             {
                 "name": "Phase angle L1",
                 "reg_type": "input",
@@ -347,6 +517,17 @@
                 "group": "l2"
             },
             {
+                "name": "N L2",
+                "reg_type": "input",
+                "address": "0x1584",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
+                "group": "l2"
+            },
+            {
                 "name": "PF L2",
                 "reg_type": "input",
                 "address": "0x10be",
@@ -399,7 +580,31 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "l2"
-            }, 
+            },
+            {
+                "name": "NP energy L2",
+                "reg_type": "input",
+                "address": "0x1508",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l2"
+            },
+            {
+                "name": "NN energy L2",
+                "reg_type": "input",
+                "address": "0x1518",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l2"
+            },
             {
                 "name": "Phase angle L2",
                 "reg_type": "input",
@@ -508,6 +713,17 @@
                 "group": "l3"
             },
             {
+                "name": "N L3",
+                "reg_type": "input",
+                "address": "0x1586",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
+                "group": "l3"
+            },
+            {
                 "name": "PF L3",
                 "reg_type": "input",
                 "address": "0x10bf",
@@ -562,6 +778,30 @@
                 "group": "l3"
             },
             {
+                "name": "NP energy L3",
+                "reg_type": "input",
+                "address": "0x150c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l3"
+            },
+            {
+                "name": "NN energy L3",
+                "reg_type": "input",
+                "address": "0x151c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "l3"
+            },
+            {
                 "name": "Phase angle L3",
                 "reg_type": "input",
                 "address": "0x10fb",
@@ -602,6 +842,17 @@
                 "group": "total"
             },
             {
+                "name": "Total N",
+                "reg_type": "input",
+                "address": "0x1580",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "enabled": false,
+                "group": "total"
+            },
+            {
                 "name": "Total PF",
                 "reg_type": "input",
                 "address": "0x10bc",
@@ -632,7 +883,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "total"
-            }, 
+            },
             {
                 "name": "Total RP energy",
                 "reg_type": "input",
@@ -654,7 +905,31 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "total"
-            }, 
+            },
+            {
+                "name": "Total NP energy",
+                "reg_type": "input",
+                "address": "0x1500",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "total"
+            },
+            {
+                "name": "Total NN energy",
+                "reg_type": "input",
+                "address": "0x1510",
+                "type": "value",
+                "format": "u64",
+                "scale": 1.422222e-9,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "enabled": false,
+                "group": "total"
+            },
             {
                 "name": "Frequency",
                 "reg_type": "input",
@@ -672,6 +947,17 @@
                 "type": "text",
                 "format": "u32",
                 "offset": -4261412864,
+                "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "reg_type": "input",
+                "address": 304,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "2.12.0",
+                "enabled": false,
                 "group": "hw_info"
             },
             {
@@ -724,9 +1010,10 @@
         ],
         "translations": {
             "en": {
-                "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase enegry meter)",
+                "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
+                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases",
+                "ct_params_description": "Warning! Current transformer parameters (turns and phi) are preset at factory. Changing them is not recommended unless absolutely necessary.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -735,39 +1022,64 @@
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "HW Batch Number": "Номер партии",
+                "ct_params_description": "Внимание! Коэффициенты трансформации и фазовые задержки предустановлены на заводе. Изменение без крайней необходимости не рекомендуется.",
+                "Turns L1": "Коэффициент трансформации L1",
+                "Phi L1": "Фазовая задержка L1",
+                "Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
+                "Actual Phase L1": "Фаза трансформатора L1",
+                "Turns L2": "Коэффициент трансформации L2",
+                "Phi L2": "Фазовая задержка L2",
+                "Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
+                "Actual Phase L2": "Фаза трансформатора L2",
+                "Turns L3": "Коэффициент трансформации L3",
+                "Phi L3": "Фазовая задержка L3",
+                "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
+                "Actual Phase L3": "Фаза трансформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
                 "Disabled": "Выключено",
-                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
+                "Yes": "Да",
+                "No": "Нет",
+                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "AP energy L1": "Энергия AP L1",
                 "RP energy L1": "Энергия RP L1",
                 "AN energy L1": "Энергия AN L1",
                 "RN energy L1": "Энергия RN L1",
+                "NP energy L1": "Энергия NP L1",
+                "NN energy L1": "Энергия NN L1",
                 "Phase angle L1": "Угол между I и U фазы L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "AP energy L2": "Энергия AP L2",
                 "RP energy L2": "Энергия RP L2",
                 "AN energy L2": "Энергия AN L2",
                 "RN energy L2": "Энергия RN L2",
+                "NP energy L2": "Энергия NP L2",
+                "NN energy L2": "Энергия NN L2",
                 "Phase angle L2": "Угол между I и U фазы L2",
                 "Voltage angle L3": "Фазовый угол L3",
                 "AP energy L3": "Энергия AP L3",
                 "RP energy L3": "Энергия RP L3",
                 "AN energy L3": "Энергия AN L3",
                 "RN energy L3": "Энергия RN L3",
+                "NP energy L3": "Энергия NP L3",
+                "NN energy L3": "Энергия NN L3",
                 "Phase angle L3": "Угол между I и U фазы L3",
                 "Total P": "P по трем фазам",
                 "Total Q": "Q по трем фазам",
                 "Total S": "S по трем фазам",
+                "Total N": "N по трем фазам",
                 "Total PF": "PF по трем фазам",
                 "Total AP energy": "Энергия AP по трем фазам",
                 "Total RP energy": "Энергия RP по трем фазам",
                 "Total AN energy": "Энергия AN по трем фазам",
                 "Total RN energy": "Энергия RN по трем фазам",
+                "Total NP energy": "Энергия NP по трем фазам",
+                "Total NN energy": "Энергия NN по трем фазам",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",

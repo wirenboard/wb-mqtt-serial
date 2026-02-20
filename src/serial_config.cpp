@@ -332,6 +332,9 @@ namespace
                                               context.factory,
                                               context.device_base_address,
                                               context.stride);
+                if (channel_data.isMember("fw")) {
+                    reg.RegisterConfig->FwVersion = channel_data["fw"].asString();
+                }
                 default_type_str = reg.DefaultControlType;
                 registers.push_back(deviceWithChannels.Device->AddRegister(reg.RegisterConfig));
             } catch (const std::exception& e) {
@@ -364,17 +367,23 @@ namespace
             channel->SetTitle(it.second, it.first);
         }
 
-        if (channel_data.isMember("enum") && channel_data.isMember("enum_titles")) {
+        if (channel_data.isMember("enum")) {
             const auto& enumValues = channel_data["enum"];
-            const auto& enumTitles = channel_data["enum_titles"];
-            if (enumValues.size() == enumTitles.size()) {
-                for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
-                    channel->SetEnumTitles(enumValues[i].asString(),
-                                           Translate(enumTitles[i].asString(), true, context));
+            if (channel_data.isMember("enum_titles")) {
+                const auto& enumTitles = channel_data["enum_titles"];
+                if (enumValues.size() == enumTitles.size()) {
+                    for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                        channel->SetEnumTitles(enumValues[i].asString(),
+                                               Translate(enumTitles[i].asString(), true, context));
+                    }
+                } else {
+                    LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- "
+                              << deviceWithChannels.Device->DeviceConfig()->DeviceType;
                 }
             } else {
-                LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- "
-                          << deviceWithChannels.Device->DeviceConfig()->DeviceType;
+                for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                    channel->SetEnumTitles(enumValues[i].asString(), TTitleTranslations());
+                }
             }
         }
 
@@ -513,10 +522,12 @@ namespace
                                       context.device_base_address,
                                       context.stride);
         const auto& valueItem = item_data["value"];
+        auto value = valueItem.asString();
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
-        auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
-        device.AddSetupItem(PDeviceSetupItemConfig(
-            new TDeviceSetupItemConfig(name, reg.RegisterConfig, value, item_data["id"].asString())));
+        if (valueItem.isDouble() && value.find('.') != std::string::npos) {
+            value = WBMQTT::StringFormat("%.15g", valueItem.asDouble());
+        }
+        device.AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
     }
 
     void LoadSetupItems(TSerialDevice& device,
@@ -530,7 +541,7 @@ namespace
         }
     }
 
-    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWBDevice)
+    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWbDevice)
     {
         if (device_data.isMember("password")) {
             device_config.Password.clear();
@@ -543,7 +554,7 @@ namespace
             LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
         }
 
-        if (isWBDevice || device_data["enable_wb_continuous_read"].asBool()) {
+        if (isWbDevice) {
             device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
         }
 
@@ -623,7 +634,7 @@ namespace
 
         rpcConfig->AddModbusTCPPort(settings);
 
-        return std::make_shared<TFeaturePort>(port, true);
+        return std::make_shared<TFeaturePort>(port, true, port_data["connected_to_mge"].asBool());
     }
 #endif
 
@@ -852,14 +863,10 @@ void TDeviceChannelConfig::SetEnumTitles(const std::string& value, const TTitleT
     }
 }
 
-TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name,
-                                               PRegisterConfig reg,
-                                               const std::string& value,
-                                               const std::string& parameterId)
+TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value)
     : Name(name),
       RegisterConfig(reg),
-      Value(value),
-      ParameterId(parameterId)
+      Value(value)
 {
     try {
         RawValue = ConvertToRawValue(*reg, Value);
@@ -876,11 +883,6 @@ const std::string& TDeviceSetupItemConfig::GetName() const
 const std::string& TDeviceSetupItemConfig::GetValue() const
 {
     return Value;
-}
-
-const std::string& TDeviceSetupItemConfig::GetParameterId() const
-{
-    return ParameterId;
 }
 
 TRegisterValue TDeviceSetupItemConfig::GetRawValue() const
@@ -996,7 +998,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     loadParams.Defaults = params.Defaults;
     const auto* cfg = &deviceConfigJson;
     unique_ptr<Json::Value> mergedConfig;
-    auto isWBDevice = false;
+    auto isWbDevice = false;
     if (deviceConfigJson.isMember("device_type")) {
         auto deviceType = deviceConfigJson["device_type"].asString();
         auto deviceTemplate = templates.GetTemplate(deviceType);
@@ -1005,7 +1007,8 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
             MergeDeviceConfigWithTemplate(deviceConfigJson, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
         loadParams.Translations = &deviceTemplate->GetTemplate()["translations"];
-        isWBDevice = !deviceTemplate->GetHardware().empty();
+        isWbDevice = !deviceTemplate->GetHardware().empty() ||
+                     deviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
@@ -1018,9 +1021,10 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     }
 
     TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName);
-    auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams, isWBDevice);
+    auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams, isWbDevice);
     auto deviceWithChannels = std::make_shared<TSerialDeviceWithChannels>();
     deviceWithChannels->Device = protocolParams.factory->CreateDevice(*cfg, deviceConfig, protocolParams.protocol);
+    deviceWithChannels->Device->SetWbDevice(isWbDevice);
     TLoadingContext context(*protocolParams.factory,
                             protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress());
     context.translations = loadParams.Translations;
@@ -1057,7 +1061,7 @@ const IRegisterAddressFactory& IDeviceFactory::GetRegisterAddressFactory() const
 PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
                                PProtocol protocol,
                                const TDeviceConfigLoadParams& parameters,
-                               bool isWBDevice)
+                               bool isWbDevice)
 {
     auto res = std::make_shared<TDeviceConfig>();
 
@@ -1070,7 +1074,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
         res->SlaveId = dev["slave_id"].asString();
     }
 
-    LoadCommonDeviceParameters(*res, dev, isWBDevice);
+    LoadCommonDeviceParameters(*res, dev, isWbDevice);
 
     if (res->RequestDelay.count() == 0) {
         res->RequestDelay = parameters.Defaults.RequestDelay;

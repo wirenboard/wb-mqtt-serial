@@ -2594,7 +2594,7 @@ void TModbusExpectations::EnqueueContinuousReadEnableResponse(bool ok)
                        __func__);
 }
 
-void TModbusExpectations::EnqueueContinuousReadHoldingResponse(bool separated)
+void TModbusExpectations::EnqueueContinuousReadHoldingResponse(bool separated, bool unsupported)
 {
     const uint8_t addresses[] = {1, 8, 20};
 
@@ -2646,6 +2646,10 @@ void TModbusExpectations::EnqueueContinuousReadHoldingResponse(bool separated)
                            0x08, // data Lo
                        }),
                        __func__);
+
+    if (unsupported) {
+        return;
+    }
 
     Expector()->Expect(WrapPDU({
                            0x03,         // function code
@@ -2891,6 +2895,54 @@ void TModbusExpectations::EnqueuePartialWriteResponse()
                            0x14, // address Lo
                            0xEB, // data Hi
                            0xAF, // data Lo
+                       }),
+                       __func__);
+}
+
+void TModbusExpectations::EnqueueFwVersionReadResponse()
+{
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0xFA, // starting address Lo
+                           0x00, // quantity Hi
+                           0x10, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x20, // byte count
+                           0x00, // data Hi
+                           0x31, // data Lo
+                           0x00, // data Hi
+                           0x2E, // data Lo
+                           0x00, // data Hi
+                           0x32, // data Lo
+                           0x00, // data Hi
+                           0x2E, // data Lo
+                           0x00, // data Hi
+                           0x33, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
                        }),
                        __func__);
 }

@@ -181,6 +181,28 @@
                 "group": "air_quality"
             },
             {
+                "name": "TH Sensor Heater Cleaning Mode Enabled",
+                "description": "Only for SHT40 temperature and humidity sensor",
+                "address": 8,
+                "fw": "4.35.0",
+                "reg_type": "coil",
+                "type": "switch",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
+                "name": "TH Sensor Heater Cleaning Mode Countdown",
+                "description": "Only for SHT40 temperature and humidity sensor",
+                "address": 365,
+                "fw": "4.35.0",
+                "reg_type": "input",
+                "type": "value",
+                "units": "s",
+                "format": "u16",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
                 "name": "Illuminance",
                 "reg_type": "input",
                 "address": 2,
@@ -193,6 +215,17 @@
                 "address": 270,
                 "type": "text",
                 "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "4.35.0",
+                "enabled": false,
                 "group": "hw_info"
             },
             {
@@ -333,6 +366,30 @@
                 "group": "debug"
             },
             {
+                "name": "Temperature Without Compensation",
+                "reg_type": "input",
+                "address": 284,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0x7FFF",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Humidity Without Compensation",
+                "reg_type": "input",
+                "address": 285,
+                "type": "value",
+                "units": "%, RH",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0x7FFF",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
                 "name": "External Sensor 1",
                 "reg_type": "input",
                 "address": "6",
@@ -405,6 +462,9 @@
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
                 "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
+                "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
+                "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",
+                "Only for SHT40 temperature and humidity sensor": "Только для датчика температуры и влажности SHT40",
                 "no": "нет",
                 "yes": "да",
                 "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",
@@ -423,6 +483,7 @@
                 "Air Quality Index": "Индекс качества воздуха (AQI)",
                 "VOC Baseline": "Смещение уровня VOC",
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
@@ -439,6 +500,8 @@
                 "Illuminance Mode": "Режим измерения освещенности",
                 "Successful TH Readings": "Успешные запросы к датчику TH",
                 "Erroneous TH Readings": "Ошибочные запросы к датчику TH",
+                "Temperature Without Compensation": "Температура до компенсации",
+                "Humidity Without Compensation": "Влажность до компенсации",
                 "1-Wire": "Датчик 1-Wire",
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
