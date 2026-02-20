@@ -267,14 +267,3 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
 {
     return Settings;
 }
-
-TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings)
-    : Port(port)
-{
-    Port->ApplySerialPortSettings(settings);
-}
-
-TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
-{
-    Port->ResetSerialPortSettings();
-}
