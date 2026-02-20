@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.226.1) stable; urgency=medium
+
+  * Merge WASM branch into master, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 20 Feb 2026 09:49:15 +0300
+
 wb-mqtt-serial (2.226.0) stable; urgency=medium
 
   * Add "force" option to Device/LoadConfig RPC
