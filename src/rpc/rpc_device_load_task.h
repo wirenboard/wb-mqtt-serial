@@ -14,7 +14,8 @@ public:
 
     void ParseRequestItems(const Json::Value& items, std::list<std::string>& list);
 
-    TRPCRegisterList GetChannelsRegisterList();
+    TRPCRegisterList GetConditionParametersRegisterList();
+    TRPCRegisterList GetChannelsRegisterList(const Json::Value& conditionParams = Json::Value());
     TRPCRegisterList GetParametersRegisterList();
 };
 

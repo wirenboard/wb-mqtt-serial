@@ -242,10 +242,26 @@ namespace
             CheckTemplate(port, rpcRequest, deviceModel);
         }
 
+        // Filter out readonly parameters — they can't be edited
+        Json::Value writableParams(templateParams.isObject() ? Json::objectValue : Json::arrayValue);
+        if (templateParams.isObject()) {
+            for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+                if (!(*it)["readonly"].asBool()) {
+                    writableParams[it.key().asString()] = *it;
+                }
+            }
+        } else {
+            for (const auto& item : templateParams) {
+                if (!item["readonly"].asBool()) {
+                    writableParams.append(item);
+                }
+            }
+        }
+
         std::list<std::string> paramsList;
         auto registerList = CreateRegisterList(rpcRequest->ProtocolParams,
                                                rpcRequest->Device,
-                                               templateParams,
+                                               writableParams,
                                                parameters,
                                                rpcRequest->Device->GetWbFwVersion(),
                                                rpcRequest->Device->IsWbDevice());
