@@ -32,6 +32,7 @@ namespace
                                              std::chrono::microseconds(0),
                                              request.ResponseTimeout,
                                              request.FrameTimeout);
+                return;
             } catch (const Modbus::TModbusExceptionError& err) {
                 if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
                     err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
@@ -75,6 +76,7 @@ namespace
                                       std::chrono::microseconds(0),
                                       request.ResponseTimeout,
                                       request.FrameTimeout);
+                return;
             } catch (const Modbus::TModbusExceptionError& err) {
                 if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
                     err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
@@ -355,7 +357,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList()
             Parameters.remove(id);
         }
     }
-    if (!Channels.empty()) {
+    if (!Parameters.empty()) {
         throw TRPCException("Parameter \"" + Parameters.front() + "\" is write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
