@@ -1,5 +1,6 @@
 #include "rpc/rpc_device_load_config_task.h"
 #include "rpc/rpc_device_load_task.h"
+#include "rpc/rpc_exception.h"
 #include "test_utils.h"
 #include <wblib/testing/testlog.h>
 
@@ -327,4 +328,26 @@ TEST(TDeviceLoadTest, GetChannelsRegisterListConditionFiltering)
         ASSERT_TRUE(ids.count("Mode Dependent"));
         ASSERT_TRUE(ids.count("Variant Dependent"));
     }
+}
+
+/**
+ * Checks that GetParametersRegisterList throws TRPCException
+ * when a requested parameter name does not exist in the template.
+ */
+TEST(TDeviceLoadTest, GetParametersRegisterListThrowsOnUnknownParam)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Parameters.push_back("nonexistent_param");
+
+    ASSERT_THROW(request.GetParametersRegisterList(), TRPCException)
+        << "should throw when requested parameter does not exist in template";
 }
