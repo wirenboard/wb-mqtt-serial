@@ -22,9 +22,8 @@
         "id": "wb-m1w2",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
-        "frame_timeout_ms": 8,
         "enable_wb_continuous_read": true,
-        "min_request_interval": 100,
+        {# "min_request_interval": 100, -#}
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
@@ -39,6 +38,7 @@
             {
                 "title": "1-Wire Sensors",
                 "id": "gg_in{{in_num}}_sensors",
+                "description": "w1_sensors_description",
                 "group": "g_in{{in_num}}"
             },
             {
@@ -330,7 +330,7 @@
             },
             {
                 "id": "bus{{in_num}}_busy_error_conter",
-                "name": "Bus {{in_num}} Busy Error Counter",
+                "name": "Busy Error Counter On The Bus {{in_num}}",
                 "reg_type": "input",
                 "address": {{456 + (in_num - FIRST_INPUT)}},
                 "enabled": false,
@@ -379,7 +379,7 @@
             {% endfor -%}
             {
                 "id": "bus{{in_num}}_new_sens_count",
-                "name": "Bus {{in_num}} Number Of New Sensors",
+                "name": "New Sensors On The Bus {{in_num}}",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3328 + (in_num - FIRST_INPUT)}},
@@ -390,7 +390,7 @@
             },
             {
                 "id": "bus{{in_num}}_saved_sens_count",
-                "name": "Bus {{in_num}} New Sensors Saved",
+                "name": "New Sensors Saved On The Bus {{in_num}}",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3336 + (in_num - FIRST_INPUT)}},
@@ -402,7 +402,7 @@
             },
             {
                 "id": "bus{{in_num}}_save_new_sens",
-                "name": "Bus {{in_num}} Save New Sensors",
+                "name": "Save New Sensors On The Bus {{in_num}}",
                 "reg_type": "coil",
                 "address": {{24 + (in_num - FIRST_INPUT)}},
                 "type": "pushbutton",
@@ -426,7 +426,7 @@
             {% endfor -%}
             {
                 "id": "bus{{in_num}}_found_sens_count",
-                "name": "Bus {{in_num}} Number Of Sensors Found",
+                "name": "Sensors Found On The Bus {{in_num}}",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3344 + (in_num - FIRST_INPUT)}},
@@ -563,6 +563,7 @@
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
                 "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
+                "w1_sensors_description": "If the sensor is not used, specify '0'.<br><br>When adding new sensors, do not forget to read the parameters from the device (the 'Reread paramaters' button) and then save it (the 'Save config' button).<br>Otherwise, when connecting to the device, the previously saved parameters will be loaded.",
 
                 "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement and pulse-counter module)",
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
@@ -597,6 +598,7 @@
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
+                "w1_sensors_description": "Если датчик не используется, укажите '0'.<br><br>При добавлении новых датчиков не забудьте считать настройки из устройства (кнопка 'Перечитать настройки'), а затем сохранить их (кнопка 'Сохранить настройки').<br>В противном случае при подключении к устройству будут загружены ранее сохраненные параметры.",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
@@ -633,11 +635,11 @@
                 "External Sensor {{in_num}} Last Valid Temp": "Последняя действительная температура {{in_num}}",
                 "External Sensor {{in_num}} Presense": "Датчик температуры {{in_num}} присутствует",
                 "External Sensor {{in_num}} Supply": "Питание датчика температуры {{in_num}}",
-                "Bus {{in_num}} Number Of New Sensors": "Шина {{in_num}} Количество новых датчиков",
-                "Bus {{in_num}} New Sensors Saved": "Шина {{in_num}} Сохранено новых датчиков",
-                "Bus {{in_num}} Save New Sensors": "Шина {{in_num}} Сохранить новые датчики",
-                "Bus {{in_num}} Busy Error Counter" : "Шина {{in_num}} Счетчик ошибок занятости",
-                "Bus {{in_num}} Number Of Sensors Found": "Шина {{in_num}} Количество обнаруженных датчиков",
+                "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
+                "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
+                "Save New Sensors On The Bus {{in_num}}": "Сохранить новые датчики на шине {{in_num}}",
+                "Busy Error Counter On The Bus {{in_num}}" : "Счетчик ошибок занятости на шине {{in_num}}",
+                "Sensors Found On The Bus {{in_num}}": "Обнаружено датчиков на шине {{in_num}}",
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
                 "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
