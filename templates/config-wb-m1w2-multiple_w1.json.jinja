@@ -360,7 +360,7 @@
             },
             {
                 "id": "bus{{in_num}}_last_valid_temp{{sens_num}}",
-                "name": "Sensor {{in_num}}:{{sens_num}} Last Valid Temp",
+                "name": "Last Valid Temp {{in_num}}:{{sens_num}}",
                 "reg_type": "input",
                 "address": {{3584 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -639,7 +639,7 @@
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
                 "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
-                "Sensor {{in_num}}:{{sens_num}} Last Valid Temp": "Последняя действительная температура {{in_num}}:{{sens_num}}",
+                "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действительная температура {{in_num}}:{{sens_num}}",
                 "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
                 "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
                 {% endfor -%}
