@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.228.0) stable; urgency=medium
+
+  * Add new templates for WB-M1W2 and WB-M1W2 v.3 with multiple sensors per channel feature
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Tue, 24 Feb 2026 17:15:00 +0300
+
 wb-mqtt-serial (2.227.0) stable; urgency=medium
 
   * WB-LED and WB-MRGBW-D fw3 templates: Add CCT power normalization parameters
