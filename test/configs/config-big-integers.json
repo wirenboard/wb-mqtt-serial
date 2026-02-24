@@ -1,0 +1,19 @@
+{
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "devices": [
+                {
+                    "slave_id": 42,
+                    "device_type": "big_integers",
+                    "param_1": -459234512454223413,
+                    "param_2": 257080185625143217
+                }
+            ]
+        }
+    ]
+}

@@ -1171,3 +1171,31 @@ TEST_F(TModbusPublishTest, DuplicateValues)
         }
     }
 }
+
+class TModbusUnsupportedChannelTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-unsupported-channel-test.json";
+    }
+};
+
+TEST_F(TModbusUnsupportedChannelTest, PrepareAndPoll)
+{
+    Config->PortConfigs[0]->Devices[0]->Device->SetWbDevice(true);
+
+    EnqueueContinuousReadEnableResponse();
+    EnqueueFwVersionReadResponse();
+    EnqueueContinuousReadHoldingResponse();
+    Note() << "LoopOnce() [one by one]";
+    for (auto i = 0; i < 3; ++i) {
+        SerialDriver->LoopOnce();
+    }
+
+    for (auto i = 0; i < 2; ++i) {
+        EnqueueContinuousReadHoldingResponse(false, true);
+        Note() << "LoopOnce() [continuous]";
+        SerialDriver->LoopOnce();
+    }
+}

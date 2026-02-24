@@ -61,17 +61,12 @@ class TDeviceSetupItemConfig
     PRegisterConfig RegisterConfig;
     std::string Value;
     TRegisterValue RawValue;
-    std::string ParameterId;
 
 public:
-    TDeviceSetupItemConfig(const std::string& name,
-                           PRegisterConfig reg,
-                           const std::string& value,
-                           const std::string& parameterId = std::string());
+    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
 
     const std::string& GetName() const;
     const std::string& GetValue() const;
-    const std::string& GetParameterId() const;
     TRegisterValue GetRawValue() const;
     PRegisterConfig GetRegisterConfig() const;
 };
@@ -144,7 +139,6 @@ class TDeviceSetupItem
 {
 public:
     std::string Name;
-    std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
     PRegisterConfig RegisterConfig;
@@ -248,6 +242,12 @@ public:
     bool IsSporadicOnly() const;
     void SetSporadicOnly(bool sporadicOnly);
 
+    bool IsWbDevice() const;
+    void SetWbDevice(bool wbDevice);
+
+    const std::string& GetWbFwVersion() const;
+    void SetWbFwVersion(const std::string& wbFwVersion);
+
     // Reset values caches
     virtual void InvalidateReadCache();
 
@@ -284,6 +284,9 @@ private:
     int RemainingFailCycles;
     bool SupportsHoles;
     bool SporadicOnly;
+    bool WbDevice;
+    std::string WbFwVersion;
+
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;

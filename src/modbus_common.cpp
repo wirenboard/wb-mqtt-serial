@@ -1009,6 +1009,25 @@ namespace Modbus // modbus protocol common utilities
         return false;
     }
 
+    std::string ReadWbFwVersion(PSerialDevice device, IModbusTraits& traits, TPort& port, uint8_t slaveId)
+    {
+        auto config = WbRegisters::GetRegisterConfig("fw_version");
+        try {
+            auto value = Modbus::ReadRegister(traits,
+                                              port,
+                                              slaveId,
+                                              *config,
+                                              device->DeviceConfig()->RequestDelay,
+                                              device->GetResponseTimeout(port),
+                                              device->GetFrameTimeout(port));
+            return value.Get<std::string>();
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+            LOG(Warn) << "Unable to read WB device firmware version [slave_id is "
+                      << device->DeviceConfig()->SlaveId + "]";
+        }
+        return std::string();
+    }
+
     TRegisterValue ReadRegister(IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
