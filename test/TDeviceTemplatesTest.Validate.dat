@@ -4397,6 +4397,17 @@ WB-M1W2 BUTTONS
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
+WB-M1W2 DI
+	Counter 1  =>  Counter 1
+	Counter 2  =>  Counter 2
+	Discrete Input 1  =>  Discrete Input 1
+	Discrete Input 2  =>  Discrete Input 2
+	External Sensor 1  =>  External Sensor 1
+	External Sensor 2  =>  External Sensor 2
+	Input Voltage  =>  Input Voltage
+	Internal Temperature  =>  Internal Temperature
+	Serial NO  =>  Serial NO
+	Uptime  =>  Uptime
 WB-M1W2 MULTIPLE W1
 	Busy Error Counter On The Bus 1  =>  bus1_busy_error_conter
 	Busy Error Counter On The Bus 2  =>  bus2_busy_error_conter
@@ -4882,17 +4893,6 @@ WB-M1W2 v.3 MULTIPLE W1
 	Temperature 2:7  =>  bus2_temp7
 	Temperature 2:8  =>  bus2_temp8
 	Temperature 2:9  =>  bus2_temp9
-	Uptime  =>  Uptime
-WB-M1W2 DI
-	Counter 1  =>  Counter 1
-	Counter 2  =>  Counter 2
-	Discrete Input 1  =>  Discrete Input 1
-	Discrete Input 2  =>  Discrete Input 2
-	External Sensor 1  =>  External Sensor 1
-	External Sensor 2  =>  External Sensor 2
-	Input Voltage  =>  Input Voltage
-	Internal Temperature  =>  Internal Temperature
-	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MAI11
 	5V Output  =>  5V Output
