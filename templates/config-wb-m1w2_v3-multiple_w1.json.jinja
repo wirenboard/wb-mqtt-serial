@@ -9,7 +9,7 @@
     "group": "g-wb",
     "hw": [
         {
-            "signature": "WBM1W2",
+            "signature": "WB-M1W2 v.3",
             "fw": "4.35.0-rc2"
         }
     ],
@@ -19,7 +19,6 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "enable_wb_continuous_read": true,
-        "min_request_interval": 100, {#- WB-M1W2 v.2 has an overheating issue with frequent polling #}
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
