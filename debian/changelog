@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.226.2) stable; urgency=medium
+wb-mqtt-serial (2.227.1) stable; urgency=medium
 
   * Fix device/Load RPC prepare session bug
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Feb 2026 06:27:42 +0300
+
+wb-mqtt-serial (2.227.0) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D fw3 templates: Add CCT power normalization parameters
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Fri, 20 Feb 2026 11:35:00 +0300
 
 wb-mqtt-serial (2.226.1) stable; urgency=medium
 

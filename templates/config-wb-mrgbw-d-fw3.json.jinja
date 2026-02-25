@@ -84,6 +84,11 @@
                 "group": "g_outputs"
             },
             {
+                "title": "cct_power_normalization_title",
+                "id": "gg_cct_power_normalization",
+                "group": "g_outputs"
+            },
+            {
                 "title": "params",
                 "id": "gg_out_params",
                 "group": "g_outputs",
@@ -543,6 +548,31 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
+            {# режим работы CCT лент -#}
+            {% set order = [1, 2] -%}
+            {% set conditions = [
+                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                ] -%}
+            {% for title in ['CCT1', 'CCT2'] -%}
+            {
+                "id": "power_normalization_cct{{order[loop.index0]}}",
+                "group": "gg_cct_power_normalization",
+                "title": "{{title}}",
+                "order": {{order[loop.index0]}},
+                "address": {{3200 + loop.index0}},
+                "fw": "3.7.0",
+                "reg_type": "holding",
+                "type": "enum",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "condition": "{{conditions[loop.index0]}}"
+            },
+            {% endfor -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "id": "in{{in_num}}_sp",
@@ -2506,6 +2536,8 @@
                 "fader_dec_title": "Time to Decrease Value from 0 to 100% (ms)",
                 "fader_hue_title": "Time to Increase/Decrease Hue from 0 to 360°",
 
+                "cct_power_normalization_title": "CCT Power Normalization",
+
                 "no_act_title": "Nothing",
                 "all_off_act_title": "Disable all channles",
                 {% for ch_number, ch_name in CHANNELS  -%}
@@ -2621,6 +2653,8 @@
                 "fader_dec_title": "Время уменьшения значения с 100% до 0 в мс",
                 "fader_hue_title": "Время увеличения/уменьшения оттенка (Hue) с 0 до 360°",
 
+                "cct_power_normalization_title": "Нормализация мощности CCT лент",
+
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "Input 3": "Вход 3",
@@ -2723,6 +2757,9 @@
                 "Hue Changing": "Изменение оттенка RGB ленты",
                 "Channels 1_2_3_4": "Каналы 1_2_3_4",
 
+                "CCT1": "Лента CCT1",
+                "CCT2": "Лента CCT2",
+
                 "Channel 1 (B) Brightness": "Яркость канала 1 (B)",
                 "Channel 2 (R) Brightness": "Яркость канала 2 (R)",
                 "Channel 3 (G) Brightness": "Яркость канала 3 (G)",
@@ -2799,7 +2836,10 @@
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+
+                "Disabled": "Отключено",
+                "Enabled": "Включено"
             }
         }
     }
