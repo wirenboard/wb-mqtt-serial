@@ -264,7 +264,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 3,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -275,25 +275,19 @@
                 "address": 7,
                 "type": "value",
                 "format": "u16",
-                "min": 0,
-                "max": 5,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
                     0,
                     1,
                     2,
-                    3,
-                    4,
-                    5
+                    3
                 ],
                 "enum_titles": [
                     "Auto",
                     "1 Speed",
                     "2 Speed",
-                    "3 Speed",
-                    "4 Speed",
-                    "5 Speed"
+                    "3 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -304,7 +298,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 7,
+                "max": 4,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -316,7 +310,7 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 7,
+                "max": 4,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
@@ -324,20 +318,14 @@
                     1,
                     2,
                     3,
-                    4,
-                    5,
-                    6,
-                    7
+                    4
                 ],
                 "enum_titles": [
                     "Auto",
                     "Quiet mode",
                     "1 Speed",
                     "2 Speed",
-                    "3 Speed",
-                    "4 Speed",
-                    "5 Speed",
-                    "Turbo mode"
+                    "3 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -395,6 +383,18 @@
                 "units": "deg C"
             },
             {
+                "name": "Temperature correction",
+                "reg_type": "holding",
+                "address": 20,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Thermostat state",
                 "reg_type": "holding",
                 "address": 6,
@@ -446,8 +446,6 @@
                 "address": 9,
                 "type": "value",
                 "format": "u16",
-                "min": 0,
-                "max": 6,
                 "sporadic": true,
                 "group": "vanes",
                 "enum": [
@@ -467,48 +465,6 @@
                     "Middle",
                     "High",
                     "Highest"
-                ],
-                "condition": "Show_vanes_as_range!=1"
-            },
-            {
-                "name": "Vertical vanes",
-                "reg_type": "holding",
-                "address": 10,
-                "type": "range",
-                "format": "u16",
-                "min": 0,
-                "max": 6,
-                "sporadic": true,
-                "group": "vanes",
-                "condition": "Show_vanes_as_range==1"
-            },
-            {
-                "name": "Vertical vanes",
-                "reg_type": "holding",
-                "address": 10,
-                "type": "value",
-                "format": "u16",
-                "min": 0,
-                "max": 6,
-                "sporadic": true,
-                "group": "vanes",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "enum_titles": [
-                    "Stop",
-                    "Swing",
-                    "Far Left",
-                    "Left",
-                    "Middle",
-                    "Right",
-                    "Far Right"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -540,35 +496,57 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
             {
-                "name": "Quiet mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 4,
-                "type": "switch",
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
                 "sporadic": true,
-                "group": "additional"
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
+            },
+            {
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Far Left",
+                    "Left",
+                    "Middle",
+                    "Right",
+                    "Far Right"
+                ],
+                "condition": "Show_vanes_as_range!=1"
             },
             {
                 "name": "Eco mode",
                 "enabled": false,
                 "reg_type": "coil",
                 "address": 6,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Sleep mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 8,
                 "type": "switch",
                 "sporadic": true,
                 "group": "additional"
@@ -583,6 +561,15 @@
                 "group": "additional"
             },
             {
+                "name": "Quiet mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
                 "name": "Self cleaning",
                 "enabled": false,
                 "reg_type": "coil",
@@ -592,37 +579,13 @@
                 "group": "additional"
             },
             {
-                "name": "Temeperature correction",
-                "reg_type": "holding",
-                "address": 20,
-                "type": "value",
-                "format": "s16",
-                "min": -30,
-                "max": 30,
-                "sporadic": true,
-                "group": "temperatureControl",
-                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
-            },
-            {
-                "name": "AC connected",
+                "name": "Sleep mode",
+                "enabled": false,
                 "reg_type": "coil",
-                "address": 20,
+                "address": 8,
                 "type": "switch",
                 "sporadic": true,
-                "group": "debug",
-                "readonly": true
-            },
-            {
-                "name": "HW Version",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 200,
-                "type": "text",
-                "format": "string",
-                "sporadic": true,
-                "group": "hw_info",
-                "readonly": true,
-                "string_data_size": 20
+                "group": "additional"
             },
             {
                 "name": "FW Version",
@@ -637,6 +600,28 @@
                 "string_data_size": 16
             },
             {
+                "name": "HW Version",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 200,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 20
+            },
+            {
+                "name": "MCU Temperature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "hw_info"
+            },
+            {
                 "name": "PROTO Version",
                 "enabled": false,
                 "reg_type": "input",
@@ -647,6 +632,24 @@
                 "group": "hw_info",
                 "readonly": true,
                 "string_data_size": 16
+            },
+            {
+                "name": "Reboot Device",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 120,
+                "type": "pushbutton",
+                "group": "hw_info"
+            },
+            {
+                "name": "Serial",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info",
+                "readonly": true
             },
             {
                 "name": "Signature",
@@ -661,40 +664,12 @@
                 "string_data_size": 12
             },
             {
-                "name": "Serial",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 270,
-                "type": "text",
-                "format": "u32",
-                "group": "hw_info",
-                "readonly": true
-            },
-            {
                 "name": "Uptime",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 104,
                 "type": "text",
                 "format": "u32",
-                "group": "hw_info"
-            },
-            {
-                "name": "MCU Temperature",
-                "enabled": false,
-                "reg_type": "input",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "group": "hw_info"
-            },
-            {
-                "name": "Reboot Device",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 120,
-                "type": "pushbutton",
                 "group": "hw_info"
             },
             {
@@ -705,7 +680,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 1
             },
             {
                 "name": "Error 2",
@@ -715,7 +691,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 2
             },
             {
                 "name": "Error 3",
@@ -725,7 +702,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 3
             },
             {
                 "name": "Error 4",
@@ -735,7 +713,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 4
             },
             {
                 "name": "Error 5",
@@ -745,7 +724,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 5
             },
             {
                 "name": "Error 6",
@@ -755,7 +735,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 6
             },
             {
                 "name": "Error 7",
@@ -765,7 +746,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 7
             },
             {
                 "name": "Error 8",
@@ -775,7 +757,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 8
             },
             {
                 "name": "Error 9",
@@ -785,7 +768,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 9
             },
             {
                 "name": "Error 10",
@@ -795,7 +779,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 10
             },
             {
                 "name": "Error 11",
@@ -805,7 +790,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 11
             },
             {
                 "name": "Error 12",
@@ -815,7 +801,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 12
             },
             {
                 "name": "Error 13",
@@ -825,7 +812,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 13
             },
             {
                 "name": "Error 14",
@@ -835,7 +823,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 14
             },
             {
                 "name": "Error 15",
@@ -845,7 +834,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 15
             },
             {
                 "name": "Error 16",
@@ -855,7 +845,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 16
             },
             {
                 "name": "Error 17",
@@ -865,7 +856,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 17
             },
             {
                 "name": "Error 18",
@@ -875,7 +867,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 18
             },
             {
                 "name": "Error 19",
@@ -885,7 +878,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 19
             },
             {
                 "name": "Error 20",
@@ -895,7 +889,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 20
             },
             {
                 "name": "Error 21",
@@ -905,7 +900,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 21
             },
             {
                 "name": "Error 22",
@@ -915,7 +911,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 22
             },
             {
                 "name": "Error 23",
@@ -925,7 +922,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 23
             },
             {
                 "name": "Error 24",
@@ -935,7 +933,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 24
             },
             {
                 "name": "Error 25",
@@ -945,7 +944,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 25
             },
             {
                 "name": "Error 26",
@@ -955,7 +955,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 26
             },
             {
                 "name": "Error 27",
@@ -965,7 +966,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 27
             },
             {
                 "name": "Error 28",
@@ -975,7 +977,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 28
             },
             {
                 "name": "Error 29",
@@ -985,7 +988,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 29
             },
             {
                 "name": "Error 30",
@@ -995,7 +999,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 30
             },
             {
                 "name": "Error 31",
@@ -1005,7 +1010,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 31
             },
             {
                 "name": "Error 32",
@@ -1015,7 +1021,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 32
             },
             {
                 "name": "Error 33",
@@ -1025,7 +1032,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 33
             },
             {
                 "name": "Error 34",
@@ -1035,7 +1043,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 34
             },
             {
                 "name": "Error 35",
@@ -1045,7 +1054,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 35
             },
             {
                 "name": "Error 36",
@@ -1055,7 +1065,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 36
             },
             {
                 "name": "Error 37",
@@ -1065,7 +1076,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 37
             },
             {
                 "name": "Error 38",
@@ -1075,7 +1087,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 38
             },
             {
                 "name": "Error 39",
@@ -1085,7 +1098,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 39
             },
             {
                 "name": "Error 40",
@@ -1095,7 +1109,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 40
             },
             {
                 "name": "Error 41",
@@ -1105,7 +1120,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 41
             },
             {
                 "name": "Error 42",
@@ -1115,7 +1131,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 42
             },
             {
                 "name": "Error 43",
@@ -1125,7 +1142,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 43
             },
             {
                 "name": "Error 44",
@@ -1135,7 +1153,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 44
             },
             {
                 "name": "Error 45",
@@ -1145,7 +1164,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 45
             },
             {
                 "name": "Error 46",
@@ -1155,7 +1175,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 46
             },
             {
                 "name": "Error 47",
@@ -1165,7 +1186,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 47
             },
             {
                 "name": "Error 48",
@@ -1175,7 +1197,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 48
             },
             {
                 "name": "Error 49",
@@ -1185,7 +1208,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 49
             },
             {
                 "name": "Error 50",
@@ -1195,7 +1219,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 50
             },
             {
                 "name": "Error 51",
@@ -1205,7 +1230,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 51
             },
             {
                 "name": "Error 52",
@@ -1215,7 +1241,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 52
             },
             {
                 "name": "Error 53",
@@ -1225,7 +1252,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 53
             },
             {
                 "name": "Error 54",
@@ -1235,7 +1263,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 54
             },
             {
                 "name": "Error 55",
@@ -1245,7 +1274,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 55
             },
             {
                 "name": "Error 56",
@@ -1255,7 +1285,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 56
             },
             {
                 "name": "Error 57",
@@ -1265,7 +1296,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 57
             },
             {
                 "name": "Error 58",
@@ -1275,7 +1307,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 58
             },
             {
                 "name": "Error 59",
@@ -1285,7 +1318,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 59
             },
             {
                 "name": "Error 60",
@@ -1295,7 +1329,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 60
             },
             {
                 "name": "Error 61",
@@ -1305,7 +1340,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 61
             },
             {
                 "name": "Error 62",
@@ -1315,7 +1351,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 62
             },
             {
                 "name": "Error 63",
@@ -1325,7 +1362,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 63
             },
             {
                 "name": "Error 64",
@@ -1335,7 +1373,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 64
             },
             {
                 "name": "Error 65",
@@ -1345,7 +1384,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 65
             },
             {
                 "name": "Error 66",
@@ -1355,7 +1395,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 66
             },
             {
                 "name": "Error 67",
@@ -1365,7 +1406,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 67
             },
             {
                 "name": "Error 68",
@@ -1375,7 +1417,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 68
             },
             {
                 "name": "Error 69",
@@ -1385,7 +1428,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 69
             },
             {
                 "name": "Error 70",
@@ -1395,7 +1439,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 70
             },
             {
                 "name": "Error 71",
@@ -1405,7 +1450,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 71
             },
             {
                 "name": "Error 72",
@@ -1415,7 +1461,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 72
             },
             {
                 "name": "Error 73",
@@ -1425,7 +1472,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 73
             },
             {
                 "name": "Error 74",
@@ -1435,7 +1483,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 74
             },
             {
                 "name": "Error 75",
@@ -1445,7 +1494,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 75
             },
             {
                 "name": "Error 76",
@@ -1455,7 +1505,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 76
             },
             {
                 "name": "Error 77",
@@ -1465,7 +1516,17 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 77
+            },
+            {
+                "name": "AC connected",
+                "reg_type": "coil",
+                "address": 20,
+                "type": "switch",
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
             }
         ],
         "translations": {
@@ -1497,81 +1558,78 @@
                 "Error 24": "Unknown error 5"
             },
             "ru": {
-                "template_title": "ONOKOM AIR GR-P3-MB-B (Адаптер для управления полупромышленными и мультисплит системами GREE)",
                 "General": "Основные режимы и функции",
+                "Temperature control": "Контроль температуры",
+                "Vanes": "Жалюзи",
+                "Additional": "Дополнительные режимы и функции",
+                "HW Info": "Данные модуля",
+                "Errors": "Ошибки",
+                "Debug": "Диагностика",
+                "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
+                "No": "Нет",
+                "Yes": "Да",
+                "Show modes as range": "Отображать режимы как ползунок",
+                "Show fan as range": "Отображать вентилятор как ползунок",
+                "Show vanes as range": "Отображать жалюзи как ползунок",
+                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Parity bit": "Бит чётности",
+                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
                 "Active": "Состояние",
                 "Mode": "Режим",
-                "Active mode": "Состояние и режим",
-                "Fan speed": "Скорость вентилятора",
-                "Smart fan speed": "Скорость вентилятора расширенная",
-                "Show modes as range": "Отображать режимы как ползунок",
-                "Off": "Выключен",
                 "Heat": "Нагрев",
                 "Cool": "Охлаждение",
                 "Auto": "Авто",
                 "Dry": "Осушение",
                 "Fan": "Вентиляция",
-                "Idle": "Простаивает",
-                "Heating": "Нагрев",
-                "Cooling": "Охлаждение",
-                "Temperature control": "Контроль температуры",
-                "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
+                "Active mode": "Состояние и режим",
+                "Off": "Выключен",
+                "Fan speed": "Скорость вентилятора",
+                "1 Speed": "1 Скорость",
+                "2 Speed": "2 Скорость",
+                "3 Speed": "3 Скорость",
+                "Smart fan speed": "Скорость вентилятора расширенная",
+                "Quiet mode": "Режим тихий",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Outdoor air temperature": "Температура воздуха на улице",
                 "Target temperature": "Целевая температура",
-                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Temperature correction": "Коррекция температуры",
                 "Thermostat state": "Состояние термостата",
-                "Vanes": "Жалюзи",
-                "Show vanes as range": "Отображать жалюзи как ползунок",
+                "Idle": "Простаивает",
+                "Heating": "Нагрев",
+                "Cooling": "Охлаждение",
                 "Horizontal vanes": "Горизонтальные жалюзи",
+                "Stop": "Остановлены",
                 "Swing": "Качание",
                 "Lowest": "Самое низкое",
                 "Low": "Низкое",
                 "Middle": "Среднее",
                 "High": "Высокое",
                 "Highest": "Самое высокое",
+                "Vanes swing": "Качание жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
+                "Vertical vanes": "Вертикальные жалюзи",
                 "Far Left": "Самое левое",
                 "Left": "Левое",
                 "Right": "Правое",
                 "Far Right": "Самое правое",
-                "Vertical vanes": "Вертикальные жалюзи",
-                "Vanes swing": "Качание жалюзи",
-                "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
-                "Show fan as range": "Отображать вентилятор как ползунок",
-                "Additional": "Дополнительные режимы и функции",
-                "1 Speed": "1 Скорость",
-                "2 Speed": "2 Скорость",
-                "3 Speed": "3 Скорость",
-                "4 Speed": "4 Скорость",
-                "5 Speed": "5 Скорость",
-                "Quiet mode": "Режим тихий",
                 "Eco mode": "Режим эко",
-                "Turbo mode": "Режим турбо",
-                "Sleep mode": "Режим сна",
                 "Ionization": "Ионизация",
                 "Self cleaning": "Самоочистка",
-                "No": "Нет",
-                "Yes": "Да",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Parity bit": "Бит чётности",
-                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
-                "HW Info": "Данные модуля",
-                "HW Version": "Версия устройства",
+                "Sleep mode": "Режим сна",
                 "FW Version": "Версия прошивки",
+                "HW Version": "Версия устройства",
+                "MCU Temperature": "Температура МК",
                 "PROTO Version": "Версия протокола",
+                "Reboot Device": "Перезагрузить устройство",
+                "Serial": "Серийный номер",
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
-                "MCU Temperature": "Температура МК",
-                "Serial": "Серийный номер",
-                "Reboot Device": "Перезагрузить устройство",
-                "Debug": "Диагностика",
-                "Temeperature correction": "Коррекция температуры",
-                "AC connected": "Кондиционер подключен",
-                "Errors": "Ошибки",
+                "LISTEN_ONLY": "Слушатель",
+                "EMULATE_S_WRC": "Ведомый",
                 "Error 1": "Режим извлечения хладагента",
                 "Error 2": "Ошибка датчика температуры пульта",
                 "Error 3": "Ошибка ППЗУ пульта",
@@ -1648,7 +1706,15 @@
                 "Error 74": "Основной боковой ошибка сети (Master",
                 "Error 75": "Ошибка адреса сети IDU",
                 "Error 76": "Ошибка переполнения IP адреса",
-                "Error 77": "Другие ошибки"
+                "Error 77": "Другие ошибки",
+                "AC connected": "Кондиционер подключен",
+                "Normal mode": "Обычный режим",
+                "Disabled if no errors": "Отключен если нет ошибок",
+                "Disabled untill reboot": "Отключен до перезагрузки",
+                "Always disabled": "Всегда отключен",
+                "Green untill reboot": "Зеленый до перезагрузки",
+                "Red untill reboot": "Красный до перезагрузки",
+                "template_title": "ONOKOM AIR GR-P3-MB-B (Адаптер для управления полупромышленными и мультисплит системами GREE)"
             }
         }
     }
