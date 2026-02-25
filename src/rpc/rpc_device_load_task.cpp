@@ -14,6 +14,7 @@ namespace
             auto registerList = i ? rpcRequest->GetParametersRegisterList() : rpcRequest->GetChannelsRegisterList();
             if (!registerList.empty()) {
                 Json::Value data(Json::objectValue);
+                PrepareSession(*port, rpcRequest->Device);
                 ReadRegisterList(*port, rpcRequest->Device, registerList);
                 for (const auto& item: registerList) {
                     data[item.Id] = RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
