@@ -188,7 +188,9 @@ Json::Value TRPCConfigHandler::GetDeviceTypes(const Json::Value& request)
                 groupJson["types"].append(std::move(protocolJson));
             }
         }
-        res.append(groupJson);
+        if (groupJson["types"].size() > 0) {
+            res.append(groupJson);
+        }
     });
     if (customGroupIsMissing) {
         Json::Value groupJson;
@@ -197,7 +199,9 @@ Json::Value TRPCConfigHandler::GetDeviceTypes(const Json::Value& request)
         for (auto& protocolJson: GetProtocols(ProtocolConfedSchemas, lang)) {
             groupJson["types"].append(std::move(protocolJson));
         }
-        res.append(groupJson);
+        if (groupJson["types"].size() > 0) {
+            res.append(groupJson);
+        }
     }
     return res;
 }

@@ -60,6 +60,8 @@ SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 
 TEMPLATES_DIR = templates
 JINJA_TEMPLATES = $(wildcard $(TEMPLATES_DIR)/*.json.jinja)
+ONI_JINJA_TEMPLATES = $(wildcard $(TEMPLATES_DIR)/config-oni-*.json.jinja)
+ONI_GENERATED_TEMPLATES = $(patsubst $(TEMPLATES_DIR)/%.json.jinja,$(GENERATED_TEMPLATES_DIR)/%.json,$(ONI_JINJA_TEMPLATES))
 
 .PHONY: all clean test templates
 
@@ -115,8 +117,8 @@ install:
 
 	install -Dm0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 	install -Dm0644 groups.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
-	install -Dm0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
-	install -Dm0644 protocols/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/protocols
+	install -d $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/protocols
+	install -Dm0644 $(ONI_GENERATED_TEMPLATES) -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
 
 	install -Dm0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 
