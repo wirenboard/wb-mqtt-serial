@@ -164,7 +164,7 @@ def print_channel(channel: Dict, mqtt_prefix: str, subdevices: SubdeviceMap, lev
     print(f"{name}  =>  {new_prefix}")
 
 
-def parse_args() -> argparse.Namespace:
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Print device template structure in the same format as the Validate test."
     )
@@ -173,11 +173,7 @@ def parse_args() -> argparse.Namespace:
         nargs="*",
         help="Template directories to scan (repeat the argument for multiple paths).",
     )
-    return parser.parse_args()
-
-
-def main() -> int:
-    args = parse_args()
+    args = parser.parse_args()
 
     if not args.directories:
         print("Please provide at least one template directory path.", file=sys.stderr)
