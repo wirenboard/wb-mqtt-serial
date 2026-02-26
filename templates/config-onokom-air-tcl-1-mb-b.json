@@ -297,8 +297,6 @@
                 "address": 7,
                 "type": "value",
                 "format": "u16",
-                "min": 0,
-                "max": 5,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
@@ -417,6 +415,18 @@
                 "units": "deg C"
             },
             {
+                "name": "Temperature correction",
+                "reg_type": "holding",
+                "address": 20,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Thermostat state",
                 "reg_type": "holding",
                 "address": 6,
@@ -468,8 +478,6 @@
                 "address": 9,
                 "type": "value",
                 "format": "u16",
-                "min": 0,
-                "max": 6,
                 "sporadic": true,
                 "group": "vanes",
                 "enum": [
@@ -489,38 +497,6 @@
                     "Middle",
                     "High",
                     "Highest"
-                ],
-                "condition": "Show_vanes_as_range!=1"
-            },
-            {
-                "name": "Vertical vanes",
-                "reg_type": "holding",
-                "address": 10,
-                "type": "value",
-                "format": "u16",
-                "min": 0,
-                "max": 7,
-                "sporadic": true,
-                "group": "vanes",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7
-                ],
-                "enum_titles": [
-                    "Stop",
-                    "Swing",
-                    "Far Left",
-                    "Left",
-                    "Middle",
-                    "Right",
-                    "Far Right",
-                    "Gentle wind"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -552,20 +528,64 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
             {
-                "name": "Quiet mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 4,
-                "type": "switch",
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 7,
                 "sporadic": true,
-                "group": "additional"
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
+            },
+            {
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Far Left",
+                    "Left",
+                    "Middle",
+                    "Right",
+                    "Far Right",
+                    "Gentle wind"
+                ],
+                "condition": "Show_vanes_as_range!=1"
+            },
+            {
+                "name": "Compressor power limit",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 19,
+                "type": "range",
+                "max": 100,
+                "sporadic": true,
+                "group": "additional",
+                "units": "%"
             },
             {
                 "name": "Eco mode",
@@ -577,46 +597,10 @@
                 "group": "additional"
             },
             {
-                "name": "Turbo mode",
+                "name": "Gentle wind",
                 "enabled": false,
                 "reg_type": "coil",
-                "address": 7,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Sleep mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 8,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Ionization",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 9,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Self cleaning",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 10,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Mold protection",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 11,
+                "address": 14,
                 "type": "switch",
                 "sporadic": true,
                 "group": "additional"
@@ -631,21 +615,58 @@
                 "group": "additional"
             },
             {
-                "name": "Gentle wind",
+                "name": "Ionization",
                 "enabled": false,
                 "reg_type": "coil",
-                "address": 14,
+                "address": 9,
                 "type": "switch",
                 "sporadic": true,
                 "group": "additional"
             },
             {
-                "name": "Screen light",
+                "name": "Mold protection",
+                "enabled": false,
                 "reg_type": "coil",
-                "address": 2,
+                "address": 11,
                 "type": "switch",
                 "sporadic": true,
-                "group": "indication"
+                "group": "additional"
+            },
+            {
+                "name": "Quiet mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Self cleaning",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 10,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Sleep mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 8,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Turbo mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Beeper",
@@ -656,60 +677,12 @@
                 "group": "indication"
             },
             {
-                "name": "Current fan speed",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 32,
-                "type": "range",
-                "min": 0,
-                "max": 200,
-                "sporadic": true,
-                "group": "debug",
-                "readonly": true,
-                "units": "rpm"
-            },
-            {
-                "name": "Temeperature correction",
-                "reg_type": "holding",
-                "address": 20,
-                "type": "value",
-                "format": "s16",
-                "min": -30,
-                "max": 30,
-                "sporadic": true,
-                "group": "temperatureControl",
-                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
-            },
-            {
-                "name": "Compressor power limit",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 19,
-                "type": "range",
-                "max": 100,
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "AC connected",
+                "name": "Screen light",
                 "reg_type": "coil",
-                "address": 20,
+                "address": 2,
                 "type": "switch",
                 "sporadic": true,
-                "group": "debug",
-                "readonly": true
-            },
-            {
-                "name": "HW Version",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 200,
-                "type": "text",
-                "format": "string",
-                "sporadic": true,
-                "group": "hw_info",
-                "readonly": true,
-                "string_data_size": 20
+                "group": "indication"
             },
             {
                 "name": "FW Version",
@@ -724,6 +697,28 @@
                 "string_data_size": 16
             },
             {
+                "name": "HW Version",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 200,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 20
+            },
+            {
+                "name": "MCU Temperature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "hw_info"
+            },
+            {
                 "name": "PROTO Version",
                 "enabled": false,
                 "reg_type": "input",
@@ -734,6 +729,24 @@
                 "group": "hw_info",
                 "readonly": true,
                 "string_data_size": 16
+            },
+            {
+                "name": "Reboot Device",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 120,
+                "type": "pushbutton",
+                "group": "hw_info"
+            },
+            {
+                "name": "Serial",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info",
+                "readonly": true
             },
             {
                 "name": "Signature",
@@ -748,16 +761,6 @@
                 "string_data_size": 12
             },
             {
-                "name": "Serial",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 270,
-                "type": "text",
-                "format": "u32",
-                "group": "hw_info",
-                "readonly": true
-            },
-            {
                 "name": "Uptime",
                 "enabled": false,
                 "reg_type": "input",
@@ -767,22 +770,68 @@
                 "group": "hw_info"
             },
             {
-                "name": "MCU Temperature",
+                "name": "Error code",
                 "enabled": false,
                 "reg_type": "input",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "group": "hw_info"
-            },
-            {
-                "name": "Reboot Device",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 120,
-                "type": "pushbutton",
-                "group": "hw_info"
+                "address": 1,
+                "type": "value",
+                "group": "errors",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24
+                ],
+                "enum_titles": [
+                    "No error",
+                    "Error 1",
+                    "Error 2",
+                    "Error 3",
+                    "Error 4",
+                    "Error 5",
+                    "Error 6",
+                    "Error 7",
+                    "Error 8",
+                    "Error 9",
+                    "Error 10",
+                    "Error 11",
+                    "Error 12",
+                    "Error 13",
+                    "Error 14",
+                    "Error 15",
+                    "Error 16",
+                    "Error 17",
+                    "Error 18",
+                    "Error 19",
+                    "Error 20",
+                    "Error 21",
+                    "Error 22",
+                    "Error 23",
+                    "Error 24"
+                ],
+                "readonly": true,
+                "order": 0
             },
             {
                 "name": "Error 1",
@@ -792,7 +841,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 1
             },
             {
                 "name": "Error 2",
@@ -802,7 +852,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 2
             },
             {
                 "name": "Error 3",
@@ -812,7 +863,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 3
             },
             {
                 "name": "Error 4",
@@ -822,7 +874,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 4
             },
             {
                 "name": "Error 5",
@@ -832,7 +885,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 5
             },
             {
                 "name": "Error 6",
@@ -842,7 +896,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 6
             },
             {
                 "name": "Error 7",
@@ -852,7 +907,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 7
             },
             {
                 "name": "Error 8",
@@ -862,7 +918,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 8
             },
             {
                 "name": "Error 9",
@@ -872,7 +929,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 9
             },
             {
                 "name": "Error 10",
@@ -882,7 +940,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 10
             },
             {
                 "name": "Error 11",
@@ -892,7 +951,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 11
             },
             {
                 "name": "Error 12",
@@ -902,7 +962,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 12
             },
             {
                 "name": "Error 13",
@@ -912,7 +973,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 13
             },
             {
                 "name": "Error 14",
@@ -922,7 +984,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 14
             },
             {
                 "name": "Error 15",
@@ -932,7 +995,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 15
             },
             {
                 "name": "Error 16",
@@ -942,7 +1006,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 16
             },
             {
                 "name": "Error 17",
@@ -952,7 +1017,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 17
             },
             {
                 "name": "Error 18",
@@ -962,7 +1028,8 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 18
             },
             {
                 "name": "Error 19",
@@ -972,172 +1039,172 @@
                 "type": "switch",
                 "readonly": true,
                 "condition": "Show_error_switches==1",
-                "enabled": true
+                "enabled": true,
+                "order": 19
             },
             {
-                "name": "Error 20",
-                "group": "errors",
-                "reg_type": "discrete",
+                "name": "AC connected",
+                "reg_type": "coil",
                 "address": 20,
                 "type": "switch",
-                "readonly": true,
-                "condition": "Show_error_switches==1",
-                "enabled": true
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
             },
             {
-                "name": "Error 21",
-                "group": "errors",
-                "reg_type": "discrete",
-                "address": 21,
-                "type": "switch",
+                "name": "Current fan speed",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 32,
+                "type": "range",
+                "min": 0,
+                "max": 200,
+                "sporadic": true,
+                "group": "debug",
                 "readonly": true,
-                "condition": "Show_error_switches==1",
-                "enabled": true
-            },
-            {
-                "name": "Error 22",
-                "group": "errors",
-                "reg_type": "discrete",
-                "address": 22,
-                "type": "switch",
-                "readonly": true,
-                "condition": "Show_error_switches==1",
-                "enabled": true
-            },
-            {
-                "name": "Error 23",
-                "group": "errors",
-                "reg_type": "discrete",
-                "address": 23,
-                "type": "switch",
-                "readonly": true,
-                "condition": "Show_error_switches==1",
-                "enabled": true
-            },
-            {
-                "name": "Error 24",
-                "group": "errors",
-                "reg_type": "discrete",
-                "address": 24,
-                "type": "switch",
-                "readonly": true,
-                "condition": "Show_error_switches==1",
-                "enabled": true
+                "units": "rpm"
             }
         ],
         "translations": {
             "en": {
-                "template_title": "ONOKOM-AIR-TCL-1-MB-B (Adapter for household TCL systems)"
+                "template_title": "ONOKOM-AIR-TCL-1-MB-B (Adapter for household TCL systems )",
+                "Error 1": "E0 - Failure of internal and external communication (indoor unit)",
+                "Error 2": "E0 - Failure of internal and external communication (external unit)",
+                "Error 3": "E1 - Indoor temperature sensor",
+                "Error 4": "E2 - Temperature sensor of the internal heat exchanger (internal coil according to the application)",
+                "Error 5": "E3 - Outdoor coil temperature sensor (opt)",
+                "Error 6": "E4 - System malfunction",
+                "Error 7": "E5 - Incorrect model configuration",
+                "Error 8": "E6 - Malfunction of the internal fan motor",
+                "Error 9": "E7 - Outdoor temperature sensor",
+                "Error 10": "E8 - Exhaust gas temperature sensor",
+                "Error 11": "E9 - Malfunction of the drive and ipm module",
+                "Error 12": "EA - Current sensor malfunction",
+                "Error 13": "Eb - Communication malfunction between the main board and the leds",
+                "Error 14": "EC - External communication failure",
+                "Error 15": "EE - Outdoor unit eeprom malfunction",
+                "Error 16": "EF - Malfunction of the outdoor fan motor (dc motor)",
+                "Error 17": "EH - Malfunction of the outdoor air intake temperature sensor",
+                "Error 18": "EP - Malfunction of the temperature switch (in the upper part of the compressor)",
+                "Error 19": "EU - Voltage sensor malfunction"
             },
             "ru": {
-                "template_title": "ONOKOM-AIR-TCL-1-MB-B (Адаптер для бытовых систем TCL)",
                 "General": "Основные режимы и функции",
+                "Temperature control": "Контроль температуры",
+                "Vanes": "Жалюзи",
+                "Additional": "Дополнительные режимы и функции",
+                "Indication": "Индикация",
+                "HW Info": "Данные модуля",
+                "Errors": "Ошибки",
+                "Debug": "Диагностика",
+                "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
+                "No": "Нет",
+                "Yes": "Да",
+                "Show modes as range": "Отображать режимы как ползунок",
+                "Show fan as range": "Отображать вентилятор как ползунок",
+                "Show vanes as range": "Отображать жалюзи как ползунок",
+                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Show error switches": "Показать переключатели ошибок",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Parity bit": "Бит чётности",
+                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
                 "Active": "Состояние",
                 "Mode": "Режим",
-                "Active mode": "Состояние и режим",
-                "Fan speed": "Скорость вентилятора",
-                "Smart fan speed": "Скорость вентилятора расширенная",
-                "Show modes as range": "Отображать режимы как ползунок",
-                "Off": "Выключен",
                 "Heat": "Нагрев",
                 "Cool": "Охлаждение",
                 "Auto": "Авто",
                 "Dry": "Осушение",
                 "Fan": "Вентиляция",
-                "Idle": "Простаивает",
-                "Heating": "Нагрев",
-                "Cooling": "Охлаждение",
-                "Temperature control": "Контроль температуры",
-                "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
+                "Active mode": "Состояние и режим",
+                "Off": "Выключен",
+                "Fan speed": "Скорость вентилятора",
+                "1 Speed": "1 Скорость",
+                "2 Speed": "2 Скорость",
+                "3 Speed": "3 Скорость",
+                "4 Speed": "4 Скорость",
+                "5 Speed": "5 Скорость",
+                "Smart fan speed": "Скорость вентилятора расширенная",
+                "Quiet mode": "Режим тихий",
+                "Turbo mode": "Режим турбо",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Outdoor air temperature": "Температура воздуха на улице",
                 "Target temperature": "Целевая температура",
-                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Temperature correction": "Коррекция температуры",
                 "Thermostat state": "Состояние термостата",
-                "Vanes": "Жалюзи",
-                "Show vanes as range": "Отображать жалюзи как ползунок",
+                "Idle": "Простаивает",
+                "Heating": "Нагрев",
+                "Cooling": "Охлаждение",
                 "Horizontal vanes": "Горизонтальные жалюзи",
+                "Stop": "Остановлены",
                 "Swing": "Качание",
                 "Lowest": "Самое низкое",
                 "Low": "Низкое",
                 "Middle": "Среднее",
                 "High": "Высокое",
                 "Highest": "Самое высокое",
+                "Vanes swing": "Качание жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
+                "Vertical vanes": "Вертикальные жалюзи",
                 "Far Left": "Самое левое",
                 "Left": "Левое",
                 "Right": "Правое",
                 "Far Right": "Самое правое",
-                "Vertical vanes": "Вертикальные жалюзи",
-                "Vanes swing": "Качание жалюзи",
-                "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
-                "Show fan as range": "Отображать вентилятор как ползунок",
-                "Additional": "Дополнительные режимы и функции",
-                "1 Speed": "1 Скорость",
-                "2 Speed": "2 Скорость",
-                "3 Speed": "3 Скорость",
-                "4 Speed": "4 Скорость",
-                "5 Speed": "5 Скорость",
-                "Quiet mode": "Режим тихий",
+                "Gentle wind": "Мягкий поток",
+                "Compressor power limit": "Ограничение мощности компрессора",
                 "Eco mode": "Режим эко",
-                "Turbo mode": "Режим турбо",
-                "Sleep mode": "Режим сна",
+                "Heating 8 deg": "Дежурный обогрев",
                 "Ionization": "Ионизация",
                 "Mold protection": "Защита от плесени",
                 "Self cleaning": "Самоочистка",
-                "Heating 8 deg": "Дежурный обогрев",
-                "Gentle wind": "Мягкий поток",
-                "Indication": "Индикация",
-                "Screen light": "Подсветка экрана",
+                "Sleep mode": "Режим сна",
                 "Beeper": "Звуковая индикация",
-                "Compressor power limit": "Ограничение мощности компрессора",
-                "No": "Нет",
-                "Yes": "Да",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Parity bit": "Бит чётности",
-                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
-                "HW Info": "Данные модуля",
-                "HW Version": "Версия устройства",
+                "Screen light": "Подсветка экрана",
                 "FW Version": "Версия прошивки",
+                "HW Version": "Версия устройства",
+                "MCU Temperature": "Температура МК",
                 "PROTO Version": "Версия протокола",
+                "Reboot Device": "Перезагрузить устройство",
+                "Serial": "Серийный номер",
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
-                "MCU Temperature": "Температура МК",
-                "Serial": "Серийный номер",
-                "Reboot Device": "Перезагрузить устройство",
-                "Debug": "Диагностика",
-                "Current fan speed": "Текущая скорость вентилятора",
-                "Temeperature correction": "Коррекция температуры",
+                "Error code": "Код ошибки",
+                "No error": "Нет ошибки",
+                "Error 1": "E0 - Сбой внутренней и внешней связи (внутренний блок)",
+                "Error 2": "E0 - Сбой внутренней и внешней связи (внешний блок)",
+                "Error 3": "E1 - Датчик температуры в помещении",
+                "Error 4": "E2 - Датчик температуры внутреннего теплообменника (внутреннего змеевика по приложению)",
+                "Error 5": "E3 - Датчик температуры наружного змеевика (opt)",
+                "Error 6": "E4 - Неисправность системы",
+                "Error 7": "E5 - Неверная конфигурация модели",
+                "Error 8": "E6 - Неисправность двигателя внутреннего вентилятора",
+                "Error 9": "E7 - Датчик наружной температуры",
+                "Error 10": "E8 - Датчик температуры выхлопных газов",
+                "Error 11": "E9 - Неисправность привода и модуля ipm",
+                "Error 12": "EA - Неисправность датчика тока",
+                "Error 13": "Eb - Неисправность связи между основной платой и светодиодами",
+                "Error 14": "EC - Сбой внешней связи",
+                "Error 15": "EE - Неисправность eeprom наружного блока",
+                "Error 16": "EF - Неисправность двигателя наружного вентилятора (двигатель постоянного тока)",
+                "Error 17": "EH - Неисправность датчика температуры всасывания наружного воздуха",
+                "Error 18": "EP - Неисправность реле температуры (в верхней части компрессора)",
+                "Error 19": "EU - Неисправность датчика напряжения",
+                "Error 20": "Ошибка 20",
+                "Error 21": "Ошибка 21",
+                "Error 22": "Ошибка 22",
+                "Error 23": "Ошибка 23",
+                "Error 24": "Ошибка 24",
                 "AC connected": "Кондиционер подключен",
-                "Show error switches": "Показать переключатели ошибок",
-                "Errors": "Ошибки",
-                "Error 1": "E0 Сбой внутренней и внешней связи (внутренний блок)",
-                "Error 2": "E0 Сбой внутренней и внешней связи (внешний блок)",
-                "Error 3": "E1 Неисправность датчика температуры в помещении",
-                "Error 4": "E2 Неисправность датчика температуры внутреннего теплообменника",
-                "Error 5": "E3 Неисправность датчика температуры наружного змеевика (OPT)",
-                "Error 6": "E4 Неисправность системы",
-                "Error 7": "E5 Неверная конфигурация модели",
-                "Error 8": "E6 Неисправность двигателя внутреннего вентилятора",
-                "Error 9": "E7 Неисправность датчика наружной температуры",
-                "Error 10": "E8 Неисправность датчика температуры нагнетания компрессора",
-                "Error 11": "E9 Неисправность привода и модуля IPM",
-                "Error 12": "EA Неисправность датчика тока",
-                "Error 13": "EB Неисправность связи между основной платой и светодиодами",
-                "Error 14": "EC Сбой внешней связи",
-                "Error 15": "EE Неисправность EEPROM наружного блока",
-                "Error 16": "EF Неисправность двигателя наружного вентилятора (двигатель постоянного тока)",
-                "Error 17": "EH Неисправность датчика температуры всасывания наружного воздуха",
-                "Error 18": "EP Неисправность реле температуры (в верхней части компрессора)",
-                "Error 19": "EU Неисправность датчика напряжения",
-                "Error 20": "Неизвестная ошибка 1",
-                "Error 21": "Неизвестная ошибка 2",
-                "Error 22": "Неизвестная ошибка 3",
-                "Error 23": "Неизвестная ошибка 4",
-                "Error 24": "Неизвестная ошибка 5"
+                "Current fan speed": "Текущая скорость вентилятора",
+                "Normal mode": "Обычный режим",
+                "Disabled if no errors": "Отключен если нет ошибок",
+                "Disabled untill reboot": "Отключен до перезагрузки",
+                "Always disabled": "Всегда отключен",
+                "Green untill reboot": "Зеленый до перезагрузки",
+                "Red untill reboot": "Красный до перезагрузки",
+                "template_title": "ONOKOM-AIR-TCL-1-MB-B (Адаптер для бытовых систем TCL)"
             }
         }
     }
