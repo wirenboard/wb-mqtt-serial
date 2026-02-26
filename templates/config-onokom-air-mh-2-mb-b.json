@@ -30,11 +30,6 @@
                 "title": "HW Info",
                 "id": "hw_info",
                 "order": 6
-            },
-            {
-                "title": "Debug",
-                "id": "debug",
-                "order": 9
             }
         ],
         "parameters": [
@@ -319,8 +314,7 @@
                     "1 Speed",
                     "2 Speed",
                     "3 Speed",
-                    "4 Speed",
-                    "5 Speed"
+                    "4 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -510,9 +504,9 @@
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal and vertical swing",
-                    "Swinging horizontal blinds",
-                    "Swinging vertical blinds"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -527,15 +521,6 @@
                 "sporadic": true,
                 "group": "temperatureControl",
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
-            },
-            {
-                "name": "AC connected",
-                "reg_type": "coil",
-                "address": 20,
-                "type": "switch",
-                "sporadic": true,
-                "group": "debug",
-                "readonly": true
             },
             {
                 "name": "HW Version",
@@ -667,15 +652,14 @@
                 "Vertical vanes": "Вертикальные жалюзи",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
-                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
+                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "1 Speed": "1 Скорость",
                 "2 Speed": "2 Скорость",
                 "3 Speed": "3 Скорость",
                 "4 Speed": "4 Скорость",
-                "5 Speed": "5 Скорость",
                 "No": "Нет",
                 "Yes": "Да",
                 "Baud rate": "Скорость обмена",
@@ -691,9 +675,7 @@
                 "MCU Temperature": "Температура МК",
                 "Serial": "Серийный номер",
                 "Reboot Device": "Перезагрузить устройство",
-                "Debug": "Диагностика",
-                "Temeperature correction": "Коррекция температуры",
-                "AC connected": "Кондиционер подключен"
+                "Temeperature correction": "Коррекция температуры"
             }
         }
     }
