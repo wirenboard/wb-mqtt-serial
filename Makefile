@@ -96,6 +96,9 @@ endif
 
 templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
 
+dump-templates: templates
+	./dump_templates.py templates/ build/templates/ > test/TDeviceTemplatesTest.Validate.dat
+
 clean:
 	-rm -rf build
 	-rm -rf $(TEST_DIR)/$(TEST_BIN)
