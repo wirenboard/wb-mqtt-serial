@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.229.0) stable; urgency=medium
+
+  * Add new templates for WB-M1W2 and WB-M1W2 v.3 with multiple sensors per channel feature (fw4.35)
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 26 Feb 2026 20:47:00 +0300
+
 wb-mqtt-serial (2.228.0) stable; urgency=medium
 
   * Update ONOKOM templates

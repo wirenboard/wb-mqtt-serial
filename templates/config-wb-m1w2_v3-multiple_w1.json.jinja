@@ -1,0 +1,655 @@
+{% set INPUTS_NUMBER = 2 -%}
+{% set FIRST_INPUT = 1 -%}
+{% set SENSORS_NUMBER = 20 -%}
+{% set FIRST_SENSOR = 1 -%}
+{% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
+{
+    "title": "WB-M1W2_v3_template_title",
+    "device_type": "WB-M1W2 v.3 MULTIPLE W1",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WB-M1W2 v.3",
+            "fw": "4.35.0-rc2"
+        }
+    ],
+    "device": {
+        "name": "WB-M1W2",
+        "id": "wb-m1w2",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "enable_wb_continuous_read": true,
+        "groups": [
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{in_num}}",
+                "id": "g_in{{in_num}}"
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{in_num}}_press_params",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "1-Wire Sensors",
+                "id": "gg_in{{in_num}}_sensors",
+                "description": "w1_sensors_description",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "input{{in_num}}_channels",
+                "id": "gg_in{{in_num}}_channels",
+                "group": "g_in{{in_num}}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Sensors Temperature",
+                "id": "gg_in{{in_num}}_temp",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "Sensors Status",
+                "id": "gg_in{{in_num}}_status",
+                "group": "g_in{{in_num}}"
+            },
+            {% endfor -%}
+            {
+                "title": "1-Wire Bus",
+                "id": "g_w1_bus"
+            },
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "1-Wire Bus {{in_num}}",
+                "id": "gg_w1_bus{{in_num}}_channels",
+                "group": "g_w1_bus"
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "g_general"
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "g_debug"
+            },
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "1-Wire Bus {{in_num}}",
+                "id": "gg_debug_bus{{in_num}}_channels",
+                "group": "g_debug"
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
+        ],
+        "parameters": {
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_mode": {
+                "title": "Mode",
+                "fw": "4.32.0",
+                "address": {{275 + in_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "1-Wire Bus",
+                    "Counting and press detection"
+                ],
+                "group": "g_in{{in_num}}",
+                "order": 1
+            },
+            "in{{in_num}}_debounce_ms": {
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                "address": {{340 + in_num - 1}},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "g_in{{in_num}}",
+                "order": 2,
+                "condition": "in{{in_num}}_mode==1"
+            },
+            "in{{in_num}}_lp_hold_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                "address": {{1100 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in{{in_num}}_mode==1"
+            },
+            "in{{in_num}}_secp_waiting_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                "address": {{1140 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+            "bus{{in_num}}_sens{{sens_num}}_id": {
+                "title": "Sensor {{sens_num}} ID",
+                "reg_type": "holding",
+                "address": {{5632 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "format": "u64",
+                "type": "w1-id",
+                "group": "gg_in{{in_num}}_sensors",
+                "order": {{1 + (sens_num - FIRST_SENSOR)}},
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "g_general",
+                "order": 4
+            },
+            "temperature_readings_period_s": {
+                "title": "temperature_readings_period_s_title",
+                "description": "temperature_readings_period_s_description",
+                "address": 101,
+                "reg_type": "holding",
+                "default": 2,
+                "min": 1,
+                "max": 60,
+                "group": "g_w1_bus",
+                "order": 1
+            },
+            "temperature_readings_filter_deg": {
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
+                "address": 99,
+                "reg_type": "holding",
+                "scale": 0.0625,
+                "default": 1,
+                "group": "g_w1_bus",
+                "order": 2
+            }
+        },
+        "channels": [
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input {{in_num}}",
+                "reg_type": "discrete",
+                "address": {{in_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} counter",
+                "reg_type": "input",
+                "format": "u16",
+                "address": {{277 + in_num - 1}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Single Press Counter",
+                "reg_type": "press_counter",
+                "address": {{464 + in_num - 1}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Long Press Counter",
+                "reg_type": "press_counter",
+                "address": {{480 + in_num - 1}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Double Press Counter",
+                "reg_type": "press_counter",
+                "address": {{496 + in_num - 1}},
+                "type": "value",
+                "enabled": false,
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "Input {{in_num}} Shortlong Press Counter",
+                "reg_type": "press_counter",
+                "address": {{512 + in_num - 1}},
+                "type": "value",
+                "enabled": false,
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
+            },
+            {
+                "name": "External Sensor {{in_num}}",
+                "reg_type": "input",
+                "address": {{7 + in_num - 1}},
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "group": "gg_in{{in_num}}_temp",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "name": "External Sensor {{in_num}} OK",
+                "reg_type": "discrete",
+                "address": {{16 + in_num - 1}},
+                "type": "switch",
+                "enabled": false,
+                "group": "gg_in{{in_num}}_status",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "ext_sens{{in_num}}_last_valid_temp",
+                "name": "External Sensor {{in_num}} Last Valid Temp",
+                "reg_type": "input",
+                "address": {{20 + (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "enabled": false,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "ext_sens{{in_num}}_presense",
+                "name": "External Sensor {{in_num}} Presense",
+                "reg_type": "input",
+                "address": {{376 + (in_num - FIRST_INPUT)}},
+                "type": "switch",
+                "enabled": false,
+                "format": "u8",
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "ext_sens{{in_num}}_supply",
+                "name": "External Sensor {{in_num}} Supply",
+                "reg_type": "input",
+                "address": {{448 + (in_num - FIRST_INPUT)}},
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Parasitic",
+                    "External"
+                ],
+                "enabled": false,
+                "format": "u8",
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "bus{{in_num}}_busy_error_conter",
+                "name": "Busy Error Counter On The Bus {{in_num}}",
+                "reg_type": "input",
+                "address": {{456 + (in_num - FIRST_INPUT)}},
+                "enabled": false,
+                "format": "u16",
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+            {
+                "id": "bus{{in_num}}_temp{{sens_num}}",
+                "name": "Temperature {{in_num}}:{{sens_num}}",
+                "reg_type": "input",
+                "address": {{1536 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "group": "gg_in{{in_num}}_temp",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "bus{{in_num}}_sens{{sens_num}}_ok",
+                "name": "Sensor {{in_num}}:{{sens_num}} OK",
+                "reg_type": "discrete",
+                "address": {{128 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "type": "switch",
+                "enabled": false,
+                "group": "gg_in{{in_num}}_status",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "bus{{in_num}}_last_valid_temp{{sens_num}}",
+                "name": "Last Valid Temp {{in_num}}:{{sens_num}}",
+                "reg_type": "input",
+                "address": {{3584 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "enabled": false,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% endfor -%}
+            {
+                "id": "bus{{in_num}}_new_sens_count",
+                "name": "New Sensors On The Bus {{in_num}}",
+                "reg_type": "input",
+                "format": "u8",
+                "address": {{3328 + (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "default": 0,
+                "group": "gg_w1_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "bus{{in_num}}_saved_sens_count",
+                "name": "New Sensors Saved On The Bus {{in_num}}",
+                "reg_type": "input",
+                "format": "u8",
+                "address": {{3336 + (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "default": 0,
+                "enabled": false,
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {
+                "id": "bus{{in_num}}_save_new_sens",
+                "name": "Save New Sensors On The Bus {{in_num}}",
+                "reg_type": "coil",
+                "address": {{24 + (in_num - FIRST_INPUT)}},
+                "type": "pushbutton",
+                "value": 1,
+                "group": "gg_w1_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+            {
+                "id": "bus{{in_num}}_new_sens{{sens_num}}_id",
+                "name": "New Sensor {{in_num}}:{{sens_num}} ID",
+                "reg_type": "input",
+                "format": "u64",
+                "address": {{3680 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "type": "w1-id",
+                "default": 0,
+                "enabled": false,
+                "group": "gg_w1_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% endfor -%}
+            {
+                "id": "bus{{in_num}}_found_sens_count",
+                "name": "Sensors Found On The Bus {{in_num}}",
+                "reg_type": "input",
+                "format": "u8",
+                "address": {{3344 + (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "default": 0,
+                "enabled": false,
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+            {
+                "id": "bus{{in_num}}_found_sens{{sens_num}}_id",
+                "name": "Found Sensor {{in_num}}:{{sens_num}} ID",
+                "reg_type": "input",
+                "format": "u64",
+                "address": {{4352 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "type": "w1-id",
+                "default": 0,
+                "enabled": false,
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {
+                "name": "Reset All Counters",
+                "reg_type": "holding",
+                "address": 100,
+                "value": 1,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "g_general",
+                "condition": "
+                    {%- for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                        in{{in_num}}_mode==1
+                        {%- if not loop.last -%} || {%- endif -%}
+                    {%- endfor -%}
+                "
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "4.34.0",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "value",
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
+                "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
+                "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
+                "w1_sensors_description": "Adding new sensors:<br>1) Make sure that the new sensors are connected to the bus;<br>2) Click the 'Save New Sensors On The Bus' button on the device widget;<br>3) Click the 'Review config' button;<br>4) Click the 'Save config' button.<br>New sensors will be saved in free cells.<br><br>If the sensor is not used, specify '0'.",
+
+                "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-channel temperature measurement and pulse-counter module)",
+                "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
+                "units": "s",
+
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "debounce_time_title": "Debounce Time (ms)",
+
+                "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
+                "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50"
+            },
+            "ru": {
+                "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-канальный преобразователь для термометров 1-Wire с функцией счётных входов)",
+                "1-Wire Bus": "Шина 1-Wire",
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}}": "Вход {{in_num}}",
+                "Input {{in_num}} counter": "Счетчик {{in_num}}",
+                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
+                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
+                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
+                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                "External Sensor {{in_num}}": "Датчик температуры {{in_num}}",
+                "External Sensor {{in_num}} OK": "Датчик температуры {{in_num}} подключен",
+                {% endfor -%}
+
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
+                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
+                "w1_sensors_description": "Добавление новых датчиков:<br>1) убедитесь, что новые датчики подключены на шину;<br>2) нажмите кнопку 'Сохранить новые датчики на шине' на виджете устройства;<br>3) нажмите кнопку 'Перечитать настройки';<br>4) нажмите кнопку 'Сохранить настройки'.<br>Новые датчики будут сохранены в свободные ячейки.<br><br>Если датчик не используется, укажите '0'.",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
+                "Mode": "Режим работы",
+                "Press Parameters": "Параметры нажатий",
+                "Counting and press detection": "Счет и детектирование нажатий",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
+
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
+                "debounce_time_title": "Время подавления дребезга (мс)",
+
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным. Значение по умолчанию - 1000",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
+                "Reset All Counters": "Сбросить все счетчики",
+                "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
+                "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+
+                {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+                "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",
+                {% endfor -%}
+
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
+                "External Sensor {{in_num}} Last Valid Temp": "Последняя действительная температура {{in_num}}",
+                "External Sensor {{in_num}} Presense": "Датчик температуры {{in_num}} присутствует",
+                "External Sensor {{in_num}} Supply": "Питание датчика температуры {{in_num}}",
+                "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
+                "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
+                "Save New Sensors On The Bus {{in_num}}": "Сохранить новые датчики на шине {{in_num}}",
+                "Busy Error Counter On The Bus {{in_num}}" : "Счетчик ошибок занятости на шине {{in_num}}",
+                "Sensors Found On The Bus {{in_num}}": "Обнаружено датчиков на шине {{in_num}}",
+                {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+                "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
+                "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
+                "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действительная температура {{in_num}}:{{sens_num}}",
+                "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
+                "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
+                {% endfor -%}
+                {% endfor -%}
+
+                "1-Wire Sensors": "Датчики 1-Wire",
+                "Sensors Temperature": "Температура датчиков",
+                "Sensors Status": "Состояние датчиков",
+                "Parasitic": "Паразитное",
+                "External": "Внешнее"
+            }
+        }
+    }
+}
