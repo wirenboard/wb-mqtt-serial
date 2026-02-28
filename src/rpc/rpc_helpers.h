@@ -17,10 +17,7 @@ TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& requ
 /**
  * @brief Reads a Modbus register with retry logic.
  */
-void ReadModbusRegister(TPort& port,
-                        TRPCDeviceRequest& request,
-                        PRegisterConfig registerConfig,
-                        TRegisterValue& value);
+void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value);
 
 /**
  * @brief Writes a Modbus register with retry logic.

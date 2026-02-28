@@ -38,10 +38,7 @@ Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::s
     }
 }
 
-void ReadModbusRegister(TPort& port,
-                        TRPCDeviceRequest& request,
-                        PRegisterConfig registerConfig,
-                        TRegisterValue& value)
+void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value)
 {
     auto slaveId = static_cast<uint8_t>(std::stoi(request.Device->DeviceConfig()->SlaveId));
     std::unique_ptr<Modbus::IModbusTraits> traits;

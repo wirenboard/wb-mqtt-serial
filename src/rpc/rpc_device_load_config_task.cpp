@@ -165,7 +165,7 @@ namespace
                 }
             }
         } else {
-            for (const auto& item : templateParams) {
+            for (const auto& item: templateParams) {
                 if (!item["readonly"].asBool()) {
                     writableParams.append(item);
                 }
