@@ -1,0 +1,314 @@
+{
+    "title": "template_title",
+    "device_type": "ONOKOM-AIR-HS-3-MB-B",
+    "deprecated": true,
+    "group": "g-air-conditioning",
+    "device": {
+        "name": "ONOKOM-AIR-HS-3-MB-B",
+        "id": "ONOKOM-AIR-HS-3-MB-B",
+        "groups": [
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "Additional",
+                "id": "additional"
+            },
+            {
+                "title": "Temperature control",
+                "id": "temperatureControl"
+            },
+            {
+                "title": "Vanes",
+                "id": "vanes"
+            },
+            {
+                "title": "Indication",
+                "id": "indication"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "debug"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Active",
+                "group": "general",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "enabled": true
+            },
+            {
+                "name": "Mode",
+                "reg_type": "holding",
+                "group": "general",
+                "address": 1,
+                "type": "range",
+                "min": 1,
+                "max": 5
+            },
+            {
+                "name": "Active mode",
+                "group": "general",
+                "reg_type": "holding",
+                "address": 2,
+                "type": "range",
+                "min": 0,
+                "max": 5,
+                "enabled": true
+            },
+            {
+                "name": "Indoor air temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding",
+                "address": 3,
+                "scale": 0.01,
+                "format": "s16",
+                "type": "value",
+                "units": "deg C"
+            },
+            {
+                "name": "Outdoor air temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding",
+                "address": 4,
+                "scale": 0.01,
+                "format": "s16",
+                "type": "value",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Indoor heat exchanger temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding",
+                "address": 23,
+                "scale": 0.01,
+                "format": "s16",
+                "type": "value",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Outdoor heat exchanger temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding",
+                "address": 24,
+                "scale": 0.01,
+                "format": "s16",
+                "type": "value",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Target temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding",
+                "address": 5,
+                "scale": 0.01,
+                "type": "range",
+                "units": "deg C",
+                "format": "s16",
+                "min": 16,
+                "max": 32
+            },
+            {
+                "name": "Thermostat state",
+                "group": "temperatureControl",
+                "reg_type": "holding",
+                "address": 6,
+                "readonly": true,
+                "type": "value",
+                "enabled": true
+            },
+            {
+                "name": "Fan speed",
+                "group": "general",
+                "reg_type": "holding",
+                "address": 7,
+                "type": "range",
+                "min": 0,
+                "max": 5
+            },
+            {
+                "name": "Smart fan speed",
+                "group": "general",
+                "reg_type": "holding",
+                "address": 8,
+                "type": "range",
+                "min": 0,
+                "max": 6,
+                "enabled": true
+            },
+            {
+                "name": "Horizontal vanes",
+                "group": "vanes",
+                "reg_type": "holding",
+                "address": 9,
+                "type": "switch"
+            },
+            {
+                "name": "Vertical vanes",
+                "group": "vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "switch"
+            },
+            {
+                "name": "Vanes swing",
+                "group": "vanes",
+                "reg_type": "holding",
+                "address": 11,
+                "type": "range",
+                "min": 0,
+                "max": 3,
+                "enabled": true
+            },
+            {
+                "name": "Screen light",
+                "group": "indication",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch"
+            },
+            {
+                "name": "Quiet mode",
+                "group": "additional",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Eco mode",
+                "group": "additional",
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Sleep mode",
+                "group": "additional",
+                "reg_type": "coil",
+                "address": 8,
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Currernt compressor power",
+                "group": "debug",
+                "reg_type": "holding",
+                "address": 21,
+                "readonly": true,
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "units": "%",
+                "enabled": false
+            },
+            {
+                "name": "Target compressor power",
+                "group": "debug",
+                "reg_type": "holding",
+                "address": 22,
+                "readonly": true,
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "units": "%",
+                "enabled": false
+            },
+            {
+                "name": "Temeperature correction",
+                "group": "debug",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 20,
+                "type": "value",
+                "min": -30,
+                "max": 30,
+                "enabled": false
+            },
+            {
+                "name": "Modbus ID",
+                "group": "hw_info",
+                "reg_type": "holding",
+                "address": 128,
+                "type": "value",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Device version",
+                "group": "hw_info",
+                "reg_type": "holding",
+                "address": 201,
+                "type": "value",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Firmware version",
+                "group": "hw_info",
+                "reg_type": "holding",
+                "address": 250,
+                "type": "value",
+                "readonly": true,
+                "enabled": false
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "ONOKOM AIR HS-3-MB-B (Adapter for household Hisesnse systems)"
+            },
+            "ru": {
+                "template_title": "ONOKOM AIR HS-3-MB-B (Адаптер для бытовых систем Hisense)",
+                "General": "Основные режимы и функции",
+                "Additional": "Дополнительные режимы и функции",
+                "Temperature control": "Контроль температуры",
+                "Indication": "Индикация",
+                "Vanes": "Жалюзи",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Active": "Состояние",
+                "Mode": "Режим",
+                "Active mode": "Состояние и режим",
+                "Fan speed": "Скорость вентилятора",
+                "Smart fan speed": "Скорость вентилятора расширенная",
+                "Screen": "Дисплей",
+                "Quiet mode": "Тихий режим",
+                "Eco mode": "Эко режим",
+                "Turbo mode": "Турбо режим",
+                "Indoor air temperature": "Температура воздуха в помещении",
+                "Outdoor air temperature": "Температура воздуха на улице",
+                "Target temperature": "Целевая температура",
+                "Thermostat state": "Состояние термостата",
+                "Temeperature correction": "Коррекция температуры",
+                "Indoor heat exchanger temperature": "Температура внутреннего теплообменника",
+                "Outdoor heat exchanger temperature": "Температура внешнего теплообменника",
+                "Horizontal vanes": "Горизонтальные жалюзи",
+                "Vertical vanes": "Вертикальные жалюзи",
+                "Vanes swing": "Качание жалюзи",
+                "Screen light": "Подсветка экрана",
+                "Sleep mode": "Режим сна",
+                "Ionization": "Ионизация",
+                "Anti-fungus": "Антиплесень",
+                "Self-clean": "Самоочистка",
+                "Currernt compressor power": "Текущая мощность компрессора",
+                "Target compressor power": "Целевая мощность компрессора",
+                "Current fan speed": "Текущая скорость вентилятора",
+                "device version": "Версия устройства",
+                "firmware version": "Версия прошивки"
+            }
+        }
+    }
+}

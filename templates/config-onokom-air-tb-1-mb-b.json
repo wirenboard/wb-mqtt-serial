@@ -1,15 +1,15 @@
 {
     "title": "template_title",
-    "device_type": "ONOKOM-AIR-MD-3-MB-B",
+    "device_type": "ONOKOM-AIR-TB-1-MB-B",
     "group": "g-air-conditioning",
     "hw": [
         {
-            "signature": "MD-3-MB-B"
+            "signature": "TB-1-MB-B"
         }
     ],
     "device": {
-        "name": "ONOKOM-AIR-MD-3-MB-B",
-        "id": "ONOKOM-AIR-MD-3-MB-B",
+        "name": "ONOKOM-AIR-TB-1-MB-B",
+        "id": "ONOKOM-AIR-TB-1-MB-B",
         "groups": [
             {
                 "title": "General",
@@ -122,50 +122,6 @@
                 ],
                 "group": "temperatureControl",
                 "order": 1
-            },
-            {
-                "id": "baud_rate",
-                "title": "Baud rate",
-                "description": "baud_rate_description",
-                "address": 110,
-                "reg_type": "holding",
-                "enum": [
-                    96,
-                    192,
-                    384,
-                    576,
-                    1152
-                ],
-                "default": 96,
-                "enum_titles": [
-                    "9600",
-                    "19200",
-                    "38400",
-                    "57600",
-                    "115200"
-                ],
-                "group": "hw_info",
-                "order": 1
-            },
-            {
-                "id": "parity_bit",
-                "title": "Parity bit",
-                "description": "parity_bit_description",
-                "address": 111,
-                "reg_type": "holding",
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "default": 0,
-                "enum_titles": [
-                    "none (N)",
-                    "odd (O)",
-                    "even (E)"
-                ],
-                "group": "hw_info",
-                "order": 1
             }
         ],
         "channels": [
@@ -259,7 +215,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 3,
+                "max": 5,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -276,13 +232,17 @@
                     0,
                     1,
                     2,
-                    3
+                    3,
+                    4,
+                    5
                 ],
                 "enum_titles": [
                     "Auto",
                     "1 Speed",
                     "2 Speed",
-                    "3 Speed"
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -293,7 +253,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 4,
+                "max": 6,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -305,20 +265,26 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 4,
+                "max": 6,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
                     0,
+                    1,
                     2,
                     3,
-                    4
+                    4,
+                    5,
+                    6
                 ],
                 "enum_titles": [
                     "Auto",
+                    "Quiet mode",
                     "1 Speed",
                     "2 Speed",
-                    "3 Speed"
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -350,23 +316,10 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
-                "name": "Indoor heat exchanger temperature",
+                "name": "Outdoor air temperature",
                 "enabled": false,
                 "reg_type": "holding",
-                "address": 23,
-                "type": "value",
-                "format": "s16",
-                "scale": 0.01,
-                "sporadic": true,
-                "group": "temperatureControl",
-                "readonly": true,
-                "units": "deg C"
-            },
-            {
-                "name": "Outdoor heat exchanger temperature",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 24,
+                "address": 4,
                 "type": "value",
                 "format": "s16",
                 "scale": 0.01,
@@ -381,24 +334,12 @@
                 "address": 5,
                 "type": "range",
                 "format": "s16",
-                "min": 16,
+                "min": 17,
                 "max": 30,
                 "scale": 0.01,
                 "sporadic": true,
                 "group": "temperatureControl",
                 "units": "deg C"
-            },
-            {
-                "name": "Temperature correction",
-                "reg_type": "holding",
-                "address": 20,
-                "type": "value",
-                "format": "s16",
-                "min": -30,
-                "max": 30,
-                "sporadic": true,
-                "group": "temperatureControl",
-                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
                 "name": "Thermostat state",
@@ -465,44 +406,22 @@
                 "condition": "Show_vanes_as_range!=1"
             },
             {
-                "name": "Vanes swing",
-                "reg_type": "holding",
-                "address": 11,
-                "type": "range",
-                "format": "u16",
-                "min": 0,
-                "max": 3,
-                "sporadic": false,
-                "group": "vanes",
-                "condition": "Show_vanes_as_range==1"
-            },
-            {
-                "name": "Vanes swing",
-                "reg_type": "holding",
-                "address": 11,
-                "type": "value",
-                "format": "u16",
-                "sporadic": false,
-                "group": "vanes",
-                "enum": [
-                    0,
-                    2
-                ],
-                "enum_titles": [
-                    "Stop",
-                    "Horizontal vanes swing"
-                ],
-                "condition": "Show_vanes_as_range!=1"
-            },
-            {
                 "name": "Eco mode",
                 "enabled": false,
                 "reg_type": "coil",
                 "address": 6,
                 "type": "switch",
                 "sporadic": true,
-                "group": "additional",
-                "readonly": true
+                "group": "additional"
+            },
+            {
+                "name": "Quiet mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "FW Version",
@@ -601,7 +520,47 @@
         ],
         "translations": {
             "en": {
-                "template_title": "ONOKOM AIR MD-3-MB-B (Adapter for semi-industrial MDV systems)"
+                "template_title": "ONOKOM AIR TB-1-MB-B (Adapter for Toshiba systems).",
+                "Error 0": "No error",
+                "Error 1": "00-0C - TA sensor error. The room temperature sensor is short-circuit or disconnection.",
+                "Error 2": "00-0D - TC sensor error. The heat exchanger temperature sensor of the indoor unit is out of place, disconnection, short-circuit or migration.",
+                "Error 3": "00-11 - Fan motor of the indoor unit is failure, lock-rotor, short-circuit, disconnection, etc. or its circuit on P.C. board has problem.",
+                "Error 4": "00-0F - TCJ sensor error or P.C. board error",
+                "Error 5": "00-12 - Other trouble on the indoor P.C. board.",
+                "Error 6": "01-04 - 1)Defective wiring of the connecting cable or miss-wiring. 2)Operation signal has not send from the indoor unit when operation start. 3)Outdoor unit has not send return signal to the indoor unit when operation started. 4)Return signal from the outdoor unit is stop during operation. Some protector (hardware, if exist) of the outdoor unit open circuit of signal. Signal circuit of indoor P.C. board or outdoor P.C. board is failure in some period.",
+                "Error 7": "01-05 - Inverter board error",
+                "Error 8": "02-14 - Current on inverter circuit is over limit in short time. Inverter P.C. board is failure, IGBT shortage, etc. Compressor current is higher than limitation, lock rotor, etc.",
+                "Error 9": "02-16 - Compressor position-detect circuit error or short-circuit between winding of compressor.",
+                "Error 10": "02-17 - Current-detect circuit of inverter P.C. board error.",
+                "Error 11": "02-18 - TE or TS sensor; abnormal. Out of place, disconnection, shortage, or misconnection (TE sensor is connected to TS connector, TS sensor is connected to TE sensor connector) TE sensor; Outdoor heat exchanger temperature sensor TS sensor; Suction pipe temperature sensor.",
+                "Error 12": "02-19 - TD sensor; Discharge pipe temperature sensor is disconnection or shortage.",
+                "Error 13": "02-1A - Outdoor fan failure or it's drive-circuit on the inverter P.C. board failure.",
+                "Error 14": "02-1B - TO sensor; The outdoor temperature sensor is disconnection or shortage.",
+                "Error 15": "02-1C - Compressor drive output error. (Relation of voltage, current and frequency is abnormal). Overloading operation of compressor caused by over-charge refrigerant, P.M.V. failure, etc. Compressor failure (high current).",
+                "Error 16": "45841 - Return signal of the outdoor unit has been sent when operation start. but after that, signal is stop some time. instantaneous power failure. some protector (hardware) of the outdoor unit open circuit of signal. signal circuit of indoor P.C. board or outdoor P.C. board is failure in some period.",
+                "Error 17": "03-1D - Compressor does not rotate. Because of missed wiring, missed phase or shortage.",
+                "Error 18": "03-1E - Discharge temperature exceeded 117°c.",
+                "Error 19": "03-1F - Compressor is high current though operation Hz is decreased to minimum limit. Installation problem. Instantaneous power failure. Refrigeration cycle problem. Compressor break down. Compressor failure (high current).operation, etc.)",
+                "Error 20": "03-08 - Return signal of the outdoor unit has been sent when operation start. But after that, signal is stop some time. Instantaneous power failure. Some protector (hardware) of the outdoor unit open circuit of signal. Signal circuit of indoor P.C. board or outdoor P.C. board is failure in some period. TE, TC high tmperature TE for cooling operation TC for heating operation.",
+                "Error 21": "E03 - No communication with remote controller (including wireless) and communication adapter/Communication error between remote controller and indoor unit.",
+                "Error 22": "E04 - Serial signal not outputed from outdoor unit to indoor unit. Faulty inter-unit wiring. Defective serial transmission circuit on outdoor P.C. board. Defective serial reception circuit on indoor board/Communication error between indoor and outdoor units.",
+                "Error 23": "E08 - Duplicate indoor unit address.",
+                "Error 24": "L03 - Duplicate indoor master unit/Outdoor unit address error.",
+                "Error 25": "L07 - Group wire is present in an individual room/Outdoor unit address error.",
+                "Error 26": "L08 - Unset indoor group address.",
+                "Error 27": "L09 - Indoor capacity not set/Error in indoor unit capacity settings.",
+                "Error 28": "L30 - Abnormal external interlock input/Indoor or outdoor board error.",
+                "Error 29": "P10 - Float switch activation. Float switch circuit open, disconnected, broken, or contact fault/Drain pump error, float sensor error, indoor board error.",
+                "Error 30": "P12 - Indoor DC fan motor error/Indoor unit fan motor error.",
+                "Error 31": "P19 - Four-way valve system error.",
+                "Error 32": "P31 - Local unit stops while alarm is outputed to other indoor units/Indoor unit error.",
+                "Error 33": "F01 - Open circuit, disconnection, or short circuit of indoor heat exchanger temperature sensor (TCJ).",
+                "Error 34": "F02 - Open circuit, disconnection, or short circuit of indoor heat exchanger temperature sensor (TC).",
+                "Error 35": "F10 - Open circuit, disconnection, or short circuit of indoor heat exchanger temperature sensor (TA).",
+                "Error 36": "F29 - Internal EEPROM error. Check indoor remote control receiver board.",
+                "Error 37": "E10 - Communication error between indoor microcontrollers/Indoor unit board malfunction.",
+                "Error 38": "E11 - Communication error between application and indoor unit.",
+                "Error 39": "E18 - Persistent communication error between indoor master and slave units, or between main and sub units."
             },
             "ru": {
                 "General": "Основные режимы и функции",
@@ -617,10 +576,6 @@
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Show vanes as range": "Отображать жалюзи как ползунок",
                 "Show thermostat state as range": "Отображать состояние термостата как ползунок",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Parity bit": "Бит чётности",
-                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
                 "Active": "Состояние",
                 "Mode": "Режим",
                 "Heat": "Нагрев",
@@ -634,12 +589,13 @@
                 "1 Speed": "1 Скорость",
                 "2 Speed": "2 Скорость",
                 "3 Speed": "3 Скорость",
+                "4 Speed": "4 Скорость",
+                "5 Speed": "5 Скорость",
                 "Smart fan speed": "Скорость вентилятора расширенная",
+                "Quiet mode": "Режим тихий",
                 "Indoor air temperature": "Температура воздуха в помещении",
-                "Indoor heat exchanger temperature": "Температура внутреннего теплообменника",
-                "Outdoor heat exchanger temperature": "Температура внешнего теплообменника",
+                "Outdoor air temperature": "Температура воздуха на улице",
                 "Target temperature": "Целевая температура",
-                "Temperature correction": "Коррекция температуры",
                 "Thermostat state": "Состояние термостата",
                 "Idle": "Простаивает",
                 "Heating": "Нагрев",
@@ -647,8 +603,6 @@
                 "Horizontal vanes": "Горизонтальные жалюзи",
                 "Stop": "Остановлены",
                 "Swing": "Качание",
-                "Vanes swing": "Качание жалюзи",
-                "Horizontal vanes swing": "Качание горизонтальных жалюзи",
                 "Eco mode": "Режим эко",
                 "FW Version": "Версия прошивки",
                 "HW Version": "Версия устройства",
@@ -659,13 +613,47 @@
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
                 "AC connected": "Кондиционер подключен",
-                "Normal mode": "Обычный режим",
-                "Disabled if no errors": "Отключен если нет ошибок",
-                "Disabled untill reboot": "Отключен до перезагрузки",
-                "Always disabled": "Всегда отключен",
-                "Green untill reboot": "Зеленый до перезагрузки",
-                "Red untill reboot": "Красный до перезагрузки",
-                "template_title": "ONOKOM AIR MD-3-MB-B (Адаптер для полупромышленных систем MDV)"
+                "template_title": "ONOKOM AIR TB-1-MB-B (Адаптер для систем Toshiba).",
+                "Error 0": "Нет ошибки",
+                "Error 1": "00-0C - Ошибка датчика температуры внутреннего воздуха или платы внутреннего блока.",
+                "Error 2": "00-0D - Ошибка датчика температуры теплообменника TC или платы управления.",
+                "Error 3": "00-11 - Неисправна плата или двигатель вентилятора.",
+                "Error 4": "00-0F - Неисправен датчик температуры TCJ или плата управления.",
+                "Error 5": "00-12 - Необходима замена платы управления.",
+                "Error 6": "01-04 - Нет связи с внешним блоком: сгорели предохранители на плате, неправильное межблочное соединение, неисправна плата внешнего или внутреннего блока.",
+                "Error 7": "01-05 - Ошибка инверторной платы.",
+                "Error 8": "02-14 - Перегрузка по току инвертера.",
+                "Error 9": "02-16 - Замыкание между обмотками компрессора.",
+                "Error 10": "02-17 - Ошибка датчика тока.",
+                "Error 11": "02-18 - Ошибка датчиков температуры, платы управления",
+                "Error 12": "02-19 - Ошибка температурного датчика TD, платы управления",
+                "Error 13": "02-1A - Ошибка вентилятора внешнего блока-перегрузка по току, заблокирован, сгорел двигатель или плата.",
+                "Error 14": "02-1B - Датчик температуры конденсатора неисправен или плата.",
+                "Error 15": "02-1C - Компрессор не запустился в течение 20 секунд.",
+                "Error 16": "45841 - Недостаток хладагента, ошибка инверторной платы.",
+                "Error 17": "03-1D - Неисправен компрессор.",
+                "Error 18": "03-1E - Ошибка датчика всасывающей трубки TD, недостаточно хладагента.",
+                "Error 19": "03-1F - Не работает компрессор-из-за напряжения питания, перегрузки холодильного контура.",
+                "Error 20": "03-08 - Неисправность четырёхходового клапана.",
+                "Error 21": "E03 - Нет связи с удаленным контроллером (включая беспроводной) и адаптером связи/Ошибка соединения пульта управления и внутреннего блока",
+                "Error 22": "E04 - Последовательный сигнал не выводится с наружного блока на внутренний. Осечка межблочного провода. Неисправная последовательная схема передачи на наружной плате Р.С. Неисправная последовательная приемная цепь на внутренней плате/Ошибка соединения внутренний/внешний блок.",
+                "Error 23": "E08 - Дублированный адрес внутреннего блока.",
+                "Error 24": "L03 - Дублированный внутренний мастер-блок/Ошибка адреса наружного блока.",
+                "Error 25": "L07 - Есть групповой провод в отдельном помещении/Ошибка адреса внешнего блока.",
+                "Error 26": "L08 - Ошибка адреса внешнего блока.",
+                "Error 27": "L09 - Неустановленная емкость в помещении/Ошибка в установках мощности внутренних блоков.",
+                "Error 28": "L30 - Ненормальный вход внешней блокировки/Ошибка внутренней/внешней платы.",
+                "Error 29": "P10 - Работа поплавкового выключателя. Поплавковая цепь, разъединение, отрыв, ошибка контакта поплавкового выключателя/Ошибка дренажного насоса, поплавкового датчика, платы внутреннего блока.",
+                "Error 30": "P12 - Внутренняя ошибка вентилятора постоянного тока/Ошибка двигателя вентилятора внутреннего блока.",
+                "Error 31": "P19 - Ошибка системы четырёхходового клапана.",
+                "Error 32": "P31 - Собственный блок останавливается, пока предупреждение выводится на другие внутренние блоки/Ошибка внутренних блоков.",
+                "Error 33": "F01 - Отрыв, отсоединение или короткое замыкание температуры внутреннего теплообменника. датчик (TCJ).",
+                "Error 34": "F02 - Отрыв, отсоединение или короткое замыкание температуры внутреннего теплообменника. датчик (TC).",
+                "Error 35": "F10 - Отрыв, отсоединение или короткое замыкание температуры внутреннего теплообменника. датчик (TA).",
+                "Error 36": "F29 - Внутренняя ошибка EEPROM. Проверьте внутреннюю доску пульта дистанционного управления.",
+                "Error 37": "E10 - Ошибка связи между внутренними микроконтроллерами/неисправна плата внутреннего блока.",
+                "Error 38": "E11 - Ошибка связи между приложением и внутренним блоком.",
+                "Error 39": "E18 - Регулярная ошибка связи между внутренним ведущим и ведомым блоками, а также между основными и вспомогательными блоками."
             }
         }
     }

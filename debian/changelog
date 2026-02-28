@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.228.0) stable; urgency=medium
+
+  * Update ONOKOM templates
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 26 Feb 2026 16:34:00 +0400
+
 wb-mqtt-serial (2.227.1) stable; urgency=medium
 
   * Fix device/Load RPC prepare session bug
