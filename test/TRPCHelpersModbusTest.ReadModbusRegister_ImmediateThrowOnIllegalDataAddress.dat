@@ -1,0 +1,4 @@
+Open()
+EnqueueReadException()
+>> 01 03 00 46 00 01 65 DF
+<< 01 83 02 C0 F1

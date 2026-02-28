@@ -1,0 +1,4 @@
+Open()
+EnqueueWriteContinuousRead()
+>> 01 06 00 72 00 00 29 D1
+<< 01 06 00 72 00 00 29 D1

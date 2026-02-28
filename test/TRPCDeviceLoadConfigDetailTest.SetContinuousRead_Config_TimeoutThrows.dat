@@ -1,0 +1,7 @@
+Open()
+EnqueueWriteContinuousReadEnableTimeout()
+>> 01 06 00 72 00 01 E8 11
+EnqueueWriteContinuousReadEnableTimeout()
+>> 01 06 00 72 00 01 E8 11
+EnqueueWriteContinuousReadEnableTimeout()
+>> 01 06 00 72 00 01 E8 11
