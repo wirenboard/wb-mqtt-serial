@@ -351,3 +351,271 @@ TEST(TDeviceLoadTest, GetParametersRegisterListThrowsOnUnknownParam)
     ASSERT_THROW(request.GetParametersRegisterList(), TRPCException)
         << "should throw when requested parameter does not exist in template";
 }
+
+/**
+ * Checks that ParseRequestItems deduplicates and preserves order.
+ */
+TEST(TDeviceLoadTest, ParseRequestItems)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+    Json::Value items(Json::arrayValue);
+    items.append("alpha");
+    items.append("beta");
+    items.append("alpha");
+    items.append("gamma");
+
+    std::list<std::string> result;
+    request.ParseRequestItems(items, result);
+
+    ASSERT_EQ(result.size(), 3u);
+    auto it = result.begin();
+    ASSERT_EQ(*it++, "alpha");
+    ASSERT_EQ(*it++, "beta");
+    ASSERT_EQ(*it++, "gamma");
+}
+
+/**
+ * Checks that ParseRequestItems handles empty array.
+ */
+TEST(TDeviceLoadTest, ParseRequestItemsEmpty)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+    Json::Value items(Json::arrayValue);
+    std::list<std::string> result;
+    request.ParseRequestItems(items, result);
+
+    ASSERT_TRUE(result.empty());
+}
+
+/**
+ * Checks that GetChannelsRegisterList returns only specific requested channels.
+ */
+TEST(TDeviceLoadTest, GetChannelsRegisterListSpecificChannels)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Channels.push_back("Always Visible");
+    request.Channels.push_back("Mode Dependent");
+
+    auto registerList = request.GetChannelsRegisterList();
+
+    ASSERT_EQ(registerList.size(), 2u);
+    std::set<std::string> ids;
+    for (const auto& reg: registerList) {
+        ids.insert(reg.Id);
+    }
+    ASSERT_TRUE(ids.count("Always Visible"));
+    ASSERT_TRUE(ids.count("Mode Dependent"));
+}
+
+/**
+ * Checks that GetChannelsRegisterList throws when requesting an unknown channel.
+ */
+TEST(TDeviceLoadTest, GetChannelsRegisterListUnknownChannel)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Channels.push_back("Nonexistent");
+
+    ASSERT_THROW(request.GetChannelsRegisterList(), TRPCException);
+}
+
+/**
+ * Checks that GetChannelsRegisterList throws when requesting a write-only channel.
+ */
+TEST(TDeviceLoadTest, GetChannelsRegisterListWriteOnlyChannel)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Channels.push_back("Write Only");
+
+    ASSERT_THROW(request.GetChannelsRegisterList(), TRPCException);
+}
+
+/**
+ * Checks GetParametersRegisterList returns registers for requested params (array format).
+ */
+TEST(TDeviceLoadTest, GetParametersRegisterListHappyPath)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Parameters.push_back("mode");
+    request.Parameters.push_back("unrelated");
+
+    auto registerList = request.GetParametersRegisterList();
+
+    ASSERT_EQ(registerList.size(), 2u);
+    std::set<std::string> ids;
+    for (const auto& reg: registerList) {
+        ids.insert(reg.Id);
+    }
+    ASSERT_TRUE(ids.count("mode"));
+    ASSERT_TRUE(ids.count("unrelated"));
+}
+
+/**
+ * Checks GetParametersRegisterList works with object-format parameters.
+ */
+TEST(TDeviceLoadTest, GetParametersRegisterListObjectFormat)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("parameters_object");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Parameters.push_back("p1");
+    request.Parameters.push_back("p5");
+
+    auto registerList = request.GetParametersRegisterList();
+
+    ASSERT_EQ(registerList.size(), 2u);
+    std::set<std::string> ids;
+    for (const auto& reg: registerList) {
+        ids.insert(reg.Id);
+    }
+    ASSERT_TRUE(ids.count("p1"));
+    ASSERT_TRUE(ids.count("p5"));
+}
+
+/**
+ * Checks ParseRPCDeviceLoadRequest factory: deduplicates channels and parameters,
+ * populates OnResult/OnError callbacks.
+ */
+TEST(TDeviceLoadTest, ParseRPCDeviceLoadRequest)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    Json::Value requestJson(Json::objectValue);
+    Json::Value channels(Json::arrayValue);
+    channels.append("Always Visible");
+    channels.append("Mode Dependent");
+    channels.append("Always Visible"); // duplicate
+    requestJson["channels"] = channels;
+
+    Json::Value parameters(Json::arrayValue);
+    parameters.append("mode");
+    parameters.append("unrelated");
+    parameters.append("mode"); // duplicate
+    requestJson["parameters"] = parameters;
+
+    bool resultCalled = false;
+    auto onResult = [&resultCalled](const Json::Value&) { resultCalled = true; };
+    auto onError = [](int, const std::string&) {};
+
+    auto parsed = ParseRPCDeviceLoadRequest(requestJson, protocolParams, nullptr, deviceTemplate, false, onResult, onError);
+
+    // Channels should be deduplicated
+    ASSERT_EQ(parsed->Channels.size(), 2u);
+    auto chIt = parsed->Channels.begin();
+    ASSERT_EQ(*chIt++, "Always Visible");
+    ASSERT_EQ(*chIt++, "Mode Dependent");
+
+    // Parameters should be deduplicated
+    ASSERT_EQ(parsed->Parameters.size(), 2u);
+    auto pIt = parsed->Parameters.begin();
+    ASSERT_EQ(*pIt++, "mode");
+    ASSERT_EQ(*pIt++, "unrelated");
+
+    // Callbacks should be set
+    ASSERT_TRUE(parsed->OnResult != nullptr);
+    ASSERT_TRUE(parsed->OnError != nullptr);
+}
+
+/**
+ * Checks ParseRPCDeviceLoadConfigRequest factory: force flag, callbacks bound.
+ */
+TEST(TDeviceLoadConfigTest, ParseRPCDeviceLoadConfigRequest)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    Json::Value requestJson(Json::objectValue);
+    requestJson["force"] = true;
+
+    bool resultCalled = false;
+    auto onResult = [&resultCalled](const Json::Value&) { resultCalled = true; };
+    auto onError = [](int, const std::string&) {};
+
+    std::string configFileName = "/tmp/test-config.json";
+    TRPCDeviceParametersCache parametersCache;
+
+    auto parsed = ParseRPCDeviceLoadConfigRequest(
+        requestJson, protocolParams, nullptr, deviceTemplate, true, configFileName, parametersCache, onResult, onError);
+
+    ASSERT_TRUE(parsed->Force);
+    ASSERT_TRUE(parsed->DeviceFromConfig);
+    ASSERT_EQ(&parsed->ConfigFileName, &configFileName);
+    ASSERT_EQ(&parsed->ParametersCache, &parametersCache);
+    ASSERT_TRUE(parsed->OnResult != nullptr);
+    ASSERT_TRUE(parsed->OnError != nullptr);
+}

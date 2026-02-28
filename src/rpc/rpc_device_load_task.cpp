@@ -1,4 +1,4 @@
-#include "rpc_device_load_task.h"
+#include "rpc_device_load_detail.h"
 #include "config_merge_template.h"
 #include "port/serial_port.h"
 #include "rpc_helpers.h"
@@ -6,9 +6,9 @@
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
-namespace
+namespace rpc_device_load_detail
 {
-    const auto UNSUPPORTED_VALUE = "unsupported";
+    const char* UNSUPPORTED_VALUE = "unsupported";
 
     void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
     {
@@ -116,7 +116,7 @@ namespace
         }
         rpcRequest->OnResult(result);
     }
-} // namespace
+} // namespace rpc_device_load_detail
 
 TRPCDeviceLoadRequest::TRPCDeviceLoadRequest(const TDeviceProtocolParams& protocolParams,
                                              PSerialDevice device,
@@ -303,9 +303,9 @@ ISerialClientTask::TRunResult TRPCDeviceLoadSerialClientTask::Run(PFeaturePort p
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-            ExecRPCRequest(port, Request);
+            rpc_device_load_detail::ExecRPCRequest(port, Request);
         } else {
-            ExecRPCRequest(port, Request);
+            rpc_device_load_detail::ExecRPCRequest(port, Request);
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {
