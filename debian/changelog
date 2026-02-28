@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.229.0) stable; urgency=medium
+
+  * Add deviceLoad condition evaluation and readonly filtering
+  * Extract shared Modbus register I/O into rpc_helpers
+  * Fix missing return after successful read/write in retry loops
+
+ -- Evgeny Boger <boger@wirenboard.com>  Fri, 28 Feb 2026 03:30:00 +0300
+
 wb-mqtt-serial (2.228.0) stable; urgency=medium
 
   * Update ONOKOM templates
