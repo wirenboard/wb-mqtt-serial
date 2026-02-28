@@ -1,14 +1,14 @@
-#include "rpc_device_load_config_task.h"
 #include "config_merge_template.h"
 #include "port/serial_port.h"
+#include "rpc_device_load_config_detail.h"
 #include "rpc_helpers.h"
 #include "wb_registers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
-namespace
+namespace rpc_device_load_config_detail
 {
-    const auto UNSUPPORTED_VALUE = "unsupported";
+    const char* UNSUPPORTED_VALUE = "unsupported";
 
     std::string ReadWbRegister(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, const std::string& registerName)
     {
@@ -198,7 +198,7 @@ namespace
 
         rpcRequest->OnResult(result);
     }
-} // namespace
+} // namespace rpc_device_load_config_detail
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolParams& protocolParams,
                                                          PSerialDevice device,
@@ -256,9 +256,9 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-            ExecRPCRequest(port, Request);
+            rpc_device_load_config_detail::ExecRPCRequest(port, Request);
         } else {
-            ExecRPCRequest(port, Request);
+            rpc_device_load_config_detail::ExecRPCRequest(port, Request);
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {
@@ -282,7 +282,7 @@ void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value
             if (!parameters.isMember(item.Id) && CheckCondition(item.Condition, jsonParams, &expressionsCache)) {
                 parameters[item.Id] = item.Register->IsSupported()
                                           ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
-                                          : UNSUPPORTED_VALUE;
+                                          : rpc_device_load_config_detail::UNSUPPORTED_VALUE;
                 check = true;
             }
         }
