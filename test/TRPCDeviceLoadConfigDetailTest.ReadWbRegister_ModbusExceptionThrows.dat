@@ -1,0 +1,4 @@
+Open()
+EnqueueReadDeviceModelExException()
+>> 01 03 00 C8 00 14 C4 3B
+<< 01 83 02 C0 F1

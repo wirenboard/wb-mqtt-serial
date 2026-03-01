@@ -1,0 +1,4 @@
+Open()
+EnqueueReadTimeout()
+>> 01 03 00 46 00 01 65 DF
+<< 01 03 02 00 15 79 8B

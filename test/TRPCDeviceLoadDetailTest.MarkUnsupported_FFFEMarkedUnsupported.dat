@@ -1,0 +1,10 @@
+Open()
+EnqueueWriteContinuousRead()
+>> 01 06 00 72 00 00 29 D1
+<< 01 06 00 72 00 00 29 D1
+EnqueueReadHoldingException()
+>> 01 03 00 64 00 01 C5 D5
+<< 01 83 02 C0 F1
+EnqueueWriteContinuousRead()
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11
