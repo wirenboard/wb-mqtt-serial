@@ -22,8 +22,7 @@ public:
     TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
                         WBMQTT::PMqttRpcServer rpcServer,
                         WBMQTT::PMqttClient mqtt,
-                        PHttpClient httpClient = nullptr,
-                        WBMQTT::PMqttRpcServer compatRpcServer = nullptr);
+                        PHttpClient httpClient = nullptr);
 
 private:
     // Test constructor: initializes without MQTT/RPC infrastructure

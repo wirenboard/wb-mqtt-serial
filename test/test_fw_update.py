@@ -39,13 +39,11 @@ LATEST_BL = "1.5.7"
 OLD_FW = "4.33.2"
 OLD_BL = "1.4.9"
 
-# RPC topic prefixes
-COMPAT_PREFIX = "/rpc/v1/wb-device-manager/fw-update"
-NEW_PREFIX = "/rpc/v1/wb-mqtt-serial/fw-update"
+# RPC topic prefix (wb-device-manager service name for compatibility)
+RPC_PREFIX = "/rpc/v1/wb-device-manager/fw-update"
 
-# State topics
-COMPAT_STATE_TOPIC = "/wb-device-manager/firmware_update/state"
-NEW_STATE_TOPIC = "/wb-mqtt-serial/firmware_update/state"
+# State topic
+STATE_TOPIC = "/wb-device-manager/firmware_update/state"
 
 # Firmware files on device (must be pre-deployed)
 OLD_FW_FILE = f"/tmp/m1w2G3_{OLD_FW}.wbfw"
@@ -150,7 +148,7 @@ class TestRunner:
 # MQTT RPC helpers
 # ============================================================
 
-def rpc_call(method, params, prefix=COMPAT_PREFIX, timeout=30):
+def rpc_call(method, params, prefix=RPC_PREFIX, timeout=30):
     """Make an MQTT RPC call and return the parsed response."""
     cid = f"test_{uuid.uuid4().hex[:12]}"
     topic = f"{prefix}/{method}/{cid}"
@@ -194,30 +192,30 @@ def make_port_config():
             "data_bits": PORT_DATA_BITS, "stop_bits": PORT_STOP_BITS, "parity": PORT_PARITY}
 
 
-def get_firmware_info(prefix=COMPAT_PREFIX, timeout=30):
+def get_firmware_info(prefix=RPC_PREFIX, timeout=30):
     params = {"port": make_port_config(), "slave_id": SLAVE_ID, "protocol": "modbus"}
     return rpc_call("GetFirmwareInfo", params, prefix=prefix, timeout=timeout)
 
 
-def update_device(update_type="firmware", prefix=COMPAT_PREFIX, timeout=30):
+def update_device(update_type="firmware", prefix=RPC_PREFIX, timeout=30):
     params = {"port": make_port_config(), "slave_id": SLAVE_ID,
               "protocol": "modbus", "type": update_type}
     return rpc_call("Update", params, prefix=prefix, timeout=timeout)
 
 
-def clear_error(error_type="firmware", prefix=COMPAT_PREFIX, slave_id=None):
+def clear_error(error_type="firmware", prefix=RPC_PREFIX, slave_id=None):
     sid = slave_id if slave_id is not None else SLAVE_ID
     params = {"port": make_port_config(), "slave_id": sid,
               "protocol": "modbus", "type": error_type}
     return rpc_call("ClearError", params, prefix=prefix, timeout=10)
 
 
-def restore_device(prefix=COMPAT_PREFIX, timeout=30):
+def restore_device(prefix=RPC_PREFIX, timeout=30):
     params = {"port": make_port_config(), "slave_id": SLAVE_ID, "protocol": "modbus"}
     return rpc_call("Restore", params, prefix=prefix, timeout=timeout)
 
 
-def get_state(topic=COMPAT_STATE_TOPIC, timeout=3):
+def get_state(topic=STATE_TOPIC, timeout=3):
     """Read current retained state."""
     try:
         out = subprocess.run(
@@ -231,7 +229,7 @@ def get_state(topic=COMPAT_STATE_TOPIC, timeout=3):
     return None
 
 
-def monitor_state(topic=COMPAT_STATE_TOPIC, timeout=120, empty_cycles_to_stop=1):
+def monitor_state(topic=STATE_TOPIC, timeout=120, empty_cycles_to_stop=1):
     """Monitor state topic, collect messages until devices list empties after activity.
     empty_cycles_to_stop: how many active→empty transitions before stopping.
     Use 2 for bootloader update with auto-restore (BL→empty→FW→empty)."""
@@ -315,7 +313,7 @@ def downgrade_bl_and_fw():
     time.sleep(10)
 
 
-def wait_for_update_complete(timeout=120, topic=COMPAT_STATE_TOPIC):
+def wait_for_update_complete(timeout=120, topic=STATE_TOPIC):
     messages = monitor_state(topic=topic, timeout=timeout)
     if not messages:
         raise TimeoutError("No state messages received")
@@ -402,12 +400,7 @@ def run_tests(runner: TestRunner):
         assert_true(isinstance(c, dict), f"components should be dict, got {type(c)}")
 
     def t1_10():
-        resp = get_firmware_info(prefix=COMPAT_PREFIX)
-        assert_is_none(resp.get("error"))
-        assert_in("fw", resp.get("result", {}))
-
-    def t1_11():
-        resp = get_firmware_info(prefix=NEW_PREFIX)
+        resp = get_firmware_info(prefix=RPC_PREFIX)
         assert_is_none(resp.get("error"))
         assert_in("fw", resp.get("result", {}))
 
@@ -420,8 +413,7 @@ def run_tests(runner: TestRunner):
     runner.run("T1.7: bootloader_has_update correctness", t1_7)
     runner.run("T1.8: can_update is true", t1_8)
     runner.run("T1.9: components is dict", t1_9)
-    runner.run("T1.10: Works on compat topic", t1_10)
-    runner.run("T1.11: Works on new topic", t1_11)
+    runner.run("T1.10: Works on RPC topic", t1_10)
 
     # ============================================================
     # T2: Update (type=firmware)
@@ -512,37 +504,6 @@ def run_tests(runner: TestRunner):
     runner.run("T2.4: State empty after success", t2_4)
     runner.run("T2.5: Device has new FW", t2_5)
     runner.run("T2.6: State has all fields", t2_6)
-
-    # ============================================================
-    # T2b: State on both topics
-    # ============================================================
-    runner.group("T2b. State Dual-Publish")
-
-    print(f"  {Colors.YELLOW}[setup] Downgrading FW to {OLD_FW}...{Colors.RESET}")
-    downgrade_firmware()
-
-    def t2b_1():
-        compat_msgs = []
-        new_msgs = []
-
-        def m1():
-            compat_msgs.extend(monitor_state(topic=COMPAT_STATE_TOPIC, timeout=60))
-        def m2():
-            new_msgs.extend(monitor_state(topic=NEW_STATE_TOPIC, timeout=60))
-
-        t1 = threading.Thread(target=m1, daemon=True)
-        t2 = threading.Thread(target=m2, daemon=True)
-        t1.start(); t2.start()
-        time.sleep(0.5)
-
-        update_device("firmware")
-        t1.join(timeout=60); t2.join(timeout=60)
-
-        assert_true(len(compat_msgs) > 0, "Messages on compat topic")
-        assert_true(len(new_msgs) > 0, "Messages on new topic")
-
-    runner.run("T2b.1: State on both topics", t2b_1)
-    time.sleep(5)
 
     # ============================================================
     # T3: Update (type=bootloader) - THE KEY TEST

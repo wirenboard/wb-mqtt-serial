@@ -13,8 +13,7 @@
 
 namespace
 {
-    const std::string STATE_TOPIC = "/wb-mqtt-serial/firmware_update/state";
-    const std::string COMPAT_STATE_TOPIC = "/wb-device-manager/firmware_update/state";
+    const std::string STATE_TOPIC = "/wb-device-manager/firmware_update/state";
 }
 
 // Non-updatable signatures (e.g. WB-MSW-LORA devices)
@@ -42,8 +41,7 @@ bool ComponentFirmwareIsNewer(const std::string& currentVersion, const std::stri
 TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
                                          WBMQTT::PMqttRpcServer rpcServer,
                                          WBMQTT::PMqttClient mqtt,
-                                         PHttpClient httpClient,
-                                         WBMQTT::PMqttRpcServer compatRpcServer)
+                                         PHttpClient httpClient)
     : SerialClientTaskRunner(serialClientTaskRunner),
       Mqtt(mqtt)
 {
@@ -60,10 +58,6 @@ TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
         [this](const std::string& topic, const std::string& payload, bool retain) {
             if (Mqtt) {
                 Mqtt->Publish(WBMQTT::TMqttMessage(topic, payload, 0, retain));
-                // Also publish to legacy wb-device-manager topic for backward compatibility
-                if (topic == STATE_TOPIC) {
-                    Mqtt->Publish(WBMQTT::TMqttMessage(COMPAT_STATE_TOPIC, payload, 0, retain));
-                }
             }
         },
         STATE_TOPIC);
@@ -74,10 +68,7 @@ TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
     State->Reset();
 
     RegisterRpcMethods(rpcServer);
-    if (compatRpcServer) {
-        RegisterRpcMethods(compatRpcServer);
-        compatRpcServer->Start();
-    }
+    rpcServer->Start();
 }
 
 TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& taskRunner,

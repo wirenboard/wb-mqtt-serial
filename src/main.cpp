@@ -359,11 +359,11 @@ int main(int argc, char* argv[])
                                                 serialClientTaskRunner,
                                                 parametersCache,
                                                 rpcServer);
-        // Create a compat RPC server under the old wb-device-manager service name
-        // so existing clients (old homeui, other tools) continue to work
-        auto compatRpcServer(WBMQTT::NewMqttRpcServer(mqtt, "wb-device-manager"));
+        // Register firmware update RPC under the wb-device-manager service name
+        // to maintain compatibility with existing clients (homeui, etc.)
+        auto fwUpdateRpcServer(WBMQTT::NewMqttRpcServer(mqtt, "wb-device-manager"));
         auto rpcFwUpdateHandler = std::make_shared<TRPCFwUpdateHandler>(
-            serialClientTaskRunner, rpcServer, mqtt, nullptr, compatRpcServer);
+            serialClientTaskRunner, fwUpdateRpcServer, mqtt);
 
         if (serialDriver) {
             serialDriver->Start();
@@ -373,7 +373,7 @@ int main(int argc, char* argv[])
         rpcServer->Start();
 
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
-            compatRpcServer->Stop();
+            fwUpdateRpcServer->Stop();
             rpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();
