@@ -138,13 +138,12 @@ class ReleaseYAMLTest: public ::testing::Test
 
 TEST_F(ReleaseYAMLTest, ValidYAML)
 {
-    std::string yaml =
-        "releases:\n"
-        "  wbled:\n"
-        "    wb-2307: fw/by-signature/wbled/wb-2307/3.7.0.wbfw\n"
-        "    wb-2310: fw/by-signature/wbled/wb-2310/3.8.0.wbfw\n"
-        "  wbmap3h:\n"
-        "    wb-2307: fw/by-signature/wbmap3h/wb-2307/1.2.0.wbfw\n";
+    std::string yaml = "releases:\n"
+                       "  wbled:\n"
+                       "    wb-2307: fw/by-signature/wbled/wb-2307/3.7.0.wbfw\n"
+                       "    wb-2310: fw/by-signature/wbled/wb-2310/3.8.0.wbfw\n"
+                       "  wbmap3h:\n"
+                       "    wb-2307: fw/by-signature/wbmap3h/wb-2307/1.2.0.wbfw\n";
 
     auto result = ParseReleaseVersionsYaml(yaml);
     ASSERT_EQ(result.size(), 2u);
@@ -163,19 +162,17 @@ TEST_F(ReleaseYAMLTest, EmptyFile)
 
 TEST_F(ReleaseYAMLTest, NoReleasesSection)
 {
-    std::string yaml =
-        "other:\n"
-        "  key: value\n";
+    std::string yaml = "other:\n"
+                       "  key: value\n";
     auto result = ParseReleaseVersionsYaml(yaml);
     EXPECT_TRUE(result.empty());
 }
 
 TEST_F(ReleaseYAMLTest, MissingSignature)
 {
-    std::string yaml =
-        "releases:\n"
-        "  wbled:\n"
-        "    wb-2307: fw/path.wbfw\n";
+    std::string yaml = "releases:\n"
+                       "  wbled:\n"
+                       "    wb-2307: fw/path.wbfw\n";
 
     auto result = ParseReleaseVersionsYaml(yaml);
     EXPECT_EQ(result.find("nonexistent"), result.end());
@@ -183,15 +180,14 @@ TEST_F(ReleaseYAMLTest, MissingSignature)
 
 TEST_F(ReleaseYAMLTest, CommentsAndBlankLines)
 {
-    std::string yaml =
-        "# This is a comment\n"
-        "\n"
-        "releases:\n"
-        "  # Another comment\n"
-        "  sig1:\n"
-        "    suite1: path/to/fw.wbfw\n"
-        "\n"
-        "# End\n";
+    std::string yaml = "# This is a comment\n"
+                       "\n"
+                       "releases:\n"
+                       "  # Another comment\n"
+                       "  sig1:\n"
+                       "    suite1: path/to/fw.wbfw\n"
+                       "\n"
+                       "# End\n";
 
     auto result = ParseReleaseVersionsYaml(yaml);
     ASSERT_EQ(result.size(), 1u);
@@ -200,12 +196,11 @@ TEST_F(ReleaseYAMLTest, CommentsAndBlankLines)
 
 TEST_F(ReleaseYAMLTest, IndentedCommentWithColon)
 {
-    std::string yaml =
-        "releases:\n"
-        "  # note: this is a comment with colon\n"
-        "  sig1:\n"
-        "    suite1: path/to/fw.wbfw\n"
-        "    # another: comment\n";
+    std::string yaml = "releases:\n"
+                       "  # note: this is a comment with colon\n"
+                       "  sig1:\n"
+                       "    suite1: path/to/fw.wbfw\n"
+                       "    # another: comment\n";
 
     auto result = ParseReleaseVersionsYaml(yaml);
     ASSERT_EQ(result.size(), 1u);
@@ -384,11 +379,7 @@ TEST_F(FwUpdateStateTest, SetError)
     info.Type = "firmware";
     state.Update(info);
 
-    state.SetError(42,
-                   "/dev/ttyRS485-1",
-                   "firmware",
-                   "com.wb.device_manager.generic_error",
-                   "Internal error");
+    state.SetError(42, "/dev/ttyRS485-1", "firmware", "com.wb.device_manager.generic_error", "Internal error");
 
     auto json = ParseLastPayload();
     ASSERT_EQ(json["devices"].size(), 1u);
@@ -775,33 +766,38 @@ protected:
 
     // Enqueue standard GetInfo responses: signature, version, bootloader, preserve, model (ext), components
     void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
-                                     const std::string& version = "3.7.0",
-                                     const std::string& bootloader = "1.5.5",
-                                     const std::string& model = "WB-LED")
+                                      const std::string& version = "3.7.0",
+                                      const std::string& bootloader = "1.5.5",
+                                      const std::string& model = "WB-LED")
     {
         // 1. Read FW signature (addr=290, count=12, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                          EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
+        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                           FwRegisters::FW_SIGNATURE_COUNT,
+                           EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
 
         // 2. Read FW version (addr=250, count=16, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                          EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
+        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                           FwRegisters::FW_VERSION_COUNT,
+                           EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
 
         // 3. Read bootloader version (addr=330, count=7, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT,
-                          EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
+        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_COUNT,
+                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
 
         // 4. Read preserve port settings register (addr=131, count=1, fn=0x03)
         //    Returns 0x0000 = can preserve
         EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
 
         // 5. Read device model extended (addr=200, count=20, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                          EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                           FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                           EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
         // 6. Read components presence (addr=65152, count=8, fn=0x02) - no components
         EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                     FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
+                                     FwRegisters::COMPONENTS_PRESENCE_COUNT,
+                                     0x02);
     }
 };
 
@@ -840,22 +836,26 @@ TEST_F(TFwTaskTest, GetInfoSuccessfulRead)
 TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
 {
     // Signature
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                      EncodeStringAsRegs("wbled", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("wbled", FwRegisters::FW_SIGNATURE_COUNT));
     // Version
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                      EncodeStringAsRegs("3.7.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("3.7.0", FwRegisters::FW_VERSION_COUNT));
     // Bootloader - returns exception (old devices don't have this register)
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     // Preserve port settings - also fails
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
     // Model - extended fails, fall back to standard
-    EnqueueHoldingReadException(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_ADDR, FwRegisters::DEVICE_MODEL_COUNT,
-                      EncodeStringAsRegs("WB-LED", FwRegisters::DEVICE_MODEL_COUNT));
+    EnqueueHoldingReadException(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                                FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                                0x02);
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_ADDR,
+                       FwRegisters::DEVICE_MODEL_COUNT,
+                       EncodeStringAsRegs("WB-LED", FwRegisters::DEVICE_MODEL_COUNT));
     // No components
-    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                 FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
+    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
     bool gotResult = false;
@@ -882,15 +882,19 @@ TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
 TEST_F(TFwTaskTest, GetInfoWithComponents)
 {
     // Standard reads
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                      EncodeStringAsRegs("wbmwac", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                      EncodeStringAsRegs("2.0.0", FwRegisters::FW_VERSION_COUNT));
-    EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT,
-                      EncodeStringAsRegs("1.0.0", FwRegisters::BOOTLOADER_VERSION_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("wbmwac", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("2.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                       FwRegisters::BOOTLOADER_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", FwRegisters::BOOTLOADER_VERSION_COUNT));
     EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                      EncodeStringAsRegs("WBMWAC-v2", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("WBMWAC-v2", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
     // Components presence: bit 0 set = component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -900,12 +904,15 @@ TEST_F(TFwTaskTest, GetInfoWithComponents)
     uint16_t comp0FwAddr = FwRegisters::COMPONENT_FW_VERSION_BASE;
     uint16_t comp0ModelAddr = FwRegisters::COMPONENT_MODEL_BASE;
 
-    EnqueueInputRead(comp0SigAddr, FwRegisters::COMPONENT_SIGNATURE_COUNT,
-                    EncodeStringAsRegs("wbmwac_oc", FwRegisters::COMPONENT_SIGNATURE_COUNT));
-    EnqueueInputRead(comp0FwAddr, FwRegisters::COMPONENT_FW_VERSION_COUNT,
-                    EncodeStringAsRegs("1.0.0", FwRegisters::COMPONENT_FW_VERSION_COUNT));
-    EnqueueInputRead(comp0ModelAddr, FwRegisters::COMPONENT_MODEL_COUNT,
-                    EncodeStringAsRegs("WBMWAC-OC", FwRegisters::COMPONENT_MODEL_COUNT));
+    EnqueueInputRead(comp0SigAddr,
+                     FwRegisters::COMPONENT_SIGNATURE_COUNT,
+                     EncodeStringAsRegs("wbmwac_oc", FwRegisters::COMPONENT_SIGNATURE_COUNT));
+    EnqueueInputRead(comp0FwAddr,
+                     FwRegisters::COMPONENT_FW_VERSION_COUNT,
+                     EncodeStringAsRegs("1.0.0", FwRegisters::COMPONENT_FW_VERSION_COUNT));
+    EnqueueInputRead(comp0ModelAddr,
+                     FwRegisters::COMPONENT_MODEL_COUNT,
+                     EncodeStringAsRegs("WBMWAC-OC", FwRegisters::COMPONENT_MODEL_COUNT));
 
     TFwDeviceInfo resultInfo;
     bool gotResult = false;
@@ -933,14 +940,17 @@ TEST_F(TFwTaskTest, GetInfoWithComponents)
 TEST_F(TFwTaskTest, GetInfoUnavailableComponent)
 {
     // Standard reads
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                      EncodeStringAsRegs("test", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                      EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("test", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                      EncodeStringAsRegs("TEST", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("TEST", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -972,15 +982,18 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
 {
     // Model contains \x02 characters that should be stripped
     auto modelWithCtrl = EncodeStringAsRegs("WB\x02-LED", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT);
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                      EncodeStringAsRegs("wbled", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                      EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("wbled", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT, modelWithCtrl);
-    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                 FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       modelWithCtrl);
+    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
     bool gotResult = false;
@@ -1048,7 +1061,9 @@ TEST_F(TFwTaskTest, FlashNoReboot)
     int lastProgress = -1;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
+        SLAVE_ID,
+        "modbus",
+        fw,
         false, // no reboot
         false, // can't preserve port settings
         [&](int p) { lastProgress = p; },
@@ -1083,9 +1098,11 @@ TEST_F(TFwTaskTest, FlashWithRebootPreserve)
     bool completed = false;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
-        true,  // reboot
-        true,  // can preserve port settings
+        SLAVE_ID,
+        "modbus",
+        fw,
+        true, // reboot
+        true, // can preserve port settings
         [&](int) {},
         [&]() { completed = true; },
         [&](const std::string&) {});
@@ -1121,7 +1138,9 @@ TEST_F(TFwTaskTest, FlashWithRebootLegacy)
     bool completed = false;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
+        SLAVE_ID,
+        "modbus",
+        fw,
         true,  // reboot
         false, // can NOT preserve port settings (use legacy reboot)
         [&](int) {},
@@ -1147,8 +1166,11 @@ TEST_F(TFwTaskTest, FlashEmptyData)
     int lastProgress = -1;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
-        false, false,
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
         [&](int p) { lastProgress = p; },
         [&]() { completed = true; },
         [&](const std::string&) {});
@@ -1179,8 +1201,11 @@ TEST_F(TFwTaskTest, FlashMultipleChunks)
     bool completed = false;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
-        false, false,
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
         [&](int p) { progressValues.push_back(p); },
         [&]() { completed = true; },
         [&](const std::string&) {});
@@ -1216,8 +1241,11 @@ TEST_F(TFwTaskTest, FlashPartialLastChunk)
     bool completed = false;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
-        false, false,
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
         [&](int) {},
         [&]() { completed = true; },
         [&](const std::string&) {});
@@ -1240,8 +1268,11 @@ TEST_F(TFwTaskTest, FlashErrorCallsCallback)
     std::string errorMsg;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
-        false, false,
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
         [&](int) {},
         [&]() {},
         [&](const std::string& err) {
@@ -1358,8 +1389,8 @@ protected:
     }
 
     void SetupReleasesYaml(const std::string& yaml = "releases:\n"
-                                                       "  wbled:\n"
-                                                       "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n")
+                                                     "  wbled:\n"
+                                                     "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n")
     {
         FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/fw/by-signature/release-versions.yaml", yaml);
     }
@@ -1757,8 +1788,11 @@ TEST_F(TFwTaskTest, FlashDataBlockExceptionAcceptedAsSuccess)
     bool gotError = false;
 
     auto task = std::make_shared<TFwFlashTask>(
-        SLAVE_ID, "modbus", fw,
-        false, false,
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
         [&](int) {},
         [&]() { completed = true; },
         [&](const std::string&) { gotError = true; });
@@ -1774,14 +1808,17 @@ TEST_F(TFwTaskTest, FlashDataBlockExceptionAcceptedAsSuccess)
 TEST_F(TFwTaskTest, GetInfoComponentReadError)
 {
     // Standard reads
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                      EncodeStringAsRegs("test", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                      EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("test", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                      EncodeStringAsRegs("TEST", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("TEST", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -2068,34 +2105,40 @@ protected:
     }
 
     void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
-                                     const std::string& version = "3.7.0",
-                                     const std::string& bootloader = "1.5.5",
-                                     const std::string& model = "WB-LED")
+                                      const std::string& version = "3.7.0",
+                                      const std::string& bootloader = "1.5.5",
+                                      const std::string& model = "WB-LED")
     {
-        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR, FwRegisters::FW_SIGNATURE_COUNT,
-                          EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
-        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR, FwRegisters::FW_VERSION_COUNT,
-                          EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
-        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT,
-                          EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
+        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                           FwRegisters::FW_SIGNATURE_COUNT,
+                           EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
+        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                           FwRegisters::FW_VERSION_COUNT,
+                           EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
+        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_COUNT,
+                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
         EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
-        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                          EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                           FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                           EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
         EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                     FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
+                                     FwRegisters::COMPONENTS_PRESENCE_COUNT,
+                                     0x02);
     }
 
     void SetupReleasesYaml(const std::string& yaml = "releases:\n"
-                                                       "  wbled:\n"
-                                                       "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n")
+                                                     "  wbled:\n"
+                                                     "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n")
     {
         FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/fw/by-signature/release-versions.yaml", yaml);
     }
 
     void SetupBootloaderInfo(const std::string& signature = "wbled", const std::string& version = "2.0.0")
     {
-        FakeHttp->SetTextResponse(
-            "https://fw-releases.wirenboard.com/bootloader/by-signature/" + signature + "/main/latest.txt", version);
+        FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/" + signature +
+                                      "/main/latest.txt",
+                                  version);
     }
 
     void SetupFirmwareDownload(const std::string& signature, const std::string& suite, const std::string& version)
@@ -2237,8 +2280,8 @@ TEST_F(FwHandlerIntegrationTest, UpdateBootloader)
     SetupReleasesYaml();
     SetupBootloaderInfo("wbled", "2.0.0");
     std::vector<uint8_t> wbfwData(168, 0xBB);
-    FakeHttp->SetBinaryResponse(
-        "https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/2.0.0.wbfw", wbfwData);
+    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/2.0.0.wbfw",
+                                wbfwData);
 
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
     EnqueueFlashExpectations(true, true);

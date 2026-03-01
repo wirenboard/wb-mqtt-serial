@@ -1,15 +1,16 @@
 #include "rpc_fw_update_handler.h"
-#include "rpc_fw_update_helpers.h"
 #include "common_utils.h"
 #include "log.h"
+#include "rpc_fw_update_helpers.h"
 
 #include <curl/curl.h>
 #include <thread>
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
-// Original Python implementation: https://github.com/wirenboard/wb-device-manager/blob/main/wb/device_manager/firmware_update.py
-// See also: FirmwareUpdater class (line 650)
+// Original Python implementation:
+// https://github.com/wirenboard/wb-device-manager/blob/main/wb/device_manager/firmware_update.py See also:
+// FirmwareUpdater class (line 650)
 
 namespace
 {
@@ -122,9 +123,7 @@ TRPCFwUpdateHandler::TRequestParams TRPCFwUpdateHandler::ParseRequestParams(cons
         throw std::runtime_error("slave_id must be in range 0-255");
     }
 
-    if (!request.isMember("port") || !request["port"].isMember("path") ||
-        request["port"]["path"].asString().empty())
-    {
+    if (!request.isMember("port") || !request["port"].isMember("path") || request["port"]["path"].asString().empty()) {
         throw std::runtime_error("port.path is required");
     }
     params.PortPath = request["port"]["path"].asString();
@@ -203,8 +202,8 @@ Json::Value TRPCFwUpdateHandler::BuildFirmwareInfoResponse(const TFwDeviceInfo& 
 
 // Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info()
 void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
-                                           WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                           WBMQTT::TMqttRpcServer::TErrorCallback onError)
+                                          WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                          WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     try {
         auto params = ParseRequestParams(request);
@@ -242,15 +241,15 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
 
 // Cf. firmware_update.py:444 update_software() and firmware_update.py:633 make_device_update_info()
 void TRPCFwUpdateHandler::StartFlash(const TRequestParams& params,
-                                      const std::string& type,
-                                      const std::string& fromVersion,
-                                      const std::string& toVersion,
-                                      const std::string& fwUrl,
-                                      bool rebootToBootloader,
-                                      bool canPreservePortSettings,
-                                      int componentNumber,
-                                      const std::string& componentModel,
-                                      std::function<void()> customCompleteCallback)
+                                     const std::string& type,
+                                     const std::string& fromVersion,
+                                     const std::string& toVersion,
+                                     const std::string& fwUrl,
+                                     bool rebootToBootloader,
+                                     bool canPreservePortSettings,
+                                     int componentNumber,
+                                     const std::string& componentModel,
+                                     std::function<void()> customCompleteCallback)
 {
     // Update state to show 0% progress
     TDeviceUpdateInfo info;
@@ -317,8 +316,8 @@ void TRPCFwUpdateHandler::StartFlash(const TRequestParams& params,
 
 // Cf. firmware_update.py:538 update_components()
 void TRPCFwUpdateHandler::StartComponentsFlash(const TRequestParams& params,
-                                                const TFwDeviceInfo& deviceInfo,
-                                                const std::string& releaseSuite)
+                                               const TFwDeviceInfo& deviceInfo,
+                                               const std::string& releaseSuite)
 {
     for (const auto& comp: deviceInfo.Components) {
         try {
@@ -342,8 +341,8 @@ void TRPCFwUpdateHandler::StartComponentsFlash(const TRequestParams& params,
 
 // Cf. firmware_update.py:785 FirmwareUpdater.update_software()
 void TRPCFwUpdateHandler::Update(const Json::Value& request,
-                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                  WBMQTT::TMqttRpcServer::TErrorCallback onError)
+                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                 WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     try {
         {
@@ -371,8 +370,7 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
             [handler, params, softwareType, onResult, onError, releaseSuite](const TFwDeviceInfo& info) {
                 try {
                     if (softwareType == "firmware") {
-                        auto released =
-                            handler->Downloader->GetReleasedFirmware(info.FwSignature, releaseSuite);
+                        auto released = handler->Downloader->GetReleasedFirmware(info.FwSignature, releaseSuite);
                         handler->StartFlash(params,
                                             "firmware",
                                             info.FwVersion,
@@ -394,8 +392,8 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                                 handler->State->Remove(params.SlaveId, params.PortPath, "bootloader");
                                 // Look up released firmware for this device
                                 auto released = handler->Downloader->GetReleasedFirmware(fwSignature, releaseSuite);
-                                LOG(Info) << "Auto-restoring firmware after bootloader update for slave "
-                                          << params.SlaveId;
+                                LOG(Info)
+                                    << "Auto-restoring firmware after bootloader update for slave " << params.SlaveId;
                                 // Wait for device to stabilize after bootloader flash
                                 // Cf. firmware_update.py:973 await asyncio.sleep(1)
                                 std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -405,7 +403,7 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                                                     "",
                                                     released.Version,
                                                     released.Endpoint,
-                                                    false,  // already in bootloader
+                                                    false, // already in bootloader
                                                     false);
                             } catch (const std::exception& e) {
                                 LOG(Error) << "Failed to auto-restore firmware after bootloader update: " << e.what();
@@ -443,8 +441,7 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                         std::lock_guard<std::mutex> lock(handler->UpdateMutex);
                         handler->UpdateInProgress = false;
                     }
-                    onError(WBMQTT::E_RPC_SERVER_ERROR,
-                            std::string("Error starting firmware update: ") + e.what());
+                    onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware update: ") + e.what());
                 }
             },
             [handler, onError](const std::string& error) {
@@ -476,8 +473,8 @@ Json::Value TRPCFwUpdateHandler::ClearError(const Json::Value& request)
 
 // Cf. firmware_update.py:871 FirmwareUpdater.restore_firmware() and firmware_update.py:1015 _restore_firmware()
 void TRPCFwUpdateHandler::Restore(const Json::Value& request,
-                                   WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                   WBMQTT::TMqttRpcServer::TErrorCallback onError)
+                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                  WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     try {
         {
@@ -501,8 +498,7 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
             params.Protocol,
             [handler, params, onResult, onError, releaseSuite](const TFwDeviceInfo& info) {
                 try {
-                    auto released =
-                        handler->Downloader->GetReleasedFirmware(info.FwSignature, releaseSuite);
+                    auto released = handler->Downloader->GetReleasedFirmware(info.FwSignature, releaseSuite);
                     handler->StartFlash(params,
                                         "firmware",
                                         "",
@@ -522,8 +518,7 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
                         std::lock_guard<std::mutex> lock(handler->UpdateMutex);
                         handler->UpdateInProgress = false;
                     }
-                    onError(WBMQTT::E_RPC_SERVER_ERROR,
-                            std::string("Error starting firmware restore: ") + e.what());
+                    onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware restore: ") + e.what());
                 }
             },
             [handler, onResult, onError](const std::string& error) {

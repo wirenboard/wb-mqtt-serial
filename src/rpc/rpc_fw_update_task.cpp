@@ -54,10 +54,10 @@ TFwGetInfoTask::TFwGetInfoTask(uint8_t slaveId,
 {}
 
 std::vector<uint8_t> TFwGetInfoTask::ReadRawRegister(TPort& port,
-                                                      Modbus::IModbusTraits& traits,
-                                                      uint16_t addr,
-                                                      uint16_t count,
-                                                      uint8_t fnCode)
+                                                     Modbus::IModbusTraits& traits,
+                                                     uint16_t addr,
+                                                     uint16_t count,
+                                                     uint8_t fnCode)
 {
     auto function = static_cast<Modbus::EFunction>(fnCode);
     auto pdu = Modbus::MakePDU(function, addr, count, {});
@@ -67,11 +67,11 @@ std::vector<uint8_t> TFwGetInfoTask::ReadRawRegister(TPort& port,
 }
 
 bool TFwGetInfoTask::TryReadRegister(TPort& port,
-                                      Modbus::IModbusTraits& traits,
-                                      uint16_t addr,
-                                      uint16_t count,
-                                      uint8_t fnCode,
-                                      std::vector<uint8_t>& result)
+                                     Modbus::IModbusTraits& traits,
+                                     uint16_t addr,
+                                     uint16_t count,
+                                     uint8_t fnCode,
+                                     std::vector<uint8_t>& result)
 {
     try {
         result = ReadRawRegister(port, traits, addr, count, fnCode);
@@ -82,10 +82,10 @@ bool TFwGetInfoTask::TryReadRegister(TPort& port,
 }
 
 std::string TFwGetInfoTask::ReadStringRegister(TPort& port,
-                                                Modbus::IModbusTraits& traits,
-                                                uint16_t addr,
-                                                uint16_t count,
-                                                uint8_t fnCode)
+                                               Modbus::IModbusTraits& traits,
+                                               uint16_t addr,
+                                               uint16_t count,
+                                               uint8_t fnCode)
 {
     auto data = ReadRawRegister(port, traits, addr, count, fnCode);
     return RegisterBytesToString(data);
@@ -93,8 +93,8 @@ std::string TFwGetInfoTask::ReadStringRegister(TPort& port,
 
 // Cf. firmware_update.py:311 FirmwareInfoReader.read()
 ISerialClientTask::TRunResult TFwGetInfoTask::Run(PFeaturePort port,
-                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                   const std::list<PSerialDevice>& polledDevices)
+                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                  const std::list<PSerialDevice>& polledDevices)
 {
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (OnError) {
@@ -139,13 +139,9 @@ ISerialClientTask::TRunResult TFwGetInfoTask::Run(PFeaturePort port,
 
         // Check if bootloader can preserve port settings (register 131 readable means yes)
         try {
-            auto pdu = Modbus::MakePDU(Modbus::FN_READ_HOLDING,
-                                       FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR,
-                                       1,
-                                       {});
+            auto pdu = Modbus::MakePDU(Modbus::FN_READ_HOLDING, FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {});
             auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_READ_HOLDING, 1);
-            auto res = traits->Transaction(
-                *port, SlaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
+            auto res = traits->Transaction(*port, SlaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
             auto data = Modbus::ExtractResponseData(Modbus::FN_READ_HOLDING, res.Pdu);
             if (data.size() >= 2) {
                 uint16_t val = (static_cast<uint16_t>(data[0]) << 8) | data[1];
@@ -164,16 +160,19 @@ ISerialClientTask::TRunResult TFwGetInfoTask::Run(PFeaturePort port,
                                                   0x03);
         } catch (const std::exception&) {
             try {
-                info.DeviceModel = ReadStringRegister(
-                    *port, *traits, FwRegisters::DEVICE_MODEL_ADDR, FwRegisters::DEVICE_MODEL_COUNT, 0x03);
+                info.DeviceModel = ReadStringRegister(*port,
+                                                      *traits,
+                                                      FwRegisters::DEVICE_MODEL_ADDR,
+                                                      FwRegisters::DEVICE_MODEL_COUNT,
+                                                      0x03);
             } catch (const std::exception& e) {
                 LOG(Debug) << "Cannot read device model: " << e.what();
             }
         }
 
         // Clean up device model - remove 0x02 characters (like Python's replace("\x02", ""))
-        info.DeviceModel.erase(
-            std::remove(info.DeviceModel.begin(), info.DeviceModel.end(), '\x02'), info.DeviceModel.end());
+        info.DeviceModel.erase(std::remove(info.DeviceModel.begin(), info.DeviceModel.end(), '\x02'),
+                               info.DeviceModel.end());
 
         // Read components presence (function 2 = READ_DISCRETE) - Cf. firmware_update.py:278 read_components_presence()
         std::vector<uint8_t> presenceData;
@@ -202,10 +201,11 @@ ISerialClientTask::TRunResult TFwGetInfoTask::Run(PFeaturePort port,
                                        static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
                     uint16_t fwAddr = FwRegisters::COMPONENT_FW_VERSION_BASE +
                                       static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
-                    uint16_t modelAddr =
-                        FwRegisters::COMPONENT_MODEL_BASE + static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
+                    uint16_t modelAddr = FwRegisters::COMPONENT_MODEL_BASE +
+                                         static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
 
-                    auto sigData = ReadRawRegister(*port, *traits, sigAddr, FwRegisters::COMPONENT_SIGNATURE_COUNT, 0x04);
+                    auto sigData =
+                        ReadRawRegister(*port, *traits, sigAddr, FwRegisters::COMPONENT_SIGNATURE_COUNT, 0x04);
                     std::string signature = RegisterBytesToString(sigData);
 
                     // Check for unavailable component (all 0xFE bytes)
@@ -287,8 +287,10 @@ void TFwFlashTask::DoReboot(TPort& port, Modbus::IModbusTraits& traits)
     } else {
         try {
             // Write 1 to register 129
-            auto pdu = Modbus::MakePDU(
-                Modbus::FN_WRITE_SINGLE_REGISTER, FwRegisters::REBOOT_TO_BOOTLOADER_ADDR, 1, {0x00, 0x01});
+            auto pdu = Modbus::MakePDU(Modbus::FN_WRITE_SINGLE_REGISTER,
+                                       FwRegisters::REBOOT_TO_BOOTLOADER_ADDR,
+                                       1,
+                                       {0x00, 0x01});
             auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_SINGLE_REGISTER, 1);
             traits.Transaction(port, SlaveId, pdu, responsePduSize, rebootTimeout, frameTimeout);
         } catch (const TResponseTimeoutException&) {
@@ -307,9 +309,12 @@ void TFwFlashTask::WriteInfoBlock(TPort& port, Modbus::IModbusTraits& traits)
     auto infoBlockTimeout = std::chrono::milliseconds(1000);
     auto frameTimeout = std::chrono::milliseconds(20);
 
-    auto pdu = Modbus::MakePDU(
-        Modbus::FN_WRITE_MULTIPLE_REGISTERS, FwRegisters::FW_INFO_BLOCK_ADDR, FwRegisters::FW_INFO_BLOCK_COUNT, Firmware.Info);
-    auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, FwRegisters::FW_INFO_BLOCK_COUNT);
+    auto pdu = Modbus::MakePDU(Modbus::FN_WRITE_MULTIPLE_REGISTERS,
+                               FwRegisters::FW_INFO_BLOCK_ADDR,
+                               FwRegisters::FW_INFO_BLOCK_COUNT,
+                               Firmware.Info);
+    auto responsePduSize =
+        Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, FwRegisters::FW_INFO_BLOCK_COUNT);
     traits.Transaction(port, SlaveId, pdu, responsePduSize, infoBlockTimeout, frameTimeout);
 }
 
@@ -323,7 +328,8 @@ void TFwFlashTask::WriteDataBlock(TPort& port, Modbus::IModbusTraits& traits, co
 
     for (int attempt = 0; attempt < MAX_RETRIES; ++attempt) {
         try {
-            auto pdu = Modbus::MakePDU(Modbus::FN_WRITE_MULTIPLE_REGISTERS, FwRegisters::FW_DATA_BLOCK_ADDR, regCount, chunk);
+            auto pdu =
+                Modbus::MakePDU(Modbus::FN_WRITE_MULTIPLE_REGISTERS, FwRegisters::FW_DATA_BLOCK_ADDR, regCount, chunk);
             auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, regCount);
             traits.Transaction(port, SlaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
             return; // Success
@@ -374,8 +380,8 @@ void TFwFlashTask::WriteDataBlocks(TPort& port, Modbus::IModbusTraits& traits)
 }
 
 ISerialClientTask::TRunResult TFwFlashTask::Run(PFeaturePort port,
-                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                 const std::list<PSerialDevice>& polledDevices)
+                                                TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                const std::list<PSerialDevice>& polledDevices)
 {
     try {
         if (!port->IsOpen()) {

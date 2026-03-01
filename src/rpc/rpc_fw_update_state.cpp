@@ -13,8 +13,7 @@
 // Cf. firmware_update.py:73 DeviceUpdateInfo.__eq__()
 bool TDeviceUpdateInfo::Matches(const TDeviceUpdateInfo& other) const
 {
-    return SlaveId == other.SlaveId && PortPath == other.PortPath && Type == other.Type &&
-           Protocol == other.Protocol;
+    return SlaveId == other.SlaveId && PortPath == other.PortPath && Type == other.Type && Protocol == other.Protocol;
 }
 
 // ============================================================
@@ -86,11 +85,11 @@ void TFwUpdateState::Remove(int slaveId, const std::string& portPath, const std:
 }
 
 void TFwUpdateState::SetError(int slaveId,
-                               const std::string& portPath,
-                               const std::string& type,
-                               const std::string& errorId,
-                               const std::string& errorMessage,
-                               const Json::Value& metadata)
+                              const std::string& portPath,
+                              const std::string& type,
+                              const std::string& errorId,
+                              const std::string& errorMessage,
+                              const Json::Value& metadata)
 {
     std::string json;
     {
