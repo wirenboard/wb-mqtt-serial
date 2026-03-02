@@ -214,17 +214,12 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
         }
 
         // Create a task to read device registers
-        auto downloader = Downloader;
-        auto state = State;
-        auto releaseSuite = ReleaseSuite;
-        auto handler = this;
-
         auto task = std::make_shared<TFwGetInfoTask>(
             static_cast<uint8_t>(params.SlaveId),
             params.Protocol,
-            [handler, onResult, onError](const TFwDeviceInfo& info) {
+            [this, onResult, onError](const TFwDeviceInfo& info) {
                 try {
-                    auto result = handler->BuildFirmwareInfoResponse(info);
+                    auto result = BuildFirmwareInfoResponse(info);
                     onResult(result);
                 } catch (const std::exception& e) {
                     onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error building firmware info: ") + e.what());
@@ -269,7 +264,6 @@ void TRPCFwUpdateHandler::StartFlash(const TRequestParams& params,
 
     // Create update notifier for throttled progress publishing
     auto notifier = std::make_shared<TUpdateNotifier>(30);
-    auto state = State;
     auto portPath = params.PortPath;
     auto protocol = params.Protocol;
     auto slaveId = params.SlaveId;
@@ -281,7 +275,7 @@ void TRPCFwUpdateHandler::StartFlash(const TRequestParams& params,
         rebootToBootloader,
         canPreservePortSettings,
         // Progress callback
-        [state, notifier, portPath, protocol, slaveId, toVersion, fromVersion, type, componentNumber, componentModel](
+        [this, notifier, portPath, protocol, slaveId, toVersion, fromVersion, type, componentNumber, componentModel](
             int percent) {
             if (notifier->ShouldNotify(percent)) {
                 TDeviceUpdateInfo progressInfo;
@@ -294,20 +288,20 @@ void TRPCFwUpdateHandler::StartFlash(const TRequestParams& params,
                 progressInfo.Type = type;
                 progressInfo.ComponentNumber = componentNumber;
                 progressInfo.ComponentModel = componentModel;
-                state->Update(progressInfo);
+                State->Update(progressInfo);
             }
         },
         // Complete callback
         customCompleteCallback
             ? [customCompleteCallback]() { customCompleteCallback(); }
-            : std::function<void()>([state, slaveId, portPath, type]() { state->Remove(slaveId, portPath, type); }),
+            : std::function<void()>([this, slaveId, portPath, type]() { State->Remove(slaveId, portPath, type); }),
         // Error callback
-        [state, slaveId, portPath, type](const std::string& error) {
+        [this, slaveId, portPath, type](const std::string& error) {
             std::string errorId = "com.wb.device_manager.generic_error";
             std::string errorMsg = "Internal error. Check logs for more info";
             Json::Value metadata;
             metadata["exception"] = error;
-            state->SetError(slaveId, portPath, type, errorId, errorMsg, metadata);
+            State->SetError(slaveId, portPath, type, errorId, errorMsg, metadata);
         });
 
     auto portRequest = MakePortRequestJson(params);
@@ -358,75 +352,71 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
         auto softwareType = request.get("type", "firmware").asString();
 
         // Read device info first
-        auto downloader = Downloader;
-        auto state = State;
-        auto releaseSuite = ReleaseSuite;
-        auto handler = this;
         auto portRequest = MakePortRequestJson(params);
 
         auto getInfoTask = std::make_shared<TFwGetInfoTask>(
             static_cast<uint8_t>(params.SlaveId),
             params.Protocol,
-            [handler, params, softwareType, onResult, onError, releaseSuite](const TFwDeviceInfo& info) {
+            [this, params, softwareType, onResult, onError](const TFwDeviceInfo& info) {
                 try {
                     if (softwareType == "firmware") {
-                        auto released = handler->Downloader->GetReleasedFirmware(info.FwSignature, releaseSuite);
-                        handler->StartFlash(params,
-                                            "firmware",
-                                            info.FwVersion,
-                                            released.Version,
-                                            released.Endpoint,
-                                            true,
-                                            info.CanPreservePortSettings);
+                        auto released = Downloader->GetReleasedFirmware(info.FwSignature, ReleaseSuite);
+                        StartFlash(params,
+                                   "firmware",
+                                   info.FwVersion,
+                                   released.Version,
+                                   released.Endpoint,
+                                   true,
+                                   info.CanPreservePortSettings);
 
                         // Also schedule component updates after firmware
-                        handler->StartComponentsFlash(params, info, releaseSuite);
+                        StartComponentsFlash(params, info, ReleaseSuite);
                     } else if (softwareType == "bootloader") {
-                        auto bootloader = handler->Downloader->GetLatestBootloader(info.FwSignature);
+                        auto bootloader = Downloader->GetLatestBootloader(info.FwSignature);
                         auto fwSignature = info.FwSignature;
                         // Cf. firmware_update.py:939 _update_bootloader():
                         // After BL flash, auto-restore firmware (device stays in BL mode)
-                        auto autoRestoreCallback = [handler, params, fwSignature, releaseSuite]() {
+                        auto autoRestoreCallback = [this, params, fwSignature]() {
                             try {
                                 // Remove bootloader state entry
-                                handler->State->Remove(params.SlaveId, params.PortPath, "bootloader");
+                                State->Remove(params.SlaveId, params.PortPath, "bootloader");
                                 // Look up released firmware for this device
-                                auto released = handler->Downloader->GetReleasedFirmware(fwSignature, releaseSuite);
+                                auto released = Downloader->GetReleasedFirmware(fwSignature, ReleaseSuite);
                                 LOG(Info)
                                     << "Auto-restoring firmware after bootloader update for slave " << params.SlaveId;
                                 // Wait for device to stabilize after bootloader flash
                                 // Cf. firmware_update.py:973 await asyncio.sleep(1)
                                 std::this_thread::sleep_for(std::chrono::seconds(2));
                                 // Flash firmware (device is already in bootloader mode)
-                                handler->StartFlash(params,
-                                                    "firmware",
-                                                    "",
-                                                    released.Version,
-                                                    released.Endpoint,
-                                                    false, // already in bootloader
-                                                    false);
+                                StartFlash(params,
+                                           "firmware",
+                                           "",
+                                           released.Version,
+                                           released.Endpoint,
+                                           false, // already in bootloader
+                                           false);
                             } catch (const std::exception& e) {
                                 LOG(Error) << "Failed to auto-restore firmware after bootloader update: " << e.what();
-                                handler->State->SetError(params.SlaveId,
-                                                         params.PortPath,
-                                                         "firmware",
-                                                         "com.wb.device_manager.generic_error",
-                                                         "Failed to restore firmware after bootloader update",
-                                                         Json::Value());
+                                State->SetError(params.SlaveId,
+                                                params.PortPath,
+                                                "firmware",
+                                                "com.wb.device_manager.generic_error",
+                                                "Failed to restore firmware after bootloader update",
+                                                Json::Value());
                             }
                         };
-                        handler->StartFlash(params,
-                                            "bootloader",
-                                            info.BootloaderVersion,
-                                            bootloader.Version,
-                                            bootloader.Endpoint,
-                                            true,
-                                            info.CanPreservePortSettings,
-                                            -1,
-                                            "",
-                                            autoRestoreCallback);
+                        StartFlash(params,
+                                   "bootloader",
+                                   info.BootloaderVersion,
+                                   bootloader.Version,
+                                   bootloader.Endpoint,
+                                   true,
+                                   info.CanPreservePortSettings,
+                                   -1,
+                                   "",
+                                   autoRestoreCallback);
                     } else if (softwareType == "component") {
-                        handler->StartComponentsFlash(params, info, releaseSuite);
+                        StartComponentsFlash(params, info, ReleaseSuite);
                     }
 
                     Json::Value result;
@@ -434,20 +424,20 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                     onResult(result);
 
                     // Mark update as no longer in progress (allows next update)
-                    std::lock_guard<std::mutex> lock(handler->UpdateMutex);
-                    handler->UpdateInProgress = false;
+                    std::lock_guard<std::mutex> lock(UpdateMutex);
+                    UpdateInProgress = false;
                 } catch (const std::exception& e) {
                     {
-                        std::lock_guard<std::mutex> lock(handler->UpdateMutex);
-                        handler->UpdateInProgress = false;
+                        std::lock_guard<std::mutex> lock(UpdateMutex);
+                        UpdateInProgress = false;
                     }
                     onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware update: ") + e.what());
                 }
             },
-            [handler, onError](const std::string& error) {
+            [this, onError](const std::string& error) {
                 {
-                    std::lock_guard<std::mutex> lock(handler->UpdateMutex);
-                    handler->UpdateInProgress = false;
+                    std::lock_guard<std::mutex> lock(UpdateMutex);
+                    UpdateInProgress = false;
                 }
                 onError(WBMQTT::E_RPC_SERVER_ERROR, error);
             });
@@ -489,43 +479,41 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
         auto params = ParseRequestParams(request);
 
         // Read firmware signature from device in bootloader mode
-        auto handler = this;
-        auto releaseSuite = ReleaseSuite;
         auto portRequest = MakePortRequestJson(params);
 
         auto getInfoTask = std::make_shared<TFwGetInfoTask>(
             static_cast<uint8_t>(params.SlaveId),
             params.Protocol,
-            [handler, params, onResult, onError, releaseSuite](const TFwDeviceInfo& info) {
+            [this, params, onResult, onError](const TFwDeviceInfo& info) {
                 try {
-                    auto released = handler->Downloader->GetReleasedFirmware(info.FwSignature, releaseSuite);
-                    handler->StartFlash(params,
-                                        "firmware",
-                                        "",
-                                        released.Version,
-                                        released.Endpoint,
-                                        false, // already in bootloader
-                                        false);
+                    auto released = Downloader->GetReleasedFirmware(info.FwSignature, ReleaseSuite);
+                    StartFlash(params,
+                               "firmware",
+                               "",
+                               released.Version,
+                               released.Endpoint,
+                               false, // already in bootloader
+                               false);
 
                     Json::Value result;
                     result = "Ok";
                     onResult(result);
 
-                    std::lock_guard<std::mutex> lock(handler->UpdateMutex);
-                    handler->UpdateInProgress = false;
+                    std::lock_guard<std::mutex> lock(UpdateMutex);
+                    UpdateInProgress = false;
                 } catch (const std::exception& e) {
                     {
-                        std::lock_guard<std::mutex> lock(handler->UpdateMutex);
-                        handler->UpdateInProgress = false;
+                        std::lock_guard<std::mutex> lock(UpdateMutex);
+                        UpdateInProgress = false;
                     }
                     onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware restore: ") + e.what());
                 }
             },
-            [handler, onResult, onError](const std::string& error) {
+            [this, onResult, onError](const std::string& error) {
                 // If device is not in bootloader mode, return Ok silently
                 {
-                    std::lock_guard<std::mutex> lock(handler->UpdateMutex);
-                    handler->UpdateInProgress = false;
+                    std::lock_guard<std::mutex> lock(UpdateMutex);
+                    UpdateInProgress = false;
                 }
                 Json::Value result;
                 result = "Ok";
