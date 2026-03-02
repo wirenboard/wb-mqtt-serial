@@ -18,7 +18,6 @@ EnqueueHoldingRead()
 EnqueueDiscreteReadException()
 >> 2A 02 FE 80 00 08 4F D7
 << 2A 82 02 B1 69
-SkipNoise()
 EnqueueWriteSingleRegister()
 >> 2A 06 00 83 00 01 BF F9
 << 2A 06 00 83 00 01 BF F9

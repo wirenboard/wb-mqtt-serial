@@ -1372,20 +1372,10 @@ protected:
         return stub.ptr()->MakePortRequestJson(params);
     }
 
-    // Helper to set up internal members and call BuildFirmwareInfoResponse via friend access.
-    // Uses placement new to initialize Downloader and ReleaseSuite on an uninitialized handler stub.
+    // Call the free function BuildFirmwareInfoResponse directly
     Json::Value CallBuildFirmwareInfoResponse(const TFwDeviceInfo& info, const std::string& suite = "bullseye")
     {
-        alignas(TRPCFwUpdateHandler) char storage[sizeof(TRPCFwUpdateHandler)];
-        auto* handler = reinterpret_cast<TRPCFwUpdateHandler*>(storage);
-        new (&handler->Downloader) std::shared_ptr<TFwDownloader>(Downloader);
-        new (&handler->ReleaseSuite) std::string(suite);
-
-        auto result = handler->BuildFirmwareInfoResponse(info);
-
-        handler->ReleaseSuite.~basic_string();
-        handler->Downloader.~shared_ptr();
-        return result;
+        return BuildFirmwareInfoResponse(info, *Downloader, suite);
     }
 
     void SetupReleasesYaml(const std::string& yaml = "releases:\n"

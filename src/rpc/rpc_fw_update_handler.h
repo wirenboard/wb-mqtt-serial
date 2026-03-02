@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -54,25 +53,6 @@ private:
     };
     TRequestParams ParseRequestParams(const Json::Value& request);
     Json::Value MakePortRequestJson(const TRequestParams& params);
-
-    // Build GetFirmwareInfo response
-    Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo);
-
-    // Start a firmware flash operation
-    void StartFlash(const TRequestParams& params,
-                    const std::string& type,
-                    const std::string& fromVersion,
-                    const std::string& toVersion,
-                    const std::string& fwUrl,
-                    bool rebootToBootloader,
-                    bool canPreservePortSettings,
-                    int componentNumber = -1,
-                    const std::string& componentModel = "",
-                    std::function<void()> customCompleteCallback = nullptr);
-
-    void StartComponentsFlash(const TRequestParams& params,
-                              const TFwDeviceInfo& deviceInfo,
-                              const std::string& releaseSuite);
 
     ITaskRunner& SerialClientTaskRunner;
     WBMQTT::PMqttClient Mqtt;

@@ -1,10 +1,12 @@
 #include "rpc_fw_update_handler.h"
 #include "common_utils.h"
 #include "log.h"
+#include "rpc_fw_get_firmware_info_task.h"
+#include "rpc_fw_restore_task.h"
 #include "rpc_fw_update_helpers.h"
+#include "rpc_fw_update_serial_client_task.h"
 
 #include <curl/curl.h>
-#include <thread>
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -36,6 +38,66 @@ bool FirmwareIsNewer(const std::string& currentVersion, const std::string& avail
 bool ComponentFirmwareIsNewer(const std::string& currentVersion, const std::string& availableVersion)
 {
     return !availableVersion.empty() && currentVersion != availableVersion;
+}
+
+// Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info() - response building part
+Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
+                                      TFwDownloader& downloader,
+                                      const std::string& releaseSuite)
+{
+    Json::Value result;
+    result["fw"] = deviceInfo.FwVersion;
+    result["available_fw"] = "";
+    result["can_update"] = false;
+    result["fw_has_update"] = false;
+    result["bootloader"] = deviceInfo.BootloaderVersion;
+    result["available_bootloader"] = "";
+    result["bootloader_has_update"] = false;
+    result["components"] = Json::Value(Json::objectValue);
+    result["model"] = deviceInfo.DeviceModel;
+
+    // Skip non-updatable signatures
+    if (IsNonUpdatableSignature(deviceInfo.FwSignature)) {
+        return result;
+    }
+
+    // Look up released firmware
+    try {
+        auto released = downloader.GetReleasedFirmware(deviceInfo.FwSignature, releaseSuite);
+        result["available_fw"] = released.Version;
+        result["fw_has_update"] = FirmwareIsNewer(deviceInfo.FwVersion, released.Version);
+    } catch (const std::exception& e) {
+        LOG(Warn) << "Cannot get released firmware for " << deviceInfo.FwSignature << ": " << e.what();
+    }
+
+    // Look up bootloader
+    try {
+        auto bootloader = downloader.GetLatestBootloader(deviceInfo.FwSignature);
+        result["available_bootloader"] = bootloader.Version;
+        result["bootloader_has_update"] = FirmwareIsNewer(deviceInfo.BootloaderVersion, bootloader.Version);
+    } catch (const std::exception& e) {
+        LOG(Debug) << "Cannot get bootloader info for " << deviceInfo.FwSignature << ": " << e.what();
+    }
+
+    // Check if device can be updated (serial always true, TCP depends on port settings preservation)
+    result["can_update"] = true;
+
+    // Component info
+    for (const auto& comp: deviceInfo.Components) {
+        try {
+            auto released = downloader.GetReleasedFirmware(comp.Signature, releaseSuite);
+            Json::Value compJson;
+            compJson["model"] = comp.Model;
+            compJson["fw"] = comp.FwVersion;
+            compJson["available_fw"] = released.Version;
+            compJson["has_update"] = ComponentFirmwareIsNewer(comp.FwVersion, released.Version);
+            result["components"][std::to_string(comp.Number)] = compJson;
+        } catch (const std::exception& e) {
+            LOG(Debug) << "Cannot get component " << comp.Number << " firmware info: " << e.what();
+        }
+    }
+
+    return result;
 }
 
 // Cf. firmware_update.py:650 FirmwareUpdater.__init__()
@@ -142,64 +204,6 @@ Json::Value TRPCFwUpdateHandler::MakePortRequestJson(const TRequestParams& param
     return req;
 }
 
-// Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info() - response building part
-Json::Value TRPCFwUpdateHandler::BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo)
-{
-    Json::Value result;
-    result["fw"] = deviceInfo.FwVersion;
-    result["available_fw"] = "";
-    result["can_update"] = false;
-    result["fw_has_update"] = false;
-    result["bootloader"] = deviceInfo.BootloaderVersion;
-    result["available_bootloader"] = "";
-    result["bootloader_has_update"] = false;
-    result["components"] = Json::Value(Json::objectValue);
-    result["model"] = deviceInfo.DeviceModel;
-
-    // Skip non-updatable signatures
-    if (IsNonUpdatableSignature(deviceInfo.FwSignature)) {
-        return result;
-    }
-
-    // Look up released firmware
-    try {
-        auto released = Downloader->GetReleasedFirmware(deviceInfo.FwSignature, ReleaseSuite);
-        result["available_fw"] = released.Version;
-        result["fw_has_update"] = FirmwareIsNewer(deviceInfo.FwVersion, released.Version);
-    } catch (const std::exception& e) {
-        LOG(Warn) << "Cannot get released firmware for " << deviceInfo.FwSignature << ": " << e.what();
-    }
-
-    // Look up bootloader
-    try {
-        auto bootloader = Downloader->GetLatestBootloader(deviceInfo.FwSignature);
-        result["available_bootloader"] = bootloader.Version;
-        result["bootloader_has_update"] = FirmwareIsNewer(deviceInfo.BootloaderVersion, bootloader.Version);
-    } catch (const std::exception& e) {
-        LOG(Debug) << "Cannot get bootloader info for " << deviceInfo.FwSignature << ": " << e.what();
-    }
-
-    // Check if device can be updated (serial always true, TCP depends on port settings preservation)
-    result["can_update"] = true;
-
-    // Component info
-    for (const auto& comp: deviceInfo.Components) {
-        try {
-            auto released = Downloader->GetReleasedFirmware(comp.Signature, ReleaseSuite);
-            Json::Value compJson;
-            compJson["model"] = comp.Model;
-            compJson["fw"] = comp.FwVersion;
-            compJson["available_fw"] = released.Version;
-            compJson["has_update"] = ComponentFirmwareIsNewer(comp.FwVersion, released.Version);
-            result["components"][std::to_string(comp.Number)] = compJson;
-        } catch (const std::exception& e) {
-            LOG(Debug) << "Cannot get component " << comp.Number << " firmware info: " << e.what();
-        }
-    }
-
-    return result;
-}
-
 // Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info()
 void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
                                           WBMQTT::TMqttRpcServer::TResultCallback onResult,
@@ -213,123 +217,15 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
             return;
         }
 
-        // Create a task to read device registers
-        auto task = std::make_shared<TFwGetInfoTask>(
-            static_cast<uint8_t>(params.SlaveId),
-            params.Protocol,
-            [this, onResult, onError](const TFwDeviceInfo& info) {
-                try {
-                    auto result = BuildFirmwareInfoResponse(info);
-                    onResult(result);
-                } catch (const std::exception& e) {
-                    onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error building firmware info: ") + e.what());
-                }
-            },
-            [onError](const std::string& error) { onError(WBMQTT::E_RPC_SERVER_ERROR, error); });
-
-        auto portRequest = MakePortRequestJson(params);
-        SerialClientTaskRunner.RunTask(portRequest, task);
+        auto task = std::make_shared<TFwGetFirmwareInfoTask>(static_cast<uint8_t>(params.SlaveId),
+                                                             params.Protocol,
+                                                             Downloader,
+                                                             ReleaseSuite,
+                                                             std::move(onResult),
+                                                             std::move(onError));
+        SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
     } catch (const std::exception& e) {
         onError(WBMQTT::E_RPC_SERVER_ERROR, e.what());
-    }
-}
-
-// Cf. firmware_update.py:444 update_software() and firmware_update.py:633 make_device_update_info()
-void TRPCFwUpdateHandler::StartFlash(const TRequestParams& params,
-                                     const std::string& type,
-                                     const std::string& fromVersion,
-                                     const std::string& toVersion,
-                                     const std::string& fwUrl,
-                                     bool rebootToBootloader,
-                                     bool canPreservePortSettings,
-                                     int componentNumber,
-                                     const std::string& componentModel,
-                                     std::function<void()> customCompleteCallback)
-{
-    // Update state to show 0% progress
-    TDeviceUpdateInfo info;
-    info.PortPath = params.PortPath;
-    info.Protocol = params.Protocol;
-    info.SlaveId = params.SlaveId;
-    info.ToVersion = toVersion;
-    info.Progress = 0;
-    info.FromVersion = fromVersion;
-    info.Type = type;
-    info.ComponentNumber = componentNumber;
-    info.ComponentModel = componentModel;
-    State->Update(info);
-
-    // Download and parse firmware file
-    auto firmware = Downloader->DownloadAndParseWBFW(fwUrl);
-
-    // Create update notifier for throttled progress publishing
-    auto notifier = std::make_shared<TUpdateNotifier>(30);
-    auto portPath = params.PortPath;
-    auto protocol = params.Protocol;
-    auto slaveId = params.SlaveId;
-
-    auto flashTask = std::make_shared<TFwFlashTask>(
-        static_cast<uint8_t>(params.SlaveId),
-        params.Protocol,
-        std::move(firmware),
-        rebootToBootloader,
-        canPreservePortSettings,
-        // Progress callback
-        [this, notifier, portPath, protocol, slaveId, toVersion, fromVersion, type, componentNumber, componentModel](
-            int percent) {
-            if (notifier->ShouldNotify(percent)) {
-                TDeviceUpdateInfo progressInfo;
-                progressInfo.PortPath = portPath;
-                progressInfo.Protocol = protocol;
-                progressInfo.SlaveId = slaveId;
-                progressInfo.ToVersion = toVersion;
-                progressInfo.Progress = percent;
-                progressInfo.FromVersion = fromVersion;
-                progressInfo.Type = type;
-                progressInfo.ComponentNumber = componentNumber;
-                progressInfo.ComponentModel = componentModel;
-                State->Update(progressInfo);
-            }
-        },
-        // Complete callback
-        customCompleteCallback
-            ? [customCompleteCallback]() { customCompleteCallback(); }
-            : std::function<void()>([this, slaveId, portPath, type]() { State->Remove(slaveId, portPath, type); }),
-        // Error callback
-        [this, slaveId, portPath, type](const std::string& error) {
-            std::string errorId = "com.wb.device_manager.generic_error";
-            std::string errorMsg = "Internal error. Check logs for more info";
-            Json::Value metadata;
-            metadata["exception"] = error;
-            State->SetError(slaveId, portPath, type, errorId, errorMsg, metadata);
-        });
-
-    auto portRequest = MakePortRequestJson(params);
-    SerialClientTaskRunner.RunTask(portRequest, flashTask);
-}
-
-// Cf. firmware_update.py:538 update_components()
-void TRPCFwUpdateHandler::StartComponentsFlash(const TRequestParams& params,
-                                               const TFwDeviceInfo& deviceInfo,
-                                               const std::string& releaseSuite)
-{
-    for (const auto& comp: deviceInfo.Components) {
-        try {
-            auto released = Downloader->GetReleasedFirmware(comp.Signature, releaseSuite);
-            if (ComponentFirmwareIsNewer(comp.FwVersion, released.Version)) {
-                StartFlash(params,
-                           "component",
-                           comp.FwVersion,
-                           released.Version,
-                           released.Endpoint,
-                           false, // components don't reboot to bootloader
-                           false,
-                           comp.Number,
-                           comp.Model);
-            }
-        } catch (const std::exception& e) {
-            LOG(Warn) << "Cannot update component " << comp.Number << ": " << e.what();
-        }
     }
 }
 
@@ -351,98 +247,18 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
         auto params = ParseRequestParams(request);
         auto softwareType = request.get("type", "firmware").asString();
 
-        // Read device info first
-        auto portRequest = MakePortRequestJson(params);
-
-        auto getInfoTask = std::make_shared<TFwGetInfoTask>(
-            static_cast<uint8_t>(params.SlaveId),
-            params.Protocol,
-            [this, params, softwareType, onResult, onError](const TFwDeviceInfo& info) {
-                try {
-                    if (softwareType == "firmware") {
-                        auto released = Downloader->GetReleasedFirmware(info.FwSignature, ReleaseSuite);
-                        StartFlash(params,
-                                   "firmware",
-                                   info.FwVersion,
-                                   released.Version,
-                                   released.Endpoint,
-                                   true,
-                                   info.CanPreservePortSettings);
-
-                        // Also schedule component updates after firmware
-                        StartComponentsFlash(params, info, ReleaseSuite);
-                    } else if (softwareType == "bootloader") {
-                        auto bootloader = Downloader->GetLatestBootloader(info.FwSignature);
-                        auto fwSignature = info.FwSignature;
-                        // Cf. firmware_update.py:939 _update_bootloader():
-                        // After BL flash, auto-restore firmware (device stays in BL mode)
-                        auto autoRestoreCallback = [this, params, fwSignature]() {
-                            try {
-                                // Remove bootloader state entry
-                                State->Remove(params.SlaveId, params.PortPath, "bootloader");
-                                // Look up released firmware for this device
-                                auto released = Downloader->GetReleasedFirmware(fwSignature, ReleaseSuite);
-                                LOG(Info)
-                                    << "Auto-restoring firmware after bootloader update for slave " << params.SlaveId;
-                                // Wait for device to stabilize after bootloader flash
-                                // Cf. firmware_update.py:973 await asyncio.sleep(1)
-                                std::this_thread::sleep_for(std::chrono::seconds(2));
-                                // Flash firmware (device is already in bootloader mode)
-                                StartFlash(params,
-                                           "firmware",
-                                           "",
-                                           released.Version,
-                                           released.Endpoint,
-                                           false, // already in bootloader
-                                           false);
-                            } catch (const std::exception& e) {
-                                LOG(Error) << "Failed to auto-restore firmware after bootloader update: " << e.what();
-                                State->SetError(params.SlaveId,
-                                                params.PortPath,
-                                                "firmware",
-                                                "com.wb.device_manager.generic_error",
-                                                "Failed to restore firmware after bootloader update",
-                                                Json::Value());
-                            }
-                        };
-                        StartFlash(params,
-                                   "bootloader",
-                                   info.BootloaderVersion,
-                                   bootloader.Version,
-                                   bootloader.Endpoint,
-                                   true,
-                                   info.CanPreservePortSettings,
-                                   -1,
-                                   "",
-                                   autoRestoreCallback);
-                    } else if (softwareType == "component") {
-                        StartComponentsFlash(params, info, ReleaseSuite);
-                    }
-
-                    Json::Value result;
-                    result = "Ok";
-                    onResult(result);
-
-                    // Mark update as no longer in progress (allows next update)
-                    std::lock_guard<std::mutex> lock(UpdateMutex);
-                    UpdateInProgress = false;
-                } catch (const std::exception& e) {
-                    {
-                        std::lock_guard<std::mutex> lock(UpdateMutex);
-                        UpdateInProgress = false;
-                    }
-                    onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware update: ") + e.what());
-                }
-            },
-            [this, onError](const std::string& error) {
-                {
-                    std::lock_guard<std::mutex> lock(UpdateMutex);
-                    UpdateInProgress = false;
-                }
-                onError(WBMQTT::E_RPC_SERVER_ERROR, error);
-            });
-
-        SerialClientTaskRunner.RunTask(portRequest, getInfoTask);
+        auto task = std::make_shared<TFwUpdateTask>(static_cast<uint8_t>(params.SlaveId),
+                                                    params.Protocol,
+                                                    softwareType,
+                                                    params.PortPath,
+                                                    ReleaseSuite,
+                                                    Downloader,
+                                                    State,
+                                                    UpdateMutex,
+                                                    UpdateInProgress,
+                                                    std::move(onResult),
+                                                    std::move(onError));
+        SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
     } catch (const std::exception& e) {
         {
             std::lock_guard<std::mutex> lock(UpdateMutex);
@@ -478,49 +294,17 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
 
         auto params = ParseRequestParams(request);
 
-        // Read firmware signature from device in bootloader mode
-        auto portRequest = MakePortRequestJson(params);
-
-        auto getInfoTask = std::make_shared<TFwGetInfoTask>(
-            static_cast<uint8_t>(params.SlaveId),
-            params.Protocol,
-            [this, params, onResult, onError](const TFwDeviceInfo& info) {
-                try {
-                    auto released = Downloader->GetReleasedFirmware(info.FwSignature, ReleaseSuite);
-                    StartFlash(params,
-                               "firmware",
-                               "",
-                               released.Version,
-                               released.Endpoint,
-                               false, // already in bootloader
-                               false);
-
-                    Json::Value result;
-                    result = "Ok";
-                    onResult(result);
-
-                    std::lock_guard<std::mutex> lock(UpdateMutex);
-                    UpdateInProgress = false;
-                } catch (const std::exception& e) {
-                    {
-                        std::lock_guard<std::mutex> lock(UpdateMutex);
-                        UpdateInProgress = false;
-                    }
-                    onError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware restore: ") + e.what());
-                }
-            },
-            [this, onResult, onError](const std::string& error) {
-                // If device is not in bootloader mode, return Ok silently
-                {
-                    std::lock_guard<std::mutex> lock(UpdateMutex);
-                    UpdateInProgress = false;
-                }
-                Json::Value result;
-                result = "Ok";
-                onResult(result);
-            });
-
-        SerialClientTaskRunner.RunTask(portRequest, getInfoTask);
+        auto task = std::make_shared<TFwRestoreTask>(static_cast<uint8_t>(params.SlaveId),
+                                                     params.Protocol,
+                                                     params.PortPath,
+                                                     ReleaseSuite,
+                                                     Downloader,
+                                                     State,
+                                                     UpdateMutex,
+                                                     UpdateInProgress,
+                                                     std::move(onResult),
+                                                     std::move(onError));
+        SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
     } catch (const std::exception& e) {
         {
             std::lock_guard<std::mutex> lock(UpdateMutex);

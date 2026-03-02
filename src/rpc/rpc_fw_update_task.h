@@ -1,11 +1,17 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "rpc_fw_downloader.h"
 #include "serial_client.h"
+
+namespace Modbus
+{
+    class IModbusTraits;
+}
 
 // Register addresses and counts for WB device firmware operations
 namespace FwRegisters
@@ -71,6 +77,17 @@ struct TFwDeviceInfo
     std::vector<TComponentInfo> Components;
 };
 
+// Free functions for serial operations — used by task classes and higher-level tasks
+std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
+TFwDeviceInfo ReadFwDeviceInfo(TPort& port, Modbus::IModbusTraits& traits, uint8_t slaveId);
+void FlashFirmware(TPort& port,
+                   Modbus::IModbusTraits& traits,
+                   uint8_t slaveId,
+                   const TParsedWBFW& firmware,
+                   bool rebootToBootloader,
+                   bool canPreservePortSettings,
+                   std::function<void(int)> onProgress);
+
 using TFwGetInfoCallback = std::function<void(const TFwDeviceInfo& info)>;
 using TFwGetInfoErrorCallback = std::function<void(const std::string& error)>;
 
@@ -92,23 +109,6 @@ private:
     TFwGetInfoCallback OnResult;
     TFwGetInfoErrorCallback OnError;
     std::chrono::steady_clock::time_point ExpireTime;
-
-    std::string ReadStringRegister(TPort& port,
-                                   Modbus::IModbusTraits& traits,
-                                   uint16_t addr,
-                                   uint16_t count,
-                                   uint8_t fnCode);
-    std::vector<uint8_t> ReadRawRegister(TPort& port,
-                                         Modbus::IModbusTraits& traits,
-                                         uint16_t addr,
-                                         uint16_t count,
-                                         uint8_t fnCode);
-    bool TryReadRegister(TPort& port,
-                         Modbus::IModbusTraits& traits,
-                         uint16_t addr,
-                         uint16_t count,
-                         uint8_t fnCode,
-                         std::vector<uint8_t>& result);
 };
 
 using TFwFlashProgressCallback = std::function<void(int percent)>;
@@ -140,9 +140,4 @@ private:
     TFwFlashProgressCallback OnProgress;
     TFwFlashCompleteCallback OnComplete;
     TFwFlashErrorCallback OnError;
-
-    void DoReboot(TPort& port, Modbus::IModbusTraits& traits);
-    void WriteInfoBlock(TPort& port, Modbus::IModbusTraits& traits);
-    void WriteDataBlocks(TPort& port, Modbus::IModbusTraits& traits);
-    void WriteDataBlock(TPort& port, Modbus::IModbusTraits& traits, const std::vector<uint8_t>& chunk);
 };
