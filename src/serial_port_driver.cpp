@@ -153,6 +153,10 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         {
             publishPolicy.Policy = TPublishParameters::PublishAll;
         }
+        // Pushbutton always publishes value "1", bypass max_unchanged_interval
+        if (it->second->Type == "pushbutton") {
+            publishPolicy.Policy = TPublishParameters::PublishAll;
+        }
         it->second->UpdateValueAndError(*MqttDriver, publishPolicy);
     }
 }

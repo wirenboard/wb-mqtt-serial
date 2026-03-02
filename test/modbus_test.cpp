@@ -1172,6 +1172,36 @@ TEST_F(TModbusPublishTest, DuplicateValues)
     }
 }
 
+class TModbusPushbuttonPublishTest: public TSerialDeviceIntegrationTest
+{
+protected:
+    void SetUp() override
+    {
+        TSerialDeviceIntegrationTest::SetUp();
+        SetMode(E_Normal);
+    }
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-pushbutton-test.json";
+    }
+};
+
+// Check that "pushbutton" channel data is published on every OnValueRead call, even if value has not changed,
+// similar to sporadic channels. This ensures pushbutton works correctly with max_unchanged_interval.
+TEST_F(TModbusPushbuttonPublishTest, DuplicateValues)
+{
+    auto driver = SerialDriver->GetPortDrivers().front();
+    auto& regs = driver->GetSerialClient()->GetDevices().front()->GetRegisters();
+    for (auto reg: regs) {
+        reg->SetValue(TRegisterValue{1});
+    }
+    for (auto i = 0; i < 3; ++i) {
+        for (auto reg: regs) {
+            driver->OnValueRead(reg);
+        }
+    }
+}
+
 class TModbusUnsupportedChannelTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:
