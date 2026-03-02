@@ -194,7 +194,7 @@
                 "description": "dimmer_mode_description",
                 "address": 4000,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512],
+                "enum": [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768],
                 "default": 256,
                 "enum_titles": [
                     "W + W + W + W",
@@ -207,7 +207,8 @@
                     "2*W + CCT",
                     "CCT + CCT",
                     "RGB + W",
-                    "4*W"
+                    "4*W",
+                    "RGBW"
                 ],
                 "order": 1,
                 "required": true
@@ -220,7 +221,7 @@
                 "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
-                "fw":"3.5.0",   
+                "fw":"3.5.0",
                 "enum": [0, 1],
                 "enum_titles": [
                     "Button",
@@ -467,7 +468,7 @@
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
                 "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256||dimmer_mode==768",
                 "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
                 "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
                 "dimmer_mode==512",
@@ -526,7 +527,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "dimmer_mode==256"
+                "condition": "dimmer_mode==256||dimmer_mode==768"
             },
             {% endfor -%}
             {% endfor -%}
@@ -541,7 +542,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "dimmer_mode==256"
+                "condition": "dimmer_mode==256||dimmer_mode==768"
             },
             {# режим работы CCT лент -#}
             {% set order = [1, 2] -%}
@@ -693,6 +694,7 @@
             "CCT + CCT"         34
             "RGB + W"           256
             "4*W"               512
+            "RGBW"              768
             #}
 
             {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты W* -#}
@@ -768,6 +770,66 @@
                 "condition": "(({{conditions[loop.index0]}})&&(powerup_mode_ch_{{type_action}}_action==3))"
             },
             {% endfor -%}
+            
+            
+            {
+                "id": "safety_mode_ch_w4_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": 651,
+                "fw": "3.5.0",
+                "type": "enum",
+                "enum": [0, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Set Level"
+                ],
+                "group": "ggg_safety_mode_ch_4",
+                "condition": "dimmer_mode==768"
+            },
+            {
+                "id": "safety_mode_ch_w4_level",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": 659,
+                "fw": "3.5.0",
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_safety_mode_ch_4",
+                "condition": "(dimmer_mode==768)&&(safety_mode_ch_w4_action==3)"
+            },
+            {
+                "id": "powerup_mode_ch_w4_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": 667,
+                "fw": "3.5.0",
+                "type": "enum",
+                "enum": [0, 3],
+                "enum_titles": [
+                    "Turn Off",
+                    "Set Level"
+                ],
+                "group": "ggg_power_up_behaviour_ch_4",
+                "condition": "dimmer_mode==768"
+            },
+            {
+                "id": "powerup_mode_ch_w4_level",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": 675,
+                "fw": "3.5.0",
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_power_up_behaviour_ch_4",
+                "condition": "(dimmer_mode==768)&&(powerup_mode_ch_w4_action==3)"
+            },
+            
+            
             {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты CCT* -#}
             {% set conditions = [
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
@@ -905,7 +967,7 @@
                     ],
                 {% endif -%}
                 "group": "gggg_safety_mode_ch_{{type_action}}",
-                "condition": "dimmer_mode==256"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "id": "powerup_mode_ch_{{type_action}}_action",
@@ -930,7 +992,7 @@
                     ],
                 {% endif -%}
                 "group": "gggg_power_up_behaviour_ch_{{type_action}}",
-                "condition": "dimmer_mode==256"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {% endfor -%}
             {
@@ -944,7 +1006,7 @@
                 "default": 0,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_H",
-                "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_H_action==3)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)&&(safety_mode_ch_RGB_H_action==3)"
             },
             {
                 "id": "safety_mode_ch_rgb_s",
@@ -957,7 +1019,7 @@
                 "default": 100,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_S",
-                "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_S_action==3)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)&&(safety_mode_ch_RGB_S_action==3)"
             },
             {
                 "id": "safety_mode_ch_rgb_v",
@@ -970,7 +1032,7 @@
                 "default": 50,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_V",
-                "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_V_action==3)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)&&(safety_mode_ch_RGB_V_action==3)"
             },
             {
                 "id": "powerup_mode_ch_rgb_h",
@@ -983,7 +1045,7 @@
                 "default": 0,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_H",
-                "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_H_action==3)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)&&(powerup_mode_ch_RGB_H_action==3)"
             },
             {
                 "id": "powerup_mode_ch_rgb_s",
@@ -996,7 +1058,7 @@
                 "default": 100,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_S",
-                "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_S_action==3)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)&&(powerup_mode_ch_RGB_S_action==3)"
             },
             {
                 "id": "powerup_mode_ch_rgb_v",
@@ -1009,7 +1071,7 @@
                 "default": 50,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_V",
-                "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_V_action==3)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)&&(powerup_mode_ch_RGB_V_action==3)"
             },
             {# опишем в группе безопасные режимы, то как будут работать кнопки -#}
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
@@ -1047,6 +1109,15 @@
         "channels": [
             {
                 "group": "gg_out_channels",
+                "name": "RGBW Strip",
+                "address": 11,
+                "type": "switch",
+                "reg_type": "coil",
+                "sporadic": true,
+                "condition": "(dimmer_mode==768)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "RGB Strip",
                 "address": 9,
                 "type": "switch",
@@ -1073,7 +1144,7 @@
                         "address": 2013
                     }
                 ],
-                "condition": "(dimmer_mode==256)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "group": "gg_out_channels",
@@ -1084,7 +1155,7 @@
                 "min": 0,
                 "max": 360,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==256)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "group": "gg_out_channels",
@@ -1096,7 +1167,7 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==256)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "group": "gg_out_channels",
@@ -1108,7 +1179,7 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==256)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "group": "gg_out_channels",
@@ -1117,7 +1188,7 @@
                 "type": "switch",
                 "reg_type": "coil",
                 "sporadic": true,
-                "condition": "(dimmer_mode==256)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "group": "gg_out_channels",
@@ -1129,7 +1200,7 @@
                 "min": 3,
                 "max": 10000,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==256)"
+                "condition": "(dimmer_mode==256||dimmer_mode==768)"
             },
             {
                 "group": "gg_out_channels",
@@ -1341,7 +1412,7 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256||dimmer_mode==768)"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
@@ -1763,6 +1834,7 @@
                 "CCT1": "Лента CCT1",
                 "CCT2": "Лента CCT2",
                 "RGB Strip": "Лента RGB",
+                "RGBW Strip": "Лента RGBW",
                 "Hue Changing": "Изменение оттенка RGB ленты",
                 "Channels 1_2_3_4": "Каналы 1_2_3_4",
 
