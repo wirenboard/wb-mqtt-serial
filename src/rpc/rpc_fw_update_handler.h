@@ -51,8 +51,8 @@ private:
         std::string PortPath;
         std::string Protocol;
     };
-    TRequestParams ParseRequestParams(const Json::Value& request);
-    Json::Value MakePortRequestJson(const TRequestParams& params);
+    static TRequestParams ParseRequestParams(const Json::Value& request);
+    static Json::Value MakePortRequestJson(const TRequestParams& params);
 
     ITaskRunner& SerialClientTaskRunner;
     WBMQTT::PMqttClient Mqtt;
@@ -60,6 +60,5 @@ private:
     PFwUpdateState State;
     std::string ReleaseSuite;
 
-    std::mutex UpdateMutex;
-    bool UpdateInProgress = false;
+    PFwUpdateLock UpdateLock = std::make_shared<TFwUpdateLock>();
 };

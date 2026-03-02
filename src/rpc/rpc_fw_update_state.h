@@ -62,6 +62,15 @@ private:
 
 using PFwUpdateState = std::shared_ptr<TFwUpdateState>;
 
+// Shared guard for "update in progress" state. Owned by the handler and shared with tasks
+// so that the synchronization primitives outlive any individual task.
+struct TFwUpdateLock
+{
+    std::mutex Mutex;
+    bool InProgress = false;
+};
+using PFwUpdateLock = std::shared_ptr<TFwUpdateLock>;
+
 class TUpdateNotifier
 {
 public:

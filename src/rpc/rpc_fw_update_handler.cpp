@@ -6,6 +6,7 @@
 #include "rpc_fw_update_helpers.h"
 #include "rpc_fw_update_serial_client_task.h"
 
+#include <cstdlib>
 #include <curl/curl.h>
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
@@ -79,7 +80,8 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
         LOG(Debug) << "Cannot get bootloader info for " << deviceInfo.FwSignature << ": " << e.what();
     }
 
-    // Check if device can be updated (serial always true, TCP depends on port settings preservation)
+    // Serial devices are always updatable. TCP devices would need additional checks
+    // (port settings preservation, protocol type, baud rate), but wb-mqtt-serial only handles serial.
     result["can_update"] = true;
 
     // Component info
@@ -110,7 +112,10 @@ TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
 {
     // Initialize libcurl globally (thread-safe, must be called before any curl_easy_init)
     static std::once_flag curlInitFlag;
-    std::call_once(curlInitFlag, []() { curl_global_init(CURL_GLOBAL_DEFAULT); });
+    std::call_once(curlInitFlag, []() {
+        curl_global_init(CURL_GLOBAL_DEFAULT);
+        std::atexit(curl_global_cleanup);
+    });
 
     if (!httpClient) {
         httpClient = std::make_shared<TCurlHttpClient>();
@@ -236,33 +241,32 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
 {
     try {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            if (UpdateInProgress) {
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            if (UpdateLock->InProgress) {
                 onError(WBMQTT::E_RPC_SERVER_ERROR, "Task is already executing.");
                 return;
             }
-            UpdateInProgress = true;
+            UpdateLock->InProgress = true;
         }
 
         auto params = ParseRequestParams(request);
         auto softwareType = request.get("type", "firmware").asString();
 
-        auto task = std::make_shared<TFwUpdateTask>(static_cast<uint8_t>(params.SlaveId),
-                                                    params.Protocol,
-                                                    softwareType,
-                                                    params.PortPath,
-                                                    ReleaseSuite,
-                                                    Downloader,
-                                                    State,
-                                                    UpdateMutex,
-                                                    UpdateInProgress,
-                                                    std::move(onResult),
-                                                    std::move(onError));
+        auto task = std::make_shared<TFwUpdateSerialClientTask>(static_cast<uint8_t>(params.SlaveId),
+                                                                params.Protocol,
+                                                                softwareType,
+                                                                params.PortPath,
+                                                                ReleaseSuite,
+                                                                Downloader,
+                                                                State,
+                                                                UpdateLock,
+                                                                std::move(onResult),
+                                                                std::move(onError));
         SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
     } catch (const std::exception& e) {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
         }
         onError(WBMQTT::E_RPC_SERVER_ERROR, e.what());
     }
@@ -284,12 +288,12 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
 {
     try {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            if (UpdateInProgress) {
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            if (UpdateLock->InProgress) {
                 onError(WBMQTT::E_RPC_SERVER_ERROR, "Task is already executing.");
                 return;
             }
-            UpdateInProgress = true;
+            UpdateLock->InProgress = true;
         }
 
         auto params = ParseRequestParams(request);
@@ -300,15 +304,14 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
                                                      ReleaseSuite,
                                                      Downloader,
                                                      State,
-                                                     UpdateMutex,
-                                                     UpdateInProgress,
+                                                     UpdateLock,
                                                      std::move(onResult),
                                                      std::move(onError));
         SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
     } catch (const std::exception& e) {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
         }
         onError(WBMQTT::E_RPC_SERVER_ERROR, e.what());
     }

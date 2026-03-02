@@ -8,17 +8,16 @@
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
-TFwUpdateTask::TFwUpdateTask(uint8_t slaveId,
-                             const std::string& protocol,
-                             const std::string& softwareType,
-                             const std::string& portPath,
-                             const std::string& releaseSuite,
-                             std::shared_ptr<TFwDownloader> downloader,
-                             PFwUpdateState state,
-                             std::mutex& updateMutex,
-                             bool& updateInProgress,
-                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
+TFwUpdateSerialClientTask::TFwUpdateSerialClientTask(uint8_t slaveId,
+                                                     const std::string& protocol,
+                                                     const std::string& softwareType,
+                                                     const std::string& portPath,
+                                                     const std::string& releaseSuite,
+                                                     std::shared_ptr<TFwDownloader> downloader,
+                                                     PFwUpdateState state,
+                                                     PFwUpdateLock updateLock,
+                                                     WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                     WBMQTT::TMqttRpcServer::TErrorCallback onError)
     : SlaveId(slaveId),
       Protocol(protocol),
       SoftwareType(softwareType),
@@ -26,15 +25,14 @@ TFwUpdateTask::TFwUpdateTask(uint8_t slaveId,
       ReleaseSuite(releaseSuite),
       Downloader(std::move(downloader)),
       State(std::move(state)),
-      UpdateMutex(updateMutex),
-      UpdateInProgress(updateInProgress),
+      UpdateLock(std::move(updateLock)),
       OnResult(std::move(onResult)),
       OnError(std::move(onError))
 {}
 
-ISerialClientTask::TRunResult TFwUpdateTask::Run(PFeaturePort port,
-                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                 const std::list<PSerialDevice>& polledDevices)
+ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
+                                                             TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                             const std::list<PSerialDevice>& polledDevices)
 {
     try {
         if (!port->IsOpen()) {
@@ -51,10 +49,6 @@ ISerialClientTask::TRunResult TFwUpdateTask::Run(PFeaturePort port,
             Json::Value result;
             result = "Ok";
             OnResult(result);
-        }
-        {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
         }
 
         try {
@@ -73,18 +67,22 @@ ISerialClientTask::TRunResult TFwUpdateTask::Run(PFeaturePort port,
             metadata["exception"] = e.what();
             State->SetError(SlaveId, PortPath, SoftwareType, errorId, errorMsg, metadata);
         }
+        {
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
+        }
     } catch (const TResponseTimeoutException& e) {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
         }
         if (OnError) {
             OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Device not responding: ") + e.what());
         }
     } catch (const std::exception& e) {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
         }
         if (OnError) {
             OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware update: ") + e.what());
@@ -94,7 +92,7 @@ ISerialClientTask::TRunResult TFwUpdateTask::Run(PFeaturePort port,
 }
 
 // Cf. firmware_update.py:785 FirmwareUpdater.update_software() — firmware branch
-void TFwUpdateTask::DoFirmwareUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info)
+void TFwUpdateSerialClientTask::DoFirmwareUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info)
 {
     auto released = Downloader->GetReleasedFirmware(info.FwSignature, ReleaseSuite);
     DoFlash(port,
@@ -111,7 +109,9 @@ void TFwUpdateTask::DoFirmwareUpdate(TPort& port, Modbus::IModbusTraits& traits,
 }
 
 // Cf. firmware_update.py:939 _update_bootloader()
-void TFwUpdateTask::DoBootloaderUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info)
+void TFwUpdateSerialClientTask::DoBootloaderUpdate(TPort& port,
+                                                   Modbus::IModbusTraits& traits,
+                                                   const TFwDeviceInfo& info)
 {
     auto bootloader = Downloader->GetLatestBootloader(info.FwSignature);
     DoFlash(port,
@@ -123,7 +123,8 @@ void TFwUpdateTask::DoBootloaderUpdate(TPort& port, Modbus::IModbusTraits& trait
             true,
             info.CanPreservePortSettings);
 
-    // Auto-restore firmware after bootloader update (device stays in bootloader mode)
+    // Auto-restore firmware after bootloader update (device stays in bootloader mode).
+    // Give the device time to settle after rebooting into the bootloader before starting the flash.
     // Cf. firmware_update.py:973
     LOG(Info) << "Auto-restoring firmware after bootloader update for slave " << static_cast<int>(SlaveId);
     std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -140,7 +141,9 @@ void TFwUpdateTask::DoBootloaderUpdate(TPort& port, Modbus::IModbusTraits& trait
 }
 
 // Cf. firmware_update.py:538 update_components()
-void TFwUpdateTask::DoComponentsUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info)
+void TFwUpdateSerialClientTask::DoComponentsUpdate(TPort& port,
+                                                   Modbus::IModbusTraits& traits,
+                                                   const TFwDeviceInfo& info)
 {
     for (const auto& comp: info.Components) {
         try {
@@ -163,16 +166,16 @@ void TFwUpdateTask::DoComponentsUpdate(TPort& port, Modbus::IModbusTraits& trait
     }
 }
 
-void TFwUpdateTask::DoFlash(TPort& port,
-                            Modbus::IModbusTraits& traits,
-                            const std::string& type,
-                            const std::string& fromVersion,
-                            const std::string& toVersion,
-                            const std::string& fwUrl,
-                            bool reboot,
-                            bool canPreserve,
-                            int componentNumber,
-                            const std::string& componentModel)
+void TFwUpdateSerialClientTask::DoFlash(TPort& port,
+                                        Modbus::IModbusTraits& traits,
+                                        const std::string& type,
+                                        const std::string& fromVersion,
+                                        const std::string& toVersion,
+                                        const std::string& fwUrl,
+                                        bool reboot,
+                                        bool canPreserve,
+                                        int componentNumber,
+                                        const std::string& componentModel)
 {
     // Update state to show 0% progress
     TDeviceUpdateInfo updateInfo;

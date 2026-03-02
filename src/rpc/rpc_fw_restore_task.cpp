@@ -1,6 +1,7 @@
 #include "rpc_fw_restore_task.h"
 #include "log.h"
 #include "modbus_base.h"
+#include "rpc_fw_update_helpers.h"
 #include "serial_exc.h"
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
@@ -11,8 +12,7 @@ TFwRestoreTask::TFwRestoreTask(uint8_t slaveId,
                                const std::string& releaseSuite,
                                std::shared_ptr<TFwDownloader> downloader,
                                PFwUpdateState state,
-                               std::mutex& updateMutex,
-                               bool& updateInProgress,
+                               PFwUpdateLock updateLock,
                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
     : SlaveId(slaveId),
@@ -21,8 +21,7 @@ TFwRestoreTask::TFwRestoreTask(uint8_t slaveId,
       ReleaseSuite(releaseSuite),
       Downloader(std::move(downloader)),
       State(std::move(state)),
-      UpdateMutex(updateMutex),
-      UpdateInProgress(updateInProgress),
+      UpdateLock(std::move(updateLock)),
       OnResult(std::move(onResult)),
       OnError(std::move(onError))
 {}
@@ -48,8 +47,8 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
         } catch (const std::exception&) {
             // Device not responding — return "Ok" silently (current behavior)
             {
-                std::lock_guard<std::mutex> lock(UpdateMutex);
-                UpdateInProgress = false;
+                std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+                UpdateLock->InProgress = false;
             }
             if (OnResult) {
                 Json::Value result;
@@ -68,45 +67,54 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
             result = "Ok";
             OnResult(result);
         }
-        {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+
+        try {
+            // Update state and flash
+            TDeviceUpdateInfo updateInfo;
+            updateInfo.PortPath = PortPath;
+            updateInfo.Protocol = Protocol;
+            updateInfo.SlaveId = SlaveId;
+            updateInfo.ToVersion = released.Version;
+            updateInfo.Progress = 0;
+            updateInfo.FromVersion = "";
+            updateInfo.Type = "firmware";
+            State->Update(updateInfo);
+
+            auto firmware = Downloader->DownloadAndParseWBFW(released.Endpoint);
+
+            TUpdateNotifier notifier(30);
+            FlashFirmware(*port, *traits, SlaveId, firmware, false, false, [&](int percent) {
+                if (notifier.ShouldNotify(percent)) {
+                    updateInfo.Progress = percent;
+                    State->Update(updateInfo);
+                }
+            });
+
+            State->Remove(SlaveId, PortPath, "firmware");
+        } catch (const std::exception& e) {
+            LOG(Error) << "Firmware restore error: " << e.what();
+            std::string errorId = "com.wb.device_manager.generic_error";
+            std::string errorMsg = "Internal error. Check logs for more info";
+            Json::Value metadata;
+            metadata["exception"] = e.what();
+            State->SetError(SlaveId, PortPath, "firmware", errorId, errorMsg, metadata);
         }
-
-        // Update state and flash
-        TDeviceUpdateInfo updateInfo;
-        updateInfo.PortPath = PortPath;
-        updateInfo.Protocol = Protocol;
-        updateInfo.SlaveId = SlaveId;
-        updateInfo.ToVersion = released.Version;
-        updateInfo.Progress = 0;
-        updateInfo.FromVersion = "";
-        updateInfo.Type = "firmware";
-        State->Update(updateInfo);
-
-        auto firmware = Downloader->DownloadAndParseWBFW(released.Endpoint);
-
-        TUpdateNotifier notifier(30);
-        FlashFirmware(*port, *traits, SlaveId, firmware, false, false, [&](int percent) {
-            if (notifier.ShouldNotify(percent)) {
-                updateInfo.Progress = percent;
-                State->Update(updateInfo);
-            }
-        });
-
-        State->Remove(SlaveId, PortPath, "firmware");
+        {
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
+        }
     } catch (const TResponseTimeoutException& e) {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
         }
         if (OnError) {
             OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Device not responding: ") + e.what());
         }
     } catch (const std::exception& e) {
         {
-            std::lock_guard<std::mutex> lock(UpdateMutex);
-            UpdateInProgress = false;
+            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+            UpdateLock->InProgress = false;
         }
         if (OnError) {
             OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware restore: ") + e.what());

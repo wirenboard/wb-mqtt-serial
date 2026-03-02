@@ -50,6 +50,8 @@ one-line changes to point at the new service.
 - **Debian Bullseye**: Target OS on Wiren Board controllers
 - **No YAML library**: The release manifest (`release-versions.yaml`) has a trivial
   3-level structure. A hand-rolled parser avoids adding yaml-cpp (~2MB) as a dependency.
+  Only handles the specific indentation-based format used by the release server: no support
+  for quoted strings, multi-line values, anchors, aliases, or flow syntax.
 - **libcurl**: Only new dependency. Required for HTTPS downloads from the firmware
   release server. Already widely available on target.
 
@@ -115,9 +117,9 @@ All methods registered under group `fw-update`, accessible via two service names
 | Decision | Rationale |
 |----------|-----------|
 | **Direct Modbus access** via `Modbus::MakePDU()` / `IModbusTraits::Transaction()` | Same pattern used by existing `rpc_port_load_modbus_serial_client_task.cpp`. No new abstraction needed. |
-| **ISerialClientTask for register I/O** | Reuses the task runner infrastructure. Tasks execute on the serial client thread, which already holds the port lock. No concurrent port access issues. |
-| **HTTP in handler thread, Modbus in task thread** | `GetFirmwareInfo` reads registers via task, then does HTTP lookups in the callback (handler thread). Keeps blocking HTTP out of the serial polling loop. |
-| **Fire-and-forget flash** | `Update` RPC returns "Ok" after scheduling flash tasks. Progress/errors reported via MQTT state topic. Matches the original Python behavior. |
+| **Self-contained ISerialClientTask classes** | Each RPC method creates a task that owns its callbacks and does everything in `Run()`: Modbus I/O, HTTP downloads, state updates, error handling. No lambdas or callback chains. Consistent with how all other RPC handlers (`TRPCPortHandler`, `TRPCDeviceHandler`) work. |
+| **Free functions for Modbus operations** | `ReadFwDeviceInfo()` and `FlashFirmware()` are free functions reused by all three task classes (`TFwGetFirmwareInfoTask`, `TFwUpdateSerialClientTask`, `TFwRestoreTask`). |
+| **Fire-and-forget flash** | `Update` RPC returns "Ok" after reading device info. Flash proceeds in the same task with progress/errors reported via MQTT state topic. Lock held until flash completes. |
 | **TTL-cached HTTP responses** | Release manifest cached 10min, bootloader info 30min, firmware binaries 2hr. Avoids hammering the release server on repeated queries. |
 | **IHttpClient interface** | Abstracts HTTP transport. Production uses libcurl (`TCurlHttpClient`), tests use `TFakeHttpClient` with canned responses. |
 | **Second MqttRpcServer for compat** | A separate `TMqttRpcServer` with service name `"wb-device-manager"` registers the same handlers. This makes endpoints available at both `/rpc/v1/wb-mqtt-serial/fw-update/*` and `/rpc/v1/wb-device-manager/fw-update/*`. |
@@ -128,37 +130,73 @@ All methods registered under group `fw-update`, accessible via two service names
 
 ```
 src/rpc/
-├── rpc_fw_update_handler.h/.cpp   ← RPC method registration & orchestration
-├── rpc_fw_update_task.h/.cpp      ← Modbus register I/O (ISerialClientTask)
-├── rpc_fw_downloader.h/.cpp       ← HTTP downloads, WBFW parsing, release lookup
-└── rpc_fw_update_state.h/.cpp     ← State tracking & MQTT publishing
+├── rpc_fw_update_handler.h/.cpp            ← RPC method registration, request dispatch
+├── rpc_fw_update_helpers.h                 ← Free helper functions (version comparison, response building)
+├── rpc_fw_get_firmware_info_task.h/.cpp     ← GetFirmwareInfo task (ISerialClientTask)
+├── rpc_fw_update_serial_client_task.h/.cpp  ← Update task (ISerialClientTask)
+├── rpc_fw_restore_task.h/.cpp              ← Restore task (ISerialClientTask)
+├── rpc_fw_update_task.h/.cpp               ← Low-level Modbus I/O: ReadFwDeviceInfo(), FlashFirmware()
+├── rpc_fw_downloader.h/.cpp                ← HTTP downloads, WBFW parsing, release lookup
+└── rpc_fw_update_state.h/.cpp              ← State tracking & MQTT publishing
 ```
 
 ### Level 2: Component Responsibilities
 
-#### TRPCFwUpdateHandler (orchestrator)
+#### TRPCFwUpdateHandler (dispatcher)
 - Registers 4 RPC methods on both primary and compat RPC servers
 - Parses request parameters (slave_id, port, protocol)
-- Coordinates between Modbus tasks and HTTP downloads
-- Guards against concurrent updates via `UpdateMutex`
+- Creates the appropriate task object and submits it to the task runner
+- Guards against concurrent Update/Restore operations via `TFwUpdateLock`
+- Each RPC method is ~10 lines: parse params, create task, submit
 
 **Cf.** `firmware_update.py:650 FirmwareUpdater`
 
-#### TFwGetInfoTask (ISerialClientTask)
-- Reads firmware identity registers: signature, version, bootloader, device model
-- Reads component presence bitmap and per-component info
-- Handles fallbacks: extended model → standard model, missing bootloader register
-- Strips control characters from model string
+#### TFwGetFirmwareInfoTask (ISerialClientTask)
+- Owns `OnResult`/`OnError` callbacks and `TFwDownloader`
+- `Run()`: calls `ReadFwDeviceInfo()` → `BuildFirmwareInfoResponse()` → `OnResult(json)`
+- All HTTP lookups (release versions, bootloader) happen inside `Run()` on the task thread
 
-**Cf.** `firmware_update.py:224 FirmwareInfoReader`
+**Cf.** `firmware_update.py:682 FirmwareUpdater.get_firmware_info()`
 
-#### TFwFlashTask (ISerialClientTask)
-- Optionally reboots device to bootloader (register 131 or 129)
-- Writes 32-byte info block to register 0x1000
-- Writes data in 136-byte chunks to register 0x2000 with 3-attempt retry
-- Reports progress after each chunk via callback
+#### TFwUpdateSerialClientTask (ISerialClientTask)
+- Owns `OnResult`/`OnError`, `TFwDownloader`, `TFwUpdateState`, `TFwUpdateLock`
+- `Run()`: reads device info → sends "Ok" RPC response → downloads firmware → flashes
+- Private methods: `DoFirmwareUpdate()`, `DoBootloaderUpdate()`, `DoComponentsUpdate()`, `DoFlash()`
+- Auto-restores firmware after bootloader update (inline, no second task)
+- Holds `UpdateLock` until flash completes or errors
 
-**Cf.** `firmware_update.py:382 flash_fw()`
+**Cf.** `firmware_update.py:785 FirmwareUpdater.update_software()`
+
+#### TFwRestoreTask (ISerialClientTask)
+- Same pattern as `TFwUpdateSerialClientTask` but for devices already in bootloader mode
+- Reads device info to get signature, downloads matching firmware, flashes it
+- On device-info error returns "Ok" silently (matches Python behavior)
+
+**Cf.** `firmware_update.py:871 FirmwareUpdater.restore_firmware()`
+
+#### Free functions (rpc_fw_update_task.h/.cpp)
+
+| Function | Description |
+|----------|-------------|
+| `ReadFwDeviceInfo(port, traits, slaveId)` | Read all firmware identity registers, components. Returns `TFwDeviceInfo`. |
+| `FlashFirmware(port, traits, slaveId, firmware, reboot, preserve, onProgress)` | Full flash sequence: reboot to BL → write info block → write data chunks with retry. |
+| `MakeModbusTraits(protocol)` | Create Modbus traits for the given protocol string. |
+
+**Cf.** `firmware_update.py:311 FirmwareInfoReader`, `firmware_update.py:382 flash_fw()`
+
+#### Helper functions (rpc_fw_update_helpers.h)
+
+| Function | Description |
+|----------|-------------|
+| `BuildFirmwareInfoResponse(info, downloader, suite)` | Build JSON response from device info + release server data |
+| `IsNonUpdatableSignature(sig)` | Check for devices that cannot be updated (e.g. LORA) |
+| `FirmwareIsNewer(current, available)` | Compare firmware version strings |
+| `ComponentFirmwareIsNewer(current, available)` | Compare component firmware versions |
+
+#### TFwGetInfoTask / TFwFlashTask (rpc_fw_update_task.h/.cpp)
+- Low-level `ISerialClientTask` classes wrapping `ReadFwDeviceInfo()` / `FlashFirmware()`
+- Used by the higher-level task classes as building blocks
+- Report results via typed callbacks (`TFwGetInfoCallback`, `TFwFlashProgressCallback`, etc.)
 
 #### TFwDownloader
 - `GetReleasedFirmware(signature, suite)` → version + download URL
@@ -180,41 +218,36 @@ src/rpc/
 ### GetFirmwareInfo Sequence
 
 ```
-homeui                  RPC Handler              Task Runner           Serial Port
-  │                        │                        │                      │
-  │──GetFirmwareInfo──────▷│                        │                      │
-  │                        │──TFwGetInfoTask────────▷│                      │
-  │                        │                        │──read registers─────▷│
-  │                        │                        │◁─register data───────│
-  │                        │◁─callback(TFwDeviceInfo)│                      │
-  │                        │                        │                      │
-  │                        │──HTTP: get releases───▷ fw-releases server
-  │                        │◁─release versions──────
-  │                        │                        │                      │
-  │◁─JSON response─────────│                        │                      │
+homeui                  Handler          Task Runner / TFwGetFirmwareInfoTask
+  │                        │                        │
+  │──GetFirmwareInfo──────▷│                        │
+  │                        │──create task, submit───▷│
+  │                        │                        │──ReadFwDeviceInfo()──▷ serial port
+  │                        │                        │◁─TFwDeviceInfo────────
+  │                        │                        │──HTTP: get releases──▷ fw-releases
+  │                        │                        │◁─release versions─────
+  │                        │                        │──BuildFirmwareInfoResponse()
+  │◁─JSON response (via OnResult callback)──────────│
 ```
 
 ### Update Sequence
 
 ```
-homeui                  RPC Handler              Task Runner           Serial Port
-  │                        │                        │                      │
-  │──Update───────────────▷│                        │                      │
-  │                        │──TFwGetInfoTask────────▷│                      │
-  │                        │                        │──read signature──────▷│
-  │                        │◁─callback(info)────────│                      │
-  │                        │                        │                      │
-  │                        │──HTTP: download fw────▷ fw-releases server
-  │                        │◁─WBFW binary───────────
-  │                        │                        │                      │
-  │◁─"Ok"─────────────────│                        │                      │
-  │                        │──TFwFlashTask──────────▷│                      │
-  │                        │  (state: 0%)           │──reboot to BL───────▷│
-  │                        │                        │──write info block────▷│
-  │                        │                        │──write data chunks──▷│
-  │                        │  (state: N%)           │  (progress callback) │
-  │                        │  (state: 100%)         │                      │
-  │                        │  (state: removed)      │                      │
+homeui                  Handler          Task Runner / TFwUpdateSerialClientTask
+  │                        │                        │
+  │──Update───────────────▷│                        │
+  │                        │──create task, submit───▷│
+  │                        │                        │──ReadFwDeviceInfo()──▷ serial port
+  │                        │                        │◁─TFwDeviceInfo────────
+  │◁─"Ok" (via OnResult callback)──────────────────│
+  │                        │                        │──HTTP: download fw───▷ fw-releases
+  │                        │                        │◁─WBFW binary──────────
+  │                        │                        │──FlashFirmware()─────▷ serial port
+  │                        │  (state: 0%)           │  (reboot to BL)
+  │                        │                        │  (write info block)
+  │                        │  (state: N%)           │  (write data chunks)
+  │                        │  (state: 100%)         │  (progress callbacks)
+  │                        │  (state: removed)      │──release UpdateLock
 ```
 
 ## 7. Deployment View
@@ -241,9 +274,13 @@ The `Provides` declaration satisfies any package that depends on `wb-device-mana
 
 - `TFwUpdateState::Mutex` protects the device list. JSON is serialized under lock,
   but MQTT publish happens after lock release to avoid holding the mutex during I/O.
-- `UpdateMutex` in the handler prevents concurrent Update/Restore operations.
+- `TFwUpdateLock` (shared via `std::shared_ptr<TFwUpdateLock>`) prevents concurrent
+  Update/Restore operations. The lock is held from when the RPC is accepted until
+  the flash operation completes or errors, ensuring only one device is updated at a time.
 - `CacheMutex` in `TFwDownloader` protects HTTP response caches.
-- Flash/GetInfo tasks run on serial client threads; callbacks may fire on those threads.
+- All three task classes (`TFwGetFirmwareInfoTask`, `TFwUpdateSerialClientTask`,
+  `TFwRestoreTask`) run entirely on the serial client task thread. No cross-thread
+  callback chains.
 
 ### Error Handling
 
@@ -254,6 +291,12 @@ The `Provides` declaration satisfies any package that depends on `wb-device-mana
 - HTTP errors surface as RPC error responses or state error entries.
 - All errors published to the state topic with `com.wb.device_manager.generic_error`
   error ID and exception details in metadata.
+
+### Resource Management
+
+- CURL handles wrapped in `std::unique_ptr<CURL, CurlCleanup>` for RAII cleanup,
+  preventing leaks even on exceptions.
+- `curl_global_init()` called once via `std::call_once` in handler constructor.
 
 ### Input Validation
 
@@ -302,14 +345,27 @@ pre-configured responses.
 network access. +Easy to mock HTTP errors and edge cases. −One extra level of
 indirection (negligible).
 
+### ADR-4: Self-contained Task Classes (No Lambdas)
+
+**Context**: The initial implementation used 15+ lambdas in the handler to chain
+serial reads, HTTP downloads, and flashing. All other RPC handlers in the codebase
+use task classes that do everything in `Run()`.
+
+**Decision**: Each RPC method creates a self-contained `ISerialClientTask` that owns
+all its dependencies (callbacks, downloader, state) and executes the entire operation
+in `Run()`. No callback chains or lambdas in the handler.
+
+**Consequences**: +Consistent with codebase conventions. +Each task is independently
+testable. +No lifetime/capture issues with lambdas. +Handler is trivial (~10 lines
+per method). −Task classes are larger (but self-explanatory).
+
 ## 10. Risks and Technical Debt
 
 | Risk | Mitigation |
 |------|------------|
-| Handler captures raw `this` in task callbacks | Handler lifetime managed by `shared_ptr` in `main.cpp`; RPC server stopped before handler destruction. Consider `enable_shared_from_this` if lifetime becomes more complex. |
 | 500ms `sleep_for` in DoReboot blocks serial polling thread | Acceptable for rare firmware update operations. Document as known limitation. |
 | WBFW cache grows unbounded | TTL-based expiry (2hr). In practice, very few distinct firmware URLs are accessed per session. |
-| YAML parser is fragile | Format is controlled server-side. Test covers comments and blank lines. Monitor for format changes. |
+| YAML parser is format-specific | Format is controlled server-side. Test covers comments and blank lines. Monitor for format changes. |
 
 ## 11. Register Map Reference
 
@@ -341,12 +397,12 @@ Python function in [wb-device-manager](https://github.com/wirenboard/wb-device-m
 | `Update()` | `firmware_update.py:785` |
 | `Restore()` | `firmware_update.py:871` |
 | `ClearError()` | `firmware_update.py:850` |
-| `StartFlash()` | `firmware_update.py:444 update_software()` |
-| `StartComponentsFlash()` | `firmware_update.py:538 update_components()` |
+| `TFwUpdateSerialClientTask::DoFirmwareUpdate()` | `firmware_update.py:444 update_software()` |
+| `TFwUpdateSerialClientTask::DoComponentsUpdate()` | `firmware_update.py:538 update_components()` |
 | `BuildFirmwareInfoResponse()` | `firmware_update.py:682` |
-| `TFwGetInfoTask::Run()` | `firmware_update.py:311 FirmwareInfoReader.read()` |
-| `TFwFlashTask::DoReboot()` | `firmware_update.py:412 reboot_to_bootloader()` |
-| `TFwFlashTask::WriteDataBlock()` | `firmware_update.py:349 write_fw_data_block()` |
+| `ReadFwDeviceInfo()` | `firmware_update.py:311 FirmwareInfoReader.read()` |
+| `FlashFirmware() / DoReboot()` | `firmware_update.py:412 reboot_to_bootloader()` |
+| `FlashFirmware() / WriteDataBlock()` | `firmware_update.py:349 write_fw_data_block()` |
 | `ParseWBFW()` | `firmware_update.py:185 parse_wbfw()` |
 | `ParseFwVersionFromUrl()` | `releases.py:30 parse_fw_version()` |
 | `GetReleasedFirmware()` | `fw_downloader.py:89 get_released_fw()` |

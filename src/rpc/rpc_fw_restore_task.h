@@ -19,8 +19,7 @@ public:
                    const std::string& releaseSuite,
                    std::shared_ptr<TFwDownloader> downloader,
                    PFwUpdateState state,
-                   std::mutex& updateMutex,
-                   bool& updateInProgress,
+                   PFwUpdateLock updateLock,
                    WBMQTT::TMqttRpcServer::TResultCallback onResult,
                    WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
@@ -35,8 +34,7 @@ private:
     std::string ReleaseSuite;
     std::shared_ptr<TFwDownloader> Downloader;
     PFwUpdateState State;
-    std::mutex& UpdateMutex;
-    bool& UpdateInProgress;
+    PFwUpdateLock UpdateLock;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;
 };

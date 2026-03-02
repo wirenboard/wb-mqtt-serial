@@ -25,15 +25,11 @@ namespace FwRegisters
 
     const uint16_t BOOTLOADER_VERSION_ADDR = 330;
     const uint16_t BOOTLOADER_VERSION_COUNT = 7;
-    const uint16_t BOOTLOADER_VERSION_FULL_COUNT = 8;
 
     const uint16_t DEVICE_MODEL_EXTENDED_ADDR = 200;
     const uint16_t DEVICE_MODEL_EXTENDED_COUNT = 20;
     const uint16_t DEVICE_MODEL_ADDR = 200;
     const uint16_t DEVICE_MODEL_COUNT = 6;
-
-    const uint16_t SN_ADDR = 270;
-    const uint16_t SN_COUNT = 2;
 
     // Reboot registers (function 6 = WRITE_SINGLE_REGISTER)
     const uint16_t REBOOT_PRESERVE_PORT_SETTINGS_ADDR = 131;
@@ -108,7 +104,6 @@ private:
     std::string Protocol;
     TFwGetInfoCallback OnResult;
     TFwGetInfoErrorCallback OnError;
-    std::chrono::steady_clock::time_point ExpireTime;
 };
 
 using TFwFlashProgressCallback = std::function<void(int percent)>;

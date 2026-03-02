@@ -623,12 +623,153 @@ TEST_F(FwDownloaderTest, CacheHit)
 }
 
 // ============================================================
+//           Shared Modbus test helpers
+// ============================================================
+
+// Mixin providing common Modbus request/response helpers for firmware update tests.
+// Subclasses must inherit from TModbusExpectationsBase (for WrapPDU) and provide SerialPort.
+class TFwModbusTestHelpers
+{
+protected:
+    virtual PFakeSerialPort GetSerialPort() const = 0;
+    virtual std::vector<int> WrapPDU(const std::vector<int>& pdu) = 0;
+
+    std::vector<int> EncodeStringAsRegs(const std::string& s, size_t regCount)
+    {
+        std::vector<int> data;
+        for (size_t i = 0; i < regCount; ++i) {
+            data.push_back(0x00);
+            if (i < s.size()) {
+                data.push_back(static_cast<int>(s[i]));
+            } else {
+                data.push_back(0x00);
+            }
+        }
+        return data;
+    }
+
+    void EnqueueHoldingRead(uint16_t addr, uint16_t count, const std::vector<int>& responseData)
+    {
+        auto byteCount = static_cast<int>(count * 2);
+        std::vector<int> request = {0x03,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(count >> 8),
+                                    static_cast<int>(count & 0xFF)};
+        std::vector<int> response = {0x03, byteCount};
+        response.insert(response.end(), responseData.begin(), responseData.end());
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingRead");
+    }
+
+    void EnqueueHoldingReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
+    {
+        std::vector<int> request = {0x03,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(count >> 8),
+                                    static_cast<int>(count & 0xFF)};
+        std::vector<int> response = {0x83, static_cast<int>(exceptionCode)};
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingReadException");
+    }
+
+    void EnqueueDiscreteRead(uint16_t addr, uint16_t count, const std::vector<int>& statusBytes)
+    {
+        auto byteCount = static_cast<int>(statusBytes.size());
+        std::vector<int> request = {0x02,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(count >> 8),
+                                    static_cast<int>(count & 0xFF)};
+        std::vector<int> response = {0x02, byteCount};
+        response.insert(response.end(), statusBytes.begin(), statusBytes.end());
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueDiscreteRead");
+    }
+
+    void EnqueueDiscreteReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
+    {
+        std::vector<int> request = {0x02,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(count >> 8),
+                                    static_cast<int>(count & 0xFF)};
+        std::vector<int> response = {0x82, static_cast<int>(exceptionCode)};
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueDiscreteReadException");
+    }
+
+    void EnqueueInputRead(uint16_t addr, uint16_t count, const std::vector<int>& responseData)
+    {
+        auto byteCount = static_cast<int>(count * 2);
+        std::vector<int> request = {0x04,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(count >> 8),
+                                    static_cast<int>(count & 0xFF)};
+        std::vector<int> response = {0x04, byteCount};
+        response.insert(response.end(), responseData.begin(), responseData.end());
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueInputRead");
+    }
+
+    void EnqueueWriteSingleRegister(uint16_t addr, uint16_t value)
+    {
+        std::vector<int> request = {0x06,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(value >> 8),
+                                    static_cast<int>(value & 0xFF)};
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(request), "EnqueueWriteSingleRegister");
+    }
+
+    void EnqueueWriteMultipleRegisters(uint16_t addr, uint16_t regCount, const std::vector<int>& writeData)
+    {
+        auto byteCount = static_cast<int>(regCount * 2);
+        std::vector<int> request = {0x10,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(regCount >> 8),
+                                    static_cast<int>(regCount & 0xFF),
+                                    byteCount};
+        request.insert(request.end(), writeData.begin(), writeData.end());
+        std::vector<int> response = {0x10,
+                                     static_cast<int>(addr >> 8),
+                                     static_cast<int>(addr & 0xFF),
+                                     static_cast<int>(regCount >> 8),
+                                     static_cast<int>(regCount & 0xFF)};
+        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueWriteMultipleRegisters");
+    }
+
+    void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
+                                      const std::string& version = "3.7.0",
+                                      const std::string& bootloader = "1.5.5",
+                                      const std::string& model = "WB-LED")
+    {
+        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                           FwRegisters::FW_SIGNATURE_COUNT,
+                           EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
+        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                           FwRegisters::FW_VERSION_COUNT,
+                           EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
+        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_COUNT,
+                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
+        EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
+        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                           FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                           EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+        EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
+                                     FwRegisters::COMPONENTS_PRESENCE_COUNT,
+                                     0x02);
+    }
+
+    virtual ~TFwModbusTestHelpers() = default;
+};
+
+// ============================================================
 //           7. Modbus Task Tests (TFwGetInfoTask, TFwFlashTask)
 // Cf. firmware_update_test.py TestGetFirmwareInfo, TestFlashFw,
 //     TestRebootToBootloader, TestUpdateSoftware
 // ============================================================
 
-class TFwTaskTest: public TSerialDeviceTest, public TModbusExpectationsBase
+class TFwTaskTest: public TSerialDeviceTest, public TModbusExpectationsBase, public TFwModbusTestHelpers
 {
 protected:
     void SetUp() override
@@ -646,159 +787,21 @@ protected:
         return SerialPort;
     }
 
+    PFakeSerialPort GetSerialPort() const override
+    {
+        return SerialPort;
+    }
+
+    std::vector<int> WrapPDU(const std::vector<int>& pdu) override
+    {
+        return TModbusExpectationsBase::WrapPDU(pdu);
+    }
+
     static constexpr uint8_t SLAVE_ID = 42;
 
     PFeaturePort FeaturePort;
     std::unique_ptr<TSerialClientDeviceAccessHandler> AccessHandler;
     std::list<PSerialDevice> EmptyDeviceList;
-
-    // Helper: encode ASCII string as Modbus register data (hi=0, lo=char)
-    std::vector<int> EncodeStringAsRegs(const std::string& s, size_t regCount)
-    {
-        std::vector<int> data;
-        for (size_t i = 0; i < regCount; ++i) {
-            data.push_back(0x00);
-            if (i < s.size()) {
-                data.push_back(static_cast<int>(s[i]));
-            } else {
-                data.push_back(0x00);
-            }
-        }
-        return data;
-    }
-
-    // Enqueue read holding register response (fn code 0x03)
-    void EnqueueHoldingRead(uint16_t addr, uint16_t count, const std::vector<int>& responseData)
-    {
-        auto byteCount = static_cast<int>(count * 2);
-        std::vector<int> request = {0x03,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x03, byteCount};
-        response.insert(response.end(), responseData.begin(), responseData.end());
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingRead");
-    }
-
-    // Enqueue holding register read that returns a Modbus exception
-    void EnqueueHoldingReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
-    {
-        std::vector<int> request = {0x03,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x83, static_cast<int>(exceptionCode)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingReadException");
-    }
-
-    // Enqueue read discrete inputs response (fn code 0x02)
-    void EnqueueDiscreteRead(uint16_t addr, uint16_t count, const std::vector<int>& statusBytes)
-    {
-        auto byteCount = static_cast<int>(statusBytes.size());
-        std::vector<int> request = {0x02,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x02, byteCount};
-        response.insert(response.end(), statusBytes.begin(), statusBytes.end());
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueDiscreteRead");
-    }
-
-    // Enqueue discrete inputs read that returns a Modbus exception
-    void EnqueueDiscreteReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
-    {
-        std::vector<int> request = {0x02,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x82, static_cast<int>(exceptionCode)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueDiscreteReadException");
-    }
-
-    // Enqueue read input registers response (fn code 0x04)
-    void EnqueueInputRead(uint16_t addr, uint16_t count, const std::vector<int>& responseData)
-    {
-        auto byteCount = static_cast<int>(count * 2);
-        std::vector<int> request = {0x04,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x04, byteCount};
-        response.insert(response.end(), responseData.begin(), responseData.end());
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueInputRead");
-    }
-
-    // Enqueue write single register response (fn code 0x06)
-    void EnqueueWriteSingleRegister(uint16_t addr, uint16_t value)
-    {
-        std::vector<int> request = {0x06,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(value >> 8),
-                                    static_cast<int>(value & 0xFF)};
-        // Echo request as response
-        SerialPort->Expect(WrapPDU(request), WrapPDU(request), "EnqueueWriteSingleRegister");
-    }
-
-    // Enqueue write multiple registers response (fn code 0x10)
-    void EnqueueWriteMultipleRegisters(uint16_t addr, uint16_t regCount, const std::vector<int>& writeData)
-    {
-        auto byteCount = static_cast<int>(regCount * 2);
-        std::vector<int> request = {0x10,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(regCount >> 8),
-                                    static_cast<int>(regCount & 0xFF),
-                                    byteCount};
-        request.insert(request.end(), writeData.begin(), writeData.end());
-        std::vector<int> response = {0x10,
-                                     static_cast<int>(addr >> 8),
-                                     static_cast<int>(addr & 0xFF),
-                                     static_cast<int>(regCount >> 8),
-                                     static_cast<int>(regCount & 0xFF)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueWriteMultipleRegisters");
-    }
-
-    // Enqueue standard GetInfo responses: signature, version, bootloader, preserve, model (ext), components
-    void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
-                                      const std::string& version = "3.7.0",
-                                      const std::string& bootloader = "1.5.5",
-                                      const std::string& model = "WB-LED")
-    {
-        // 1. Read FW signature (addr=290, count=12, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                           FwRegisters::FW_SIGNATURE_COUNT,
-                           EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
-
-        // 2. Read FW version (addr=250, count=16, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                           FwRegisters::FW_VERSION_COUNT,
-                           EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
-
-        // 3. Read bootloader version (addr=330, count=7, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
-                           FwRegisters::BOOTLOADER_VERSION_COUNT,
-                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
-
-        // 4. Read preserve port settings register (addr=131, count=1, fn=0x03)
-        //    Returns 0x0000 = can preserve
-        EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
-
-        // 5. Read device model extended (addr=200, count=20, fn=0x03)
-        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                           FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                           EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
-
-        // 6. Read components presence (addr=65152, count=8, fn=0x02) - no components
-        EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                     FwRegisters::COMPONENTS_PRESENCE_COUNT,
-                                     0x02);
-    }
 };
 
 // ---- TFwGetInfoTask tests ----
@@ -1343,33 +1346,21 @@ protected:
             "/test/state");
     }
 
-    // Create an uninitialized handler stub for testing methods that don't access member state
-    struct HandlerStub
-    {
-        alignas(TRPCFwUpdateHandler) char storage[sizeof(TRPCFwUpdateHandler)];
-        TRPCFwUpdateHandler* ptr()
-        {
-            return reinterpret_cast<TRPCFwUpdateHandler*>(storage);
-        }
-    };
-
     // Helper: parse request params and return (slaveId, portPath, protocol) as a tuple
     static std::tuple<int, std::string, std::string> CallParseRequestParams(const Json::Value& request)
     {
-        HandlerStub stub;
-        auto params = stub.ptr()->ParseRequestParams(request);
+        auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
         return {params.SlaveId, params.PortPath, params.Protocol};
     }
 
     // Helper: call MakePortRequestJson
     static Json::Value CallMakePortRequestJson(int slaveId, const std::string& portPath, const std::string& protocol)
     {
-        HandlerStub stub;
         TRPCFwUpdateHandler::TRequestParams params;
         params.SlaveId = slaveId;
         params.PortPath = portPath;
         params.Protocol = protocol;
-        return stub.ptr()->MakePortRequestJson(params);
+        return TRPCFwUpdateHandler::MakePortRequestJson(params);
     }
 
     // Call the free function BuildFirmwareInfoResponse directly
@@ -1743,15 +1734,10 @@ TEST_F(ReadReleaseSuiteTest, SuiteWithSpaces)
 // ============================================================
 
 // ---- WriteDataBlock with Modbus exception response ----
-// NOTE: TModbusRTUTraits::Transaction does not validate the response PDU for exceptions -
-// it returns the raw PDU. TFwFlashTask::WriteDataBlock catches TModbusExceptionError
-// from Transaction, but Transaction never throws it. So exception responses are silently
-// accepted as successful writes. The 0x04 test verifies this behavior.
-
-TEST_F(TFwTaskTest, FlashDataBlockExceptionAcceptedAsSuccess)
+// Modbus exception 0x04 ("slave device failure") on data block write is treated as success
+// because it means the chunk is already written. Cf. firmware_update.py:349
+TEST_F(TFwTaskTest, FlashDataBlockException04AcceptedAsSuccess)
 {
-    // A Modbus exception response to a write is treated as success by the current code
-    // because Transaction() does not validate the response PDU.
     TParsedWBFW fw;
     fw.Info.assign(32, 0xAA);
     fw.Data.assign(136, 0xBB);
@@ -1760,7 +1746,7 @@ TEST_F(TFwTaskTest, FlashDataBlockExceptionAcceptedAsSuccess)
     std::vector<int> infoData(fw.Info.begin(), fw.Info.end());
     EnqueueWriteMultipleRegisters(FwRegisters::FW_INFO_BLOCK_ADDR, FwRegisters::FW_INFO_BLOCK_COUNT, infoData);
 
-    // Data block write: Modbus exception 0x02
+    // Data block write: Modbus exception 0x04 — treated as "already written"
     auto byteCount = static_cast<int>(FwRegisters::FW_DATA_BLOCK_COUNT * 2);
     std::vector<int> writeRequest = {0x10,
                                      static_cast<int>(FwRegisters::FW_DATA_BLOCK_ADDR >> 8),
@@ -1770,9 +1756,9 @@ TEST_F(TFwTaskTest, FlashDataBlockExceptionAcceptedAsSuccess)
                                      byteCount};
     std::vector<int> dataChunk(fw.Data.begin(), fw.Data.end());
     writeRequest.insert(writeRequest.end(), dataChunk.begin(), dataChunk.end());
-    std::vector<int> exceptionResponse = {0x90, 0x02}; // exception code 0x02
+    std::vector<int> exceptionResponse = {0x90, 0x04}; // exception code 0x04
 
-    SerialPort->Expect(WrapPDU(writeRequest), WrapPDU(exceptionResponse), "DataBlockException");
+    SerialPort->Expect(WrapPDU(writeRequest), WrapPDU(exceptionResponse), "DataBlockException04");
 
     bool completed = false;
     bool gotError = false;
@@ -1788,9 +1774,54 @@ TEST_F(TFwTaskTest, FlashDataBlockExceptionAcceptedAsSuccess)
         [&](const std::string&) { gotError = true; });
 
     task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
-    // Exception response silently accepted as success
     EXPECT_TRUE(completed);
     EXPECT_FALSE(gotError);
+}
+
+// Other Modbus exceptions on data block write cause retries and eventually an error
+TEST_F(TFwTaskTest, FlashDataBlockExceptionCausesError)
+{
+    TParsedWBFW fw;
+    fw.Info.assign(32, 0xAA);
+    fw.Data.assign(136, 0xBB);
+
+    // Info block write succeeds
+    std::vector<int> infoData(fw.Info.begin(), fw.Info.end());
+    EnqueueWriteMultipleRegisters(FwRegisters::FW_INFO_BLOCK_ADDR, FwRegisters::FW_INFO_BLOCK_COUNT, infoData);
+
+    // Data block write: Modbus exception 0x02 — retried 3 times then fails
+    auto byteCount = static_cast<int>(FwRegisters::FW_DATA_BLOCK_COUNT * 2);
+    std::vector<int> writeRequest = {0x10,
+                                     static_cast<int>(FwRegisters::FW_DATA_BLOCK_ADDR >> 8),
+                                     static_cast<int>(FwRegisters::FW_DATA_BLOCK_ADDR & 0xFF),
+                                     static_cast<int>(FwRegisters::FW_DATA_BLOCK_COUNT >> 8),
+                                     static_cast<int>(FwRegisters::FW_DATA_BLOCK_COUNT & 0xFF),
+                                     byteCount};
+    std::vector<int> dataChunk(fw.Data.begin(), fw.Data.end());
+    writeRequest.insert(writeRequest.end(), dataChunk.begin(), dataChunk.end());
+    std::vector<int> exceptionResponse = {0x90, 0x02}; // exception code 0x02
+
+    // 3 retries
+    for (int i = 0; i < 3; ++i) {
+        SerialPort->Expect(WrapPDU(writeRequest), WrapPDU(exceptionResponse), "DataBlockException02");
+    }
+
+    bool completed = false;
+    bool gotError = false;
+
+    auto task = std::make_shared<TFwFlashTask>(
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
+        [&](int) {},
+        [&]() { completed = true; },
+        [&](const std::string&) { gotError = true; });
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+    EXPECT_FALSE(completed);
+    EXPECT_TRUE(gotError);
 }
 
 // ---- Component read error (component present but read fails) ----
@@ -1904,7 +1935,7 @@ private:
 // with a fake task runner that runs Modbus tasks synchronously against TFakeSerialPort.
 // All private member access is wrapped in helper methods since friend class
 // doesn't propagate to TEST_F subclasses.
-class FwHandlerIntegrationTest: public TSerialDeviceTest, public TModbusExpectationsBase
+class FwHandlerIntegrationTest: public TSerialDeviceTest, public TModbusExpectationsBase, public TFwModbusTestHelpers
 {
 protected:
     void SetUp() override
@@ -1931,6 +1962,16 @@ protected:
     PExpector Expector() const override
     {
         return SerialPort;
+    }
+
+    PFakeSerialPort GetSerialPort() const override
+    {
+        return SerialPort;
+    }
+
+    std::vector<int> WrapPDU(const std::vector<int>& pdu) override
+    {
+        return TModbusExpectationsBase::WrapPDU(pdu);
     }
 
     static constexpr uint8_t SLAVE_ID = 42;
@@ -2007,114 +2048,12 @@ protected:
 
     bool GetUpdateInProgress() const
     {
-        return Handler->UpdateInProgress;
+        return Handler->UpdateLock->InProgress;
     }
 
     void SetUpdateInProgress(bool value)
     {
-        Handler->UpdateInProgress = value;
-    }
-
-    // --- Modbus helpers ---
-
-    std::vector<int> EncodeStringAsRegs(const std::string& s, size_t regCount)
-    {
-        std::vector<int> data;
-        for (size_t i = 0; i < regCount; ++i) {
-            data.push_back(0x00);
-            if (i < s.size()) {
-                data.push_back(static_cast<int>(s[i]));
-            } else {
-                data.push_back(0x00);
-            }
-        }
-        return data;
-    }
-
-    void EnqueueHoldingRead(uint16_t addr, uint16_t count, const std::vector<int>& responseData)
-    {
-        auto byteCount = static_cast<int>(count * 2);
-        std::vector<int> request = {0x03,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x03, byteCount};
-        response.insert(response.end(), responseData.begin(), responseData.end());
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingRead");
-    }
-
-    void EnqueueHoldingReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
-    {
-        std::vector<int> request = {0x03,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x83, static_cast<int>(exceptionCode)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingReadException");
-    }
-
-    void EnqueueDiscreteReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
-    {
-        std::vector<int> request = {0x02,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(count >> 8),
-                                    static_cast<int>(count & 0xFF)};
-        std::vector<int> response = {0x82, static_cast<int>(exceptionCode)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueDiscreteReadException");
-    }
-
-    void EnqueueWriteMultipleRegisters(uint16_t addr, uint16_t regCount, const std::vector<int>& writeData)
-    {
-        auto byteCount = static_cast<int>(regCount * 2);
-        std::vector<int> request = {0x10,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(regCount >> 8),
-                                    static_cast<int>(regCount & 0xFF),
-                                    byteCount};
-        request.insert(request.end(), writeData.begin(), writeData.end());
-        std::vector<int> response = {0x10,
-                                     static_cast<int>(addr >> 8),
-                                     static_cast<int>(addr & 0xFF),
-                                     static_cast<int>(regCount >> 8),
-                                     static_cast<int>(regCount & 0xFF)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(response), "EnqueueWriteMultipleRegisters");
-    }
-
-    void EnqueueWriteSingleRegister(uint16_t addr, uint16_t value)
-    {
-        std::vector<int> request = {0x06,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(value >> 8),
-                                    static_cast<int>(value & 0xFF)};
-        SerialPort->Expect(WrapPDU(request), WrapPDU(request), "EnqueueWriteSingleRegister");
-    }
-
-    void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
-                                      const std::string& version = "3.7.0",
-                                      const std::string& bootloader = "1.5.5",
-                                      const std::string& model = "WB-LED")
-    {
-        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                           FwRegisters::FW_SIGNATURE_COUNT,
-                           EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
-        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                           FwRegisters::FW_VERSION_COUNT,
-                           EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
-        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
-                           FwRegisters::BOOTLOADER_VERSION_COUNT,
-                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
-        EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
-        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                           FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                           EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
-        EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                     FwRegisters::COMPONENTS_PRESENCE_COUNT,
-                                     0x02);
+        Handler->UpdateLock->InProgress = value;
     }
 
     void SetupReleasesYaml(const std::string& yaml = "releases:\n"

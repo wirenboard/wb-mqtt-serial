@@ -35,28 +35,33 @@ namespace
 
 std::vector<uint8_t> TCurlHttpClient::Download(const std::string& url)
 {
-    CURL* curl = curl_easy_init();
+    struct CurlCleanup
+    {
+        void operator()(CURL* c)
+        {
+            curl_easy_cleanup(c);
+        }
+    };
+    std::unique_ptr<CURL, CurlCleanup> curl(curl_easy_init());
     if (!curl) {
         throw std::runtime_error("Failed to initialize curl");
     }
 
     std::vector<uint8_t> buffer;
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWriteCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
-    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+    curl_easy_setopt(curl.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, CurlWriteCallback);
+    curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &buffer);
+    curl_easy_setopt(curl.get(), CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl.get(), CURLOPT_TIMEOUT, 30L);
+    curl_easy_setopt(curl.get(), CURLOPT_CONNECTTIMEOUT, 10L);
 
-    CURLcode res = curl_easy_perform(curl);
+    CURLcode res = curl_easy_perform(curl.get());
     if (res != CURLE_OK) {
-        curl_easy_cleanup(curl);
         throw std::runtime_error("Failed to download " + url + ": " + curl_easy_strerror(res));
     }
 
     long httpCode = 0;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-    curl_easy_cleanup(curl);
+    curl_easy_getinfo(curl.get(), CURLINFO_RESPONSE_CODE, &httpCode);
 
     if (httpCode != 200) {
         throw std::runtime_error("HTTP " + std::to_string(httpCode) + " downloading " + url);
@@ -128,14 +133,16 @@ std::string ParseFwVersionFromUrl(const std::string& url)
 //                  Release YAML Parsing
 // ============================================================
 
-// Simple parser for release-versions.yaml
-// Expected format:
+// Minimal parser for release-versions.yaml from fw-releases.wirenboard.com.
+// Only handles the specific format used by the release server:
 //   releases:
 //     signature1:
 //       suite1: path/to/firmware.wbfw
 //       suite2: path/to/firmware.wbfw
 //     signature2:
 //       suite1: path/to/firmware.wbfw
+// Limitations: no support for YAML features like quoted strings, multi-line values,
+// anchors, aliases, or flow syntax. Indentation-based: 2 spaces = signature, 4+ = suite.
 std::map<std::string, std::map<std::string, std::string>> ParseReleaseVersionsYaml(const std::string& text)
 {
     std::map<std::string, std::map<std::string, std::string>> result;

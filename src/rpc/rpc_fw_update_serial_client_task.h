@@ -10,20 +10,19 @@
 #include "rpc_fw_update_state.h"
 #include "rpc_fw_update_task.h"
 
-class TFwUpdateTask: public ISerialClientTask
+class TFwUpdateSerialClientTask: public ISerialClientTask
 {
 public:
-    TFwUpdateTask(uint8_t slaveId,
-                  const std::string& protocol,
-                  const std::string& softwareType,
-                  const std::string& portPath,
-                  const std::string& releaseSuite,
-                  std::shared_ptr<TFwDownloader> downloader,
-                  PFwUpdateState state,
-                  std::mutex& updateMutex,
-                  bool& updateInProgress,
-                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                  WBMQTT::TMqttRpcServer::TErrorCallback onError);
+    TFwUpdateSerialClientTask(uint8_t slaveId,
+                              const std::string& protocol,
+                              const std::string& softwareType,
+                              const std::string& portPath,
+                              const std::string& releaseSuite,
+                              std::shared_ptr<TFwDownloader> downloader,
+                              PFwUpdateState state,
+                              PFwUpdateLock updateLock,
+                              WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                              WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
     ISerialClientTask::TRunResult Run(PFeaturePort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,
@@ -51,8 +50,7 @@ private:
     std::string ReleaseSuite;
     std::shared_ptr<TFwDownloader> Downloader;
     PFwUpdateState State;
-    std::mutex& UpdateMutex;
-    bool& UpdateInProgress;
+    PFwUpdateLock UpdateLock;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;
 };

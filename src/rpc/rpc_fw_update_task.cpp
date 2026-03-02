@@ -26,7 +26,6 @@ namespace
 
     const auto FW_RESPONSE_TIMEOUT = std::chrono::milliseconds(500);
     const auto FW_FRAME_TIMEOUT = std::chrono::milliseconds(20);
-    const auto TASK_TOTAL_TIMEOUT = std::chrono::seconds(30);
 
     std::vector<uint8_t> ReadRawRegister(TPort& port,
                                          Modbus::IModbusTraits& traits,
@@ -135,10 +134,13 @@ namespace
                                            regCount,
                                            chunk);
                 auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, regCount);
-                traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
+                auto res =
+                    traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
+                Modbus::ExtractResponseData(Modbus::FN_WRITE_MULTIPLE_REGISTERS, res.Pdu);
                 return; // Success
             } catch (const Modbus::TModbusExceptionError& e) {
-                // Slave device failure (0x04) means chunk is already written
+                // Slave device failure (0x04) means chunk is already written — treat as success
+                // Cf. firmware_update.py:349 write_fw_data_block()
                 if (e.GetExceptionCode() == 0x04) {
                     return;
                 }
@@ -161,14 +163,14 @@ namespace
     {
         const size_t CHUNK_SIZE = FwRegisters::FW_DATA_BLOCK_COUNT * 2; // 68 registers * 2 bytes = 136 bytes
 
-        size_t totalChunks = (firmwareData.size() + CHUNK_SIZE - 1) / CHUNK_SIZE;
-        if (totalChunks == 0 && firmwareData.empty()) {
+        if (firmwareData.empty()) {
             if (onProgress) {
                 onProgress(100);
             }
             return;
         }
 
+        size_t totalChunks = (firmwareData.size() + CHUNK_SIZE - 1) / CHUNK_SIZE;
         for (size_t i = 0; i < totalChunks; ++i) {
             size_t offset = i * CHUNK_SIZE;
             size_t chunkLen = std::min(CHUNK_SIZE, firmwareData.size() - offset);
@@ -367,21 +369,13 @@ TFwGetInfoTask::TFwGetInfoTask(uint8_t slaveId,
     : SlaveId(slaveId),
       Protocol(protocol),
       OnResult(std::move(onResult)),
-      OnError(std::move(onError)),
-      ExpireTime(std::chrono::steady_clock::now() + TASK_TOTAL_TIMEOUT)
+      OnError(std::move(onError))
 {}
 
 ISerialClientTask::TRunResult TFwGetInfoTask::Run(PFeaturePort port,
                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                   const std::list<PSerialDevice>& polledDevices)
 {
-    if (std::chrono::steady_clock::now() > ExpireTime) {
-        if (OnError) {
-            OnError("Firmware info read timeout");
-        }
-        return ISerialClientTask::TRunResult::OK;
-    }
-
     try {
         if (!port->IsOpen()) {
             port->Open();
