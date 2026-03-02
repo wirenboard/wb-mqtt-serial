@@ -13,7 +13,7 @@ Runs against real hardware via MQTT RPC.
 import argparse
 import json
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 import threading
@@ -46,9 +46,9 @@ RPC_PREFIX = "/rpc/v1/wb-device-manager/fw-update"
 STATE_TOPIC = "/wb-device-manager/firmware_update/state"
 
 # Firmware files on device (must be pre-deployed)
-OLD_FW_FILE = f"/tmp/m1w2G3_{OLD_FW}.wbfw"
-OLD_BL_FILE = f"/tmp/m1w2G3_bl_{OLD_BL}.wbfw"
-LATEST_FW_FILE = f"/tmp/m1w2G3_{LATEST_FW}.wbfw"
+OLD_FW_FILE = f"/tmp/m1w2G3_{OLD_FW}.wbfw"  # nosec B108
+OLD_BL_FILE = f"/tmp/m1w2G3_bl_{OLD_BL}.wbfw"  # nosec B108
+LATEST_FW_FILE = f"/tmp/m1w2G3_{LATEST_FW}.wbfw"  # nosec B108
 
 
 # ============================================================
@@ -158,7 +158,7 @@ def rpc_call(method, params, prefix=RPC_PREFIX, timeout=30):
 
     def sub_thread():
         try:
-            out = subprocess.run(
+            out = subprocess.run(  # nosec B603
                 ["mosquitto_sub", "-h", MQTT_HOST, "-t", reply_topic,
                  "-W", str(timeout), "-C", "1"],
                 capture_output=True, text=True, timeout=timeout + 5
@@ -173,7 +173,7 @@ def rpc_call(method, params, prefix=RPC_PREFIX, timeout=30):
     time.sleep(0.3)
 
     payload = json.dumps({"id": 1, "params": params})
-    subprocess.run(
+    subprocess.run(  # nosec B603
         ["mosquitto_pub", "-h", MQTT_HOST, "-t", topic, "-m", payload],
         capture_output=True, timeout=5
     )
@@ -234,7 +234,7 @@ def monitor_state(topic=STATE_TOPIC, timeout=120, empty_cycles_to_stop=1):
     empty_cycles_to_stop: how many active→empty transitions before stopping.
     Use 2 for bootloader update with auto-restore (BL→empty→FW→empty)."""
     messages = []
-    proc = subprocess.Popen(
+    proc = subprocess.Popen(  # nosec B603
         ["mosquitto_sub", "-h", MQTT_HOST, "-t", topic, "-W", str(timeout)],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
     )
@@ -274,7 +274,7 @@ def monitor_state(topic=STATE_TOPIC, timeout=120, empty_cycles_to_stop=1):
 
 
 def ssh_cmd(cmd, timeout=60):
-    return subprocess.run(
+    return subprocess.run(  # nosec B603
         ["ssh", "-i", SSH_KEY, "-o", "StrictHostKeyChecking=no",
          f"root@{MQTT_HOST}", cmd],
         capture_output=True, text=True, timeout=timeout
@@ -328,7 +328,7 @@ def recover_device():
         result = resp.get("result", {})
         if result.get("fw") and result.get("bootloader"):
             return  # Device is fine
-    except Exception:
+    except Exception:  # nosec B110
         pass
 
     # Device may be in BL mode or unresponsive

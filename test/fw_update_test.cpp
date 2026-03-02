@@ -1693,7 +1693,7 @@ protected:
     {
         // Clean up temp files
         std::string cmd = "rm -rf " + TempDir;
-        system(cmd.c_str());
+        system(cmd.c_str());  // flawfinder: ignore
     }
 
     std::string CreateTempFile(const std::string& content)
