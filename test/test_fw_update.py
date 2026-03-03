@@ -218,7 +218,7 @@ def restore_device(prefix=RPC_PREFIX, timeout=30):
 def get_state(topic=STATE_TOPIC, timeout=3):
     """Read current retained state."""
     try:
-        out = subprocess.run(
+        out = subprocess.run(  # nosec B603
             ["mosquitto_sub", "-h", MQTT_HOST, "-t", topic, "-W", str(timeout), "-C", "1"],
             capture_output=True, text=True, timeout=timeout + 3
         )
@@ -335,7 +335,7 @@ def recover_device():
     print(f"  {Colors.YELLOW}[recovery] Restoring device...{Colors.RESET}")
     try:
         ssh_cmd("systemctl stop wb-mqtt-serial", timeout=10)
-    except Exception:
+    except Exception:  # nosec B110
         pass
     time.sleep(1)
     flash_firmware_in_bl_mode(LATEST_FW_FILE)
