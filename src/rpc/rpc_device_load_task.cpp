@@ -2,56 +2,10 @@
 #include "config_merge_template.h"
 #include "port/serial_port.h"
 #include "rpc_helpers.h"
-#include "wb_registers.h"
-
-#define LOG(logger) ::logger.Log() << "[RPC] "
 
 namespace
 {
     const auto UNSUPPORTED_VALUE = "unsupported";
-
-    void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
-    {
-        std::string error;
-        try {
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-            WriteModbusRegister(port, request, config, TRegisterValue(enabled));
-        } catch (const Modbus::TErrorBase& err) {
-            error = err.what();
-        } catch (const TResponseTimeoutException& e) {
-            error = e.what();
-        }
-        if (!error.empty()) {
-            LOG(Warn) << port.GetDescription() << " modbus:" << request.Device->DeviceConfig()->SlaveId
-                      << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
-                      << "\" register: " << error;
-        }
-    }
-
-    void MarkUnsupported(TPort& port, TRPCDeviceRequest& request, TRPCRegisterList& registerList, Json::Value& data)
-    {
-        auto continuousRead = true;
-        for (const auto& item: registerList) {
-            try {
-                if (item.CheckUnsupported && IsAllFFFE(item.Register->GetValue())) {
-                    if (continuousRead) {
-                        SetContinuousRead(port, request, false);
-                        continuousRead = false;
-                    }
-                    try {
-                        TRegisterValue value;
-                        ReadModbusRegister(port, request, item.Register->GetConfig(), value);
-                    } catch (const Modbus::TModbusExceptionError& err) {
-                        data[item.Id] = UNSUPPORTED_VALUE;
-                    }
-                }
-            } catch (const TRegisterValueException& e) {
-            }
-        }
-        if (!continuousRead) {
-            SetContinuousRead(port, request, true);
-        }
-    }
 
     void ReadRegistersIntoJson(PPort port,
                                PRPCDeviceLoadRequest rpcRequest,
@@ -68,7 +22,7 @@ namespace
                 readonlyMap[item.Id] = true;
             }
         }
-        MarkUnsupported(*port, *rpcRequest, registerList, data);
+        MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, data);
     }
 
     void ExecRPCRequest(PPort port, PRPCDeviceLoadRequest rpcRequest)
@@ -103,8 +57,9 @@ namespace
             result["channels"] = channelData;
         }
 
-        // Step 3: Read explicitly requested parameters
-        auto paramRegList = rpcRequest->GetParametersRegisterList();
+        // Step 3: Read explicitly requested parameters, reusing values already
+        // read for condition evaluation to avoid duplicate Modbus reads
+        auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues);
         if (!paramRegList.empty()) {
             Json::Value paramData(Json::objectValue);
             ReadRegistersIntoJson(port, rpcRequest, paramRegList, paramData, readonlyMap);
@@ -168,7 +123,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
         if (item["address"].isNull()) {
             continue;
         }
-        if (item.isMember("enabled") && !item["enabled"].asBool()) {
+        if (!item.get("enabled", true).asBool()) {
             continue;
         }
         auto id = params.isObject() ? it.key().asString() : item["id"].asString();
@@ -183,8 +138,8 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
                               Device,
                               items,
                               Json::Value(),
-                              Device ? Device->GetWbFwVersion() : std::string(),
-                              Device && Device->IsWbDevice());
+                              Device->GetWbFwVersion(),
+                              Device->IsWbDevice());
 }
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Value& conditionParams)
@@ -228,11 +183,11 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Valu
                               Device,
                               items,
                               Json::Value(),
-                              Device ? Device->GetWbFwVersion() : std::string(),
-                              Device && Device->IsWbDevice());
+                              Device->GetWbFwVersion(),
+                              Device->IsWbDevice());
 }
 
-TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList()
+TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Value& knownValues)
 {
     auto params = DeviceTemplate->GetTemplate()["parameters"];
     Json::Value items(Json::arrayValue);
@@ -241,7 +196,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList()
         if (item["address"].isNull()) { // write only parameter
             continue;
         }
-        if (item.isMember("enabled") && !item["enabled"].asBool()) {
+        if (!item.get("enabled", true).asBool()) {
             continue;
         }
         auto id = params.isObject() ? it.key().asString() : item["id"].asString();
@@ -261,9 +216,9 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList()
     return CreateRegisterList(ProtocolParams,
                               Device,
                               items,
-                              Json::Value(),
-                              Device ? Device->GetWbFwVersion() : std::string(),
-                              Device && Device->IsWbDevice());
+                              knownValues,
+                              Device->GetWbFwVersion(),
+                              Device->IsWbDevice());
 }
 
 PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,

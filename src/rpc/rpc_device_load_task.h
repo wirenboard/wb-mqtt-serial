@@ -16,7 +16,7 @@ public:
 
     TRPCRegisterList GetConditionParametersRegisterList();
     TRPCRegisterList GetChannelsRegisterList(const Json::Value& conditionParams = Json::Value());
-    TRPCRegisterList GetParametersRegisterList();
+    TRPCRegisterList GetParametersRegisterList(const Json::Value& knownValues = Json::Value());
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadRequest> PRPCDeviceLoadRequest;

@@ -2,8 +2,8 @@
 #include "log.h"
 #include "modbus_base.h"
 #include "modbus_common.h"
-#include "rpc_device_handler.h"
 #include "rpc_exception.h"
+#include "wb_registers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -126,10 +126,26 @@ void WriteModbusRegister(TPort& port,
     }
 }
 
+namespace
+{
+    const auto UNSUPPORTED_VALUE = "unsupported";
+} // namespace
+
 bool IsAllFFFE(const TRegisterValue& value)
 {
     if (value.GetType() == TRegisterValue::ValueType::Integer) {
-        return value.Get<uint16_t>() == 0xFFFE;
+        auto v = value.Get<uint64_t>();
+        if (v == 0) {
+            return false;
+        }
+        // Check each 16-bit word
+        while (v != 0) {
+            if ((v & 0xFFFF) != 0xFFFE) {
+                return false;
+            }
+            v >>= 16;
+        }
+        return true;
     }
     if (value.GetType() == TRegisterValue::ValueType::String) {
         // String format extracts lower byte of each 16-bit register word.
@@ -149,4 +165,50 @@ bool IsAllFFFE(const TRegisterValue& value)
         return true;
     }
     return false;
+}
+
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
+{
+    std::string error;
+    try {
+        auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
+        WriteModbusRegister(port, request, config, TRegisterValue(enabled));
+    } catch (const Modbus::TErrorBase& err) {
+        error = err.what();
+    } catch (const TResponseTimeoutException& e) {
+        error = e.what();
+    }
+    if (!error.empty()) {
+        LOG(Warn) << port.GetDescription() << " modbus:" << request.Device->DeviceConfig()->SlaveId
+                  << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
+                  << "\" register: " << error;
+    }
+}
+
+void MarkUnsupportedRegisterItems(TPort& port,
+                                  TRPCDeviceRequest& request,
+                                  TRPCRegisterList& registerList,
+                                  Json::Value& data)
+{
+    auto continuousRead = true;
+    for (const auto& item: registerList) {
+        try {
+            if (item.CheckUnsupported && IsAllFFFE(item.Register->GetValue())) {
+                if (continuousRead) {
+                    SetContinuousRead(port, request, false);
+                    continuousRead = false;
+                }
+                try {
+                    TRegisterValue value;
+                    ReadModbusRegister(port, request, item.Register->GetConfig(), value);
+                } catch (const Modbus::TModbusExceptionError& err) {
+                    data[item.Id] = UNSUPPORTED_VALUE;
+                }
+            }
+        } catch (const TRegisterValueException& e) {
+        }
+    }
+    if (!continuousRead) {
+        SetContinuousRead(port, request, true);
+    }
 }

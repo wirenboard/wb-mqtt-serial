@@ -3,12 +3,8 @@
 #include <wblib/json_utils.h>
 
 #include "port/serial_port_settings.h"
-#include "register_value.h"
-
-class TPort;
-class TRPCDeviceRequest;
-class TRegisterConfig;
-typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
+#include "register.h"
+#include "rpc_device_handler.h"
 
 constexpr int MAX_RPC_RETRIES = 2;
 
@@ -28,9 +24,23 @@ void WriteModbusRegister(TPort& port,
                          const TRegisterValue& value);
 
 /**
- * @brief Checks if all words in register value are 0xFFFE (unsupported marker).
+ * @brief Checks if all 16-bit words in register value are 0xFFFE (unsupported marker).
  */
 bool IsAllFFFE(const TRegisterValue& value);
+
+/**
+ * @brief Sets continuous read register on/off (Wiren Board specific).
+ */
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled);
+
+/**
+ * @brief Re-reads registers that returned all-0xFFFE to distinguish unsupported
+ *        from actual values. Temporarily disables continuous read for accurate results.
+ */
+void MarkUnsupportedRegisterItems(TPort& port,
+                                  TRPCDeviceRequest& request,
+                                  TRPCRegisterList& registerList,
+                                  Json::Value& data);
 
 /**
  * @brief Validates an RPC request against a given JSON schema.

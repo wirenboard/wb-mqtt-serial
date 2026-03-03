@@ -291,13 +291,17 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const Json::Value& templateItems,
                                     const Json::Value& knownItems,
                                     const std::string& fwVersion,
-                                    bool checkUnsupported)
+                                    bool checkUnsupported,
+                                    bool filterReadOnly)
 {
     TRPCRegisterList registerList;
     for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
         const auto& item = *it;
         auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
         if (item["address"].isNull() || !knownItems[id].isNull()) {
+            continue;
+        }
+        if (filterReadOnly && item["readonly"].asBool()) {
             continue;
         }
         if (!fwVersion.empty()) {

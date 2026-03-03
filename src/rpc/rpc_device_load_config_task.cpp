@@ -37,25 +37,6 @@ namespace
         }
     }
 
-    void SetContinuousRead(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, bool enabled)
-    {
-        std::string error;
-        try {
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-            WriteModbusRegister(port, *rpcRequest, config, TRegisterValue(enabled));
-        } catch (const Modbus::TErrorBase& err) {
-            error = err.what();
-        } catch (const TResponseTimeoutException& e) {
-            error = e.what();
-        }
-        if (!error.empty()) {
-            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
-                      << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
-                      << "\" register: " << error;
-            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-        }
-    }
-
     void LoadConfigParameters(PPort port, PRPCDeviceLoadConfigRequest rpcRequest, Json::Value& parameters)
     {
         Json::Value config(WBMQTT::JSON::Parse(rpcRequest->ConfigFileName));
@@ -94,35 +75,6 @@ namespace
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    void MarkUnsupportedParameters(TPort& port,
-                                   PRPCDeviceLoadConfigRequest rpcRequest,
-                                   TRPCRegisterList& registerList,
-                                   Json::Value& parameters)
-    {
-        auto continuousRead = true;
-        for (auto it = registerList.begin(); it != registerList.end(); ++it) {
-            const auto& item = *it;
-            try {
-                if (item.CheckUnsupported && IsAllFFFE(item.Register->GetValue())) {
-                    if (continuousRead) {
-                        SetContinuousRead(port, rpcRequest, false);
-                        continuousRead = false;
-                    }
-                    try {
-                        TRegisterValue value;
-                        ReadModbusRegister(port, *rpcRequest, item.Register->GetConfig(), value);
-                    } catch (const Modbus::TModbusExceptionError& err) {
-                        parameters[item.Id] = UNSUPPORTED_VALUE;
-                    }
-                }
-            } catch (const TRegisterValueException& e) {
-            }
-        }
-        if (!continuousRead && rpcRequest->DeviceFromConfig) {
-            SetContinuousRead(port, rpcRequest, true);
-        }
-    }
-
     void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         if (!rpcRequest->OnResult) {
@@ -156,32 +108,16 @@ namespace
             CheckTemplate(port, rpcRequest, deviceModel);
         }
 
-        // Filter out readonly parameters — they can't be edited
-        Json::Value writableParams(templateParams.isObject() ? Json::objectValue : Json::arrayValue);
-        if (templateParams.isObject()) {
-            for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-                if (!(*it)["readonly"].asBool()) {
-                    writableParams[it.key().asString()] = *it;
-                }
-            }
-        } else {
-            for (const auto& item: templateParams) {
-                if (!item["readonly"].asBool()) {
-                    writableParams.append(item);
-                }
-            }
-        }
-
-        std::list<std::string> paramsList;
         auto registerList = CreateRegisterList(rpcRequest->ProtocolParams,
                                                rpcRequest->Device,
-                                               writableParams,
+                                               templateParams,
                                                parameters,
                                                rpcRequest->Device->GetWbFwVersion(),
-                                               rpcRequest->Device->IsWbDevice());
+                                               rpcRequest->Device->IsWbDevice(),
+                                               true /* filterReadOnly */);
         ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RPC_RETRIES);
         GetRegisterListParameters(registerList, parameters);
-        MarkUnsupportedParameters(*port, rpcRequest, registerList, parameters);
+        MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, parameters);
 
         Json::Value result(Json::objectValue);
         result["parameters"] = parameters;
