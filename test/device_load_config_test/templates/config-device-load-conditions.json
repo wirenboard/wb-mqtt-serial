@@ -1,0 +1,51 @@
+// testing template for GetConditionParametersRegisterList and GetChannelsRegisterList with condition filtering
+{
+    "device_type": "device_load_conditions",
+    "device": {
+        "name": "device load conditions",
+        "id": "device_load_conditions",
+        "parameters": [
+            {
+                "id": "mode",
+                "title": "Mode",
+                "address": 100,
+                "enum": [0, 1, 2]
+            },
+            {
+                "id": "variant",
+                "title": "Variant",
+                "address": 101,
+                "readonly": true
+            },
+            {
+                "id": "unrelated",
+                "title": "Unrelated",
+                "address": 102
+            }
+        ],
+        "channels": [
+            {
+                "name": "Always Visible",
+                "reg_type": "input",
+                "address": 200
+            },
+            {
+                "name": "Mode Dependent",
+                "reg_type": "input",
+                "address": 201,
+                "condition": "mode==1"
+            },
+            {
+                "name": "Variant Dependent",
+                "reg_type": "input",
+                "address": 202,
+                "condition": "variant==2"
+            },
+            {
+                "name": "Write Only",
+                "reg_type": "holding",
+                "write_address": 203
+            }
+        ]
+    }
+}

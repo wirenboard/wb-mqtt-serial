@@ -3,8 +3,34 @@
 #include <wblib/json_utils.h>
 
 #include "port/serial_port_settings.h"
+#include "register_value.h"
+
+class TPort;
+class TRPCDeviceRequest;
+class TRegisterConfig;
+typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
+
+constexpr int MAX_RPC_RETRIES = 2;
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
+
+/**
+ * @brief Reads a Modbus register with retry logic.
+ */
+void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value);
+
+/**
+ * @brief Writes a Modbus register with retry logic.
+ */
+void WriteModbusRegister(TPort& port,
+                         TRPCDeviceRequest& request,
+                         PRegisterConfig registerConfig,
+                         const TRegisterValue& value);
+
+/**
+ * @brief Checks if all words in register value are 0xFFFE (unsupported marker).
+ */
+bool IsAllFFFE(const TRegisterValue& value);
 
 /**
  * @brief Validates an RPC request against a given JSON schema.

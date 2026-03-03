@@ -297,7 +297,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
     for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
         const auto& item = *it;
         auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
-        if (item["address"].isNull() || item["readonly"].asBool() || !knownItems[id].isNull()) {
+        if (item["address"].isNull() || !knownItems[id].isNull()) {
             continue;
         }
         if (!fwVersion.empty()) {
