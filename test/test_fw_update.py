@@ -608,8 +608,8 @@ def run_tests(runner: TestRunner):
                   "protocol": "modbus", "type": "firmware"}
         try:
             rpc_call("Update", params, timeout=15)
-        except Exception:
-            pass
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError, RuntimeError):
+            pass  # Update on non-existent device may fail at RPC level
         time.sleep(8)
 
         state = get_state()
