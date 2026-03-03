@@ -6,6 +6,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 Драйвер master-slave протоколов для устройств, работающих через
 последовательный порт. Драйвер предназначен для устройств [Wiren Board](https://wirenboard.com/ru) и соответствует [Конвенции Wiren Board MQTT](https://github.com/wirenboard/conventions/blob/main/README.md).
 
+## Building
+
+See [BUILD.md](https://github.com/wirenboard/codestyle/blob/devcontainer-cli/BUILD.md) in the codestyle repository for build instructions (wbdev .deb builds and devcontainer-cli development workflow).
+
 **Содержание**
 
 - [Описание](#описание)

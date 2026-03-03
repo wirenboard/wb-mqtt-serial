@@ -1,0 +1,5 @@
+Open()
+SkipNoise()
+EnqueueWriteMultipleRegisters()
+>> 2A 10 10 00 00 10 20 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 6E ED
+<< 2A 10 10 00 00 10 C3 1E
