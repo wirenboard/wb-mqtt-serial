@@ -10,6 +10,7 @@
 #include "modbus_expectations_base.h"
 
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 
 // ============================================================
@@ -1691,9 +1692,8 @@ protected:
 
     void TearDown() override
     {
-        // Clean up temp files
-        std::string cmd = "rm -rf " + TempDir;
-        system(cmd.c_str()); // flawfinder: ignore
+        std::error_code ec;
+        std::filesystem::remove_all(TempDir, ec);
     }
 
     std::string CreateTempFile(const std::string& content)

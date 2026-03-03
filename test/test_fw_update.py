@@ -328,15 +328,15 @@ def recover_device():
         result = resp.get("result", {})
         if result.get("fw") and result.get("bootloader"):
             return  # Device is fine
-    except Exception:  # nosec B110
-        pass
+    except (subprocess.TimeoutExpired, subprocess.CalledProcessError, json.JSONDecodeError, KeyError):
+        pass  # Device unreachable or in bootloader mode, proceed to recovery
 
     # Device may be in BL mode or unresponsive
     print(f"  {Colors.YELLOW}[recovery] Restoring device...{Colors.RESET}")
     try:
         ssh_cmd("systemctl stop wb-mqtt-serial", timeout=10)
-    except Exception:  # nosec B110
-        pass
+    except (subprocess.TimeoutExpired, subprocess.CalledProcessError):
+        pass  # Service may already be stopped
     time.sleep(1)
     flash_firmware_in_bl_mode(LATEST_FW_FILE)
 
