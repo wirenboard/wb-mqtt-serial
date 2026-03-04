@@ -802,6 +802,8 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Startup Delay Timer K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Restart Delay Timer K{{out_num}}",
                 {% endfor -%}
                 "undervoltage_description": "120 to 220, factory default - 207",
                 "overvoltage_description": "230 to 277, factory default - 242",
@@ -843,8 +845,8 @@
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
                 "Urms Normal K{{out_num}}": "Норма Urms L{{out_num}}",
                 "Blocking K{{out_num}}": "Блокировка/Задержка K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Оставшееся время ЗВ K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Оставшееся время ЗПВ K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Таймер ЗВ K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Таймер ЗПВ K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",

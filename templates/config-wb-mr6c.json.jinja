@@ -22,9 +22,6 @@
         },
         {
             "signature": "WBMR6"
-        },
-        {
-            "signature": "WB-MR6C v.3"
         }
     ],
 {% endif %}
@@ -488,7 +485,7 @@
                 "default": 0,
                 "order": {{out_num}},
                 "fw": "1.24.0",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==0)"
             },
             "out{{out_num}}_timer_mode_selection": {
                 "title": "Function",
@@ -506,8 +503,8 @@
                     "Off Pulse",
                     "On/Off Cycle"
                 ],
-                {# "fw": "1.25.0", #}
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_restart_delay_params==0)"
+                "fw": "1.25.0",
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             "out{{out_num}}_on_delay_params": {
                 "title": "Timeout (s)",
@@ -517,9 +514,9 @@
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0.1,
-                "max": 6553,
+                "max": 6500,
                 "default": 0.1,
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "description": "on_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
             },
@@ -531,9 +528,9 @@
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0.1,
-                "max": 6553,
+                "max": 6500,
                 "default": 0.1,
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "description": "off_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
             },
@@ -545,9 +542,9 @@
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0.1,
-                "max": 6553,
+                "max": 6500,
                 "default": 0.1,
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "description": "on_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==3"
             },
@@ -559,9 +556,9 @@
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0.1,
-                "max": 6553,
+                "max": 6500,
                 "default": 0.1,
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "description": "off_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==4"
             },
@@ -573,9 +570,9 @@
                 "reg_type": "holding",
                 "scale": 1,
                 "min": 1,
-                "max": 65535,
+                "max": 65000,
                 "default": 1,
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "description": "cyclic_on_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
@@ -587,9 +584,9 @@
                 "reg_type": "holding",
                 "scale": 1,
                 "min": 1,
-                "max": 65535,
+                "max": 65000,
                 "default": 1,
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "description": "cyclic_off_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
@@ -876,7 +873,7 @@
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
-                "name": "Startup Delay Timer K{{out_num}}",
+                "name": "Startup Delay Countdown K{{out_num}}",
                 "reg_type": "input",
                 "fw": "1.24.0",
                 "address": {{1744 + out_num - 1}},
@@ -888,7 +885,7 @@
                 "condition": "out{{out_num}}_startup_delay_params>0"
             },
             {
-                "name": "Restart Delay Timer K{{out_num}}",
+                "name": "Restart Delay Countdown K{{out_num}}",
                 "reg_type": "input",
                 "fw": "1.24.0",
                 "address": {{1752 + out_num - 1}},
@@ -900,70 +897,22 @@
                 "condition": "out{{out_num}}_restart_delay_params>0"
             },
             {
-                "name": "On Delay Timer K{{out_num}}",
+                "name": "Timer K{{out_num}}",
                 "reg_type": "input",
-                {# "fw": "1.25.0", #}
+                "fw": "1.25.0",
                 "address": {{1864 + out_num - 1}},
                 "units": "s",
                 "format": "u16",
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==1"
+                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==4"
             },
             {
-                "name": "Off Delay Timer K{{out_num}}",
+                "name": "Timer K{{out_num}}",
                 "reg_type": "input",
-                {# "fw": "1.25.0", #}
-                "address": {{1872 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==2"
-            },
-            {
-                "name": "On Pulse Timer K{{out_num}}",
-                "reg_type": "input",
-                {# "fw": "1.25.0", #}
-                "address": {{1880 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==3"
-            },
-            {
-                "name": "Off Pulse Timer K{{out_num}}",
-                "reg_type": "input",
-                {# "fw": "1.25.0", #}
-                "address": {{1888 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==4"
-            },
-            {
-                "name": "Cycle On Timer K{{out_num}}",
-                "reg_type": "input",
-                {# "fw": "1.25.0", #}
-                "address": {{1896 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 1,
-                "enabled": false,
-                "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==5"
-            },
-            {
-                "name": "Cycle Off Timer K{{out_num}}",
-                "reg_type": "input",
-                {# "fw": "1.25.0", #}
-                "address": {{1904 + out_num - 1}},
+                "fw": "1.25.0",
+                "address": {{1864 + out_num - 1}},
                 "units": "s",
                 "format": "u16",
                 "scale": 1,
@@ -1099,6 +1048,8 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
                 {% endfor -%}
 
                 "Curtains Control": "Actuator Control",
@@ -1116,12 +1067,12 @@
                 "startup_delay_description": "0...999 s",
                 "restart_delay_description": "0...999 s",
 
-                "on_delay_description": "0.1...6553",
-                "off_delay_description": "0.1...6553",
-                "on_pulse_description": "0.1...6553",
-                "off_pulse_description": "0.1...6553",
-                "cyclic_on_time_description": "1...65535",
-                "cyclic_off_time_description": "1...65535"
+                "on_delay_description": "0.1...6500",
+                "off_delay_description": "0.1...6500",
+                "on_pulse_description": "0.1...6500",
+                "off_pulse_description": "0.1...6500",
+                "cyclic_on_time_description": "1...65000",
+                "cyclic_off_time_description": "1...65000"
             },
             "ru": {
                 "template_title": "{{ title_ru}}",
@@ -1155,14 +1106,9 @@
                 "K{{out_num}}": "Команда K{{out_num}}",
                 "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
 
-                "Startup Delay Timer K{{out_num}}": "Таймер ЗВ при подаче питания K{{out_num}}",
-                "Restart Delay Timer K{{out_num}}": "Таймер ЗПВ K{{out_num}}",
-                "On Delay Timer K{{out_num}}": "Таймер задержки включения K{{out_num}}",
-                "Off Delay Timer K{{out_num}}": "Таймер задержки отключения K{{out_num}}",
-                "On Pulse Timer K{{out_num}}": "Таймер \"Включить на время\" K{{out_num}}",
-                "Off Pulse Timer K{{out_num}}": "Таймер \"Отключить на время\" K{{out_num}}",
-                "Cycle On Timer K{{out_num}}": "Таймер цикла On K{{out_num}}",
-                "Cycle Off Timer K{{out_num}}": "Таймер цикла Off K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
+                "Timer K{{out_num}}": "Таймер K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
