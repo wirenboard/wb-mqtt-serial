@@ -28884,6 +28884,12 @@ tpl1_oni_plc_w_emd_0706
 	Startup Delay Countdown K4  =>  Startup Delay Countdown K4
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 tpl1_wb_mao4
