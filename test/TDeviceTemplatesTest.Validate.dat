@@ -24152,6 +24152,12 @@ WB-MR6C
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Uptime  =>  Uptime
 WB-MR6C v.3
 	Bus Power Supply  =>  Bus Power Supply
