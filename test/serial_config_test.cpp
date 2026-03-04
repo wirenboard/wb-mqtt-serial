@@ -295,6 +295,10 @@ TEST_F(TConfigParserTest, ParseEnum)
     EXPECT_EQ(titles2.size(), 2);
     EXPECT_EQ(titles2["2"]["en"], "two");
     EXPECT_EQ(titles2["3"]["en"], "three");
+    auto titles3 = deviceChannels[2]->GetEnumTitles();
+    EXPECT_EQ(titles3.size(), 2);
+    EXPECT_EQ(titles3["3"].size(), 0);
+    EXPECT_EQ(titles3["4"].size(), 0);
 }
 
 TEST_F(TConfigParserTest, DefaultParamsForChannels)

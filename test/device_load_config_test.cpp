@@ -63,14 +63,6 @@ TEST(TDeviceLoadConfigTest, GetRegisterListParameters)
         Json::Value json;
         GetRegisterListParameters(registerList, json);
 
-        // Convert Json::Value to string and back to Json::Value to make data types match with test data types
-        Json::StreamWriterBuilder writer;
-        Json::CharReaderBuilder reader;
-        Json::String errors;
-        std::stringstream stream(Json::writeString(writer, json));
-        Json::parseFromStream(reader, stream, &json, &errors);
-        //
-
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
         ASSERT_TRUE(JsonsMatch(json, match)) << type;

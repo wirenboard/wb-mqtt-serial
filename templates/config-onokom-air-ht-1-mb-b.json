@@ -149,7 +149,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 3,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -160,8 +160,6 @@
                 "address": 7,
                 "type": "value",
                 "format": "u16",
-                "min": 0,
-                "max": 3,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
@@ -185,7 +183,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 6,
+                "max": 4,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -255,6 +253,18 @@
                 "units": "deg C"
             },
             {
+                "name": "Temperature correction",
+                "reg_type": "holding",
+                "address": 20,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Thermostat state",
                 "reg_type": "holding",
                 "address": 6,
@@ -289,25 +299,16 @@
                 "condition": "Show_thermostat_state_as_range!=1"
             },
             {
-                "name": "Temeperature correction",
+                "name": "FW Version",
+                "enabled": false,
                 "reg_type": "holding",
-                "address": 20,
-                "type": "value",
-                "format": "s16",
-                "min": -30,
-                "max": 30,
+                "address": 250,
+                "type": "text",
+                "format": "string",
                 "sporadic": true,
-                "group": "temperatureControl",
-                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
-            },
-            {
-                "name": "AC connected",
-                "reg_type": "coil",
-                "address": 20,
-                "type": "switch",
-                "sporadic": true,
-                "group": "debug",
-                "readonly": true
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 16
             },
             {
                 "name": "HW Version",
@@ -322,16 +323,14 @@
                 "string_data_size": 20
             },
             {
-                "name": "FW Version",
+                "name": "MCU Temperature",
                 "enabled": false,
-                "reg_type": "holding",
-                "address": 250,
-                "type": "text",
-                "format": "string",
-                "sporadic": true,
-                "group": "hw_info",
-                "readonly": true,
-                "string_data_size": 16
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "hw_info"
             },
             {
                 "name": "PROTO Version",
@@ -346,16 +345,12 @@
                 "string_data_size": 16
             },
             {
-                "name": "Signature",
+                "name": "Reboot Device",
                 "enabled": false,
-                "reg_type": "input",
-                "address": 290,
-                "type": "text",
-                "format": "string",
-                "sporadic": true,
-                "group": "hw_info",
-                "readonly": true,
-                "string_data_size": 12
+                "reg_type": "holding",
+                "address": 120,
+                "type": "pushbutton",
+                "group": "hw_info"
             },
             {
                 "name": "Serial",
@@ -368,6 +363,18 @@
                 "readonly": true
             },
             {
+                "name": "Signature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 290,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 12
+            },
+            {
                 "name": "Uptime",
                 "enabled": false,
                 "reg_type": "input",
@@ -377,22 +384,13 @@
                 "group": "hw_info"
             },
             {
-                "name": "MCU Temperature",
-                "enabled": false,
-                "reg_type": "input",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "group": "hw_info"
-            },
-            {
-                "name": "Reboot Device",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 120,
-                "type": "pushbutton",
-                "group": "hw_info"
+                "name": "AC connected",
+                "reg_type": "coil",
+                "address": 20,
+                "type": "switch",
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
             }
         ],
         "translations": {
@@ -400,43 +398,51 @@
                 "template_title": "ONOKOM AIR HT-1-MB-B (Adapter for household Hitachi systems)"
             },
             "ru": {
-                "template_title": "ONOKOM AIR HT-1-MB-B (Адаптер для бытовых систем Hitachi)",
                 "General": "Основные режимы и функции",
+                "Temperature control": "Контроль температуры",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "No": "Нет",
+                "Yes": "Да",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Active": "Состояние",
                 "Mode": "Режим",
-                "Active mode": "Состояние и режим",
-                "Fan speed": "Скорость вентилятора",
-                "Smart fan speed": "Скорость вентилятора расширенная",
-                "Off": "Выключен",
                 "Heat": "Нагрев",
                 "Cool": "Охлаждение",
                 "Auto": "Авто",
                 "Dry": "Осушение",
                 "Fan": "Вентиляция",
-                "Idle": "Простаивает",
-                "Heating": "Нагрев",
-                "Cooling": "Охлаждение",
-                "Temperature control": "Контроль температуры",
-                "Indoor air temperature": "Температура воздуха в помещении",
-                "Target temperature": "Целевая температура",
-                "Thermostat state": "Состояние термостата",
+                "Active mode": "Состояние и режим",
+                "Off": "Выключен",
+                "Fan speed": "Скорость вентилятора",
                 "1 Speed": "1 Скорость",
                 "2 Speed": "2 Скорость",
                 "3 Speed": "3 Скорость",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "HW Info": "Данные модуля",
-                "HW Version": "Версия устройства",
+                "Smart fan speed": "Скорость вентилятора расширенная",
+                "Indoor air temperature": "Температура воздуха в помещении",
+                "Target temperature": "Целевая температура",
+                "Temperature correction": "Коррекция температуры",
+                "Thermostat state": "Состояние термостата",
+                "Idle": "Простаивает",
+                "Heating": "Нагрев",
+                "Cooling": "Охлаждение",
                 "FW Version": "Версия прошивки",
+                "HW Version": "Версия устройства",
+                "MCU Temperature": "Температура МК",
                 "PROTO Version": "Версия протокола",
+                "Reboot Device": "Перезагрузить устройство",
+                "Serial": "Серийный номер",
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
-                "MCU Temperature": "Температура МК",
-                "Serial": "Серийный номер",
-                "Reboot Device": "Перезагрузить устройство",
-                "Debug": "Диагностика",
-                "Temeperature correction": "Коррекция температуры",
-                "AC connected": "Кондиционер подключен"
+                "AC connected": "Кондиционер подключен",
+                "Normal mode": "Обычный режим",
+                "Disabled if no errors": "Отключен если нет ошибок",
+                "Disabled untill reboot": "Отключен до перезагрузки",
+                "Always disabled": "Всегда отключен",
+                "Green untill reboot": "Зеленый до перезагрузки",
+                "Red untill reboot": "Красный до перезагрузки",
+                "template_title": "ONOKOM AIR HT-1-MB-B (Адаптер для бытовых систем Hitachi)"
             }
         }
     }

@@ -44,15 +44,3 @@ private:
 };
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
-
-// Scope guard for applying serial port settings passed in the constructor and
-// restoring them back to preconfigured on destructor
-class TSerialPortSettingsGuard
-{
-public:
-    TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings);
-    ~TSerialPortSettingsGuard();
-
-private:
-    PPort Port;
-};

@@ -1,0 +1,875 @@
+{
+    "title": "template_title",
+    "device_type": "ONOKOM-AIR-TN-1-MB-B",
+    "group": "g-air-conditioning",
+    "hw": [
+        {
+            "signature": "TN-1-MB-B"
+        }
+    ],
+    "device": {
+        "name": "ONOKOM-AIR-TN-1-MB-B",
+        "id": "ONOKOM-AIR-TN-1-MB-B",
+        "groups": [
+            {
+                "title": "General",
+                "id": "general",
+                "order": 1
+            },
+            {
+                "title": "Temperature control",
+                "id": "temperatureControl",
+                "order": 2
+            },
+            {
+                "title": "Indication",
+                "id": "indication",
+                "order": 5
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 6
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 9
+            },
+            {
+                "title": "Filter",
+                "id": "filter",
+                "order": 11
+            },
+            {
+                "title": "Timer",
+                "id": "timer",
+                "order": 12
+            }
+        ],
+        "parameters": [
+            {
+                "id": "Show_modes_as_range",
+                "title": "Show modes as range",
+                "address": 95,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "Show_fan_as_range",
+                "title": "Show fan as range",
+                "address": 92,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "Show_thermostat_state_as_range",
+                "title": "Show thermostat state as range",
+                "address": 94,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "temperatureControl",
+                "order": 1
+            },
+            {
+                "id": "baud_rate",
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [
+                    96,
+                    192,
+                    384,
+                    576,
+                    1152
+                ],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "hw_info",
+                "order": 1
+            },
+            {
+                "id": "parity_bit",
+                "title": "Parity bit",
+                "description": "parity_bit_description",
+                "address": 111,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "default": 0,
+                "enum_titles": [
+                    "none (N)",
+                    "odd (O)",
+                    "even (E)"
+                ],
+                "group": "hw_info",
+                "order": 1
+            },
+            {
+                "id": "Show_filter_replace_menu",
+                "title": "Show filter replace menu",
+                "address": 100,
+                "reg_type": "coil",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "filter",
+                "order": 1
+            },
+            {
+                "id": "Show_timer_setup_menu",
+                "title": "Show timer setup menu",
+                "address": 100,
+                "reg_type": "coil",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "timer",
+                "order": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "Active",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general"
+            },
+            {
+                "name": "Mode",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "range",
+                "format": "u16",
+                "min": 1,
+                "max": 3,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_modes_as_range==1"
+            },
+            {
+                "name": "Mode",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Outdoor air Supply, Heater off",
+                    "Outdoor air Supply, Heater on",
+                    "Recycling, Heater off"
+                ],
+                "condition": "Show_modes_as_range!=1"
+            },
+            {
+                "name": "Active mode",
+                "reg_type": "holding",
+                "address": 2,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 3,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_modes_as_range==1"
+            },
+            {
+                "name": "Active mode",
+                "reg_type": "holding",
+                "address": 2,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Off",
+                    "Outdoor air Supply, Heater off",
+                    "Outdoor air Supply, Heater on",
+                    "Recycling, Heater off"
+                ],
+                "condition": "Show_modes_as_range!=1"
+            },
+            {
+                "name": "Fan speed",
+                "reg_type": "holding",
+                "address": 7,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_fan_as_range==1"
+            },
+            {
+                "name": "Fan speed",
+                "reg_type": "holding",
+                "address": 7,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "enum_titles": [
+                    "Auto",
+                    "1 Speed",
+                    "2 Speed",
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed",
+                    "6 Speed"
+                ],
+                "condition": "Show_fan_as_range!=1"
+            },
+            {
+                "name": "Heater",
+                "reg_type": "coil",
+                "address": 11,
+                "type": "switch",
+                "group": "general"
+            },
+            {
+                "name": "Outdoor air supply",
+                "reg_type": "coil",
+                "address": 15,
+                "type": "switch",
+                "sporadic": true,
+                "group": "general"
+            },
+            {
+                "name": "Inlet air temperature",
+                "reg_type": "holding",
+                "address": 4,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Outdoor air temperature",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 4,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Outlet air temperature",
+                "reg_type": "holding",
+                "address": 3,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Target temperature",
+                "reg_type": "holding",
+                "address": 5,
+                "type": "range",
+                "format": "s16",
+                "min": 0,
+                "max": 30,
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "units": "deg C"
+            },
+            {
+                "name": "Beeper",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch",
+                "sporadic": true,
+                "group": "indication"
+            },
+            {
+                "name": "Screen light",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "sporadic": true,
+                "group": "indication"
+            },
+            {
+                "name": "FW Version",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 16
+            },
+            {
+                "name": "HW Version",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 200,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 20
+            },
+            {
+                "name": "MCU Temperature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "hw_info"
+            },
+            {
+                "name": "PROTO Version",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 400,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 16
+            },
+            {
+                "name": "Reboot Device",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 120,
+                "type": "pushbutton",
+                "group": "hw_info"
+            },
+            {
+                "name": "Serial",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info",
+                "readonly": true
+            },
+            {
+                "name": "Signature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 290,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 12
+            },
+            {
+                "name": "Uptime",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "AC connected",
+                "reg_type": "coil",
+                "address": 20,
+                "type": "switch",
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
+            },
+            {
+                "name": "Airflow counter",
+                "reg_type": "holding",
+                "address": 66,
+                "type": "value",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "group": "debug",
+                "readonly": true,
+                "units": "m^3"
+            },
+            {
+                "name": "Control board temperature",
+                "reg_type": "holding",
+                "address": 23,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "group": "debug",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Current heater power",
+                "reg_type": "holding",
+                "address": 21,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "units": "%"
+            },
+            {
+                "name": "Electronics operating time counter",
+                "reg_type": "holding",
+                "address": 60,
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00001157,
+                "round_to": 0.1,
+                "group": "debug",
+                "readonly": true,
+                "units": "day"
+            },
+            {
+                "name": "Heater type",
+                "reg_type": "holding",
+                "address": 22,
+                "type": "value",
+                "format": "u8",
+                "scale": 1,
+                "group": "debug",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "none",
+                    "1 kWt",
+                    "1.4 kWt"
+                ],
+                "readonly": true
+            },
+            {
+                "name": "Max allowed fan speed",
+                "reg_type": "holding",
+                "address": 32,
+                "type": "range",
+                "min": 1,
+                "max": 6,
+                "group": "debug",
+                "readonly": true
+            },
+            {
+                "name": "Motor operating time counter",
+                "reg_type": "holding",
+                "address": 62,
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00001157,
+                "round_to": 0.1,
+                "group": "debug",
+                "readonly": true,
+                "units": "day"
+            },
+            {
+                "name": "Power board temperature",
+                "reg_type": "holding",
+                "address": 24,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "group": "debug",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Days to filter replace",
+                "reg_type": "holding",
+                "address": 64,
+                "type": "range",
+                "format": "s32",
+                "max": 180,
+                "scale": 0.00001157,
+                "round_to": 0.1,
+                "group": "filter",
+                "readonly": true
+            },
+            {
+                "name": "Filter life level",
+                "reg_type": "holding",
+                "address": 33,
+                "type": "value",
+                "format": "u8",
+                "max": 100,
+                "group": "filter",
+                "readonly": true,
+                "units": "%"
+            },
+            {
+                "name": "Reset filter counter",
+                "reg_type": "coil",
+                "address": 14,
+                "type": "pushbutton",
+                "group": "filter",
+                "condition": "Show_filter_replace_menu==1"
+            },
+            {
+                "name": "Set days to activate filter alarm",
+                "reg_type": "holding",
+                "address": 35,
+                "type": "range",
+                "format": "u16",
+                "max": 180,
+                "group": "filter",
+                "readonly": false,
+                "condition": "Show_filter_replace_menu==1"
+            },
+            {
+                "name": "Set days to next filter replace",
+                "reg_type": "holding",
+                "address": 34,
+                "type": "range",
+                "format": "u16",
+                "max": 180,
+                "group": "filter",
+                "readonly": false,
+                "condition": "Show_filter_replace_menu==1"
+            },
+            {
+                "name": "Timer: Beeper",
+                "reg_type": "holding",
+                "address": "55:1:1",
+                "type": "switch",
+                "format": "u8",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Enabled",
+                "reg_type": "holding",
+                "address": "55:4:1",
+                "type": "switch",
+                "format": "u8",
+                "group": "timer",
+                "readonly": false
+            },
+            {
+                "name": "Timer: Fan speed",
+                "reg_type": "holding",
+                "address": 57,
+                "type": "range",
+                "format": "u8",
+                "min": 1,
+                "max": 6,
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Friday",
+                "reg_type": "holding",
+                "address": "52:4:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Heater",
+                "reg_type": "holding",
+                "address": "55:3:1",
+                "type": "switch",
+                "format": "u8",
+                "group": "timer",
+                "readonly": false,
+                "on_value": "0x00",
+                "off_value": "0x01",
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Hours",
+                "reg_type": "holding",
+                "address": 53,
+                "type": "range",
+                "format": "u8",
+                "max": 23,
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: ID",
+                "reg_type": "holding",
+                "address": 51,
+                "type": "range",
+                "format": "u8",
+                "max": 11,
+                "group": "timer",
+                "readonly": false
+            },
+            {
+                "name": "Timer: Monday",
+                "reg_type": "holding",
+                "address": "52:0:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Power",
+                "reg_type": "holding",
+                "address": "55:0:1",
+                "type": "switch",
+                "format": "u8",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Saturday",
+                "reg_type": "holding",
+                "address": "52:5:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Screen",
+                "reg_type": "holding",
+                "address": "55:2:1",
+                "type": "switch",
+                "format": "u8",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Sunday",
+                "reg_type": "holding",
+                "address": "52:6:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Target temp",
+                "reg_type": "holding",
+                "address": 56,
+                "type": "range",
+                "format": "u8",
+                "min": 15,
+                "max": 30,
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Thursday",
+                "reg_type": "holding",
+                "address": "52:3:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Tuesday",
+                "reg_type": "holding",
+                "address": "52:1:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            },
+            {
+                "name": "Timer: Wednesday",
+                "reg_type": "holding",
+                "address": "52:2:1",
+                "type": "switch",
+                "group": "timer",
+                "readonly": false,
+                "condition": "Show_timer_setup_menu==1"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "ONOKOM AIR TN-1-MB-B (Adapter for TION 4S breezer)"
+            },
+            "ru": {
+                "General": "Основные режимы и функции",
+                "Temperature control": "Контроль температуры",
+                "Indication": "Индикация",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Filter": "Фильтр",
+                "Timer": "Таймер",
+                "No": "Нет",
+                "Yes": "Да",
+                "Show modes as range": "Отображать режимы как ползунок",
+                "Show fan as range": "Отображать вентилятор как ползунок",
+                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Parity bit": "Бит чётности",
+                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
+                "Show filter replace menu": "Отобразить меню замены фильтра",
+                "Show timer setup menu": "Отобразить меню настройки таймера",
+                "Active": "Состояние",
+                "Mode": "Режим",
+                "Outdoor air Supply, Heater off": "Подача воздуха с улицы, нагреватель выключен",
+                "Outdoor air Supply, Heater on": "Подача воздуха с улицы, нагреватель включен",
+                "Recycling, Heater off": "Рециркуляция, нагреватель выключен",
+                "Active mode": "Состояние и режим",
+                "Off": "Выключен",
+                "Fan speed": "Скорость вентилятора",
+                "Auto": "Авто",
+                "1 Speed": "1 Скорость",
+                "2 Speed": "2 Скорость",
+                "3 Speed": "3 Скорость",
+                "4 Speed": "4 Скорость",
+                "5 Speed": "5 Скорость",
+                "6 Speed": "6 Скорость",
+                "Heater": "Нагреватель",
+                "Outdoor air supply": "Подача воздуха с улицы",
+                "Inlet air temperature": "Температура входящего воздуха",
+                "Outdoor air temperature": "Температура воздуха на улице",
+                "Outlet air temperature": "Температура выходящего воздуха",
+                "Target temperature": "Целевая температура",
+                "Beeper": "Звуковая индикация",
+                "Screen light": "Подсветка экрана",
+                "FW Version": "Версия прошивки",
+                "HW Version": "Версия устройства",
+                "MCU Temperature": "Температура МК",
+                "PROTO Version": "Версия протокола",
+                "Reboot Device": "Перезагрузить устройство",
+                "Serial": "Серийный номер",
+                "Signature": "Сигнатура устройства",
+                "Uptime": "Время работы с момента включения (с)",
+                "AC connected": "Кондиционер подключен",
+                "Airflow counter": "Счётчик наработки прибора",
+                "Control board temperature": "Температура платы управления",
+                "Current heater power": "Текущая мощность нагревателя",
+                "Electronics operating time counter": "Счётчик наработки электроники",
+                "Heater type": "Тип нагревателя",
+                "none": "отсутствует",
+                "1 kWt": "1 кВт",
+                "1.4 kWt": "1.4 кВт",
+                "Max allowed fan speed": "Максимальная доступная в данный момент скорость вентилятора",
+                "Motor operating time counter": "Счётчик наработки вентилятора",
+                "Power board temperature": "Температура платы питания",
+                "Normal mode": "Обычный режим",
+                "Disabled if no errors": "Отключен если нет ошибок",
+                "Disabled untill reboot": "Отключен до перезагрузки",
+                "Always disabled": "Всегда отключен",
+                "Green untill reboot": "Зеленый до перезагрузки",
+                "Red untill reboot": "Красный до перезагрузки",
+                "Days to filter replace": "Дней до замены фильтра",
+                "Filter life level": "Состояние фильтра",
+                "Reset filter counter": "Сбросить счетчик фильтра",
+                "Set days to activate filter alarm": "Количество дней для активации оповещения о замене фильтра",
+                "Set days to next filter replace": "Установить количество дней до следующей замены фильтра",
+                "Timer: Beeper": "Таймер: Звуковая индикация",
+                "Timer: Enabled": "Состояние таймера",
+                "Timer: Fan speed": "Таймер: Скорость вентилятора",
+                "Timer: Friday": "Расписание: Пятницы",
+                "Timer: Heater": "Таймер: Подогрев воздуха",
+                "Timer: Hours": "Час запуска таймера",
+                "Timer: ID": "Порядковый номер таймера",
+                "Timer: Monday": "Расписание: Понедельники",
+                "Timer: Power": "Таймер: Состояние бризера",
+                "Timer: Saturday": "Расписание: Субботы",
+                "Timer: Screen": "Таймер: Экран",
+                "Timer: Sunday": "Расписание: Воскресенья",
+                "Timer: Target temp": "Таймер: Целевая температура",
+                "Timer: Thursday": "Расписание: Четверги",
+                "Timer: Tuesday": "Расписание: Вторники",
+                "Timer: Wednesday": "Расписание: Среды",
+                "template_title": "ONOKOM AIR TN-1-MB-B (Адаптер для бризера TION 4S)"
+            }
+        }
+    }
+}
