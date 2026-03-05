@@ -2,7 +2,7 @@ wb-mqtt-serial (2.229.0) stable; urgency=medium
 
   * MR templates: Add timers
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 04 Mar 2026 13:53:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 05 Mar 2026 16:08:00 +0300
 
 wb-mqtt-serial (2.228.2) stable; urgency=medium
 

@@ -88,7 +88,7 @@
                 "id": "g_safety"
             },
             {
-                "title": "Delays",
+                "title": "Protective Functions",
                 "id": "g_delays"
             },
             {
@@ -102,6 +102,27 @@
                 "id": "gg_restart_delay_params",
                 "description": "restart_delay_description",
                 "group": "g_delays"
+            },
+            {
+                "title": "Timers",
+                "id": "g_timer_relay"
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Output {{out_num}}",
+                "id": "gg_timer_{{out_num}}",
+                "group": "g_timer_relay"
+            },
+            {% endfor -%}
+            {
+                "title": "Timer Channels",
+                "id": "gg_timer_channels",
+                "group": "g_timer_relay",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "Safety Behaviour",
@@ -160,7 +181,6 @@
             {% if in_num == 0 -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
-                "description": "mode_description",
                 "address": 16,
                 "reg_type": "holding",
                 "enum": [2, 3, 4, 6],
@@ -177,7 +197,6 @@
             {% else -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
-                "description": "mode_description",
                 "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 4, 6],
@@ -422,7 +441,7 @@
                 {% endif -%}
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Don't сhange output state",
+                    "Don't change output state",
                     "Switch output to safety state"
                 ]
             },
@@ -467,7 +486,110 @@
                 "default": 0,
                 "order": {{out_num}},
                 "fw": "1.24.0",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==0)"
+            },
+            "out{{out_num}}_timer_mode_selection": {
+                "title": "Function",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num}},
+                "address": {{1760 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5],
+                "enum_titles": [
+                    "Not Used",
+                    "On Delay",
+                    "Off Delay",
+                    "On Pulse",
+                    "Off Pulse",
+                    "On/Off Cycle"
+                ],
+                "fw": "1.25.0",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            "out{{out_num}}_on_delay_params": {
+                "title": "Timeout (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1768 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 0.1,
+                "fw": "1.25.0",
+                "description": "on_delay_description",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
+            },
+            "out{{out_num}}_off_delay_params": {
+                "title": "Timeout (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1776 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 0.1,
+                "fw": "1.25.0",
+                "description": "off_delay_description",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
+            },
+            "out{{out_num}}_on_pulse_params": {
+                "title": "Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1784 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 0.1,
+                "fw": "1.25.0",
+                "description": "on_pulse_description",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==3"
+            },
+            "out{{out_num}}_off_pulse_params": {
+                "title": "Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1792 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 0.1,
+                "fw": "1.25.0",
+                "description": "off_pulse_description",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==4"
+            },
+            "out{{out_num}}_cyclic_on_time_params": {
+                "title": "On Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1800 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 1,
+                "min": 1,
+                "max": 65000,
+                "default": 1,
+                "fw": "1.25.0",
+                "description": "cyclic_on_time_description",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
+            },
+            "out{{out_num}}_cyclic_off_time_params": {
+                "title": "Off Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 2}},
+                "address": {{1808 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 1,
+                "min": 1,
+                "max": 65000,
+                "default": 1,
+                "fw": "1.25.0",
+                "description": "cyclic_off_time_description",
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
             "outputs_restore_state": {
@@ -778,6 +900,30 @@
                 "group": "gg_restart_delay_params",
                 "condition": "out{{out_num}}_restart_delay_params>0"
             },
+            {
+                "name": "Timer K{{out_num}}",
+                "reg_type": "input",
+                "fw": "1.25.0",
+                "address": {{1864 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "gg_timer_channels",
+                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==4"
+            },
+            {
+                "name": "Timer K{{out_num}}",
+                "reg_type": "input",
+                "fw": "1.25.0",
+                "address": {{1864 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 1,
+                "enabled": false,
+                "group": "gg_timer_channels",
+                "condition": "out{{out_num}}_timer_mode_selection==5"
+            },
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {
@@ -881,8 +1027,7 @@
         "translations": {
             "en": {
                 "WB-MR3_template_title": "WB-MR3LV/x, WB-MR3HV/x, WB-MRWL3  (3-channel relay)",
-                "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
-                "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
+                "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -907,10 +1052,12 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
                 {% endfor -%}
 
                 "Curtains Control": "Actuator Control",
-                
+
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
                 "Curtain {{curtain_num}}": "Actuator {{curtain_num}}",
                 "Curtain {{curtain_num}} Open": "Actuator {{curtain_num}} Open",
@@ -919,8 +1066,17 @@
                 "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for actuator {{curtain_num}} control",
                 {% endfor -%}
 
-                "startup_delay_description": "0...999, factory default - 0",
-                "restart_delay_description": "0...999, factory default - 0"
+                "Startup Delay (s)": "Startup Delay When Power On (s)",
+                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)",
+                "startup_delay_description": "0...999 s",
+                "restart_delay_description": "0...999 s",
+
+                "on_delay_description": "0.1...6500",
+                "off_delay_description": "0.1...6500",
+                "on_pulse_description": "0.1...6500",
+                "off_pulse_description": "0.1...6500",
+                "cyclic_on_time_description": "1...65000",
+                "cyclic_off_time_description": "1...65000"
             },
             "ru": {
                 "WB-MR3_template_title": "WB-MR3LV/x, WB-MR3HV/x, WB-MRWL3  (3-канальный модуль реле)",
@@ -937,7 +1093,8 @@
 
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
-                "Delays": "Задержки",
+                "Protective Functions": "Защитные функции",
+                "Timers": "Таймеры",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -953,8 +1110,9 @@
                 "K{{out_num}}": "Команда K{{out_num}}",
                 "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
 
-                "Startup Delay Countdown K{{out_num}}": "Таймер задержки включения K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Таймер задержки повторного включения K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
+                "Timer K{{out_num}}": "Таймер K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
@@ -1016,7 +1174,7 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
-                "Don't сhange output state": "Ничего не делать",
+                "Don't change output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
@@ -1038,10 +1196,23 @@
                 "Action when safety mode is activated": "Действие при переходе в безопасный режим",
                 "Power up action": "Действие при подаче питания",
 
-                "Startup Delay (s)": "Задержка включения (с)",
-                "startup_delay_description": "0...999, заводское - 0",
-                "Restart Delay (s)": "Задержка повторного включения (с)",
-                "restart_delay_description": "0...999, заводское - 0",
+                "Protective Functions": "Защитные функции",
+                "Startup Delay (s)": "Задержка включения при подаче питания (с)",
+                "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
+                "startup_delay_description": "0...999 с",
+                "restart_delay_description": "0...999 с",
+
+                "Function": "Функция",
+                "Not Used": "Не используется",
+                "On Delay": "Задержка включения",
+                "Off Delay": "Задержка отключения",
+                "On Pulse": "Включить на время",
+                "Off Pulse": "Отключить на время",
+                "On/Off Cycle": "Цикл On/Off",
+                "On Time (s)": "Включено (с)",
+                "Off Time (s)": "Отключено (с)",
+                "Timeout (s)": "Таймаут (с)",
+                "Time (s)": "Время (с)",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
                 "Curtain {{curtain_num}}": "Привод {{curtain_num}}",
@@ -1058,8 +1229,7 @@
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.0 или новее",
-                "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
+                "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\"",
 
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",
