@@ -8,8 +8,6 @@
 
 namespace
 {
-    const auto UNSUPPORTED_VALUE = "unsupported";
-
     std::string ReadWbRegister(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, const std::string& registerName)
     {
         std::string error;

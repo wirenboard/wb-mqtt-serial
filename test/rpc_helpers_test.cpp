@@ -1,4 +1,3 @@
-#include <fstream>
 #include <gtest/gtest.h>
 
 #include "devices/modbus_device.h"
@@ -13,57 +12,67 @@
 #include "templates_map.h"
 
 // ============================================================
-// IsAllFFFE tests
+// CheckUnsupportedValue tests
 // ============================================================
 
-TEST(TRPCHelpersTest, IsAllFFFE_IntegerFFFE)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_U16_FFFE)
 {
-    EXPECT_TRUE(IsAllFFFE(TRegisterValue(uint64_t(0xFFFE))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U16);
+    EXPECT_TRUE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0xFFFE))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_Integer32bit)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_U16_Other)
 {
-    EXPECT_TRUE(IsAllFFFE(TRegisterValue(uint64_t(0xFFFEFFFE))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U16);
+    EXPECT_FALSE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0x1234))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_Integer32bitMixed)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_U16_Zero)
 {
-    EXPECT_FALSE(IsAllFFFE(TRegisterValue(uint64_t(0xFFFE1234))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U16);
+    EXPECT_FALSE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_IntegerOther)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_S16_FFFE)
 {
-    EXPECT_FALSE(IsAllFFFE(TRegisterValue(uint64_t(0x1234))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, S16);
+    EXPECT_TRUE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0xFFFE))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_IntegerZero)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_U32_AllFFFE)
 {
-    EXPECT_FALSE(IsAllFFFE(TRegisterValue(uint64_t(0))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U32);
+    EXPECT_TRUE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0xFFFEFFFE))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_StringAllFE)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_U32_OnlyLowWord)
 {
-    EXPECT_TRUE(IsAllFFFE(TRegisterValue(std::string("\xFE\xFE\xFE"))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U32);
+    EXPECT_FALSE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0x0000FFFE))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_StringEmpty)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_U32_Mixed)
 {
-    EXPECT_TRUE(IsAllFFFE(TRegisterValue(std::string(""))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U32);
+    EXPECT_FALSE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0xFFFE1234))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_StringMixed)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_S32_AllFFFE)
 {
-    EXPECT_FALSE(IsAllFFFE(TRegisterValue(std::string("\xFE\x01\xFE"))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, S32);
+    EXPECT_TRUE(CheckUnsupportedValue(*config, TRegisterValue(uint64_t(0xFFFEFFFE))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_StringNormal)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_String_Skipped)
 {
-    EXPECT_FALSE(IsAllFFFE(TRegisterValue(std::string("hello"))));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, String);
+    EXPECT_FALSE(CheckUnsupportedValue(*config, TRegisterValue(std::string("\xFE\xFE\xFE"))));
 }
 
-TEST(TRPCHelpersTest, IsAllFFFE_Undefined)
+TEST(TRPCHelpersTest, CheckUnsupportedValue_Undefined)
 {
-    EXPECT_FALSE(IsAllFFFE(TRegisterValue()));
+    auto config = TRegisterConfig::Create(Modbus::REG_HOLDING, 0, U16);
+    EXPECT_FALSE(CheckUnsupportedValue(*config, TRegisterValue()));
 }
 
 // ============================================================
@@ -173,15 +182,10 @@ TEST(TRPCHelpersTest, LoadRPCRequestSchema_NotFound)
 
 namespace
 {
-    const std::string TestTemplateFile = "/tmp/rpc_helpers_test_template.json";
-
     PDeviceTemplate CreateMinimalTemplate()
     {
-        std::ofstream f(TestTemplateFile);
-        f << R"({"device_type":"test","device":{"name":"Test","id":"test","channels":[]}})";
-        f.close();
-
-        auto tmpl = std::make_shared<TDeviceTemplate>("test", "modbus", nullptr, TestTemplateFile);
+        auto path = TLoggedFixture::GetDataFilePath("device-templates/config-rpc-helpers-test.json");
+        auto tmpl = std::make_shared<TDeviceTemplate>("test", "modbus", nullptr, path);
         tmpl->SetDeprecated();
         return tmpl;
     }
@@ -215,7 +219,6 @@ protected:
     {
         Request.reset();
         TSerialDeviceTest::TearDown();
-        std::remove(TestTemplateFile.c_str());
     }
 
     void EnqueueReadResponse()

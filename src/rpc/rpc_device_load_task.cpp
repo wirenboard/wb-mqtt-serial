@@ -5,13 +5,11 @@
 
 namespace
 {
-    const auto UNSUPPORTED_VALUE = "unsupported";
-
-    void ReadRegistersIntoJson(PPort port,
+    void ReadRegisters(PPort port,
                                PRPCDeviceLoadRequest rpcRequest,
                                TRPCRegisterList& registerList,
                                Json::Value& data,
-                               Json::Value& readonlyMap)
+                               Json::Value& readonlyList)
     {
         ReadRegisterList(*port, rpcRequest->Device, registerList);
         for (const auto& item: registerList) {
@@ -19,7 +17,7 @@ namespace
                                 ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
                                 : UNSUPPORTED_VALUE;
             if (item.Register->GetConfig()->AccessType == TRegisterConfig::EAccessType::READ_ONLY) {
-                readonlyMap[item.Id] = true;
+                readonlyList.append(item.Id);
             }
         }
         MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, data);
@@ -34,7 +32,7 @@ namespace
         PrepareSession(*port, rpcRequest->Device);
 
         Json::Value result(Json::objectValue);
-        Json::Value readonlyMap(Json::objectValue);
+        Json::Value readonlyList(Json::arrayValue);
 
         // Step 1: Read parameters that are referenced by channel conditions
         Json::Value conditionParamValues(Json::objectValue);
@@ -53,7 +51,7 @@ namespace
         auto channelRegList = rpcRequest->GetChannelsRegisterList(conditionParamValues);
         if (!channelRegList.empty()) {
             Json::Value channelData(Json::objectValue);
-            ReadRegistersIntoJson(port, rpcRequest, channelRegList, channelData, readonlyMap);
+            ReadRegisters(port, rpcRequest, channelRegList, channelData, readonlyList);
             result["channels"] = channelData;
         }
 
@@ -62,12 +60,12 @@ namespace
         auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues);
         if (!paramRegList.empty()) {
             Json::Value paramData(Json::objectValue);
-            ReadRegistersIntoJson(port, rpcRequest, paramRegList, paramData, readonlyMap);
+            ReadRegisters(port, rpcRequest, paramRegList, paramData, readonlyList);
             result["parameters"] = paramData;
         }
 
-        if (!readonlyMap.empty()) {
-            result["readonly"] = readonlyMap;
+        if (!readonlyList.empty()) {
+            result["readonly"] = readonlyList;
         }
         rpcRequest->OnResult(result);
     }
@@ -120,10 +118,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
     Json::Value items(Json::arrayValue);
     for (auto it = params.begin(); it != params.end(); ++it) {
         auto item = *it;
-        if (item["address"].isNull()) {
-            continue;
-        }
-        if (!item.get("enabled", true).asBool()) {
+        if (item["address"].isNull() || !item.get("enabled", true).asBool()) {
             continue;
         }
         auto id = params.isObject() ? it.key().asString() : item["id"].asString();
@@ -193,10 +188,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Va
     Json::Value items(Json::arrayValue);
     for (auto it = params.begin(); it != params.end(); ++it) {
         auto item = *it;
-        if (item["address"].isNull()) { // write only parameter
-            continue;
-        }
-        if (!item.get("enabled", true).asBool()) {
+        if (item["address"].isNull() || !item.get("enabled", true).asBool()) {
             continue;
         }
         auto id = params.isObject() ? it.key().asString() : item["id"].asString();

@@ -126,45 +126,19 @@ void WriteModbusRegister(TPort& port,
     }
 }
 
-namespace
+bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value)
 {
-    const auto UNSUPPORTED_VALUE = "unsupported";
-} // namespace
-
-bool IsAllFFFE(const TRegisterValue& value)
-{
-    if (value.GetType() == TRegisterValue::ValueType::Integer) {
-        auto v = value.Get<uint64_t>();
-        if (v == 0) {
+    if (value.GetType() != TRegisterValue::ValueType::Integer) {
+        return false;
+    }
+    auto v = value.Get<uint64_t>();
+    for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
+        if ((v & 0xFFFF) != 0xFFFE) {
             return false;
         }
-        // Check each 16-bit word
-        while (v != 0) {
-            if ((v & 0xFFFF) != 0xFFFE) {
-                return false;
-            }
-            v >>= 16;
-        }
-        return true;
+        v >>= 16;
     }
-    if (value.GetType() == TRegisterValue::ValueType::String) {
-        // String format extracts lower byte of each 16-bit register word.
-        // All-0xFFFE registers produce a string of all '\xFE' bytes.
-        // String8 format extracts both bytes, producing '\xFF\xFE' pairs.
-        // An empty string means GetStringRegisterValue hit '\xFF' at the
-        // first character — which also indicates unsupported.
-        const auto& s = value.Get<std::string>();
-        if (s.empty()) {
-            return true;
-        }
-        for (auto ch: s) {
-            if (static_cast<uint8_t>(ch) != 0xFE) {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
+    return true;
 }
 
 void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
@@ -180,8 +154,7 @@ void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
     }
     if (!error.empty()) {
         LOG(Warn) << port.GetDescription() << " modbus:" << request.Device->DeviceConfig()->SlaveId
-                  << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME
-                  << "\" register: " << error;
+                  << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME << "\" register: " << error;
     }
 }
 
@@ -193,7 +166,8 @@ void MarkUnsupportedRegisterItems(TPort& port,
     auto continuousRead = true;
     for (const auto& item: registerList) {
         try {
-            if (item.CheckUnsupported && IsAllFFFE(item.Register->GetValue())) {
+            if (item.CheckUnsupported && CheckUnsupportedValue(*item.Register->GetConfig(), item.Register->GetValue()))
+            {
                 if (continuousRead) {
                     SetContinuousRead(port, request, false);
                     continuousRead = false;

@@ -7,6 +7,7 @@
 #include "rpc_device_handler.h"
 
 constexpr int MAX_RPC_RETRIES = 2;
+constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
 
@@ -25,8 +26,10 @@ void WriteModbusRegister(TPort& port,
 
 /**
  * @brief Checks if all 16-bit words in register value are 0xFFFE (unsupported marker).
+ *        Number of words to check is determined by register config type.
+ *        Returns false for string registers.
  */
-bool IsAllFFFE(const TRegisterValue& value);
+bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value);
 
 /**
  * @brief Sets continuous read register on/off (Wiren Board specific).
