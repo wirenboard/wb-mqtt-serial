@@ -31,9 +31,6 @@ namespace
 
         PrepareSession(*port, rpcRequest->Device);
 
-        Json::Value result(Json::objectValue);
-        Json::Value readonlyList(Json::arrayValue);
-
         // Step 1: Read parameters that are referenced by channel conditions
         Json::Value conditionParamValues(Json::objectValue);
         auto condParamRegList = rpcRequest->GetConditionParametersRegisterList();
@@ -48,6 +45,8 @@ namespace
         }
 
         // Step 2: Read channels, filtering by condition using actual parameter values
+        Json::Value readonlyList(Json::arrayValue);
+        Json::Value result(Json::objectValue);
         auto channelRegList = rpcRequest->GetChannelsRegisterList(conditionParamValues);
         if (!channelRegList.empty()) {
             Json::Value channelData(Json::objectValue);
@@ -57,9 +56,14 @@ namespace
 
         // Step 3: Read explicitly requested parameters, reusing values already
         // read for condition evaluation to avoid duplicate Modbus reads
+        Json::Value paramData(Json::objectValue);
+        for (const auto& id: rpcRequest->Parameters) {
+            if (conditionParamValues.isMember(id)) {
+                paramData[id] = conditionParamValues[id];
+            }
+        }
         auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues);
         if (!paramRegList.empty()) {
-            Json::Value paramData(Json::objectValue);
             ReadRegisters(port, rpcRequest, paramRegList, paramData, readonlyList);
             result["parameters"] = paramData;
         }
@@ -67,6 +71,7 @@ namespace
         if (!readonlyList.empty()) {
             result["readonly"] = readonlyList;
         }
+
         rpcRequest->OnResult(result);
     }
 } // namespace
@@ -141,24 +146,21 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Value& conditionParams)
 {
+    auto allChannels = Channels.empty();
     Json::Value items(Json::arrayValue);
-    const bool allChannels = Channels.empty();
     for (auto item: DeviceTemplate->GetTemplate()["channels"]) {
         if (item["address"].isNull()) { // write only channel
             continue;
         }
         auto id = item["name"].asString();
-        if (allChannels) {
-            item["id"] = id;
-            items.append(item);
-        } else if (std::find(Channels.begin(), Channels.end(), id) != Channels.end()) {
+        if (allChannels || std::find(Channels.begin(), Channels.end(), id) != Channels.end()) {
             item["id"] = id;
             items.append(item);
             Channels.remove(id);
         }
     }
-    if (!allChannels && !Channels.empty()) {
-        throw TRPCException("Channel \"" + Channels.front() + "\" is write only or not found in \"" +
+    if (!Channels.empty()) {
+        throw TRPCException("Channel \"" + Channels.front() + "\" is disabled, write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
@@ -204,7 +206,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Va
         }
     }
     if (!Parameters.empty()) {
-        throw TRPCException("Parameter \"" + Parameters.front() + "\" is write only or not found in \"" +
+        throw TRPCException("Parameter \"" + Parameters.front() + "\" is disabled, write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }

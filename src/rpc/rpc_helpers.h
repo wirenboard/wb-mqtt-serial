@@ -25,16 +25,16 @@ void WriteModbusRegister(TPort& port,
                          const TRegisterValue& value);
 
 /**
+ * @brief Sets continuous read register on/off (Wiren Board specific).
+ */
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled);
+
+/**
  * @brief Checks if all 16-bit words in register value are 0xFFFE (unsupported marker).
  *        Number of words to check is determined by register config type.
  *        Returns false for string registers.
  */
 bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value);
-
-/**
- * @brief Sets continuous read register on/off (Wiren Board specific).
- */
-void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled);
 
 /**
  * @brief Re-reads registers that returned all-0xFFFE to distinguish unsupported

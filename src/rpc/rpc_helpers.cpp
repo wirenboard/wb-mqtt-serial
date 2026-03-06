@@ -126,21 +126,6 @@ void WriteModbusRegister(TPort& port,
     }
 }
 
-bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value)
-{
-    if (value.GetType() != TRegisterValue::ValueType::Integer) {
-        return false;
-    }
-    auto v = value.Get<uint64_t>();
-    for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
-        if ((v & 0xFFFF) != 0xFFFE) {
-            return false;
-        }
-        v >>= 16;
-    }
-    return true;
-}
-
 void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
 {
     std::string error;
@@ -156,6 +141,21 @@ void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
         LOG(Warn) << port.GetDescription() << " modbus:" << request.Device->DeviceConfig()->SlaveId
                   << " unable to write \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME << "\" register: " << error;
     }
+}
+
+bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value)
+{
+    if (value.GetType() != TRegisterValue::ValueType::Integer) {
+        return false;
+    }
+    auto v = value.Get<uint64_t>();
+    for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
+        if ((v & 0xFFFF) != 0xFFFE) {
+            return false;
+        }
+        v >>= 16;
+    }
+    return true;
 }
 
 void MarkUnsupportedRegisterItems(TPort& port,

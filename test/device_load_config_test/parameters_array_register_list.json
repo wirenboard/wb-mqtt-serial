@@ -1,4 +1,4 @@
-// matching data for "parameters_array" writable register list test (readonly p6 excluded)
+// matching data for "parameters_array" register list test
 {
     "p1": 1001,
     "p2": 1002,
