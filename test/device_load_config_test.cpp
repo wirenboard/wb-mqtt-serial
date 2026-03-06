@@ -25,7 +25,7 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
         const std::string& type = typeList[i];
         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
         TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3");
+            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3", false, true);
         Json::Value json;
         for (const auto& reg: registerList) {
             json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
@@ -67,66 +67,6 @@ TEST(TDeviceLoadConfigTest, GetRegisterListParameters)
 
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
-        ASSERT_TRUE(JsonsMatch(json, match)) << type;
-    }
-}
-
-/**
- * Checks that readonly parameters are excluded from the register list
- * when the filtering from rpc_device_load_config_task is applied.
- * This mirrors the readonly filtering in ExecRPCLoadConfigRequest().
- */
-TEST(TDeviceLoadConfigTest, ReadonlyParametersFiltered)
-{
-    TSerialDeviceFactory deviceFactory;
-    RegisterProtocols(deviceFactory);
-
-    TTemplateMap templateMap(GetTemplatesSchema());
-    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
-
-    std::vector<std::string> typeList = {"parameters_array", "parameters_object"};
-    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
-    for (size_t i = 0; i < typeList.size(); ++i) {
-        const std::string& type = typeList[i];
-        auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
-        auto templateParams = deviceTemplate["parameters"];
-
-        // Filter out readonly parameters, same as rpc_device_load_config_task.cpp
-        Json::Value writableParams(templateParams.isObject() ? Json::objectValue : Json::arrayValue);
-        if (templateParams.isObject()) {
-            for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-                if (!(*it)["readonly"].asBool()) {
-                    writableParams[it.key().asString()] = *it;
-                }
-            }
-        } else {
-            for (const auto& item: templateParams) {
-                if (!item["readonly"].asBool()) {
-                    writableParams.append(item);
-                }
-            }
-        }
-
-        TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams, nullptr, writableParams, Json::Value(), "1.2.3");
-
-        // Verify no readonly parameters in the result
-        for (const auto& reg: registerList) {
-            // p6 in parameters_array and p4 in parameters_object are readonly
-            if (type == "parameters_array") {
-                ASSERT_NE(reg.Id, "p6") << "readonly parameter p6 should be filtered out";
-            } else {
-                ASSERT_NE(reg.Id, "p4") << "readonly parameter p4 should be filtered out";
-            }
-        }
-
-        // Verify the list matches expected non-readonly registers
-        Json::Value json;
-        for (const auto& reg: registerList) {
-            json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
-        }
-        auto match(JSON::Parse(
-            TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_writable_register_list.json")));
         ASSERT_TRUE(JsonsMatch(json, match)) << type;
     }
 }

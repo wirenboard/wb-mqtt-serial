@@ -1,8 +1,7 @@
-// result data for "parameters_object" register list test
+// matching data for "parameters_object" writable register list test (readonly p4 excluded)
 {
     "p1": 2001,
     "p3": 2003,
-    "p4": 2004,
     "p5": 2005,
     "p7": 2007
 }
