@@ -1,8 +1,0 @@
-{
-    "device_type": "test",
-    "device": {
-        "name": "Test",
-        "id": "test",
-        "channels": []
-    }
-}

@@ -24,8 +24,13 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
     for (size_t i = 0; i < typeList.size(); ++i) {
         const std::string& type = typeList[i];
         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
-        TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3", false, true);
+        TRPCRegisterList registerList = CreateRegisterList(protocolParams,
+                                                           nullptr,
+                                                           deviceTemplate["parameters"],
+                                                           Json::Value(),
+                                                           "1.2.3",
+                                                           false,
+                                                           true);
         Json::Value json;
         for (const auto& reg: registerList) {
             json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));

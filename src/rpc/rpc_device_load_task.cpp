@@ -6,10 +6,10 @@
 namespace
 {
     void ReadRegisters(PPort port,
-                               PRPCDeviceLoadRequest rpcRequest,
-                               TRPCRegisterList& registerList,
-                               Json::Value& data,
-                               Json::Value& readonlyList)
+                       PRPCDeviceLoadRequest rpcRequest,
+                       TRPCRegisterList& registerList,
+                       Json::Value& data,
+                       Json::Value& readonlyList)
     {
         ReadRegisterList(*port, rpcRequest->Device, registerList);
         for (const auto& item: registerList) {
@@ -129,12 +129,14 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
             items.append(item);
         }
     }
+
+    // nullptr checks is needed for tests
     return CreateRegisterList(ProtocolParams,
                               Device,
                               items,
                               Json::Value(),
-                              Device->GetWbFwVersion(),
-                              Device->IsWbDevice());
+                              Device ? Device->GetWbFwVersion() : std::string(),
+                              Device && Device->IsWbDevice());
 }
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Value& conditionParams)
@@ -174,12 +176,13 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Valu
         items = filtered;
     }
 
+    // nullptr checks is needed for tests
     return CreateRegisterList(ProtocolParams,
                               Device,
                               items,
                               Json::Value(),
-                              Device->GetWbFwVersion(),
-                              Device->IsWbDevice());
+                              Device ? Device->GetWbFwVersion() : std::string(),
+                              Device && Device->IsWbDevice());
 }
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Value& knownValues)
@@ -205,12 +208,14 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Va
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
+
+    // nullptr checks is needed for tests
     return CreateRegisterList(ProtocolParams,
                               Device,
                               items,
                               knownValues,
-                              Device->GetWbFwVersion(),
-                              Device->IsWbDevice());
+                              Device ? Device->GetWbFwVersion() : std::string(),
+                              Device && Device->IsWbDevice());
 }
 
 PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,
