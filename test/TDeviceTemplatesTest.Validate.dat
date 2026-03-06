@@ -24045,6 +24045,9 @@ WB-MR3
 	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Startup Delay Countdown K3  =>  Startup Delay Countdown K3
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
 	Uptime  =>  Uptime
 WB-MR3LV
 	Input 0  =>  Input 0
@@ -24152,6 +24155,12 @@ WB-MR6C
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Uptime  =>  Uptime
 WB-MR6C v.3
 	Bus Power Supply  =>  Bus Power Supply
@@ -24241,6 +24250,12 @@ WB-MR6C v.3
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Uptime  =>  Uptime
 WB-MR6C-NC
 	FW Version  =>  FW Version
@@ -24322,6 +24337,12 @@ WB-MR6C-NC
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Uptime  =>  Uptime
 WB-MR6CU
 	Curtain 1 Close  =>  Curtain 1 Close
@@ -24361,6 +24382,12 @@ WB-MR6CU
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Uptime  =>  Uptime
 WB-MR6LV
 	Input 0  =>  Input 0
@@ -24648,6 +24675,8 @@ WB-MRM2-mini-NC-inputs
 	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
 	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
 	Uptime  =>  Uptime
 WB-MRM2-mini-NO-inputs
 	Curtain 1 Close  =>  Curtain 1 Close
@@ -24681,6 +24710,8 @@ WB-MRM2-mini-NO-inputs
 	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
 	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
 	Uptime  =>  Uptime
 WB-MRM2-old
 	Button 1  =>  Button 1
@@ -28879,6 +28910,12 @@ tpl1_oni_plc_w_emd_0706
 	Startup Delay Countdown K5  =>  Startup Delay Countdown K5
 	Startup Delay Countdown K6  =>  Startup Delay Countdown K6
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Timer K3  =>  Timer K3
+	Timer K4  =>  Timer K4
+	Timer K5  =>  Timer K5
+	Timer K6  =>  Timer K6
 	Uptime  =>  Uptime
 tpl1_wb_mao4
 	Channel 1  =>  Channel 1
