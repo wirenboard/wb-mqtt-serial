@@ -480,7 +480,7 @@
                 "default": 0,
                 "order": {{out_num}},
                 "fw": "1.24.0",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==0)"
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
             "out{{out_num}}_timer_mode_selection": {
                 "title": "Function",
