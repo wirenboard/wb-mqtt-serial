@@ -145,15 +145,31 @@ void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
 
 bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value)
 {
-    if (value.GetType() != TRegisterValue::ValueType::Integer) {
-        return false;
-    }
-    auto v = value.Get<uint64_t>();
-    for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
-        if ((v & 0xFFFF) != 0xFFFE) {
-            return false;
+    switch (value.GetType()) {
+        case TRegisterValue::ValueType::String: {
+            auto str = value.Get<std::string>();
+            if (str.size() < config.Get16BitWidth()) {
+                return false;
+            }
+            for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
+                if (str[i] != '\xFE') {
+                    return false;
+                }
+            }
+            break;
         }
-        v >>= 16;
+        case TRegisterValue::ValueType::Integer: {
+            auto v = value.Get<uint64_t>();
+            for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
+                if ((v & 0xFFFF) != 0xFFFE) {
+                    return false;
+                }
+                v >>= 16;
+            }
+            break;
+        }
+        default:
+            break;
     }
     return true;
 }
