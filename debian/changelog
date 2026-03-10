@@ -1,4 +1,15 @@
-wb-mqtt-serial (2.228.2) stable; urgency=medium
+wb-mqtt-serial (2.229.0) stable; urgency=medium
+
+  * Fix unsupported register value checking
+  * Improve device/Load RPC
+
+  [ Evgeny Boger ]
+  * Add condition evaluation and readonly filtering for device/Load RPC
+  * Move common device RPC code to rpc_helpers
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Mar 2026 10:56:00 +0300
+
+ wb-mqtt-serial (2.228.2) stable; urgency=medium
 
   * Add hint to repetitive errors warning (SOFT-4788)
 
