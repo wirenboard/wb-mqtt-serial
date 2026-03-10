@@ -1,0 +1,15 @@
+{
+    "device_type": "alarm_type_test",
+    "device": {
+        "name": "Alarm Type Test",
+        "id": "alarm-test",
+        "channels": [
+            {
+                "name": "Test Alarm",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "alarm"
+            }
+        ]
+    }
+}

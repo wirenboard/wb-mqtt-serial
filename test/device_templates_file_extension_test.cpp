@@ -169,3 +169,10 @@ TEST_F(TDeviceTemplatesTest, ParameterAddresses)
         ASSERT_STREQ(error.c_str(), e.what());
     }
 }
+
+TEST_F(TDeviceTemplatesTest, AlarmControlType)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_NO_THROW(templateMap.GetTemplate("alarm_type_test")->GetTemplate());
+}
