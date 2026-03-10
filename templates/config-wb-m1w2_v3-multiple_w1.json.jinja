@@ -262,7 +262,8 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "External Sensor {{in_num}}",
+                "id": "External Sensor {{in_num}}",
+                "name": "Input {{in_num}} Temperature",
                 "reg_type": "input",
                 "address": {{7 + in_num - 1}},
                 "type": "value",
@@ -275,7 +276,8 @@
                 "condition": "in{{in_num}}_mode==0"
             },
             {
-                "name": "External Sensor {{in_num}} OK",
+                "id": "External Sensor {{in_num}} OK",
+                "name": "Input {{in_num}} Sensor OK",
                 "reg_type": "discrete",
                 "address": {{16 + in_num - 1}},
                 "type": "switch",
@@ -285,7 +287,7 @@
             },
             {
                 "id": "ext_sens{{in_num}}_last_valid_temp",
-                "name": "External Sensor {{in_num}} Last Valid Temp",
+                "name": "Input {{in_num}} Last Valid Temp",
                 "reg_type": "input",
                 "address": {{20 + (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -300,7 +302,7 @@
             },
             {
                 "id": "ext_sens{{in_num}}_presense",
-                "name": "External Sensor {{in_num}} Presense",
+                "name": "Input {{in_num}} Sensor Presense",
                 "reg_type": "input",
                 "address": {{376 + (in_num - FIRST_INPUT)}},
                 "type": "switch",
@@ -311,7 +313,7 @@
             },
             {
                 "id": "ext_sens{{in_num}}_supply",
-                "name": "External Sensor {{in_num}} Supply",
+                "name": "Input {{in_num}} Sensor Supply",
                 "reg_type": "input",
                 "address": {{448 + (in_num - FIRST_INPUT)}},
                 "enum": [0, 1],
@@ -586,8 +588,8 @@
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
-                "External Sensor {{in_num}}": "Датчик температуры {{in_num}}",
-                "External Sensor {{in_num}} OK": "Датчик температуры {{in_num}} подключен",
+                "Input {{in_num}} Temperature": "Температура на входе {{in_num}}",
+                "Input {{in_num}} Sensor OK": "Датчик на входе {{in_num}} подключен",
                 {% endfor -%}
 
                 "General": "Общее",
@@ -631,9 +633,9 @@
 
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
-                "External Sensor {{in_num}} Last Valid Temp": "Последняя действительная температура {{in_num}}",
-                "External Sensor {{in_num}} Presense": "Датчик температуры {{in_num}} присутствует",
-                "External Sensor {{in_num}} Supply": "Питание датчика температуры {{in_num}}",
+                "Input {{in_num}} Last Valid Temp": "Последняя действ. температура на входе {{in_num}}",
+                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} присутствует",
+                "Input {{in_num}} Sensor Supply": "Питание датчика на входе {{in_num}}",
                 "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
                 "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
                 "Save New Sensors On The Bus {{in_num}}": "Сохранить новые датчики на шине {{in_num}}",
@@ -642,7 +644,7 @@
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
                 "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
-                "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действительная температура {{in_num}}:{{sens_num}}",
+                "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действ. температура {{in_num}}:{{sens_num}}",
                 "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
                 "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
                 {% endfor -%}
