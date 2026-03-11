@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.229.2) stable; urgency=medium
+
+  * Fix pushbutton with max_unchanged_interval (SOFT-6590)
+
+ -- Evgeny Boger <boger@wirenboard.com>  Wed, 11 Mar 2026 13:09:15 +0500
+
 wb-mqtt-serial (2.229.1) stable; urgency=medium
 
   * Fix changelog, no functional changes
