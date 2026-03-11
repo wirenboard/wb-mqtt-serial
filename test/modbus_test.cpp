@@ -279,6 +279,27 @@ TEST_F(TModbusTest, ReadString)
     SerialPort->Close();
 }
 
+TEST_F(TModbusTest, ReadUnsupportedString)
+{
+    EnqueueStringReadResponse(TModbusExpectations::UNSUPPORTED);
+    ModbusDev->SetWbDevice(true);
+
+    auto range = ModbusDev->CreateRegisterRange();
+    range->Add(*SerialPort, ModbusHoldingStringRead, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, range);
+
+    auto registerList = range->RegisterList();
+    EXPECT_EQ(registerList.size(), 1);
+    auto reg = registerList.front();
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 120);
+    EXPECT_EQ(reg->GetValue().Get<std::string>(), "unknown");
+    EXPECT_TRUE(reg->GetErrorState().test(TRegister::TError::ReadError));
+    EXPECT_FALSE(reg->IsSupported());
+    EXPECT_TRUE(reg->IsExcludedFromPolling());
+
+    SerialPort->Close();
+}
+
 TEST_F(TModbusTest, WriteString)
 {
     EnqueueStringWriteResponse();
