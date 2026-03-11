@@ -179,7 +179,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const Json::Value& templateItems,
                                     const Json::Value& knownItems = Json::Value(),
                                     const std::string& fwVersion = std::string(),
-                                    bool checkUnsupported = false);
+                                    bool checkUnsupported = false,
+                                    bool filterReadOnly = false);
 
 /**
  * @brief Reads TRPCRegisterList registers and puts valuet to JSON object.
