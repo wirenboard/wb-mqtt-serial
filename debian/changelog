@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.229.3) stable; urgency=medium
+
+  * Fix Wiren Board devices unsupported string registers bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Mar 2026 16:54:33 +0300
+
 wb-mqtt-serial (2.229.2) stable; urgency=medium
 
   * Fix pushbutton with max_unchanged_interval (SOFT-6590)
