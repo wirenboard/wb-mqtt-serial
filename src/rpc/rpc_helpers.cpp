@@ -148,10 +148,11 @@ bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& 
     switch (value.GetType()) {
         case TRegisterValue::ValueType::String: {
             auto str = value.Get<std::string>();
-            if (str.size() < config.Get16BitWidth()) {
+            auto width = config.Get16BitWidth();
+            if (str.size() < width) {
                 return false;
             }
-            for (uint8_t i = 0; i < config.Get16BitWidth(); ++i) {
+            for (uint8_t i = 0; i < width; ++i) {
                 if (str[i] != '\xFE') {
                     return false;
                 }
