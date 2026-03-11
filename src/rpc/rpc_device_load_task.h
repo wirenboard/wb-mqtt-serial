@@ -14,8 +14,9 @@ public:
 
     void ParseRequestItems(const Json::Value& items, std::list<std::string>& list);
 
-    TRPCRegisterList GetChannelsRegisterList();
-    TRPCRegisterList GetParametersRegisterList();
+    TRPCRegisterList GetConditionParametersRegisterList();
+    TRPCRegisterList GetChannelsRegisterList(const Json::Value& conditionParams = Json::Value());
+    TRPCRegisterList GetParametersRegisterList(const Json::Value& knownValues = Json::Value());
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadRequest> PRPCDeviceLoadRequest;
