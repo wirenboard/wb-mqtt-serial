@@ -93,7 +93,7 @@ void TPortOpenCloseLogic::CloseIfNeeded(PPort port, bool allPreviousDataExchange
 
     if ((currentTime - LastSuccessfulCycle > Settings.MaxFailTime) && RemainingFailCycles == 0) {
         Warn.Log() << port->GetDescription() << ": got more than " << Settings.ConnectionMaxFailCycles
-                   << " consecutive failures during last " << Settings.MaxFailTime << " us."
+                   << " consecutive failures during last " << Settings.MaxFailTime.count() << " us."
                    << " Try to recover, close and reopen port. Check if devices on the bus are powered";
         port->Close();
     }
