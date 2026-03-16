@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.229.3) stable; urgency=medium
+wb-mqtt-serial (2.229.4) stable; urgency=medium
 
   * Fix Wiren Board devices unsupported string registers bug
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Mar 2026 16:54:33 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 16 Mar 2026 17:28:47 +0300
+
+wb-mqtt-serial (2.229.3) stable; urgency=medium
+
+  * Add more verbose log message on port reopen after repetitive errors
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 12 Mar 2026 15:16:30 +0500
 
 wb-mqtt-serial (2.229.2) stable; urgency=medium
 
