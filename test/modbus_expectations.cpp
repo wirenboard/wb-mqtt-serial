@@ -943,6 +943,54 @@ void TModbusExpectations::EnqueueStringReadResponse(TModbusExpectations::StringR
                                __func__);
             break;
         }
+        case TModbusExpectations::StringReadHint::UNSUPPORTED: {
+            Expector()->Expect(WrapPDU({
+                                   0x03, // function code
+                                   0x00, // starting address Hi
+                                   120,  // starting address Lo
+                                   0x00, // quantity Hi
+                                   0x10, // quantity Lo
+                               }),
+                               WrapPDU(std::vector<int>{
+                                   0x03, // function code
+                                   0x20, // byte count
+                                   // all 0xFFFE in modbus regs (unsupported marker)
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE, // data Lo
+                                   0xFF, // data Hi
+                                   0xFE  // data Lo
+                               }),
+                               __func__);
+            break;
+        }
     }
 }
 
@@ -1116,6 +1164,8 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
                                __func__);
             break;
         }
+        default:
+            break;
     }
 }
 
