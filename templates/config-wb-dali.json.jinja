@@ -1,5 +1,6 @@
 {% set CHANNELS_NUMBER = 3 -%}
 {% set BULK_BUFFER_LEN = 16 -%}
+{% set RX_SPORADIC_BUFFER_LEN = 4 -%}
 {% set INPUTS_NUMBER = 7 -%}
 {% set FP_BUTTONS_NUMBER = 3 -%}
 
@@ -164,17 +165,19 @@
                 "sporadic": true,
                 "group": "g_channel_{{ ch + 1 }}"
             },
+            {% for r in range(RX_SPORADIC_BUFFER_LEN) -%}
             {
-                "name": "Bus {{ ch + 1 }} monitor sporadic frame",
-                "id": "bus_{{ ch + 1 }}_monitor_sporadic_frame",
+                "name": "Bus {{ ch + 1 }} monitor sporadic frame {{ r + 1 }}",
+                "id": "bus_{{ ch + 1 }}_monitor_sporadic_frame_{{r + 1}}",
                 "reg_type": "input",
-                "address": {{ 1900 + (ch * 1000) }},
+                "address": {{ 1900 + (ch * 1000) + (4 * r) }},
                 "type": "value",
                 "format": "u64",
                 "word_order": "little_endian",
                 "sporadic": true,
                 "group": "g_channel_{{ ch + 1 }}"
             },
+            {% endfor -%}
             {% for ptr in range(BULK_BUFFER_LEN) -%}
             {
                 "name": "Bus {{ ch + 1 }} bulk send reply {{ ptr }}",
