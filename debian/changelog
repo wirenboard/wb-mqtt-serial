@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.230.0) stable; urgency=medium
+
+  * MR templates: Add timer functions
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 18 Mar 2026 09:36:00 +0300
+
 wb-mqtt-serial (2.229.4) stable; urgency=medium
 
   * Fix Wiren Board devices unsupported string registers bug
