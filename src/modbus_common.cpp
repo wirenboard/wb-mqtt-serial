@@ -74,6 +74,24 @@ namespace // general utilities
         }
         throw TSerialDeviceTransientErrorException(err.what());
     }
+
+    void CheckWbStringRegister(PRegister reg)
+    {
+        auto str = reg->GetValue().Get<std::string>();
+        auto width = reg->GetConfig()->Get16BitWidth();
+        if (str.size() < width) {
+            return;
+        }
+        for (uint8_t i = 0; i < width; ++i) {
+            if (str[i] != '\xFE') {
+                return;
+            }
+        }
+        reg->SetValue(TRegisterValue("unknown"));
+        reg->SetError(TRegister::TError::ReadError);
+        reg->SetSupported(false);
+        reg->ExcludeFromPolling();
+    }
 } // general utilities
 
 namespace Modbus // modbus protocol common utilities
@@ -632,6 +650,9 @@ namespace Modbus // modbus protocol common utilities
             auto config = reg->GetConfig();
             auto index = GetUint32RegisterAddress(config->GetAddress()) - range.GetStart();
             reg->SetValue(GetRegisterValue(data, *config, cache, index));
+            if (reg->Device()->IsWbDevice() && config->Format == RegisterFormat::String) {
+                CheckWbStringRegister(reg);
+            }
         }
     }
 
