@@ -146,6 +146,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Value& conditionParams)
 {
+    auto notFound = Channels;
     auto allChannels = Channels.empty();
     Json::Value items(Json::arrayValue);
     for (auto item: DeviceTemplate->GetTemplate()["channels"]) {
@@ -156,11 +157,11 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Valu
         if (allChannels || std::find(Channels.begin(), Channels.end(), id) != Channels.end()) {
             item["id"] = id;
             items.append(item);
-            Channels.remove(id);
+            notFound.remove(id);
         }
     }
-    if (!Channels.empty()) {
-        throw TRPCException("Channel \"" + Channels.front() + "\" is disabled, write only or not found in \"" +
+    if (!notFound.empty()) {
+        throw TRPCException("Channel \"" + notFound.front() + "\" is disabled, write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
