@@ -28,7 +28,7 @@ one-line changes to point at the new service.
 
 | Priority | Goal | Measure |
 |----------|------|---------|
-| 1 | Zero-downtime migration | Compat RPC endpoints under old service name |
+| 1 | Clean migration | homeui updated to use native wb-mqtt-serial service name |
 | 2 | No new heavyweight dependencies | libcurl only; no YAML/Python libs |
 | 3 | Testability | >85% line coverage on Modbus task code |
 | 4 | Same user experience | Identical JSON response format and MQTT state topic |
@@ -57,11 +57,9 @@ one-line changes to point at the new service.
 
 ### Organizational Constraints
 
-- Must provide backward-compatible RPC endpoints under `wb-device-manager/fw-update/*`
-  and state topic `/wb-device-manager/firmware_update/state` so existing homeui
-  installations continue working during the transition period.
-- `debian/control` uses `Replaces: wb-device-manager`, `Provides: wb-device-manager`,
-  `Conflicts: wb-device-manager` so the package manager handles the takeover.
+- RPC endpoints registered under `wb-mqtt-serial/fw-update/*` (the native service name).
+  homeui updated in a separate PR to use the new service name.
+- `wb-device-manager` remains a separate package (bus-scan functionality is not migrated).
 
 ## 3. Context and Scope
 
@@ -84,7 +82,7 @@ one-line changes to point at the new service.
 
 ### RPC Interface (external boundary)
 
-All methods registered under group `fw-update`, accessible via two service names:
+All methods registered under group `fw-update` on the `wb-mqtt-serial` service:
 
 | Method | Type | Description |
 |--------|------|-------------|
@@ -93,7 +91,7 @@ All methods registered under group `fw-update`, accessible via two service names
 | `ClearError` | sync | Remove error state for a device |
 | `Restore` | async | Flash firmware on device already in bootloader mode |
 
-**State topic**: `/wb-mqtt-serial/firmware_update/state` (+ compat `/wb-device-manager/...`)
+**State topic**: `/wb-mqtt-serial/firmware_update/state`
 
 ```json
 {"devices":[{
@@ -122,7 +120,7 @@ All methods registered under group `fw-update`, accessible via two service names
 | **Fire-and-forget flash** | `Update` RPC returns "Ok" after reading device info. Flash proceeds in the same task with progress/errors reported via MQTT state topic. Lock held until flash completes. |
 | **TTL-cached HTTP responses** | Release manifest cached 10min, bootloader info 30min, firmware binaries 2hr. Avoids hammering the release server on repeated queries. |
 | **IHttpClient interface** | Abstracts HTTP transport. Production uses libcurl (`TCurlHttpClient`), tests use `TFakeHttpClient` with canned responses. |
-| **Second MqttRpcServer for compat** | A separate `TMqttRpcServer` with service name `"wb-device-manager"` registers the same handlers. This makes endpoints available at both `/rpc/v1/wb-mqtt-serial/fw-update/*` and `/rpc/v1/wb-device-manager/fw-update/*`. |
+| **Native service name** | RPC methods registered on the main `wb-mqtt-serial` server. homeui updated to use the new service name directly — no compatibility shim needed. |
 
 ## 5. Building Block View
 
@@ -143,7 +141,7 @@ src/rpc/
 ### Level 2: Component Responsibilities
 
 #### TRPCFwUpdateHandler (dispatcher)
-- Registers 4 RPC methods on both primary and compat RPC servers
+- Registers 4 RPC methods on the main RPC server
 - Parses request parameters (slave_id, port, protocol)
 - Creates the appropriate task object and submits it to the task runner
 - Guards against concurrent Update/Restore operations via `TFwUpdateLock`
@@ -317,21 +315,19 @@ all string values, no special YAML features.
 quoted values, anchors, or non-standard indentation. Acceptable because the server-side
 format is controlled by the same team.
 
-### ADR-2: Separate RPC Server for Compatibility
+### ADR-2: Native Service Name (No Compatibility Shim)
 
-**Context**: homeui addresses firmware update RPCs to `wb-device-manager/fw-update/*`.
-The MQTT RPC framework derives topic paths from the service name.
+**Context**: homeui previously addressed firmware update RPCs to `wb-device-manager/fw-update/*`.
 
-**Decision**: Create a second `TMqttRpcServer` with service name `"wb-device-manager"`
-and register the same methods on it.
+**Decision**: Register RPC methods under the native `wb-mqtt-serial` service name.
+Update homeui in a separate PR to use `wb-mqtt-serial/fw-update/*`.
 
 **Alternatives considered**:
-- Registering methods under group `wb-device-manager/fw-update` on the main server
-  → would create path `/rpc/v1/wb-mqtt-serial/wb-device-manager/fw-update/...` (wrong)
-- MQTT topic aliases → not supported by the framework
+- Separate compat `TMqttRpcServer` with `"wb-device-manager"` service name
+  → rejected as a hack; we don't take over all of device-manager's functionality
 
-**Consequences**: +Exact backward compatibility. +Zero changes needed in existing homeui.
-−Two RPC servers to start/stop (minor).
+**Consequences**: +Clean separation of concerns. +No fake service identity.
+−Requires coordinated homeui update (one-line change in `fwUpdateProxy.js`).
 
 ### ADR-3: IHttpClient Interface for Testability
 

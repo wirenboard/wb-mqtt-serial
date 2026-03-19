@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive firmware update test suite.
-Tests wb-device-manager behaviors against the new wb-mqtt-serial implementation.
+Tests firmware update RPC in wb-mqtt-serial.
 
 Usage:
     python3 test_fw_update.py [--host 192.168.1.108] [--port /dev/ttyRS485-1] [--slave 30]
@@ -26,7 +26,7 @@ import uuid
 MQTT_HOST = "192.168.1.108"
 PORT_PATH = "/dev/ttyRS485-1"
 SLAVE_ID = 30
-# Serial port settings (needed by Python wb-device-manager; C++ ignores extra fields)
+# Serial port settings (extra fields ignored by C++, kept for Python test compatibility)
 PORT_BAUD_RATE = 115200
 PORT_DATA_BITS = 8
 PORT_STOP_BITS = 2
@@ -39,11 +39,11 @@ LATEST_BL = "1.5.7"
 OLD_FW = "4.33.2"
 OLD_BL = "1.4.9"
 
-# RPC topic prefix (wb-device-manager service name for compatibility)
-RPC_PREFIX = "/rpc/v1/wb-device-manager/fw-update"
+# RPC topic prefix
+RPC_PREFIX = "/rpc/v1/wb-mqtt-serial/fw-update"
 
 # State topic
-STATE_TOPIC = "/wb-device-manager/firmware_update/state"
+STATE_TOPIC = "/wb-mqtt-serial/firmware_update/state"
 
 # Firmware files on device (must be pre-deployed)
 OLD_FW_FILE = f"/tmp/m1w2G3_{OLD_FW}.wbfw"  # nosec B108
@@ -560,8 +560,7 @@ def run_tests(runner: TestRunner):
         assert_eq(result.get("bootloader"), LATEST_BL, "BL should be latest")
 
     def t3_4_auto_restore():
-        """KEY TEST: After BL update, FW is automatically restored.
-        wb-device-manager does this. wb-mqtt-serial must too."""
+        """KEY TEST: After BL update, FW is automatically restored."""
         resp = get_firmware_info(timeout=30)
         result = resp.get("result", {})
         fw = result.get("fw", "")

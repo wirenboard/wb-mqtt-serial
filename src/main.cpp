@@ -359,11 +359,7 @@ int main(int argc, char* argv[])
                                                 serialClientTaskRunner,
                                                 parametersCache,
                                                 rpcServer);
-        // Register firmware update RPC under the wb-device-manager service name
-        // to maintain compatibility with existing clients (homeui, etc.)
-        auto fwUpdateRpcServer(WBMQTT::NewMqttRpcServer(mqtt, "wb-device-manager"));
-        auto rpcFwUpdateHandler =
-            std::make_shared<TRPCFwUpdateHandler>(serialClientTaskRunner, fwUpdateRpcServer, mqtt);
+        auto rpcFwUpdateHandler = std::make_shared<TRPCFwUpdateHandler>(serialClientTaskRunner, rpcServer, mqtt);
 
         if (serialDriver) {
             serialDriver->Start();
@@ -373,7 +369,6 @@ int main(int argc, char* argv[])
         rpcServer->Start();
 
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
-            fwUpdateRpcServer->Stop();
             rpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();

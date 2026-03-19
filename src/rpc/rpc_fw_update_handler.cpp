@@ -17,7 +17,7 @@
 
 namespace
 {
-    const std::string STATE_TOPIC = "/wb-device-manager/firmware_update/state";
+    const std::string STATE_TOPIC = "/wb-mqtt-serial/firmware_update/state";
 }
 
 // Non-updatable signatures (e.g. WB-MSW-LORA devices)
