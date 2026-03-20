@@ -1,6 +1,6 @@
 #include "rpc_fw_restore_task.h"
 #include "log.h"
-#include "modbus_base.h"
+#include "rpc_helpers.h"
 #include "rpc_fw_update_helpers.h"
 #include "serial_exc.h"
 
@@ -43,7 +43,7 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
         // Try to read device info. If device is not in bootloader mode, it will fail.
         TFwDeviceInfo info;
         try {
-            info = ReadFwDeviceInfo(*port, *traits, SlaveId);
+            info = ReadFwDeviceInfo(*traits, *port, SlaveId);
         } catch (const std::exception&) {
             // Device not responding — return "Ok" silently (current behavior)
             {
@@ -83,7 +83,7 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
             auto firmware = Downloader->DownloadAndParseWBFW(released.Endpoint);
 
             TUpdateNotifier notifier(30);
-            FlashFirmware(*port, *traits, SlaveId, firmware, false, false, [&](int percent) {
+            FlashFirmware(*traits, *port, SlaveId, firmware, false, false, [&](int percent) {
                 if (notifier.ShouldNotify(percent)) {
                     updateInfo.Progress = percent;
                     State->Update(updateInfo);

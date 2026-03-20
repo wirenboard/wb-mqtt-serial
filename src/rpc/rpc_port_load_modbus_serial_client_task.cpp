@@ -1,6 +1,7 @@
 #include "rpc_port_load_modbus_serial_client_task.h"
 #include "modbus_base.h"
 #include "port/serial_port.h"
+#include "rpc_helpers.h"
 #include "rpc_port_handler.h"
 #include "serial_exc.h"
 
@@ -70,14 +71,7 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
         port.SkipNoise();
         port.SleepSinceLastInteraction(rpcRequest->FrameTimeout);
 
-        // Select traits based on protocol
-        std::unique_ptr<Modbus::IModbusTraits> traits;
-        if (rpcRequest->Protocol == "modbus-tcp") {
-            traits = std::make_unique<Modbus::TModbusTCPTraits>();
-        } else {
-            traits = std::make_unique<Modbus::TModbusRTUTraits>();
-        }
-
+        auto traits = MakeModbusTraits(rpcRequest->Protocol);
         auto pdu = Modbus::MakePDU(rpcRequest->Function,
                                    rpcRequest->Address,
                                    rpcRequest->Count,

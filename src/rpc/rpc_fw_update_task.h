@@ -74,10 +74,9 @@ struct TFwDeviceInfo
 };
 
 // Free functions for serial operations — used by task classes and higher-level tasks
-std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
-TFwDeviceInfo ReadFwDeviceInfo(TPort& port, Modbus::IModbusTraits& traits, uint8_t slaveId);
-void FlashFirmware(TPort& port,
-                   Modbus::IModbusTraits& traits,
+TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId);
+void FlashFirmware(Modbus::IModbusTraits& traits,
+                   TPort& port,
                    uint8_t slaveId,
                    const TParsedWBFW& firmware,
                    bool rebootToBootloader,

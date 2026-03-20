@@ -1,9 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <mutex>
-#include <string>
-
 #include <wblib/rpc.h>
 
 #include "rpc_fw_downloader.h"

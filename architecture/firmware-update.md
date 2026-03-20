@@ -114,7 +114,7 @@ All methods registered under group `fw-update` on the `wb-mqtt-serial` service:
 
 | Decision | Rationale |
 |----------|-----------|
-| **Direct Modbus access** via `Modbus::MakePDU()` / `IModbusTraits::Transaction()` | Same pattern used by existing `rpc_port_load_modbus_serial_client_task.cpp`. No new abstraction needed. |
+| **Reuse existing Modbus utilities** via `Modbus::ReadRegister()` / `Modbus::WriteRegister()` and `TRegisterConfig` | Reuses the same high-level register I/O used by the rest of the codebase. Raw `MakePDU()` / `Transaction()` only where needed (firmware data blocks with retry, discrete input reads). |
 | **Self-contained ISerialClientTask classes** | Each RPC method creates a task that owns its callbacks and does everything in `Run()`: Modbus I/O, HTTP downloads, state updates, error handling. No lambdas or callback chains. Consistent with how all other RPC handlers (`TRPCPortHandler`, `TRPCDeviceHandler`) work. |
 | **Free functions for Modbus operations** | `ReadFwDeviceInfo()` and `FlashFirmware()` are free functions reused by all three task classes (`TFwGetFirmwareInfoTask`, `TFwUpdateSerialClientTask`, `TFwRestoreTask`). |
 | **Fire-and-forget flash** | `Update` RPC returns "Ok" after reading device info. Flash proceeds in the same task with progress/errors reported via MQTT state topic. Lock held until flash completes. |
@@ -177,9 +177,10 @@ src/rpc/
 
 | Function | Description |
 |----------|-------------|
-| `ReadFwDeviceInfo(port, traits, slaveId)` | Read all firmware identity registers, components. Returns `TFwDeviceInfo`. |
-| `FlashFirmware(port, traits, slaveId, firmware, reboot, preserve, onProgress)` | Full flash sequence: reboot to BL → write info block → write data chunks with retry. |
-| `MakeModbusTraits(protocol)` | Create Modbus traits for the given protocol string. |
+| `ReadFwDeviceInfo(traits, port, slaveId)` | Read all firmware identity registers, components. Returns `TFwDeviceInfo`. |
+| `FlashFirmware(traits, port, slaveId, firmware, reboot, preserve, onProgress)` | Full flash sequence: reboot to BL → write info block → write data blocks with retry. |
+
+`MakeModbusTraits(protocol)` is defined in `rpc_helpers.h` and shared across all RPC handlers.
 
 **Cf.** `firmware_update.py:311 FirmwareInfoReader`, `firmware_update.py:382 flash_fw()`
 

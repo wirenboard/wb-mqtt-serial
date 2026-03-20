@@ -1,96 +1,79 @@
 #include "rpc_fw_update_task.h"
 #include "log.h"
-#include "modbus_base.h"
+#include "rpc_helpers.h"
 #include "serial_exc.h"
-
-#include <algorithm>
-#include <thread>
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
 namespace
 {
-    std::string RegisterBytesToString(const std::vector<uint8_t>& data)
-    {
-        // Convert Modbus register data to string, taking every other byte (high byte is 0 for ASCII)
-        // and stripping null/0xFF padding
-        std::string result;
-        for (size_t i = 1; i < data.size(); i += 2) {
-            uint8_t ch = data[i];
-            if (ch != 0 && ch != 0xFF) {
-                result += static_cast<char>(ch);
-            }
-        }
-        return result;
-    }
-
     const auto FW_RESPONSE_TIMEOUT = std::chrono::milliseconds(500);
     const auto FW_FRAME_TIMEOUT = std::chrono::milliseconds(20);
+    const auto FW_REBOOT_TIMEOUT = std::chrono::milliseconds(1000);
 
-    std::vector<uint8_t> ReadRawRegister(TPort& port,
-                                         Modbus::IModbusTraits& traits,
-                                         uint8_t slaveId,
-                                         uint16_t addr,
-                                         uint16_t count,
-                                         uint8_t fnCode)
-    {
-        auto function = static_cast<Modbus::EFunction>(fnCode);
-        auto pdu = Modbus::MakePDU(function, addr, count, {});
-        auto responsePduSize = Modbus::CalcResponsePDUSize(function, count);
-        auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
-        return Modbus::ExtractResponseData(function, res.Pdu);
-    }
+    const size_t FW_BLOCK_SIZE = FwRegisters::FW_DATA_BLOCK_COUNT * 2; // 68 registers * 2 bytes = 136 bytes
+    const int MAX_WRITE_RETRIES = 3;
 
-    bool TryReadRegister(TPort& port,
-                         Modbus::IModbusTraits& traits,
-                         uint8_t slaveId,
-                         uint16_t addr,
-                         uint16_t count,
-                         uint8_t fnCode,
-                         std::vector<uint8_t>& result)
-    {
-        try {
-            result = ReadRawRegister(port, traits, slaveId, addr, count, fnCode);
-            return true;
-        } catch (const std::exception&) {
-            return false;
-        }
-    }
-
-    std::string ReadStringRegister(TPort& port,
-                                   Modbus::IModbusTraits& traits,
+    std::string ReadStringRegister(Modbus::IModbusTraits& traits,
+                                   TPort& port,
                                    uint8_t slaveId,
                                    uint16_t addr,
-                                   uint16_t count,
-                                   uint8_t fnCode)
+                                   uint16_t regCount,
+                                   bool holding = false)
     {
-        auto data = ReadRawRegister(port, traits, slaveId, addr, count, fnCode);
-        return RegisterBytesToString(data);
+        auto config = TRegisterConfig::Create(holding ? Modbus::REG_HOLDING : Modbus::REG_INPUT,
+                                              TRegisterDesc{std::make_shared<TUint32RegisterAddress>(addr),
+                                                            0,
+                                                            static_cast<uint32_t>(regCount * sizeof(char) * 8)},
+                                              RegisterFormat::String);
+        return Modbus::ReadRegister(traits,
+                                    port,
+                                    slaveId,
+                                    *config,
+                                    std::chrono::microseconds(0),
+                                    FW_RESPONSE_TIMEOUT,
+                                    FW_FRAME_TIMEOUT)
+            .Get<std::string>();
+    }
+
+    void WriteSingleRegister(Modbus::IModbusTraits& traits,
+                             TPort& port,
+                             uint8_t slaveId,
+                             uint16_t addr,
+                             uint16_t value,
+                             std::chrono::milliseconds responseTimeout)
+    {
+        auto config = TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, addr, RegisterFormat::U16);
+        Modbus::TRegisterCache cache;
+        Modbus::WriteRegister(traits,
+                              port,
+                              slaveId,
+                              *config,
+                              TRegisterValue(static_cast<uint64_t>(value)),
+                              cache,
+                              std::chrono::microseconds(0),
+                              responseTimeout,
+                              FW_FRAME_TIMEOUT);
     }
 
     // Cf. firmware_update.py:412 reboot_to_bootloader()
-    void DoReboot(TPort& port, Modbus::IModbusTraits& traits, uint8_t slaveId, bool canPreservePortSettings)
+    void RebootToBootloader(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId, bool canPreservePortSettings)
     {
-        auto rebootTimeout = std::chrono::milliseconds(1000);
-        auto frameTimeout = std::chrono::milliseconds(20);
-
         if (canPreservePortSettings) {
-            // Write 1 to register 131
-            auto pdu = Modbus::MakePDU(Modbus::FN_WRITE_SINGLE_REGISTER,
-                                       FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR,
-                                       1,
-                                       {0x00, 0x01});
-            auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_SINGLE_REGISTER, 1);
-            traits.Transaction(port, slaveId, pdu, responsePduSize, rebootTimeout, frameTimeout);
+            WriteSingleRegister(traits,
+                                port,
+                                slaveId,
+                                FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR,
+                                1,
+                                FW_REBOOT_TIMEOUT);
         } else {
             try {
-                // Write 1 to register 129
-                auto pdu = Modbus::MakePDU(Modbus::FN_WRITE_SINGLE_REGISTER,
-                                           FwRegisters::REBOOT_TO_BOOTLOADER_ADDR,
-                                           1,
-                                           {0x00, 0x01});
-                auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_SINGLE_REGISTER, 1);
-                traits.Transaction(port, slaveId, pdu, responsePduSize, rebootTimeout, frameTimeout);
+                WriteSingleRegister(traits,
+                                    port,
+                                    slaveId,
+                                    FwRegisters::REBOOT_TO_BOOTLOADER_ADDR,
+                                    1,
+                                    FW_REBOOT_TIMEOUT);
             } catch (const TResponseTimeoutException&) {
                 // Device has rebooted and doesn't send response (expected for old firmware)
                 LOG(Debug) << "Device doesn't respond to reboot command, probably it has rebooted";
@@ -102,10 +85,7 @@ namespace
     }
 
     // Cf. firmware_update.py:382 flash_fw() - info block write part
-    void WriteInfoBlock(TPort& port,
-                        Modbus::IModbusTraits& traits,
-                        uint8_t slaveId,
-                        const std::vector<uint8_t>& infoData)
+    void WriteInfo(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId, const std::vector<uint8_t>& infoData)
     {
         auto infoBlockTimeout = std::chrono::milliseconds(1000);
         auto frameTimeout = std::chrono::milliseconds(20);
@@ -120,26 +100,24 @@ namespace
     }
 
     // Cf. firmware_update.py:349 write_fw_data_block()
-    void WriteDataBlock(TPort& port, Modbus::IModbusTraits& traits, uint8_t slaveId, const std::vector<uint8_t>& chunk)
+    void WriteDataBlock(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId, const std::vector<uint8_t>& block)
     {
-        const int MAX_RETRIES = 3;
+        uint16_t regCount = static_cast<uint16_t>(block.size() / 2);
         std::exception_ptr lastException;
 
-        uint16_t regCount = static_cast<uint16_t>(chunk.size() / 2);
-
-        for (int attempt = 0; attempt < MAX_RETRIES; ++attempt) {
+        for (int i = 0; i < MAX_WRITE_RETRIES; ++i) {
             try {
                 auto pdu = Modbus::MakePDU(Modbus::FN_WRITE_MULTIPLE_REGISTERS,
                                            FwRegisters::FW_DATA_BLOCK_ADDR,
                                            regCount,
-                                           chunk);
+                                           block);
                 auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, regCount);
                 auto res =
                     traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
                 Modbus::ExtractResponseData(Modbus::FN_WRITE_MULTIPLE_REGISTERS, res.Pdu);
                 return; // Success
             } catch (const Modbus::TModbusExceptionError& e) {
-                // Slave device failure (0x04) means chunk is already written — treat as success
+                // Slave device failure (0x04) means block is already written — treat as success
                 // Cf. firmware_update.py:349 write_fw_data_block()
                 if (e.GetExceptionCode() == 0x04) {
                     return;
@@ -155,14 +133,12 @@ namespace
         }
     }
 
-    void WriteDataBlocks(TPort& port,
-                         Modbus::IModbusTraits& traits,
-                         uint8_t slaveId,
-                         const std::vector<uint8_t>& firmwareData,
-                         std::function<void(int)> onProgress)
+    void WriteData(Modbus::IModbusTraits& traits,
+                   TPort& port,
+                   uint8_t slaveId,
+                   const std::vector<uint8_t>& firmwareData,
+                   std::function<void(int)> onProgress)
     {
-        const size_t CHUNK_SIZE = FwRegisters::FW_DATA_BLOCK_COUNT * 2; // 68 registers * 2 bytes = 136 bytes
-
         if (firmwareData.empty()) {
             if (onProgress) {
                 onProgress(100);
@@ -170,21 +146,21 @@ namespace
             return;
         }
 
-        size_t totalChunks = (firmwareData.size() + CHUNK_SIZE - 1) / CHUNK_SIZE;
-        for (size_t i = 0; i < totalChunks; ++i) {
-            size_t offset = i * CHUNK_SIZE;
-            size_t chunkLen = std::min(CHUNK_SIZE, firmwareData.size() - offset);
-            std::vector<uint8_t> chunk(firmwareData.begin() + offset, firmwareData.begin() + offset + chunkLen);
+        size_t totalBlocks = (firmwareData.size() + FW_BLOCK_SIZE - 1) / FW_BLOCK_SIZE;
+        for (size_t i = 0; i < totalBlocks; ++i) {
+            size_t offset = i * FW_BLOCK_SIZE;
+            size_t blockLen = std::min(FW_BLOCK_SIZE, firmwareData.size() - offset);
+            std::vector<uint8_t> block(firmwareData.begin() + offset, firmwareData.begin() + offset + blockLen);
 
             // Pad to even length if needed
-            if (chunk.size() % 2 != 0) {
-                chunk.push_back(0xFF);
+            if (block.size() % 2 != 0) {
+                block.push_back(0xFF);
             }
 
-            WriteDataBlock(port, traits, slaveId, chunk);
+            WriteDataBlock(traits, port, slaveId, block);
 
             if (onProgress) {
-                onProgress(static_cast<int>((i + 1) * 100 / totalChunks));
+                onProgress(static_cast<int>((i + 1) * 100 / totalBlocks));
             }
         }
     }
@@ -194,82 +170,77 @@ namespace
 //                     Public free functions
 // ============================================================
 
-std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol)
-{
-    if (protocol == "modbus-tcp") {
-        return std::make_unique<Modbus::TModbusTCPTraits>();
-    }
-    return std::make_unique<Modbus::TModbusRTUTraits>();
-}
-
 // Cf. firmware_update.py:311 FirmwareInfoReader.read()
-TFwDeviceInfo ReadFwDeviceInfo(TPort& port, Modbus::IModbusTraits& traits, uint8_t slaveId)
+TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId)
 {
     TFwDeviceInfo info;
 
     // Read firmware signature - Cf. firmware_update.py:252 read_fw_signature()
-    info.FwSignature = ReadStringRegister(port,
-                                          traits,
+    info.FwSignature = ReadStringRegister(traits,
+                                          port,
                                           slaveId,
                                           FwRegisters::FW_SIGNATURE_ADDR,
                                           FwRegisters::FW_SIGNATURE_COUNT,
-                                          0x03);
+                                          true); // holding
 
     // Read firmware version - Cf. firmware_update.py:255 read_fw_version()
     // In bootloader mode, firmware version registers may not be available
     try {
-        info.FwVersion = ReadStringRegister(port,
-                                            traits,
+        info.FwVersion = ReadStringRegister(traits,
+                                            port,
                                             slaveId,
                                             FwRegisters::FW_VERSION_ADDR,
                                             FwRegisters::FW_VERSION_COUNT,
-                                            0x03);
+                                            true); // holding
     } catch (const std::exception& e) {
         LOG(Debug) << "Cannot read firmware version: " << e.what();
     }
 
     // Read bootloader version - Cf. firmware_update.py:234 read_bootloader_info()
     try {
-        info.BootloaderVersion = ReadStringRegister(port,
-                                                    traits,
+        info.BootloaderVersion = ReadStringRegister(traits,
+                                                    port,
                                                     slaveId,
                                                     FwRegisters::BOOTLOADER_VERSION_ADDR,
                                                     FwRegisters::BOOTLOADER_VERSION_COUNT,
-                                                    0x03);
+                                                    true); // holding
     } catch (const std::exception& e) {
         LOG(Debug) << "Cannot read bootloader version: " << e.what();
     }
 
     // Check if bootloader can preserve port settings (register 131 readable means yes)
     try {
-        auto pdu = Modbus::MakePDU(Modbus::FN_READ_HOLDING, FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {});
-        auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_READ_HOLDING, 1);
-        auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
-        auto data = Modbus::ExtractResponseData(Modbus::FN_READ_HOLDING, res.Pdu);
-        if (data.size() >= 2) {
-            uint16_t val = (static_cast<uint16_t>(data[0]) << 8) | data[1];
-            info.CanPreservePortSettings = (val == 0);
-        }
+        auto config = TRegisterConfig::Create(Modbus::REG_HOLDING,
+                                              FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR,
+                                              RegisterFormat::U16);
+        auto val = Modbus::ReadRegister(traits,
+                                        port,
+                                        slaveId,
+                                        *config,
+                                        std::chrono::microseconds(0),
+                                        FW_RESPONSE_TIMEOUT,
+                                        FW_FRAME_TIMEOUT);
+        info.CanPreservePortSettings = (val.Get<uint64_t>() == 0);
     } catch (const std::exception&) {
         info.CanPreservePortSettings = false;
     }
 
     // Read device model (try extended first, then standard) - Cf. firmware_update.py:574 read_device_model()
     try {
-        info.DeviceModel = ReadStringRegister(port,
-                                              traits,
+        info.DeviceModel = ReadStringRegister(traits,
+                                              port,
                                               slaveId,
                                               FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
                                               FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                                              0x03);
+                                              true); // holding
     } catch (const std::exception&) {
         try {
-            info.DeviceModel = ReadStringRegister(port,
-                                                  traits,
+            info.DeviceModel = ReadStringRegister(traits,
+                                                  port,
                                                   slaveId,
                                                   FwRegisters::DEVICE_MODEL_ADDR,
                                                   FwRegisters::DEVICE_MODEL_COUNT,
-                                                  0x03);
+                                                  true); // holding
         } catch (const std::exception& e) {
             LOG(Debug) << "Cannot read device model: " << e.what();
         }
@@ -280,16 +251,17 @@ TFwDeviceInfo ReadFwDeviceInfo(TPort& port, Modbus::IModbusTraits& traits, uint8
                            info.DeviceModel.end());
 
     // Read components presence (function 2 = READ_DISCRETE) - Cf. firmware_update.py:278 read_components_presence()
-    std::vector<uint8_t> presenceData;
-    if (TryReadRegister(port,
-                        traits,
-                        slaveId,
-                        FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                        FwRegisters::COMPONENTS_PRESENCE_COUNT,
-                        0x02,
-                        presenceData))
-    {
-        // Each byte has 8 bits, each bit is a component presence flag
+    // Using raw PDU here because ReadRegister doesn't support multi-bit discrete reads
+    try {
+        auto pdu = Modbus::MakePDU(Modbus::FN_READ_DISCRETE,
+                                   FwRegisters::COMPONENTS_PRESENCE_ADDR,
+                                   FwRegisters::COMPONENTS_PRESENCE_COUNT,
+                                   {});
+        auto responsePduSize =
+            Modbus::CalcResponsePDUSize(Modbus::FN_READ_DISCRETE, FwRegisters::COMPONENTS_PRESENCE_COUNT);
+        auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
+        auto presenceData = Modbus::ExtractResponseData(Modbus::FN_READ_DISCRETE, res.Pdu);
+
         std::vector<int> presentComponents;
         for (size_t byteIdx = 0; byteIdx < presenceData.size(); ++byteIdx) {
             for (int bit = 0; bit < 8; ++bit) {
@@ -300,50 +272,45 @@ TFwDeviceInfo ReadFwDeviceInfo(TPort& port, Modbus::IModbusTraits& traits, uint8
         }
 
         // Read info for each present component - Cf. firmware_update.py:258 read_component_info()
-        // Component registers use READ_INPUT (function 4)
         for (int compNum: presentComponents) {
             try {
-                uint16_t sigAddr = FwRegisters::COMPONENT_SIGNATURE_BASE +
-                                   static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
-                uint16_t fwAddr = FwRegisters::COMPONENT_FW_VERSION_BASE +
-                                  static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
-                uint16_t modelAddr =
-                    FwRegisters::COMPONENT_MODEL_BASE + static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP;
-
-                auto sigData =
-                    ReadRawRegister(port, traits, slaveId, sigAddr, FwRegisters::COMPONENT_SIGNATURE_COUNT, 0x04);
-                std::string signature = RegisterBytesToString(sigData);
-
-                // Check for unavailable component (all 0xFE bytes)
-                bool allFE = true;
-                for (auto b: sigData) {
-                    if (b != 0xFE) {
-                        allFE = false;
-                        break;
-                    }
-                }
-                if (allFE) {
+                auto signature = ReadStringRegister(traits,
+                                                    port,
+                                                    slaveId,
+                                                    FwRegisters::COMPONENT_SIGNATURE_BASE +
+                                                        static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
+                                                    FwRegisters::COMPONENT_SIGNATURE_COUNT);
+                // Check for unavailable component (all 0xFE in signature string)
+                if (!signature.empty() && signature == std::string(signature.size(), '\xFE')) {
                     continue;
                 }
-
-                std::string fwVer =
-                    ReadStringRegister(port, traits, slaveId, fwAddr, FwRegisters::COMPONENT_FW_VERSION_COUNT, 0x04);
-                std::string model =
-                    ReadStringRegister(port, traits, slaveId, modelAddr, FwRegisters::COMPONENT_MODEL_COUNT, 0x04);
-
+                auto fwVer = ReadStringRegister(traits,
+                                                port,
+                                                slaveId,
+                                                FwRegisters::COMPONENT_FW_VERSION_BASE +
+                                                    static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
+                                                FwRegisters::COMPONENT_FW_VERSION_COUNT);
+                auto model = ReadStringRegister(traits,
+                                                port,
+                                                slaveId,
+                                                FwRegisters::COMPONENT_MODEL_BASE +
+                                                    static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
+                                                FwRegisters::COMPONENT_MODEL_COUNT);
                 info.Components.push_back({compNum, signature, fwVer, model});
             } catch (const std::exception& e) {
                 LOG(Debug) << "Cannot read component " << compNum << " info: " << e.what();
             }
         }
+    } catch (const std::exception&) {
+        // Components presence register not available — skip
     }
 
     return info;
 }
 
 // Cf. firmware_update.py:382 flash_fw() and firmware_update.py:444 update_software()
-void FlashFirmware(TPort& port,
-                   Modbus::IModbusTraits& traits,
+void FlashFirmware(Modbus::IModbusTraits& traits,
+                   TPort& port,
                    uint8_t slaveId,
                    const TParsedWBFW& firmware,
                    bool rebootToBootloader,
@@ -351,11 +318,11 @@ void FlashFirmware(TPort& port,
                    std::function<void(int)> onProgress)
 {
     if (rebootToBootloader) {
-        DoReboot(port, traits, slaveId, canPreservePortSettings);
+        RebootToBootloader(traits, port, slaveId, canPreservePortSettings);
     }
 
-    WriteInfoBlock(port, traits, slaveId, firmware.Info);
-    WriteDataBlocks(port, traits, slaveId, firmware.Data, std::move(onProgress));
+    WriteInfo(traits, port, slaveId, firmware.Info);
+    WriteData(traits, port, slaveId, firmware.Data, std::move(onProgress));
 }
 
 // ============================================================
@@ -384,7 +351,7 @@ ISerialClientTask::TRunResult TFwGetInfoTask::Run(PFeaturePort port,
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);
-        auto info = ReadFwDeviceInfo(*port, *traits, SlaveId);
+        auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
 
         if (OnResult) {
             OnResult(info);
@@ -436,7 +403,7 @@ ISerialClientTask::TRunResult TFwFlashTask::Run(PFeaturePort port,
 
         auto traits = MakeModbusTraits(Protocol);
 
-        FlashFirmware(*port, *traits, SlaveId, Firmware, RebootToBootloader, CanPreservePortSettings, OnProgress);
+        FlashFirmware(*traits, *port, SlaveId, Firmware, RebootToBootloader, CanPreservePortSettings, OnProgress);
 
         if (OnComplete) {
             OnComplete();

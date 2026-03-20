@@ -2,6 +2,7 @@
 
 #include <wblib/json_utils.h>
 
+#include "modbus_common.h"
 #include "port/serial_port_settings.h"
 #include "register.h"
 #include "rpc_device_handler.h"
@@ -10,6 +11,7 @@ constexpr int MAX_RPC_RETRIES = 2;
 constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
+std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
 
 /**
  * @brief Reads a Modbus register with retry logic.

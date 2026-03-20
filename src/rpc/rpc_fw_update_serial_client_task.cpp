@@ -1,10 +1,8 @@
 #include "rpc_fw_update_serial_client_task.h"
 #include "log.h"
-#include "modbus_base.h"
 #include "rpc_fw_update_helpers.h"
+#include "rpc_helpers.h"
 #include "serial_exc.h"
-
-#include <thread>
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -42,7 +40,7 @@ ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);
-        auto info = ReadFwDeviceInfo(*port, *traits, SlaveId);
+        auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
 
         // Send RPC response early — flash proceeds asynchronously from client's perspective
         if (OnResult) {
@@ -197,7 +195,7 @@ void TFwUpdateSerialClientTask::DoFlash(TPort& port,
 
     // Flash with throttled progress updates
     TUpdateNotifier notifier(30);
-    FlashFirmware(port, traits, SlaveId, firmware, reboot, canPreserve, [&](int percent) {
+    FlashFirmware(traits, port, SlaveId, firmware, reboot, canPreserve, [&](int percent) {
         if (notifier.ShouldNotify(percent)) {
             updateInfo.Progress = percent;
             State->Update(updateInfo);

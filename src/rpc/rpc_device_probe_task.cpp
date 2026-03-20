@@ -27,11 +27,7 @@ TRPCDeviceProbeSerialClientTask::TRPCDeviceProbeSerialClientTask(const Json::Val
     WBMQTT::JSON::Get(request, "slave_id", SlaveId);
     std::string protocol;
     WBMQTT::JSON::Get(request, "protocol", protocol);
-    if (protocol == "modbus-tcp") {
-        ModbusTraits = std::make_unique<Modbus::TModbusTCPTraits>();
-    } else {
-        ModbusTraits = std::make_unique<Modbus::TModbusRTUTraits>();
-    }
+    ModbusTraits = MakeModbusTraits(protocol);
 }
 
 ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PFeaturePort port,

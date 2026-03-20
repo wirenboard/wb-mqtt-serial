@@ -1,13 +1,12 @@
-#include "rpc_fw_update_handler.h"
+#include <curl/curl.h>
+
 #include "common_utils.h"
 #include "log.h"
 #include "rpc_fw_get_firmware_info_task.h"
 #include "rpc_fw_restore_task.h"
+#include "rpc_fw_update_handler.h"
 #include "rpc_fw_update_helpers.h"
 #include "rpc_fw_update_serial_client_task.h"
-
-#include <cstdlib>
-#include <curl/curl.h>
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -22,8 +21,7 @@ namespace
 
 bool IsNonUpdatableSignature(const std::string& sig)
 {
-    return std::find(NonUpdatableSignatures.begin(), NonUpdatableSignatures.end(), sig) !=
-           NonUpdatableSignatures.end();
+    return std::find(NonUpdatableSignatures.begin(), NonUpdatableSignatures.end(), sig) != NonUpdatableSignatures.end();
 }
 
 // Cf. version_comparison.py:8 firmware_is_newer()

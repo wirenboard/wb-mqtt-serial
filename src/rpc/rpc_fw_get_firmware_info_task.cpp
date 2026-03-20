@@ -1,5 +1,5 @@
 #include "rpc_fw_get_firmware_info_task.h"
-#include "modbus_base.h"
+#include "rpc_helpers.h"
 #include "rpc_fw_update_helpers.h"
 #include "serial_exc.h"
 
@@ -29,7 +29,7 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);
-        auto info = ReadFwDeviceInfo(*port, *traits, SlaveId);
+        auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
         auto result = BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite);
 
         if (OnResult) {
