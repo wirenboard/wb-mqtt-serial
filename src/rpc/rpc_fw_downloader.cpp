@@ -20,11 +20,11 @@ const std::chrono::minutes TFwDownloader::RELEASE_CACHE_TTL{10};
 const std::chrono::minutes TFwDownloader::BOOTLOADER_CACHE_TTL{30};
 const std::chrono::hours TFwDownloader::WBFW_CACHE_TTL{2};
 
+#ifndef __EMSCRIPTEN__
+
 // ============================================================
 //                     TCurlHttpClient
 // ============================================================
-
-#ifndef __EMSCRIPTEN__
 
 namespace
 {
@@ -87,6 +87,10 @@ std::string TCurlHttpClient::GetText(const std::string& url)
     }
     return text.substr(start, end - start + 1);
 }
+
+#else
+
+// Implement frontend-based HTTP client here
 
 #endif
 

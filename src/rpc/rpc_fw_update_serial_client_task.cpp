@@ -1,5 +1,6 @@
 #include "rpc_fw_update_serial_client_task.h"
 #include "log.h"
+#include "port/port.h"
 #include "rpc_fw_update_helpers.h"
 #include "rpc_helpers.h"
 #include "serial_exc.h"
@@ -11,6 +12,7 @@ TFwUpdateSerialClientTask::TFwUpdateSerialClientTask(uint8_t slaveId,
                                                      const std::string& softwareType,
                                                      const std::string& portPath,
                                                      const std::string& releaseSuite,
+                                                     const TSerialPortConnectionSettings& portSettings,
                                                      std::shared_ptr<TFwDownloader> downloader,
                                                      PFwUpdateState state,
                                                      PFwUpdateLock updateLock,
@@ -21,6 +23,7 @@ TFwUpdateSerialClientTask::TFwUpdateSerialClientTask(uint8_t slaveId,
       SoftwareType(softwareType),
       PortPath(portPath),
       ReleaseSuite(releaseSuite),
+      PortSettings(portSettings),
       Downloader(std::move(downloader)),
       State(std::move(state)),
       UpdateLock(std::move(updateLock)),
@@ -37,6 +40,7 @@ ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
+        TSerialPortSettingsGuard settingsGuard(port, PortSettings);
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);

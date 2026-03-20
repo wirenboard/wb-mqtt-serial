@@ -1347,13 +1347,6 @@ protected:
             "/test/state");
     }
 
-    // Helper: parse request params and return (slaveId, portPath, protocol) as a tuple
-    static std::tuple<int, std::string, std::string> CallParseRequestParams(const Json::Value& request)
-    {
-        auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
-        return {params.SlaveId, params.PortPath, params.Protocol};
-    }
-
     // Helper: call MakePortRequestJson
     static Json::Value CallMakePortRequestJson(int slaveId, const std::string& portPath, const std::string& protocol)
     {
@@ -1387,10 +1380,10 @@ TEST_F(FwHandlerTest, ParseRequestParamsValid)
     request["port"]["path"] = "/dev/ttyRS485-1";
     request["protocol"] = "modbus";
 
-    auto [slaveId, portPath, protocol] = CallParseRequestParams(request);
-    EXPECT_EQ(slaveId, 42);
-    EXPECT_EQ(portPath, "/dev/ttyRS485-1");
-    EXPECT_EQ(protocol, "modbus");
+    auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
+    EXPECT_EQ(params.SlaveId, 42);
+    EXPECT_EQ(params.PortPath, "/dev/ttyRS485-1");
+    EXPECT_EQ(params.Protocol, "modbus");
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsDefaultProtocol)
@@ -1399,8 +1392,8 @@ TEST_F(FwHandlerTest, ParseRequestParamsDefaultProtocol)
     request["slave_id"] = 1;
     request["port"]["path"] = "/dev/ttyRS485-1";
 
-    auto [slaveId, portPath, protocol] = CallParseRequestParams(request);
-    EXPECT_EQ(protocol, "modbus");
+    auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
+    EXPECT_EQ(params.Protocol, "modbus");
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsMissingSlaveId)
@@ -1408,7 +1401,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsMissingSlaveId)
     Json::Value request;
     request["port"]["path"] = "/dev/ttyRS485-1";
 
-    EXPECT_THROW(CallParseRequestParams(request), std::runtime_error);
+    EXPECT_THROW(TRPCFwUpdateHandler::ParseRequestParams(request), std::runtime_error);
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsSlaveIdNotInt)
@@ -1417,7 +1410,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsSlaveIdNotInt)
     request["slave_id"] = "not_a_number";
     request["port"]["path"] = "/dev/ttyRS485-1";
 
-    EXPECT_THROW(CallParseRequestParams(request), std::runtime_error);
+    EXPECT_THROW(TRPCFwUpdateHandler::ParseRequestParams(request), std::runtime_error);
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsSlaveIdNegative)
@@ -1426,7 +1419,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsSlaveIdNegative)
     request["slave_id"] = -1;
     request["port"]["path"] = "/dev/ttyRS485-1";
 
-    EXPECT_THROW(CallParseRequestParams(request), std::runtime_error);
+    EXPECT_THROW(TRPCFwUpdateHandler::ParseRequestParams(request), std::runtime_error);
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsSlaveIdTooLarge)
@@ -1435,7 +1428,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsSlaveIdTooLarge)
     request["slave_id"] = 256;
     request["port"]["path"] = "/dev/ttyRS485-1";
 
-    EXPECT_THROW(CallParseRequestParams(request), std::runtime_error);
+    EXPECT_THROW(TRPCFwUpdateHandler::ParseRequestParams(request), std::runtime_error);
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsMissingPort)
@@ -1443,7 +1436,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsMissingPort)
     Json::Value request;
     request["slave_id"] = 42;
 
-    EXPECT_THROW(CallParseRequestParams(request), std::runtime_error);
+    EXPECT_THROW(TRPCFwUpdateHandler::ParseRequestParams(request), std::runtime_error);
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsMissingPortPath)
@@ -1452,7 +1445,37 @@ TEST_F(FwHandlerTest, ParseRequestParamsMissingPortPath)
     request["slave_id"] = 42;
     request["port"]["other"] = "value";
 
-    EXPECT_THROW(CallParseRequestParams(request), std::runtime_error);
+    EXPECT_THROW(TRPCFwUpdateHandler::ParseRequestParams(request), std::runtime_error);
+}
+
+TEST_F(FwHandlerTest, ParseRequestParamsPortSettings)
+{
+    Json::Value request;
+    request["slave_id"] = 1;
+    request["port"]["path"] = "/dev/ttyRS485-1";
+    request["baud_rate"] = 115200;
+    request["parity"] = "E";
+    request["data_bits"] = 8;
+    request["stop_bits"] = 2;
+
+    auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
+    EXPECT_EQ(params.PortSettings.BaudRate, 115200);
+    EXPECT_EQ(params.PortSettings.Parity, 'E');
+    EXPECT_EQ(params.PortSettings.DataBits, 8);
+    EXPECT_EQ(params.PortSettings.StopBits, 2);
+}
+
+TEST_F(FwHandlerTest, ParseRequestParamsDefaultPortSettings)
+{
+    Json::Value request;
+    request["slave_id"] = 1;
+    request["port"]["path"] = "/dev/ttyRS485-1";
+
+    auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
+    EXPECT_EQ(params.PortSettings.BaudRate, 9600);
+    EXPECT_EQ(params.PortSettings.Parity, 'N');
+    EXPECT_EQ(params.PortSettings.DataBits, 8);
+    EXPECT_EQ(params.PortSettings.StopBits, 1);
 }
 
 // ---- MakePortRequestJson tests ----

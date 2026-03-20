@@ -2,6 +2,7 @@
 
 #include <wblib/rpc.h>
 
+#include "port/serial_port_settings.h"
 #include "rpc_fw_downloader.h"
 #include "rpc_fw_update_state.h"
 #include "rpc_fw_update_task.h"
@@ -14,6 +15,7 @@ public:
                               const std::string& softwareType,
                               const std::string& portPath,
                               const std::string& releaseSuite,
+                              const TSerialPortConnectionSettings& portSettings,
                               std::shared_ptr<TFwDownloader> downloader,
                               PFwUpdateState state,
                               PFwUpdateLock updateLock,
@@ -44,6 +46,7 @@ private:
     std::string SoftwareType;
     std::string PortPath;
     std::string ReleaseSuite;
+    TSerialPortConnectionSettings PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
     PFwUpdateState State;
     PFwUpdateLock UpdateLock;

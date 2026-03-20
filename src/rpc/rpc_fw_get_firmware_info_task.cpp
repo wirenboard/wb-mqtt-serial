@@ -1,18 +1,21 @@
 #include "rpc_fw_get_firmware_info_task.h"
+#include "port/port.h"
 #include "rpc_helpers.h"
 #include "rpc_fw_update_helpers.h"
 #include "serial_exc.h"
 
 TFwGetFirmwareInfoTask::TFwGetFirmwareInfoTask(uint8_t slaveId,
                                                const std::string& protocol,
-                                               std::shared_ptr<TFwDownloader> downloader,
                                                const std::string& releaseSuite,
+                                               const TSerialPortConnectionSettings& portSettings,
+                                               std::shared_ptr<TFwDownloader> downloader,
                                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
     : SlaveId(slaveId),
       Protocol(protocol),
-      Downloader(std::move(downloader)),
       ReleaseSuite(releaseSuite),
+      PortSettings(portSettings),
+      Downloader(std::move(downloader)),
       OnResult(std::move(onResult)),
       OnError(std::move(onError))
 {}
@@ -26,6 +29,7 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
+        TSerialPortSettingsGuard settingsGuard(port, PortSettings);
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);

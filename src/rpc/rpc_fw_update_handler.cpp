@@ -1,4 +1,6 @@
+#ifndef __EMSCRIPTEN__
 #include <curl/curl.h>
+#endif
 
 #include "common_utils.h"
 #include "log.h"
@@ -7,6 +9,7 @@
 #include "rpc_fw_update_handler.h"
 #include "rpc_fw_update_helpers.h"
 #include "rpc_fw_update_serial_client_task.h"
+#include "rpc_helpers.h"
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -108,16 +111,20 @@ TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
     : SerialClientTaskRunner(serialClientTaskRunner),
       Mqtt(mqtt)
 {
+#ifndef __EMSCRIPTEN__
     // Initialize libcurl globally (thread-safe, must be called before any curl_easy_init)
     static std::once_flag curlInitFlag;
     std::call_once(curlInitFlag, []() {
         curl_global_init(CURL_GLOBAL_DEFAULT);
         std::atexit(curl_global_cleanup);
     });
-
     if (!httpClient) {
         httpClient = std::make_shared<TCurlHttpClient>();
     }
+#else
+    // Create frontend-based HTTP client here
+#endif
+
     Downloader = std::make_shared<TFwDownloader>(httpClient);
 
     State = std::make_shared<TFwUpdateState>(
@@ -194,6 +201,7 @@ TRPCFwUpdateHandler::TRequestParams TRPCFwUpdateHandler::ParseRequestParams(cons
     params.PortPath = request["port"]["path"].asString();
 
     params.Protocol = request.get("protocol", "modbus").asString();
+    params.PortSettings = ParseRPCSerialPortSettings(request);
 
     return params;
 }
@@ -222,8 +230,9 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
 
         auto task = std::make_shared<TFwGetFirmwareInfoTask>(static_cast<uint8_t>(params.SlaveId),
                                                              params.Protocol,
-                                                             Downloader,
                                                              ReleaseSuite,
+                                                             params.PortSettings,
+                                                             Downloader,
                                                              std::move(onResult),
                                                              std::move(onError));
         SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
@@ -255,6 +264,7 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                                                                 softwareType,
                                                                 params.PortPath,
                                                                 ReleaseSuite,
+                                                                params.PortSettings,
                                                                 Downloader,
                                                                 State,
                                                                 UpdateLock,
@@ -300,6 +310,7 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
                                                      params.Protocol,
                                                      params.PortPath,
                                                      ReleaseSuite,
+                                                     params.PortSettings,
                                                      Downloader,
                                                      State,
                                                      UpdateLock,
