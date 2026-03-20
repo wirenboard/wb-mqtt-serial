@@ -1,8 +1,8 @@
 #include "rpc_fw_restore_task.h"
 #include "log.h"
 #include "port/port.h"
-#include "rpc_helpers.h"
 #include "rpc_fw_update_helpers.h"
+#include "rpc_helpers.h"
 #include "serial_exc.h"
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
