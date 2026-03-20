@@ -3,6 +3,8 @@
 #include <list>
 #include <string>
 
+#include <wblib/json_utils.h>
+
 struct TFwDeviceInfo;
 class TFwDownloader;
 
