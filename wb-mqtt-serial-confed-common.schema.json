@@ -726,7 +726,8 @@
         "power_consumption", "voltage", "water_flow",
         "water_consumption", "resistance", "concentration",
         "heat_energy", "heat_power",
-        "dimmer", "lux", "pressure", "current", "sound_level"
+        "dimmer", "lux", "pressure", "current", "sound_level",
+        "alarm"
       ],
       "options" : {
         "enum_titles": [
@@ -756,7 +757,8 @@
           "lux (deprecated, use value with units)",
           "pressure (deprecated, use value with units)",
           "current (deprecated, use value with units)",
-          "sound_level (deprecated, use value with units)"
+          "sound_level (deprecated, use value with units)",
+          "alarm"
         ]
       }
     },
