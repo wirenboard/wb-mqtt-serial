@@ -286,7 +286,7 @@ and can be installed or removed independently.
 - Unknown `SoftwareType` values in `Update` RPC raise `std::runtime_error`, caught
   locally and reported via the state topic (same path as other flash errors).
 - HTTP errors surface as RPC error responses or state error entries.
-- All errors published to the state topic with `com.wb.device_manager.generic_error`
+- All errors published to the state topic with `com.wb.serial_driver.generic_error`
   error ID and exception details in metadata.
 
 ### Resource Management

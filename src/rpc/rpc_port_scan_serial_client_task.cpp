@@ -20,11 +20,11 @@ template<> inline ModbusExt::TModbusExtCommand WBMQTT::JSON::As<ModbusExt::TModb
 
 namespace
 {
-    const std::string READ_FW_VERSION_ERROR_ID = "com.wb.device_manager.device.read_fw_version_error";
-    const std::string READ_FW_SIGNATURE_ERROR_ID = "com.wb.device_manager.device.read_fw_signature_error";
-    const std::string READ_DEVICE_SIGNATURE_ERROR_ID = "com.wb.device_manager.device.read_device_signature_error";
-    const std::string READ_SERIAL_PARAMS_ERROR_ID = "com.wb.device_manager.device.read_serial_params_error";
-    const std::string READ_SN_ERROR_ID = "com.wb.device_manager.device.read_sn_error";
+    const std::string READ_FW_VERSION_ERROR_ID = "com.wb.serial_driver.device.read_fw_version_error";
+    const std::string READ_FW_SIGNATURE_ERROR_ID = "com.wb.serial_driver.device.read_fw_signature_error";
+    const std::string READ_DEVICE_SIGNATURE_ERROR_ID = "com.wb.serial_driver.device.read_device_signature_error";
+    const std::string READ_SERIAL_PARAMS_ERROR_ID = "com.wb.serial_driver.device.read_serial_params_error";
+    const std::string READ_SN_ERROR_ID = "com.wb.serial_driver.device.read_sn_error";
 
     uint32_t GetSnFromRegister(const std::string& deviceModel, uint32_t sn)
     {

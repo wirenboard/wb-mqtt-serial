@@ -97,7 +97,7 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
             State->Remove(SlaveId, PortPath, "firmware");
         } catch (const std::exception& e) {
             LOG(Error) << "Firmware restore error: " << e.what();
-            std::string errorId = "com.wb.device_manager.generic_error";
+            std::string errorId = "com.wb.serial_driver.generic_error";
             std::string errorMsg = "Internal error. Check logs for more info";
             Json::Value metadata;
             metadata["exception"] = e.what();

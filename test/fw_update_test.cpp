@@ -380,12 +380,12 @@ TEST_F(FwUpdateStateTest, SetError)
     info.Type = "firmware";
     state.Update(info);
 
-    state.SetError(42, "/dev/ttyRS485-1", "firmware", "com.wb.device_manager.generic_error", "Internal error");
+    state.SetError(42, "/dev/ttyRS485-1", "firmware", "com.wb.serial_driver.generic_error", "Internal error");
 
     auto json = ParseLastPayload();
     ASSERT_EQ(json["devices"].size(), 1u);
     EXPECT_FALSE(json["devices"][0]["error"].isNull());
-    EXPECT_EQ(json["devices"][0]["error"]["id"].asString(), "com.wb.device_manager.generic_error");
+    EXPECT_EQ(json["devices"][0]["error"]["id"].asString(), "com.wb.serial_driver.generic_error");
     EXPECT_EQ(json["devices"][0]["error"]["message"].asString(), "Internal error");
 }
 
