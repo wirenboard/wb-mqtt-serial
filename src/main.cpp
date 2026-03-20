@@ -359,7 +359,11 @@ int main(int argc, char* argv[])
                                                 serialClientTaskRunner,
                                                 parametersCache,
                                                 rpcServer);
-        auto rpcFwUpdateHandler = std::make_shared<TRPCFwUpdateHandler>(serialClientTaskRunner, rpcServer, mqtt);
+
+        // Register separate RPC server for non-blocking firmware update tasks
+        auto fwUpdateRpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
+        auto rpcFwUpdateHandler =
+            std::make_shared<TRPCFwUpdateHandler>(serialClientTaskRunner, fwUpdateRpcServer, mqtt);
 
         if (serialDriver) {
             serialDriver->Start();

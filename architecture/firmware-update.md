@@ -159,6 +159,7 @@ src/rpc/
 #### TFwUpdateSerialClientTask (ISerialClientTask)
 - Owns `OnResult`/`OnError`, `TFwDownloader`, `TFwUpdateState`, `TFwUpdateLock`
 - `Run()`: reads device info → sends "Ok" RPC response → downloads firmware → flashes
+- Dispatches by `SoftwareType`: `"firmware"`, `"bootloader"`, `"component"`. Unknown values throw `std::runtime_error`.
 - Private methods: `DoFirmwareUpdate()`, `DoBootloaderUpdate()`, `DoComponentsUpdate()`, `DoFlash()`
 - Auto-restores firmware after bootloader update (inline, no second task)
 - Holds `UpdateLock` until flash completes or errors
@@ -182,14 +183,15 @@ src/rpc/
 
 **Cf.** `firmware_update.py:311 FirmwareInfoReader`, `firmware_update.py:382 flash_fw()`
 
-#### Helper functions (rpc_fw_update_helpers.h)
+#### Helper functions and constants (rpc_fw_update_helpers.h)
 
-| Function | Description |
-|----------|-------------|
-| `BuildFirmwareInfoResponse(info, downloader, suite)` | Build JSON response from device info + release server data |
-| `IsNonUpdatableSignature(sig)` | Check for devices that cannot be updated (e.g. LORA) |
-| `FirmwareIsNewer(current, available)` | Compare firmware version strings |
-| `ComponentFirmwareIsNewer(current, available)` | Compare component firmware versions |
+| Name | Kind | Description |
+|------|------|-------------|
+| `NonUpdatableSignatures` | `const std::list<std::string>` | Signatures of devices that cannot be updated (e.g. LORA) |
+| `BuildFirmwareInfoResponse(info, downloader, suite)` | function | Build JSON response from device info + release server data |
+| `IsNonUpdatableSignature(sig)` | function | Check if signature is in `NonUpdatableSignatures` |
+| `FirmwareIsNewer(current, available)` | function | Compare firmware version strings |
+| `ComponentFirmwareIsNewer(current, available)` | function | Compare component firmware versions |
 
 #### TFwGetInfoTask / TFwFlashTask (rpc_fw_update_task.h/.cpp)
 - Low-level `ISerialClientTask` classes wrapping `ReadFwDeviceInfo()` / `FlashFirmware()`
@@ -250,17 +252,11 @@ homeui                  Handler          Task Runner / TFwUpdateSerialClientTask
 
 ## 7. Deployment View
 
-### Package Takeover
+### Package Independence
 
-```
-debian/control:
-  Replaces: wb-device-manager
-  Provides: wb-device-manager
-  Conflicts: wb-device-manager
-```
-
-When `wb-mqtt-serial` is installed, `dpkg` automatically removes `wb-device-manager`.
-The `Provides` declaration satisfies any package that depends on `wb-device-manager`.
+`wb-mqtt-serial` and `wb-device-manager` are independent packages. The firmware update
+functionality lives in `wb-mqtt-serial`; `wb-device-manager` retains bus-scan functionality
+and can be installed or removed independently.
 
 ### Build Dependencies
 
@@ -286,6 +282,8 @@ The `Provides` declaration satisfies any package that depends on `wb-device-mana
   or device model gracefully degrades (empty string, fallback register).
 - Flash data block writes retry up to 3 times. Modbus exception code 0x04
   (slave device failure) is treated as "already written" (success).
+- Unknown `SoftwareType` values in `Update` RPC raise `std::runtime_error`, caught
+  locally and reported via the state topic (same path as other flash errors).
 - HTTP errors surface as RPC error responses or state error entries.
 - All errors published to the state topic with `com.wb.device_manager.generic_error`
   error ID and exception details in metadata.

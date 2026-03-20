@@ -1,14 +1,17 @@
 // Cf. fw_downloader.py - BinaryDownloader, get_released_fw(), get_latest_bootloader()
 // Cf. firmware_update.py:185 parse_wbfw(), firmware_update.py:205 download_wbfw()
 // Cf. releases.py:13 parse_releases(), releases.py:30 parse_fw_version()
-#include "rpc_fw_downloader.h"
-#include "log.h"
-
-#include <curl/curl.h>
 #include <fstream>
 #include <regex>
 #include <sstream>
 #include <stdexcept>
+
+#ifndef __EMSCRIPTEN__
+#include <curl/curl.h>
+#endif
+
+#include "log.h"
+#include "rpc_fw_downloader.h"
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -20,6 +23,8 @@ const std::chrono::hours TFwDownloader::WBFW_CACHE_TTL{2};
 // ============================================================
 //                     TCurlHttpClient
 // ============================================================
+
+#ifndef __EMSCRIPTEN__
 
 namespace
 {
@@ -33,7 +38,7 @@ namespace
     }
 }
 
-std::vector<uint8_t> TCurlHttpClient::Download(const std::string& url)
+std::vector<uint8_t> TCurlHttpClient::GetBinary(const std::string& url)
 {
     struct CurlCleanup
     {
@@ -72,7 +77,7 @@ std::vector<uint8_t> TCurlHttpClient::Download(const std::string& url)
 
 std::string TCurlHttpClient::GetText(const std::string& url)
 {
-    auto data = Download(url);
+    auto data = GetBinary(url);
     std::string text(data.begin(), data.end());
     // Trim whitespace
     auto start = text.find_first_not_of(" \t\n\r");
@@ -83,10 +88,7 @@ std::string TCurlHttpClient::GetText(const std::string& url)
     return text.substr(start, end - start + 1);
 }
 
-std::vector<uint8_t> TCurlHttpClient::GetBinary(const std::string& url)
-{
-    return Download(url);
-}
+#endif
 
 // ============================================================
 //                     WBFW Parsing

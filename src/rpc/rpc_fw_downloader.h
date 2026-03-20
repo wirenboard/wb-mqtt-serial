@@ -20,11 +20,8 @@ typedef std::shared_ptr<IHttpClient> PHttpClient;
 class TCurlHttpClient: public IHttpClient
 {
 public:
-    std::string GetText(const std::string& url) override;
     std::vector<uint8_t> GetBinary(const std::string& url) override;
-
-private:
-    std::vector<uint8_t> Download(const std::string& url);
+    std::string GetText(const std::string& url) override;
 };
 
 struct TReleasedBinary

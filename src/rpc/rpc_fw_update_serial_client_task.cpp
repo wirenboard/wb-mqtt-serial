@@ -58,6 +58,8 @@ ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
                 DoBootloaderUpdate(*port, *traits, info);
             } else if (SoftwareType == "component") {
                 DoComponentsUpdate(*port, *traits, info);
+            } else {
+                throw std::runtime_error("Unknown software type: " + SoftwareType);
             }
         } catch (const std::exception& e) {
             LOG(Error) << "Firmware update error: " << e.what();

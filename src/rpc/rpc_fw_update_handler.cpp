@@ -20,10 +20,10 @@ namespace
     const std::string STATE_TOPIC = "/wb-mqtt-serial/firmware_update/state";
 }
 
-// Non-updatable signatures (e.g. WB-MSW-LORA devices)
 bool IsNonUpdatableSignature(const std::string& sig)
 {
-    return sig == "msw5GL" || sig == "msw3G419L";
+    return std::find(NonUpdatableSignatures.begin(), NonUpdatableSignatures.end(), sig) !=
+           NonUpdatableSignatures.end();
 }
 
 // Cf. version_comparison.py:8 firmware_is_newer()
