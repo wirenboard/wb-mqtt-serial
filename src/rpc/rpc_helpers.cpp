@@ -19,6 +19,14 @@ TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& requ
     return res;
 }
 
+std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol)
+{
+    if (protocol == "modbus-tcp") {
+        return std::make_unique<Modbus::TModbusTCPTraits>();
+    }
+    return std::make_unique<Modbus::TModbusRTUTraits>();
+}
+
 void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema)
 {
     try {
@@ -41,12 +49,7 @@ Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::s
 void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value)
 {
     auto slaveId = static_cast<uint8_t>(std::stoi(request.Device->DeviceConfig()->SlaveId));
-    std::unique_ptr<Modbus::IModbusTraits> traits;
-    if (request.ProtocolParams.protocol->GetName() == "modbus-tcp") {
-        traits = std::make_unique<Modbus::TModbusTCPTraits>();
-    } else {
-        traits = std::make_unique<Modbus::TModbusRTUTraits>();
-    }
+    auto traits = MakeModbusTraits(request.ProtocolParams.protocol->GetName());
     for (int i = 0; i <= MAX_RPC_RETRIES; ++i) {
         try {
             value = Modbus::ReadRegister(*traits,
@@ -85,12 +88,7 @@ void WriteModbusRegister(TPort& port,
                          const TRegisterValue& value)
 {
     auto slaveId = static_cast<uint8_t>(std::stoi(request.Device->DeviceConfig()->SlaveId));
-    std::unique_ptr<Modbus::IModbusTraits> traits;
-    if (request.ProtocolParams.protocol->GetName() == "modbus-tcp") {
-        traits = std::make_unique<Modbus::TModbusTCPTraits>();
-    } else {
-        traits = std::make_unique<Modbus::TModbusRTUTraits>();
-    }
+    auto traits = MakeModbusTraits(request.ProtocolParams.protocol->GetName());
     Modbus::TRegisterCache cache;
     for (int i = 0; i <= MAX_RPC_RETRIES; ++i) {
         try {

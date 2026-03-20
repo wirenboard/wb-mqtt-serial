@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.232.0) stable; urgency=medium
+
+  * Add firmware update RPC handlers (replaces wb-device-manager)
+
+ -- Evgeny Boger <boger@wirenboard.com>  Mon, 02 Mar 2026 23:36:23 +0000
+
 wb-mqtt-serial (2.231.0) stable; urgency=medium
 
   * Add new templates for WB-M1W2 and WB-M1W2 v.3 with multiple sensors per channel feature (fw4.35)

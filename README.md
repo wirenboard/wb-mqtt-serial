@@ -6,6 +6,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 Драйвер master-slave протоколов для устройств, работающих через
 последовательный порт. Драйвер предназначен для устройств [Wiren Board](https://wirenboard.com/ru) и соответствует [Конвенции Wiren Board MQTT](https://github.com/wirenboard/conventions/blob/main/README.md).
 
+## Сборка
+
+Инструкции по сборке (сборка .deb-пакетов через wbdev и рабочий процесс devcontainer-cli) описаны в [BUILD.md](https://github.com/wirenboard/codestyle/blob/devcontainer-cli/BUILD.md) в репозитории `codestyle`.
+
 **Содержание**
 
 - [Описание](#описание)
@@ -1220,11 +1224,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
             // список ошибок работы с конкретным устройством
             "errors": [
                 {
-                    "id": "com.wb.device_manager.device.read_device_signature_error",
+                    "id": "com.wb.serial_driver.device.read_device_signature_error",
                     "message": "Failed to read device signature."
                 },
                 {
-                    "id": "com.wb.device_manager.device.read_fw_signature_error",
+                    "id": "com.wb.serial_driver.device.read_fw_signature_error",
                     "message": "Failed to read FW signature."
                 }
             ],
@@ -1330,11 +1334,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     // список ошибок, возникших при запросе информации об устройстве
     "errors": [
         {
-            "id": "com.wb.device_manager.device.read_device_signature_error",
+            "id": "com.wb.serial_driver.device.read_device_signature_error",
             "message": "Failed to read device signature."
         },
         {
-            "id": "com.wb.device_manager.device.read_fw_signature_error",
+            "id": "com.wb.serial_driver.device.read_fw_signature_error",
             "message": "Failed to read FW signature."
         }
     ],
