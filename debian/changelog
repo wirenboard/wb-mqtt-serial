@@ -1,8 +1,9 @@
 wb-mqtt-serial (2.232.0) stable; urgency=medium
 
+  [ Evgeny Boger ]
   * Add firmware update RPC handlers (replaces wb-device-manager)
 
- -- Evgeny Boger <boger@wirenboard.com>  Mon, 02 Mar 2026 23:36:23 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 23 Mar 2026 10:53:23 +0300
 
 wb-mqtt-serial (2.231.0) stable; urgency=medium
 
