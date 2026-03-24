@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.232.2) stable; urgency=medium
 
-  * Move default config generation to wb-configs-early
+  * Fix default config generation during first boot
 
  -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 24 Mar 2026 18:15:02 +0300
 
