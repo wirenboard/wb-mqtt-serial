@@ -1,2 +1,3 @@
+/usr/lib/wb-mqtt-serial/generate-system-config.sh
 wb_move /etc/wb-mqtt-serial.conf
 wb_move /etc/wb-mqtt-serial.conf.d
