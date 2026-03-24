@@ -1,6 +1,7 @@
 // Cf. firmware_update.py:82 UpdateState class, firmware_update.py:61 DeviceUpdateInfo
 // Cf. firmware_update.py:209 UpdateNotifier class
 #include "rpc_fw_update_state.h"
+#include <algorithm>
 
 // ============================================================
 //                     TDeviceUpdateInfo
