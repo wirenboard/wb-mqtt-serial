@@ -36,13 +36,20 @@ struct TSerialClientParams
     PSerialDevice Device;
 };
 
-class TSerialClientTaskRunner
+class ITaskRunner
+{
+public:
+    virtual ~ITaskRunner() = default;
+    virtual void RunTask(const Json::Value& request, PSerialClientTask task) = 0;
+};
+
+class TSerialClientTaskRunner: public ITaskRunner
 {
 public:
     TSerialClientTaskRunner(PMQTTSerialDriver serialDriver);
 
     TSerialClientParams GetSerialClientParams(const Json::Value& request);
-    void RunTask(const Json::Value& request, PSerialClientTask task);
+    void RunTask(const Json::Value& request, PSerialClientTask task) override;
 
 private:
     PMQTTSerialDriver SerialDriver;

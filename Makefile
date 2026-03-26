@@ -32,7 +32,7 @@ GURUX_INCLUDE = thirdparty/gurux/development/include
 COMMON_SRCS := $(shell find $(SRC_DIR) $(GURUX_SRC) \( -name "*.cpp" -or -name "*.c" \) -and -not -name main.cpp)
 COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
-LDFLAGS = -lpthread -lwbmqtt1 -lstdc++fs
+LDFLAGS = -lpthread -lwbmqtt1 -lstdc++fs -lcurl
 CXXFLAGS = -std=c++17 -Wall -Werror -I$(SRC_DIR) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
 
 ifeq ($(DEBUG),)
@@ -95,6 +95,9 @@ ifneq ($(DEBUG),)
 endif
 
 templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
+
+dump-templates: templates
+	./dump_templates.py templates/ build/templates/ > test/TDeviceTemplatesTest.Validate.dat
 
 clean:
 	-rm -rf build

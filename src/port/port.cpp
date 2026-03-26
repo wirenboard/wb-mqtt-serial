@@ -92,7 +92,20 @@ void TPortOpenCloseLogic::CloseIfNeeded(PPort port, bool allPreviousDataExchange
     }
 
     if ((currentTime - LastSuccessfulCycle > Settings.MaxFailTime) && RemainingFailCycles == 0) {
-        Warn.Log() << port->GetDescription() << ": closed due to repetitive errors";
+        Warn.Log() << port->GetDescription() << ": got more than " << Settings.ConnectionMaxFailCycles
+                   << " consecutive failures during last " << Settings.MaxFailTime.count() << " us."
+                   << " Try to recover, close and reopen port. Check if devices on the bus are powered";
         port->Close();
     }
+}
+
+TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings)
+    : Port(port)
+{
+    Port->ApplySerialPortSettings(settings);
+}
+
+TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
+{
+    Port->ResetSerialPortSettings();
 }

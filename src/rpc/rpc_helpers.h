@@ -2,9 +2,50 @@
 
 #include <wblib/json_utils.h>
 
+#include "modbus_common.h"
 #include "port/serial_port_settings.h"
+#include "register.h"
+#include "rpc_device_handler.h"
+
+constexpr int MAX_RPC_RETRIES = 2;
+constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
+std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
+
+/**
+ * @brief Reads a Modbus register with retry logic.
+ */
+void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value);
+
+/**
+ * @brief Writes a Modbus register with retry logic.
+ */
+void WriteModbusRegister(TPort& port,
+                         TRPCDeviceRequest& request,
+                         PRegisterConfig registerConfig,
+                         const TRegisterValue& value);
+
+/**
+ * @brief Sets continuous read register on/off (Wiren Board specific).
+ */
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled);
+
+/**
+ * @brief Checks if all 16-bit words in register value are 0xFFFE (unsupported marker).
+ *        Number of words to check is determined by register config type.
+ *        Returns false for string registers.
+ */
+bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& value);
+
+/**
+ * @brief Re-reads registers that returned all-0xFFFE to distinguish unsupported
+ *        from actual values. Temporarily disables continuous read for accurate results.
+ */
+void MarkUnsupportedRegisterItems(TPort& port,
+                                  TRPCDeviceRequest& request,
+                                  TRPCRegisterList& registerList,
+                                  Json::Value& data);
 
 /**
  * @brief Validates an RPC request against a given JSON schema.

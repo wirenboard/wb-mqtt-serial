@@ -1,0 +1,5 @@
+Open()
+EnqueueStringReadResponse()
+>> 01 03 00 78 00 10 C4 1F
+<< 01 03 20 FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE FF FE AE A8
+Close()

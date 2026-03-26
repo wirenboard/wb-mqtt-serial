@@ -138,6 +138,7 @@ namespace
     }
 }
 
+#ifndef __EMSCRIPTEN__
 TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
                                      const Json::Value& portsSchema,
                                      PTemplateMap templates,
@@ -157,6 +158,19 @@ TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
                               "GetSchema",
                               std::bind(&TRPCConfigHandler::GetSchema, this, std::placeholders::_1));
 }
+#else
+TRPCConfigHandler::TRPCConfigHandler(const Json::Value& portsSchema,
+                                     PTemplateMap templates,
+                                     TDevicesConfedSchemasMap& deviceConfedSchemas,
+                                     TProtocolConfedSchemasMap& protocolConfedSchemas,
+                                     const Json::Value& groupTranslations)
+    : PortsSchema(portsSchema),
+      Templates(templates),
+      DeviceConfedSchemas(deviceConfedSchemas),
+      ProtocolConfedSchemas(protocolConfedSchemas),
+      GroupTranslations(groupTranslations)
+{}
+#endif
 
 Json::Value TRPCConfigHandler::LoadConfig(const Json::Value& request)
 {

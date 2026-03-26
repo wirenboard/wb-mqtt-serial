@@ -75,14 +75,7 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
         port.SkipNoise();
         port.SleepSinceLastInteraction(rpcRequest->FrameTimeout);
 
-        // Select traits based on protocol
-        std::unique_ptr<Modbus::IModbusTraits> traits;
-        if (rpcRequest->Protocol == "modbus-tcp") {
-            traits = std::make_unique<Modbus::TModbusTCPTraits>();
-        } else {
-            traits = std::make_unique<Modbus::TModbusRTUTraits>();
-        }
-
+        auto traits = MakeModbusTraits(rpcRequest->Protocol);
         auto pdu = Modbus::MakePDU(rpcRequest->Function,
                                    rpcRequest->Address,
                                    rpcRequest->Count,

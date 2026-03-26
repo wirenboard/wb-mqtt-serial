@@ -1,10 +1,136 @@
-wb-mqtt-serial (2.226.0) stable; urgency=medium
+wb-mqtt-serial (2.233.0) stable; urgency=medium
 
   * Add device_id parameter to port/Load RPC
   [ Radmir Khakimov ]
   * Add WB-MDALI support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 17 Feb 2026 19:20:08 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 26 Mar 2026 13:54:49 +0500
+
+wb-mqtt-serial (2.232.2) stable; urgency=medium
+
+  * Fix 'busy_error_counter' topics name in WB-M1W2 templates
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 26 Mar 2026 10:13:00 +0300
+
+wb-mqtt-serial (2.232.1) stable; urgency=medium
+
+  * Fix build with gcc14
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 24 Mar 2026 11:34:00 +0400
+
+wb-mqtt-serial (2.232.0) stable; urgency=medium
+
+  [ Evgeny Boger ]
+  * Add firmware update RPC handlers (replaces wb-device-manager)
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 23 Mar 2026 10:53:23 +0300
+
+wb-mqtt-serial (2.231.0) stable; urgency=medium
+
+  * Add new templates for WB-M1W2 and WB-M1W2 v.3 with multiple sensors per channel feature (fw4.35)
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 19 Mar 2026 12:43:00 +0300
+
+wb-mqtt-serial (2.230.1) stable; urgency=medium
+
+  * Fix device/Load RPC channels list bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 18 Mar 2026 18:00:00 +0300
+
+wb-mqtt-serial (2.230.0) stable; urgency=medium
+
+  * MR templates: Add timer functions
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 18 Mar 2026 09:36:00 +0300
+
+wb-mqtt-serial (2.229.4) stable; urgency=medium
+
+  * Fix Wiren Board devices unsupported string registers bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 16 Mar 2026 17:28:47 +0300
+
+wb-mqtt-serial (2.229.3) stable; urgency=medium
+
+  * Add more verbose log message on port reopen after repetitive errors
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 12 Mar 2026 15:16:30 +0500
+
+wb-mqtt-serial (2.229.2) stable; urgency=medium
+
+  * Fix pushbutton with max_unchanged_interval (SOFT-6590)
+
+ -- Evgeny Boger <boger@wirenboard.com>  Wed, 11 Mar 2026 13:09:15 +0500
+
+wb-mqtt-serial (2.229.1) stable; urgency=medium
+
+  * Fix changelog, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Mar 2026 11:19:38 +0300
+
+wb-mqtt-serial (2.229.0) stable; urgency=medium
+
+  * Fix unsupported register value checking
+  * Improve device/Load RPC
+
+  [ Evgeny Boger ]
+  * Add condition evaluation and readonly filtering for device/Load RPC
+  * Move common device RPC code to rpc_helpers
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Mar 2026 10:56:00 +0300
+
+wb-mqtt-serial (2.228.2) stable; urgency=medium
+
+  * Add hint to repetitive errors warning (SOFT-4788)
+
+ -- Evgeny Boger <boger@wirenboard.com>  Tue, 03 Mar 2026 04:15:20 +0300
+
+wb-mqtt-serial (2.228.1) stable; urgency=medium
+
+  * Add alarm control type to schema (SOFT-6333)
+
+ -- Evgeny Boger <boger@wirenboard.com>  Tue, 03 Mar 2026 01:29:32 +0300
+
+wb-mqtt-serial (2.228.0) stable; urgency=medium
+
+  * Update ONOKOM templates
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 26 Feb 2026 16:34:00 +0400
+
+wb-mqtt-serial (2.227.1) stable; urgency=medium
+
+  * Fix device/Load RPC prepare session bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Feb 2026 06:27:42 +0300
+
+wb-mqtt-serial (2.227.0) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D fw3 templates: Add CCT power normalization parameters
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Fri, 20 Feb 2026 11:35:00 +0300
+
+wb-mqtt-serial (2.226.1) stable; urgency=medium
+
+  * Merge WASM branch into master, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 20 Feb 2026 09:49:15 +0300
+
+wb-mqtt-serial (2.226.0) stable; urgency=medium
+
+  * Add "force" option to Device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 20 Feb 2026 09:05:26 +0300
+
+wb-mqtt-serial (2.225.5) stable; urgency=medium
+
+  * Fix readonly flag in WBE2-I-EBUS
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 18 Feb 2026 12:34:00 +0300
+
+wb-mqtt-serial (2.225.4) stable; urgency=medium
+
+  * Make enum_titles optional for channels
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 17 Feb 2026 16:00:00 +0400
 
 wb-mqtt-serial (2.225.3) stable; urgency=medium
 

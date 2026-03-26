@@ -10,7 +10,8 @@ public:
         FULL_OF_CHARS,
         TRAILING_ZEROS,
         ZERO_AND_TRASH,
-        TRAILING_FF
+        TRAILING_FF,
+        UNSUPPORTED
     };
 
     void EnqueueCoilReadResponse(uint8_t exception = 0);

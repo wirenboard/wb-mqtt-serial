@@ -1,4 +1,6 @@
 #include "rpc/rpc_device_load_config_task.h"
+#include "rpc/rpc_device_load_task.h"
+#include "rpc/rpc_exception.h"
 #include "test_utils.h"
 #include <wblib/testing/testlog.h>
 
@@ -22,8 +24,13 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
     for (size_t i = 0; i < typeList.size(); ++i) {
         const std::string& type = typeList[i];
         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
-        TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3");
+        TRPCRegisterList registerList = CreateRegisterList(protocolParams,
+                                                           nullptr,
+                                                           deviceTemplate["parameters"],
+                                                           Json::Value(),
+                                                           "1.2.3",
+                                                           false,
+                                                           true);
         Json::Value json;
         for (const auto& reg: registerList) {
             json[reg.Id] = static_cast<int>(GetUint32RegisterAddress(reg.Register->GetConfig()->GetAddress()));
@@ -62,14 +69,6 @@ TEST(TDeviceLoadConfigTest, GetRegisterListParameters)
 
         Json::Value json;
         GetRegisterListParameters(registerList, json);
-
-        // Convert Json::Value to string and back to Json::Value to make data types match with test data types
-        Json::StreamWriterBuilder writer;
-        Json::CharReaderBuilder reader;
-        Json::String errors;
-        std::stringstream stream(Json::writeString(writer, json));
-        Json::parseFromStream(reader, stream, &json, &errors);
-        //
 
         auto match(
             JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_match_values.json")));
@@ -116,4 +115,184 @@ TEST(TDeviceLoadConfigTest, RawValueToJson)
         item.Register->SetValue(ConvertToRawValue(*item.Register->GetConfig(), stringValue));
         ASSERT_EQ(RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue()).asString(), stringValue);
     }
+}
+
+/**
+ * Checks that GetConditionParametersRegisterList returns only parameters
+ * referenced in channel conditions (mode, variant), not unrelated ones.
+ */
+TEST(TDeviceLoadTest, GetConditionParametersRegisterList)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+    auto registerList = request.GetConditionParametersRegisterList();
+
+    std::set<std::string> ids;
+    for (const auto& reg: registerList) {
+        ids.insert(reg.Id);
+    }
+
+    // "mode" and "variant" are referenced in channel conditions
+    ASSERT_TRUE(ids.count("mode")) << "mode should be in condition parameters";
+    ASSERT_TRUE(ids.count("variant")) << "variant should be in condition parameters";
+    // "unrelated" is not referenced in any condition
+    ASSERT_FALSE(ids.count("unrelated")) << "unrelated should not be in condition parameters";
+
+    ASSERT_EQ(registerList.size(), 2u);
+}
+
+/**
+ * Checks that GetChannelsRegisterList without condition params returns all readable channels.
+ */
+TEST(TDeviceLoadTest, GetChannelsRegisterListAllChannels)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    // Channels list is empty — should return all readable channels
+
+    auto registerList = request.GetChannelsRegisterList();
+
+    std::set<std::string> ids;
+    for (const auto& reg: registerList) {
+        ids.insert(reg.Id);
+    }
+
+    // 3 readable channels (Write Only has no address, only write_address)
+    ASSERT_EQ(registerList.size(), 3u);
+    ASSERT_TRUE(ids.count("Always Visible"));
+    ASSERT_TRUE(ids.count("Mode Dependent"));
+    ASSERT_TRUE(ids.count("Variant Dependent"));
+}
+
+/**
+ * Checks that GetChannelsRegisterList with condition params filters channels correctly.
+ */
+TEST(TDeviceLoadTest, GetChannelsRegisterListConditionFiltering)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+
+    // Case 1: mode=0, variant=0 — only "Always Visible" should pass
+    {
+        auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+        TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+        Json::Value condParams;
+        condParams["mode"] = 0;
+        condParams["variant"] = 0;
+
+        auto registerList = request.GetChannelsRegisterList(condParams);
+        std::set<std::string> ids;
+        for (const auto& reg: registerList) {
+            ids.insert(reg.Id);
+        }
+
+        ASSERT_EQ(registerList.size(), 1u) << "mode=0, variant=0: only unconditional channel";
+        ASSERT_TRUE(ids.count("Always Visible"));
+    }
+
+    // Case 2: mode=1, variant=0 — "Always Visible" + "Mode Dependent"
+    {
+        auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+        TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+        Json::Value condParams;
+        condParams["mode"] = 1;
+        condParams["variant"] = 0;
+
+        auto registerList = request.GetChannelsRegisterList(condParams);
+        std::set<std::string> ids;
+        for (const auto& reg: registerList) {
+            ids.insert(reg.Id);
+        }
+
+        ASSERT_EQ(registerList.size(), 2u) << "mode=1, variant=0: unconditional + mode dependent";
+        ASSERT_TRUE(ids.count("Always Visible"));
+        ASSERT_TRUE(ids.count("Mode Dependent"));
+    }
+
+    // Case 3: mode=0, variant=2 — "Always Visible" + "Variant Dependent"
+    {
+        auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+        TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+        Json::Value condParams;
+        condParams["mode"] = 0;
+        condParams["variant"] = 2;
+
+        auto registerList = request.GetChannelsRegisterList(condParams);
+        std::set<std::string> ids;
+        for (const auto& reg: registerList) {
+            ids.insert(reg.Id);
+        }
+
+        ASSERT_EQ(registerList.size(), 2u) << "mode=0, variant=2: unconditional + variant dependent";
+        ASSERT_TRUE(ids.count("Always Visible"));
+        ASSERT_TRUE(ids.count("Variant Dependent"));
+    }
+
+    // Case 4: mode=1, variant=2 — all 3 readable channels
+    {
+        auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+        TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+
+        Json::Value condParams;
+        condParams["mode"] = 1;
+        condParams["variant"] = 2;
+
+        auto registerList = request.GetChannelsRegisterList(condParams);
+        std::set<std::string> ids;
+        for (const auto& reg: registerList) {
+            ids.insert(reg.Id);
+        }
+
+        ASSERT_EQ(registerList.size(), 3u) << "mode=1, variant=2: all conditions met";
+        ASSERT_TRUE(ids.count("Always Visible"));
+        ASSERT_TRUE(ids.count("Mode Dependent"));
+        ASSERT_TRUE(ids.count("Variant Dependent"));
+    }
+}
+
+/**
+ * Checks that GetParametersRegisterList throws TRPCException
+ * when a requested parameter name does not exist in the template.
+ */
+TEST(TDeviceLoadTest, GetParametersRegisterListThrowsOnUnknownParam)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("device_load_conditions");
+
+    TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+    request.Parameters.push_back("nonexistent_param");
+
+    ASSERT_THROW(request.GetParametersRegisterList(), TRPCException)
+        << "should throw when requested parameter does not exist in template";
 }

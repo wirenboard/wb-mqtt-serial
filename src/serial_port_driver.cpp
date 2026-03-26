@@ -144,12 +144,12 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         return;
     }
     if (it->second->HasValuesOfAllRegisters()) {
-        // change publish policy for sporadic registers to publish register data on every read, even if it not changed
-        // needed for DALI bus devices polling
+        // Bypass max_unchanged_interval for sporadic registers (DALI bus devices polling)
+        // and pushbutton channels (always publish value "1")
         auto publishPolicy = PublishPolicy;
         if ((reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS &&
              reg->IsExcludedFromPolling()) ||
-            reg->Device()->IsSporadicOnly())
+            reg->Device()->IsSporadicOnly() || it->second->Type == "pushbutton")
         {
             publishPolicy.Policy = TPublishParameters::PublishAll;
         }

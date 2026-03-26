@@ -249,7 +249,6 @@
                 "offset": -100,
                 "min": -50,
                 "max": 50,
-                "readonly": true,
                 "group": "heating_settings",
                 "condition": "heating_options==1"
             },
