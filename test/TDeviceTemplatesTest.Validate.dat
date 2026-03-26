@@ -5875,8 +5875,8 @@ WB-M1W2 DI
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-M1W2 MULTIPLE W1
-	Busy Error Counter On The Bus 1  =>  bus1_busy_error_conter
-	Busy Error Counter On The Bus 2  =>  bus2_busy_error_conter
+	Busy Error Counter On The Bus 1  =>  bus1_busy_error_counter
+	Busy Error Counter On The Bus 2  =>  bus2_busy_error_counter
 	FW Version  =>  FW Version
 	Found Sensor 1:1 ID  =>  bus1_found_sens1_id
 	Found Sensor 1:10 ID  =>  bus1_found_sens10_id
@@ -6118,8 +6118,8 @@ WB-M1W2 MULTIPLE W1
 	Temperature 2:9  =>  bus2_temp9
 	Uptime  =>  Uptime
 WB-M1W2 v.3 MULTIPLE W1
-	Busy Error Counter On The Bus 1  =>  bus1_busy_error_conter
-	Busy Error Counter On The Bus 2  =>  bus2_busy_error_conter
+	Busy Error Counter On The Bus 1  =>  bus1_busy_error_counter
+	Busy Error Counter On The Bus 2  =>  bus2_busy_error_counter
 	FW Version  =>  FW Version
 	Found Sensor 1:1 ID  =>  bus1_found_sens1_id
 	Found Sensor 1:10 ID  =>  bus1_found_sens10_id

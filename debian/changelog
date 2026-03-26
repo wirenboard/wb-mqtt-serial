@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.232.2) stable; urgency=medium
+
+  * Fix 'busy_error_counter' topics name in WB-M1W2 templates
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 26 Mar 2026 10:13:00 +0300
+
 wb-mqtt-serial (2.232.1) stable; urgency=medium
 
   * Fix build with gcc14
