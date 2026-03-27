@@ -6,6 +6,11 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 26 Mar 2026 13:54:49 +0500
 
+wb-mqtt-serial (2.232.3) stable; urgency=medium
+
+  * Fix firmware version read modbus exception bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 27 Mar 2026 12:21:23 +0300
 wb-mqtt-serial (2.232.2) stable; urgency=medium
 
   * Fix 'busy_error_counter' topics name in WB-M1W2 templates
