@@ -24,8 +24,6 @@ public:
     std::vector<uint8_t> GetBinary(const std::string& url) override;
     std::string GetText(const std::string& url) override;
 };
-#else
-// Declare frontend-based HTTP client here
 #endif
 
 struct TReleasedBinary
