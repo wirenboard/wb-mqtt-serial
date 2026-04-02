@@ -65,6 +65,20 @@
             }
         ],
         "parameters": {
+            {% for ch in range(CHANNELS_NUMBER) -%}
+            "bus_{{ ch + 1 }}_power_supply": {
+                "title": "Bus {{ ch + 1 }} power supply",
+                "reg_type": "coil",
+                "address": {{ 1030 + ch }},
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "OFF",
+                    "ON"
+                ],
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {% endfor -%}
             {% for in_num in range(INPUTS_NUMBER) -%}
             "in{{in_num}}_debounce_ms": {
                 "title": "debounce_time_title",
@@ -121,10 +135,18 @@
         "channels": [
             {% for ch in range(CHANNELS_NUMBER) -%}
             {
-                "name": "Bus {{ ch + 1 }} power supply",
-                "id": "bus_{{ ch + 1 }}_power_supply",
-                "reg_type": "coil",
-                "address": {{ 1010 + ch }},
+                "name": "Bus {{ ch + 1 }} powered",
+                "id": "bus_{{ ch + 1 }}_powered",
+                "reg_type": "discrete",
+                "address": {{ 1020 + ch }},
+                "type": "switch",
+                "group": "g_channel_{{ ch + 1 }}"
+            },
+            {
+                "name": "Bus {{ ch + 1 }} power supply status",
+                "id": "bus_{{ ch + 1 }}_power_supply_status",
+                "reg_type": "discrete",
+                "address": {{ 1030 + ch }},
                 "type": "switch",
                 "group": "g_channel_{{ ch + 1 }}"
             },
