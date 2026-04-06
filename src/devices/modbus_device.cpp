@@ -149,9 +149,9 @@ void TModbusDevice::SyncMWACTime()
         if (std::chrono::duration_cast<std::chrono::hours>(now - LastMWACTimeSync).count() > 24) {
             auto config = WbRegisters::GetRegisterConfig(WbRegisters::MWAC_UNIXTIME_REGISTER_NAME);
             try {
-                Modbus::WriteRegister(traits,
+                Modbus::WriteRegister(*ModbusTraits,
                                       port,
-                                      slaveId,
+                                      SlaveId,
                                       *config,
                                       TRegisterValue(1),
                                       ModbusCache,
