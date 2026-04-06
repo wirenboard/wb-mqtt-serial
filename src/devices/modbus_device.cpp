@@ -154,13 +154,13 @@ void TModbusDevice::SyncMWACTime()
                                       *config,
                                       TRegisterValue(1),
                                       ModbusCache,
-                                      device->DeviceConfig()->RequestDelay,
-                                      device->GetResponseTimeout(port),
-                                      device->GetFrameTimeout(port));
+                                      DeviceConfig()->RequestDelay,
+                                      GetResponseTimeout(port),
+                                      GetFrameTimeout(port));
                 LastMWACTimeSync = now;
-                LOG(Debug) << "MWAC time sync [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+                LOG(Debug) << "MWAC time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
             } catch (const std::exception& e) {
-                LOG(Debug) << "MWAC time sync failed [slave_id is " << device->DeviceConfig()->SlaveId + "]" << e;
+                LOG(Debug) << "MWAC time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e;
             }
         }
     }
