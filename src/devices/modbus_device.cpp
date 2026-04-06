@@ -164,7 +164,7 @@ void TModbusDevice::SyncMWACTime(TPort& port)
                 LastMWACTimeSync = now;
                 LOG(Debug) << "MWAC time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
             } catch (const std::exception& e) {
-                LOG(Debug) << "MWAC time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e;
+                LOG(Debug) << "MWAC time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e.what();
             }
         }
     }
