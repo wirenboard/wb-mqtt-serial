@@ -1,6 +1,9 @@
 #include "modbus_device.h"
+#include "log.h"
 #include "modbus_common.h"
 #include "wb_registers.h"
+
+#define LOG(logger) logger.Log() << "[modbus] "
 
 namespace
 {
