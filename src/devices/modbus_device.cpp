@@ -92,6 +92,7 @@ void TModbusDevice::PrepareImpl(TPort& port)
                 reg->IncludeInPolling();
             }
         }
+        SyncMWACTime();
     }
 }
 
@@ -114,6 +115,7 @@ void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool br
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
+    SyncMWACTime();
     Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
@@ -136,4 +138,30 @@ std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
     return std::max(
         DeviceConfig()->FrameTimeout,
         std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
+}
+
+void TModbusDevice::SyncMWACTime()
+{
+    if (DeviceConfig()->DeviceType == "WB-MWAC-v2 ver2" && util::CompareVersionStrings(GetWbFwVersion(), "1.24.0") >= 0)
+    {
+        const auto now = std::chrono::system_clock::now();
+        if (std::chrono::duration_cast<td::chrono::days>(now - LastMWACTimeSync) > 0) {
+            auto config = WbRegisters::GetRegisterConfig(WbRegisters::MWAC_UNIXTIME_REGISTER_NAME);
+            try {
+                Modbus::WriteRegister(traits,
+                                      port,
+                                      slaveId,
+                                      *config,
+                                      TRegisterValue(1),
+                                      ModbusCache,
+                                      device->DeviceConfig()->RequestDelay,
+                                      device->GetResponseTimeout(port),
+                                      device->GetFrameTimeout(port));
+                LastMWACTimeSync = now;
+                LOG(Debug) << "MWAC time sync [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+            } catch (const std::exception& e) {
+                LOG(Debug) << "MWAC time sync failed [slave_id is " << device->DeviceConfig()->SlaveId + "]" << e;
+            }
+        }
+    }
 }
