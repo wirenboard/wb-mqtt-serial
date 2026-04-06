@@ -145,7 +145,7 @@ void TModbusDevice::SyncMWACTime()
     if (DeviceConfig()->DeviceType == "WB-MWAC-v2 ver2" && util::CompareVersionStrings(GetWbFwVersion(), "1.24.0") >= 0)
     {
         const auto now = std::chrono::system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::days>(now - LastMWACTimeSync) > 0) {
+        if (std::chrono::duration_cast<std::chrono::hours>(now - LastMWACTimeSync) > 24) {
             auto config = WbRegisters::GetRegisterConfig(WbRegisters::MWAC_UNIXTIME_REGISTER_NAME);
             try {
                 Modbus::WriteRegister(traits,
