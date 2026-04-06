@@ -65,7 +65,7 @@ namespace
          TRegisterConfig::Create(Modbus::REG_HOLDING,
                                  TRegisterDesc{std::make_shared<TUint32RegisterAddress>(SN_REGISTER_ADDRESS), 0, 0},
                                  U32)},
-        {WbRegisters::MWAC_UNITTIME_REGISTER_NAME,
+        {WbRegisters::MWAC_UNIXTIME_REGISTER_NAME,
          TRegisterConfig::Create(
              Modbus::REG_HOLDING,
              TRegisterDesc{std::make_shared<TUint32RegisterAddress>(MWAC_UNIXTIME_REGISTER_ADDRESS), 0, 0},
