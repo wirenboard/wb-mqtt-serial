@@ -26002,6 +26002,7 @@ WB-MWAC-v2 ver2
 	Battery State, measured at module startup  =>  Battery State
 	Buzzer  =>  Buzzer
 	Cleaning Mode  =>  Cleaning Mode
+	Cleaning Mode Remaining Time  =>  Cleaning Mode Remaining Time
 	Days Until Next Antiseize K1  =>  Days Until Next Antiseize K1
 	Days Until Next Antiseize K2  =>  Days Until Next Antiseize K2
 	FW Version  =>  FW Version
