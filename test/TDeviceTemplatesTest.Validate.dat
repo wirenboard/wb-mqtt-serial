@@ -5748,7 +5748,8 @@ WB-DALI
 	Bus 1 monitor sporadic frame 3  =>  bus_1_monitor_sporadic_frame_3
 	Bus 1 monitor sporadic frame 4  =>  bus_1_monitor_sporadic_frame_4
 	Bus 1 overheat  =>  bus_1_overheat
-	Bus 1 power supply  =>  bus_1_power_supply
+	Bus 1 power supply status  =>  bus_1_power_supply_status
+	Bus 1 powered  =>  bus_1_powered
 	Bus 1 state  =>  bus_1_state
 	Bus 1 temperature  =>  bus_1_temperature
 	Bus 2 bulk send pointer  =>  bus_2_bulk_send_pointer
@@ -5773,7 +5774,8 @@ WB-DALI
 	Bus 2 monitor sporadic frame 3  =>  bus_2_monitor_sporadic_frame_3
 	Bus 2 monitor sporadic frame 4  =>  bus_2_monitor_sporadic_frame_4
 	Bus 2 overheat  =>  bus_2_overheat
-	Bus 2 power supply  =>  bus_2_power_supply
+	Bus 2 power supply status  =>  bus_2_power_supply_status
+	Bus 2 powered  =>  bus_2_powered
 	Bus 2 state  =>  bus_2_state
 	Bus 2 temperature  =>  bus_2_temperature
 	Bus 3 bulk send pointer  =>  bus_3_bulk_send_pointer
@@ -5798,7 +5800,8 @@ WB-DALI
 	Bus 3 monitor sporadic frame 3  =>  bus_3_monitor_sporadic_frame_3
 	Bus 3 monitor sporadic frame 4  =>  bus_3_monitor_sporadic_frame_4
 	Bus 3 overheat  =>  bus_3_overheat
-	Bus 3 power supply  =>  bus_3_power_supply
+	Bus 3 power supply status  =>  bus_3_power_supply_status
+	Bus 3 powered  =>  bus_3_powered
 	Bus 3 state  =>  bus_3_state
 	Bus 3 temperature  =>  bus_3_temperature
 	FW Version  =>  FW Version
