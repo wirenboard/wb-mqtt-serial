@@ -93,7 +93,7 @@ void TModbusDevice::PrepareImpl(TPort& port)
                 reg->IncludeInPolling();
             }
         }
-        SyncMWACTime();
+        SyncMWACTime(port);
     }
 }
 
@@ -116,7 +116,7 @@ void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool br
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    SyncMWACTime();
+    SyncMWACTime(port);
     Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
@@ -141,7 +141,7 @@ std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
         std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
-void TModbusDevice::SyncMWACTime()
+void TModbusDevice::SyncMWACTime(TPort& port)
 {
     if (DeviceConfig()->DeviceType == "WB-MWAC-v2 ver2" && util::CompareVersionStrings(GetWbFwVersion(), "1.24.0") >= 0)
     {

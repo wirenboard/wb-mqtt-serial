@@ -79,5 +79,5 @@ protected:
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
 
 private:
-    void SyncMWACTime();
+    void SyncMWACTime(TPort& port);
 };
