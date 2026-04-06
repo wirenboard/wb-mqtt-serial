@@ -1,5 +1,6 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
+#include "wb_registers.h"
 
 namespace
 {
