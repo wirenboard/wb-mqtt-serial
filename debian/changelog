@@ -4,7 +4,25 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
     - Add "Cleaning Mode Remaining Time" channel
     - Add support for antiseize protection function
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 03 Apr 2026 09:36:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 06 Apr 2026 09:36:00 +0300
+
+wb-mqtt-serial (2.232.4) stable; urgency=medium
+
+  * Fix emscripten macros for WASM module build, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 30 Mar 2026 18:30:28 +0300
+
+wb-mqtt-serial (2.232.3) stable; urgency=medium
+
+  * Fix firmware version read modbus exception bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 27 Mar 2026 12:21:23 +0300
+
+wb-mqtt-serial (2.232.2) stable; urgency=medium
+
+  * Fix 'busy_error_counter' topics name in WB-M1W2 templates
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 26 Mar 2026 10:13:00 +0300
 
 wb-mqtt-serial (2.232.1) stable; urgency=medium
 

@@ -87,11 +87,6 @@ std::string TCurlHttpClient::GetText(const std::string& url)
     }
     return text.substr(start, end - start + 1);
 }
-
-#else
-
-// Implement frontend-based HTTP client here
-
 #endif
 
 // ============================================================
