@@ -488,16 +488,17 @@
             {%- endfor -%}
             {%- endfor -%}
 
-            {# энкодеры #}
+            {# Энкодеры -#}
+            {# Все доступные для управления каналы -#}
             {% set enc_ctrl_ch_titles = [
-                "No control",
-                "Channel 1 brightness",
-                "Channel 2 brightness",
-                "Channel 3 brightness",
-                "Channel 4 brightness",
-                "Channels 1_2 brightness",
-                "Channels 3_4 brightness",
-                "Channels 1_2_3_4 brightness",
+                "No Control",
+                "Channel 1 Brightness",
+                "Channel 2 Brightness",
+                "Channel 3 Brightness",
+                "Channel 4 Brightness",
+                "Channels 1_2 Brightness",
+                "Channels 3_4 Brightness",
+                "Channels 1_2_3_4 Brightness",
                 "CCT1 Temperature",
                 "CCT1 Brightness",
                 "CCT2 Temperature",
@@ -505,17 +506,73 @@
                 "Red Brightness",
                 "Green Brightness",
                 "Blue Brightness",
-                "Hue of RGB strip (circular, HSV-H)",
-                "Saturation of RGB strip (HSV-S)",
-                "Brightness of RGB strip (HSV-V)",
-                "Hue changing time of RGB strip"
+                "Hue of RGB Strip (circular, HSV-H)",
+                "Saturation of RGB Strip (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)",
+                "Hue Changing Time of RGB Strip"
+                ] -%}
+            {# Конфигурация доступных каналов для каждого режима диммера -#}
+            {% set enc_ctrl_ch_configs = [
+                {
+                    'mode': 0,
+                    'indices': [0, 1, 2, 3, 4]
+                },
+                {
+                    'mode': 1,
+                    'indices': [0, 3, 4, 5]
+                },
+                {
+                    'mode': 2,
+                    'indices': [0, 3, 4, 8, 9]
+                },
+                {
+                    'mode': 16,
+                    'indices': [0, 1, 2, 6]
+                },
+                {
+                    'mode': 17,
+                    'indices': [0, 5, 6]
+                },
+                {
+                    'mode': 18,
+                    'indices': [0, 6, 8, 9]
+                },
+                {
+                    'mode': 32,
+                    'indices': [0, 1, 2, 10, 11]
+                },
+                {
+                    'mode': 33,
+                    'indices': [0, 5, 10, 11]
+                },
+                {
+                    'mode': 34,
+                    'indices': [0, 8, 9, 10, 11]
+                },
+                {
+                    'mode': 256,
+                    'indices': [0, 4, 12, 13, 14, 15, 16, 17, 18]
+                },
+                {
+                    'mode': 512,
+                    'indices': [0, 7]
+                }
+            ] -%}
+            {% set conditions = [
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
+                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
+                "dimmer_mode==512",
                 ] -%}
 
             {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
             {
                 "id": "encoder_{{enc_num}}_mode",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "Encoder connection type",
+                "title": "Encoder Сonnection Type",
                 "description": "encoder_{{enc_num}}_mode_description",
                 "order": 1,
                 "address": {{376 + enc_num - 1}},
@@ -530,7 +587,7 @@
             {
                 "id": "encoder_{{enc_num}}_pps",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "Pulses per step",
+                "title": "Pulses per Step",
                 "order": 2,
                 "address": {{384 + enc_num - 1}},
                 "reg_type": "holding",
@@ -539,31 +596,33 @@
                 "max": 65535,
                 "condition": "(encoder_{{enc_num}}_mode==1)"
             },
-            {# TODO: Separate values sets for each mode -#}
+            {# Создаём несколько блоков ctrl_ch для разных режимов диммера -#}
+            {% for config in enc_ctrl_ch_configs -%}
             {
                 "id": "encoder_{{enc_num}}_ctrl_ch",
-                "title": "Controlled channel",
+                "title": "Controlled Channel",
                 "group": "gg_encoder_{{enc_num}}",
                 "order": 3,
                 "address": {{388 + enc_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [
-                    {%- for i in range(enc_ctrl_ch_titles|length) -%}
-                    {{i}}{%- if not loop.last -%},{%- endif -%}
+                    {%- for idx in config.indices -%}
+                    {{idx}}{%- if not loop.last -%},{%- endif -%}
                     {%- endfor -%}
                 ],
                 "enum_titles": [
-                    {% for title in enc_ctrl_ch_titles -%}
-                    "{{title}}"{% if not loop.last %}, {% endif %}
-                    {% endfor -%}
+                    {%- for idx in config.indices -%}
+                    "{{enc_ctrl_ch_titles[idx]}}"{%- if not loop.last -%}, {%- endif -%}
+                    {%- endfor -%}
                 ],
-                "condition": "(encoder_{{enc_num}}_mode==1)"
+                "condition": "(encoder_{{enc_num}}_mode==1)&&(dimmer_mode=={{config.mode}})"
             },
+            {% endfor -%}
             {
                 "id": "encoder_{{enc_num}}_change_step",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "Change step",
+                "title": "Step of Value Change",
                 "order": 4,
                 "address": {{392 + enc_num - 1}},
                 "reg_type": "holding",
@@ -1562,7 +1621,7 @@
 
             {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
             {
-                "name": "Encoder {{enc_num}} position",
+                "name": "Encoder {{enc_num}} Position",
                 "enabled": false,
                 "reg_type": "holding",
                 "address": {{368 + ((enc_num - 1) * 2)}},
@@ -1572,7 +1631,7 @@
                 "condition": "encoder_{{enc_num}}_mode==1"
             },
             {
-                "name": "Encoder {{enc_num}} steps",
+                "name": "Encoder {{enc_num}} Steps",
                 "enabled": true,
                 "reg_type": "input",
                 "address": {{360 + ((enc_num - 1) * 2)}},
@@ -1948,6 +2007,28 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
 
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                    {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                    {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                    "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера.",
+                    "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
+                    "Encoder {{enc_num}} Steps": "Шаги энкодера {{enc_num}}",
+                {% endfor -%}
+
+                "Encoder Сonnection Type": "Тип подключения энкодера",
+                "Pulses per Step": "Количество импульсов на один шаг",
+                "Controlled Channel": "Управляемый канал диммера",
+                "Step of Value Change": "Шаг изменения значения",
+
+                "No Control": "Управление отключено",
+                "Red Brightness": "Яркость красного",
+                "Green Brightness": "Яркость зеленого",
+                "Blue Brightness": "Яркость синего",
+                "Hue of RGB Strip (circular, HSV-H)": "Оттенок RGB ленты (HSV-H, по кругу)",
+                "Saturation of RGB Strip (HSV-S)": "Насыщенность цвета RGB ленты (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)": "Яркость RGB ленты (HSV-V)",
+                "Hue Changing Time of RGB Strip": "Время непрерывного изменения оттенка RGB ленты",
+
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",
 
@@ -2070,9 +2151,6 @@
                 "AB type": "2 сигнала, тип AB",
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
                     "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
-                    "Encoder {{enc_num}} position": "Положение энкодера {{enc_num}}",
-                    "Encoder {{enc_num}} revolutions": "Количество оборотов энкодера {{enc_num}}",
-                    "Encoder {{enc_num}} angle": "Угол внутри оборота энкодера {{enc_num}}",
                 {% endfor -%}
 
                 "Disabled": "Отключено",
