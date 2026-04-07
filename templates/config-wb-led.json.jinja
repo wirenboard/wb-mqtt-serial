@@ -1,12 +1,14 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set ENCODERS_NUMBER = 2 -%}
 {
     "title": "WB-LED_template_title",
     "device_type": "WB-LED",
     "group": "g-wb",
     "hw": [
         {
-            "signature": "WB-LED"
+            "signature": "WB-LED",
+            "fw": "3.8.0-rc1"           {#- TODO: update firmware version #}
         }
     ],
     "device": {
@@ -33,6 +35,30 @@
             },
             {% endfor -%}
             {% endfor -%}
+
+            {
+                "title": "Encoders",
+                "id": "g_encoders"
+            },
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "title": "Encoder {{enc_num}}",
+                "id": "gg_encoder_{{enc_num}}",
+                "group": "g_encoders"
+            },
+            {% endfor -%}
+            {
+                "title": "encoder_channels",
+                "id": "gg_encoder_channels",
+                "group": "g_encoders",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+
+            },
+
             {# объявим группы выходов -#}
             {
                 "title": "Outputs",
@@ -220,7 +246,7 @@
                 "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
-                "fw":"3.5.0",   
+                "fw": "3.5.0",
                 "enum": [0, 1],
                 "enum_titles": [
                     "Button",
@@ -462,6 +488,92 @@
             {%- endfor -%}
             {%- endfor -%}
 
+            {# энкодеры #}
+            {% set enc_ctrl_ch_titles = [
+                "No control",
+                "Channel 1 brightness",
+                "Channel 2 brightness",
+                "Channel 3 brightness",
+                "Channel 4 brightness",
+                "Channels 1_2 brightness",
+                "Channels 3_4 brightness",
+                "Channels 1_2_3_4 brightness",
+                "CCT1 Temperature",
+                "CCT1 Brightness",
+                "CCT2 Temperature",
+                "CCT2 Brightness",
+                "Red Brightness",
+                "Green Brightness",
+                "Blue Brightness",
+                "Hue of RGB strip (circular, HSV-H)",
+                "Saturation of RGB strip (HSV-S)",
+                "Brightness of RGB strip (HSV-V)",
+                "Hue changing time of RGB strip"
+                ] -%}
+
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "id": "encoder_{{enc_num}}_mode",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Encoder connection type",
+                "description": "encoder_{{enc_num}}_mode_description",
+                "order": 1,
+                "address": {{376 + enc_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Not used",
+                    "AB type"
+                ]
+            },
+            {
+                "id": "encoder_{{enc_num}}_pps",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Pulses per step",
+                "order": 2,
+                "address": {{384 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 4,
+                "min": 1,
+                "max": 65535,
+                "condition": "(encoder_{{enc_num}}_mode==1)"
+            },
+            {# TODO: Separate values sets for each mode -#}
+            {
+                "id": "encoder_{{enc_num}}_ctrl_ch",
+                "title": "Controlled channel",
+                "group": "gg_encoder_{{enc_num}}",
+                "order": 3,
+                "address": {{388 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [
+                    {%- for i in range(enc_ctrl_ch_titles|length) -%}
+                    {{i}}{%- if not loop.last -%},{%- endif -%}
+                    {%- endfor -%}
+                ],
+                "enum_titles": [
+                    {% for title in enc_ctrl_ch_titles -%}
+                    "{{title}}"{% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                ],
+                "condition": "(encoder_{{enc_num}}_mode==1)"
+            },
+            {
+                "id": "encoder_{{enc_num}}_change_step",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Change step",
+                "order": 4,
+                "address": {{392 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 5,
+                "min": 1,
+                "max": 10000,
+                "condition": "(encoder_{{enc_num}}_mode==1)"
+            },
+            {%- endfor -%}
+
             {# опишем все W* варианты в группе выхода -#}
             {% set conditions = [
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
@@ -623,7 +735,7 @@
                 "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
+                "min": 2,
                 "max": 200
             },
             {% endfor -%}
@@ -1401,6 +1513,7 @@
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels"
             },
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {
                 "name": "Input {{in_num}} Single Press Counter",
                 "enabled": false,
@@ -1410,7 +1523,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {
                 "name": "Input {{in_num}} Long Press Counter",
@@ -1421,7 +1534,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {
                 "name": "Input {{in_num}} Double Press Counter",
@@ -1432,7 +1545,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {
                 "name": "Input {{in_num}} Shortlong Press Counter",
@@ -1443,9 +1556,33 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {% endfor -%}
+
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "name": "Encoder {{enc_num}} position",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": {{368 + ((enc_num - 1) * 2)}},
+                "type": "value",
+                "format": "s32",
+                "group": "gg_encoder_channels",
+                "condition": "encoder_{{enc_num}}_mode==1"
+            },
+            {
+                "name": "Encoder {{enc_num}} steps",
+                "enabled": true,
+                "reg_type": "input",
+                "address": {{360 + ((enc_num - 1) * 2)}},
+                "type": "value",
+                "format": "s32",
+                "group": "gg_encoder_channels",
+                "condition": "encoder_{{enc_num}}_mode==1"
+            },
+            {% endfor -%}
+
             {
                 "name": "Serial",
                 "type": "text",
@@ -1619,6 +1756,10 @@
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{(enc_num * 2) + 1}} and {{(enc_num * 2) + 2}} work as usual with own mode configuration. <br>AB mode use {{(enc_num * 2) + 1}} and {{(enc_num * 2) + 2}} inputs for represent position in pulses count.",
+                {% endfor -%}
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
@@ -1920,6 +2061,17 @@
                 "Action Saturation" : "Действие с насыщенностью",
                 "Action Brightness" : "Действие с яркостью",
                 "Action Temperature" : "Действие с температурой",
+
+                "Encoders": "Работа с энкодерами",
+                "Encoder connection type": "Тип подключения энкодера",
+                "Not used": "Не используется",
+                "AB type": "2 сигнала, тип AB",
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                    "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
+                    "Encoder {{enc_num}} position": "Положение энкодера {{enc_num}}",
+                    "Encoder {{enc_num}} revolutions": "Количество оборотов энкодера {{enc_num}}",
+                    "Encoder {{enc_num}} angle": "Угол внутри оборота энкодера {{enc_num}}",
+                {% endfor -%}
 
                 "Disabled": "Отключено",
                 "Enabled": "Включено"
