@@ -12,6 +12,7 @@ namespace
     const auto FW_SIGNATURE_REGISTER_ADDRESS = 290;
     const auto FW_VERSION_REGISTER_ADDRESS = 250;
     const auto SN_REGISTER_ADDRESS = 270;
+    const auto MWAC_UNIXTIME_REGISTER_ADDRESS = 452;
 
     const std::unordered_map<std::string, PRegisterConfig> RegConfigs = {
         {WbRegisters::BAUD_RATE_REGISTER_NAME,
@@ -64,6 +65,11 @@ namespace
          TRegisterConfig::Create(Modbus::REG_HOLDING,
                                  TRegisterDesc{std::make_shared<TUint32RegisterAddress>(SN_REGISTER_ADDRESS), 0, 0},
                                  U32)},
+        {WbRegisters::MWAC_UNIXTIME_REGISTER_NAME,
+         TRegisterConfig::Create(
+             Modbus::REG_HOLDING,
+             TRegisterDesc{std::make_shared<TUint32RegisterAddress>(MWAC_UNIXTIME_REGISTER_ADDRESS), 0, 0},
+             U64)},
     };
 }
 

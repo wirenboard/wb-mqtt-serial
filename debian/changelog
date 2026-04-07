@@ -1,10 +1,17 @@
-wb-mqtt-serial (2.233.0) stable; urgency=medium
+wb-mqtt-serial (2.234.0) stable; urgency=medium
 
   * templates/config-wb-mwac2_ver2.json.jinja:
     - Add "Cleaning Mode Remaining Time" channel
     - Add support for antiseize protection function
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 06 Apr 2026 09:36:00 +0300
+
+wb-mqtt-serial (2.233.0) stable; urgency=medium
+
+  * Add unixtime control type
+  * Add time sync for WB-MWAC v.2
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 06 Apr 2026 18:06:56 +0500
 
 wb-mqtt-serial (2.232.4) stable; urgency=medium
 
