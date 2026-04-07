@@ -1758,7 +1758,9 @@
                 "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
-                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{(enc_num * 2) + 1}} and {{(enc_num * 2) + 2}} work as usual with own mode configuration. <br>AB mode use {{(enc_num * 2) + 1}} and {{(enc_num * 2) + 2}} inputs for represent position in pulses count.",
+                    {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                    {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count.",
                 {% endfor -%}
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
