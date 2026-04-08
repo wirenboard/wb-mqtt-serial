@@ -185,6 +185,7 @@
                 "type": "value",
                 "format": "u16",
                 "sporadic": true,
+                "hidden": true,
                 "group": "g_channel_{{ ch + 1 }}"
             },
             {% for r in range(RX_SPORADIC_BUFFER_LEN) -%}
@@ -197,6 +198,7 @@
                 "format": "u64",
                 "word_order": "little_endian",
                 "sporadic": true,
+                "hidden": true,
                 "group": "g_channel_{{ ch + 1 }}"
             },
             {% endfor -%}
@@ -209,6 +211,7 @@
                 "type": "value",
                 "format": "u16",
                 "sporadic": true,
+                "hidden": true,
                 "group": "g_channel_{{ ch + 1 }}"
             },
             {% endfor -%}

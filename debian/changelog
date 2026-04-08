@@ -3,6 +3,7 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
   * Add device_id parameter to port/Load RPC
   [ Radmir Khakimov ]
   * Add WB-MDALI support
+  * Add hidden channels support
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 08 Apr 2026 11:34:41 +0500
 
