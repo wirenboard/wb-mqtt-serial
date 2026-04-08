@@ -214,9 +214,10 @@ void GetRegisterListParameters(const TRPCRegisterList& registerList, Json::Value
                 continue;
             }
             if (!parameters.isMember(item.Id) && CheckCondition(item.Condition, jsonParams, &expressionsCache)) {
-                parameters[item.Id] = item.Register->IsSupported()
-                                          ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
-                                          : UNSUPPORTED_VALUE;
+                parameters[item.Id] =
+                    (item.Register->IsSupported() && !item.Register->GetErrorState().test(TRegister::TError::ReadError))
+                        ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
+                        : UNSUPPORTED_VALUE;
                 check = true;
             }
         }
