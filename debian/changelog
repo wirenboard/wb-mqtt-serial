@@ -2,7 +2,7 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
 
   * Add Milur 107S Tempalte
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 08 Apr 2026 10:20:00 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 08 Apr 2026 18:26:00 +0300
 
 wb-mqtt-serial (2.232.5) stable; urgency=medium
 
