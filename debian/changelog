@@ -4,7 +4,7 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
   [ Radmir Khakimov ]
   * Add WB-MDALI support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 26 Mar 2026 13:54:49 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 08 Apr 2026 11:34:41 +0500
 
 wb-mqtt-serial (2.232.4) stable; urgency=medium
 
