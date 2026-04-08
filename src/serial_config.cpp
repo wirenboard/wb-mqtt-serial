@@ -417,6 +417,8 @@ namespace
         }
 
         deviceWithChannels.Channels.push_back(channel);
+
+        Get(channel_data, "hidden", channel->Hidden);
     }
 
     void LoadChannel(TSerialDeviceWithChannels& deviceWithChannels,
