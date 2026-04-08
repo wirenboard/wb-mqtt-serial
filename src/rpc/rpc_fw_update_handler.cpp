@@ -1,15 +1,17 @@
-#ifndef __EMSCRIPTEN__
-#include <curl/curl.h>
-#endif
-
 #include "common_utils.h"
 #include "log.h"
+#include "rpc_fw_downloader.h"
+#include "rpc_fw_update_helpers.h"
+#include "rpc_fw_update_task.h"
+
+#ifndef __EMSCRIPTEN__
 #include "rpc_fw_get_firmware_info_task.h"
 #include "rpc_fw_restore_task.h"
 #include "rpc_fw_update_handler.h"
-#include "rpc_fw_update_helpers.h"
 #include "rpc_fw_update_serial_client_task.h"
 #include "rpc_helpers.h"
+#include <curl/curl.h>
+#endif
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -103,6 +105,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
     return result;
 }
 
+#ifndef __EMSCRIPTEN__
 // Cf. firmware_update.py:650 FirmwareUpdater.__init__()
 TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
                                          WBMQTT::PMqttRpcServer rpcServer,
@@ -325,3 +328,4 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
         onError(WBMQTT::E_RPC_SERVER_ERROR, e.what());
     }
 }
+#endif
