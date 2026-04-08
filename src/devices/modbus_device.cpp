@@ -156,7 +156,7 @@ void TModbusDevice::SyncMWACTime(TPort& port)
                                       port,
                                       SlaveId,
                                       *config,
-                                      TRegisterValue(now.time_since_epoch().count()),
+                                      TRegisterValue(std::chrono::system_clock::to_time_t(now)),
                                       ModbusCache,
                                       DeviceConfig()->RequestDelay,
                                       GetResponseTimeout(port),
