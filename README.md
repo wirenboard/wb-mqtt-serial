@@ -480,7 +480,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             "error_value": "0xAA",
 
                             // Количество используемых регистров для протокола Modbus. Необходимая опция, если выбран формат "string" или "string8"
-                            "string_data_size": 5
+                            "string_data_size": 5,
+
+                            // Скрывает канал из web-интерфейса, канал публикуется всегда.
+                            // Используется для служебных каналов, которые не должны быть отключены пользователем.
+                            "hidden": true
                         },
                         {
                             // Ещё один канал

@@ -417,6 +417,8 @@ namespace
         }
 
         deviceWithChannels.Channels.push_back(channel);
+
+        Get(channel_data, "hidden", channel->Hidden);
     }
 
     void LoadChannel(TSerialDeviceWithChannels& deviceWithChannels,
@@ -484,7 +486,9 @@ namespace
                      const TLoadingContext& context,
                      const TRegisterTypeMap& typeMap)
     {
-        if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool()) {
+        const auto isDisabled =
+            !channel_data.get("enabled", true).asBool() && !channel_data.get("hidden", false).asBool();
+        if (isDisabled) {
             if (IsSerialNumberChannel(channel_data)) {
                 deviceWithChannels.Device->SetSnRegister(LoadRegisterConfig(channel_data,
                                                                             typeMap,
