@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.232.6) stable; urgency=medium
+
+  * Fix WB-LED template: add missing translations
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 09 Apr 2026 16:57:00 +0300
+
 wb-mqtt-serial (2.232.5) stable; urgency=medium
 
   * Set value to "unsupported" for registers with read error in device/LoadConfig and device/Load RPC
