@@ -1841,7 +1841,7 @@
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
                     {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
                     {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
-                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count.",
+                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
                 {% endfor -%}
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
@@ -2045,7 +2045,7 @@
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
                     {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
                     {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
-                    "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера.",
+                    "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
                     "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
                     "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
                 {% endfor -%}
