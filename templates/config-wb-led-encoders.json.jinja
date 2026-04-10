@@ -1,12 +1,14 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set ENCODERS_NUMBER = 2 -%}
 {
     "title": "WB-LED_template_title",
-    "device_type": "WB-LED",
+    "device_type": "WB-LED ENCODERS",
     "group": "g-wb",
     "hw": [
         {
-            "signature": "WB-LED"
+            "signature": "WB-LED",
+            "fw": "3.8.0-rc1"           {#- TODO: update firmware version #}
         }
     ],
     "device": {
@@ -33,6 +35,30 @@
             },
             {% endfor -%}
             {% endfor -%}
+
+            {
+                "title": "Encoders",
+                "id": "g_encoders"
+            },
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "title": "Encoder {{enc_num}}",
+                "id": "gg_encoder_{{enc_num}}",
+                "group": "g_encoders"
+            },
+            {% endfor -%}
+            {
+                "title": "encoder_channels",
+                "id": "gg_encoder_channels",
+                "group": "g_encoders",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+
+            },
+
             {# объявим группы выходов -#}
             {
                 "title": "Outputs",
@@ -220,7 +246,6 @@
                 "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
-                "fw":"3.5.0",   
                 "enum": [0, 1],
                 "enum_titles": [
                     "Button",
@@ -362,7 +387,6 @@
                 "order": {{in_num}},
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": {{ (off_on == "on") | int }},
                 "condition": "(input_{{in_num}}_mode==1)",
                 "enum": [0, 1, 2],
@@ -417,7 +441,6 @@
                 "order": {{in_num + 2}},
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0))",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
@@ -441,7 +464,6 @@
                 "order": {{in_num + 2}},
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)))",
                 "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
@@ -460,6 +482,172 @@
             },
             {%- endfor -%}
             {%- endfor -%}
+            {%- endfor -%}
+
+            {# Энкодеры -#}
+            {# Все доступные для управления каналы -#}
+            {% set enc_ctrl_ch_titles = [
+                "No Control",
+                "Channel 1 Brightness",
+                "Channel 2 Brightness",
+                "Channel 3 Brightness",
+                "Channel 4 Brightness",
+                "Channels 1_2 Brightness",
+                "Channels 3_4 Brightness",
+                "Channels 1_2_3_4 Brightness",
+                "CCT1 Temperature",
+                "CCT1 Brightness",
+                "CCT2 Temperature",
+                "CCT2 Brightness",
+                "Red Brightness",
+                "Green Brightness",
+                "Blue Brightness",
+                "Hue of RGB Strip (circular, HSV-H)",
+                "Saturation of RGB Strip (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)",
+                "Hue Changing Time of RGB Strip"
+                ] -%}
+            {# Конфигурация доступных каналов для каждого режима диммера -#}
+            {% set enc_ctrl_ch_configs = [
+                {
+                    'mode': 0,
+                    'indices': [0, 1, 2, 3, 4]
+                },
+                {
+                    'mode': 1,
+                    'indices': [0, 3, 4, 5]
+                },
+                {
+                    'mode': 2,
+                    'indices': [0, 3, 4, 8, 9]
+                },
+                {
+                    'mode': 16,
+                    'indices': [0, 1, 2, 6]
+                },
+                {
+                    'mode': 17,
+                    'indices': [0, 5, 6]
+                },
+                {
+                    'mode': 18,
+                    'indices': [0, 6, 8, 9]
+                },
+                {
+                    'mode': 32,
+                    'indices': [0, 1, 2, 10, 11]
+                },
+                {
+                    'mode': 33,
+                    'indices': [0, 5, 10, 11]
+                },
+                {
+                    'mode': 34,
+                    'indices': [0, 8, 9, 10, 11]
+                },
+                {
+                    'mode': 256,
+                    'indices': [0, 4, 12, 13, 14, 15, 16, 17, 18]
+                },
+                {
+                    'mode': 512,
+                    'indices': [0, 7]
+                }
+                ] -%}
+            {% set conditions = [
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
+                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
+                "dimmer_mode==512",
+                ] -%}
+
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "id": "encoder_{{enc_num}}_mode",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Encoder Сonnection Type",
+                "description": "encoder_{{enc_num}}_mode_description",
+                "order": 1,
+                "address": {{376 + enc_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Not used",
+                    "AB type"
+                ]
+            },
+            {
+                "id": "encoder_{{enc_num}}_pps",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Pulses per Step",
+                "order": 2,
+                "address": {{384 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 4,
+                "min": 1,
+                "max": 65535,
+                "condition": "(encoder_{{enc_num}}_mode==1)"
+            },
+            {# Создаём несколько блоков ctrl_ch для разных режимов диммера -#}
+            {% for config in enc_ctrl_ch_configs -%}
+            {
+                "id": "encoder_{{enc_num}}_ctrl_ch",
+                "title": "Controlled Channel",
+                "group": "gg_encoder_{{enc_num}}",
+                "order": 3,
+                "address": {{388 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [
+                    {%- for idx in config.indices -%}
+                    {{idx}}{%- if not loop.last -%},{%- endif -%}
+                    {%- endfor -%}
+                ],
+                "enum_titles": [
+                    {%- for idx in config.indices -%}
+                    "{{enc_ctrl_ch_titles[idx]}}"{%- if not loop.last -%}, {%- endif -%}
+                    {%- endfor -%}
+                ],
+                "condition": "(encoder_{{enc_num}}_mode==1)&&(dimmer_mode=={{config.mode}})"
+            },
+            {% endfor -%}
+            {
+                "id": "encoder_{{enc_num}}_change_step",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Step of Value Change",
+                "order": 4,
+                "address": {{392 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 5,
+                "min": 1,
+                "max": 10000,
+                "condition": "(encoder_{{enc_num}}_mode==1)&&(encoder_{{enc_num}}_ctrl_ch!=0)"
+            },
+            {% set ch_min_br_behavior_conditions = [
+                "((encoder_" ~ enc_num ~ "_ctrl_ch>=1)&&(encoder_" ~ enc_num ~ "_ctrl_ch<=7))",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==9)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==11)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==17)"
+                ] -%}
+            {
+                "id": "encoder_{{enc_num}}_min_br_behavior",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Behavior When Brightness is Reduced Below the Minimum Value",
+                "order": 5,
+                "address": {{396 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Turn Off the Channel",
+                    "Keep Minimum Brightness"
+                ],
+                "condition": "(encoder_{{enc_num}}_mode==1)&&({{ch_min_br_behavior_conditions|join('||')}})"
+            },
             {%- endfor -%}
 
             {# опишем все W* варианты в группе выхода -#}
@@ -556,7 +744,6 @@
                 "title": "{{title}}",
                 "order": {{order[loop.index0]}},
                 "address": {{3200 + loop.index0}},
-                "fw": "3.7.0",
                 "reg_type": "holding",
                 "type": "enum",
                 "default": 0,
@@ -623,7 +810,7 @@
                 "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
+                "min": 2,
                 "max": 200
             },
             {% endfor -%}
@@ -675,7 +862,6 @@
                 "address": 8,
                 "order": 2,
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "min": 1,
                 "max": 65534,
                 "default": 10
@@ -712,7 +898,6 @@
                 "title": "Action",
                 "reg_type": "holding",
                 "address": {{648 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -729,7 +914,6 @@
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{656 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "min": 1,
                 "max": 100,
                 "default": 50,
@@ -742,7 +926,6 @@
                 "title": "Action",
                 "reg_type": "holding",
                 "address": {{664 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -759,7 +942,6 @@
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{672 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "min": 1,
                 "max": 100,
                 "default": 50,
@@ -779,7 +961,6 @@
             {
                 "id": "safety_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "type": "enum",
                 "address": {{648 + loop.index0}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -809,7 +990,6 @@
             {
                 "id": "powerup_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "type": "enum",
                 "address": {{664 + loop.index0}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -844,7 +1024,6 @@
                     "title": "Brightness (%)",
                 {% endif -%}
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{656 + loop.index0}},
                 "min": 1,
                 "max": 100,
@@ -865,7 +1044,6 @@
                     "title": "Brightness (%)",
                 {% endif -%}
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{672 + loop.index0}},
                 "min": 1,
                 "max": 100,
@@ -886,7 +1064,6 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{648 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -911,7 +1088,6 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{664 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -937,7 +1113,6 @@
                 "id": "safety_mode_ch_rgb_h",
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 656,
                 "min": 0,
                 "max": 360,
@@ -950,7 +1125,6 @@
                 "id": "safety_mode_ch_rgb_s",
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 657,
                 "min": 0,
                 "max": 100,
@@ -963,7 +1137,6 @@
                 "id": "safety_mode_ch_rgb_v",
                 "title": "RGB Strip Brightness",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 658,
                 "min": 1,
                 "max": 100,
@@ -976,7 +1149,6 @@
                 "id": "powerup_mode_ch_rgb_h",
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 672,
                 "min": 0,
                 "max": 360,
@@ -989,7 +1161,6 @@
                 "id": "powerup_mode_ch_rgb_s",
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 673,
                 "min": 0,
                 "max": 100,
@@ -1002,7 +1173,6 @@
                 "id": "powerup_mode_ch_rgb_v",
                 "title": "RGB Strip Brightness",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 674,
                 "min": 1,
                 "max": 100,
@@ -1019,7 +1189,6 @@
                 "group": "ggg_safety_input_control",
                 "address": {{640 + in_number - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -1401,6 +1570,7 @@
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels"
             },
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {
                 "name": "Input {{in_num}} Single Press Counter",
                 "enabled": false,
@@ -1410,7 +1580,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {
                 "name": "Input {{in_num}} Long Press Counter",
@@ -1421,7 +1591,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {
                 "name": "Input {{in_num}} Double Press Counter",
@@ -1432,7 +1602,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {
                 "name": "Input {{in_num}} Shortlong Press Counter",
@@ -1443,9 +1613,34 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
             },
             {% endfor -%}
+
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "name": "Encoder {{enc_num}} Position",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": {{368 + ((enc_num - 1) * 2)}},
+                "type": "value",
+                "format": "s32",
+                "group": "gg_encoder_channels",
+                "condition": "encoder_{{enc_num}}_mode==1"
+            },
+            {
+                "name": "Encoder {{enc_num}} Steps Counter",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{364 + (enc_num - 1)}},
+                "type": "value",
+                "sporadic": true,
+                "format": "u16",
+                "group": "gg_encoder_channels",
+                "condition": "encoder_{{enc_num}}_mode==1"
+            },
+            {% endfor -%}
+
             {
                 "name": "Serial",
                 "type": "text",
@@ -1461,7 +1656,6 @@
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
-                "fw": "3.6.0",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -1515,7 +1709,7 @@
         ],
         "translations": {
             "en": {
-                "WB-LED_template_title": "WB-LED (4-channel CV LED Dimmer)",
+                "WB-LED_template_title": "WB-LED fw3.8 (4-channel CV LED Dimmer)",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -1620,6 +1814,12 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                    {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                    {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
+                {% endfor -%}
+
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
 
@@ -1667,7 +1867,7 @@
                 "sw_rgb_act_title": "RGB Strip"
             },
             "ru": {
-                "WB-LED_template_title": "WB-LED (4-канальный диммер светодиодных лент)",
+                "WB-LED_template_title": "WB-LED fw3.8 (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
@@ -1818,6 +2018,28 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
 
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                    {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                    {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                    "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
+                    "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
+                    "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
+                {% endfor -%}
+
+                "Encoder Сonnection Type": "Тип подключения энкодера",
+                "Pulses per Step": "Количество импульсов на один шаг",
+                "Controlled Channel": "Управляемый канал диммера",
+                "Step of Value Change": "Шаг изменения значения",
+
+                "No Control": "Управление отключено",
+                "Red Brightness": "Яркость красного",
+                "Green Brightness": "Яркость зеленого",
+                "Blue Brightness": "Яркость синего",
+                "Hue of RGB Strip (circular, HSV-H)": "Оттенок RGB ленты (HSV-H, по кругу)",
+                "Saturation of RGB Strip (HSV-S)": "Насыщенность цвета RGB ленты (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)": "Яркость RGB ленты (HSV-V)",
+                "Hue Changing Time of RGB Strip": "Время непрерывного изменения оттенка RGB ленты",
+
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",
 
@@ -1933,6 +2155,18 @@
                 "Action Saturation" : "Действие с насыщенностью",
                 "Action Brightness" : "Действие с яркостью",
                 "Action Temperature" : "Действие с температурой",
+
+                "Encoders": "Работа с энкодерами",
+                "Encoder connection type": "Тип подключения энкодера",
+                "Not used": "Не используется",
+                "AB type": "2 сигнала, тип AB",
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                    "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
+                {% endfor -%}
+
+                "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
+                "Turn Off the Channel": "Выключить канал",
+                "Keep Minimum Brightness": "Оставить минимальную яркость",
 
                 "Channel 1_2 Brightness": "Яркость каналов 1_2",
                 "Channel 3_4 Brightness": "Яркость каналов 3_4",
