@@ -557,7 +557,7 @@
                     'mode': 512,
                     'indices': [0, 7]
                 }
-            ] -%}
+                ] -%}
             {% set conditions = [
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
@@ -629,7 +629,28 @@
                 "default": 5,
                 "min": 1,
                 "max": 10000,
-                "condition": "(encoder_{{enc_num}}_mode==1)"
+                "condition": "(encoder_{{enc_num}}_mode==1)&&(encoder_{{enc_num}}_ctrl_ch!=0)"
+            },
+            {% set ch_min_br_behavior_conditions = [
+                "((encoder_" ~ enc_num ~ "_ctrl_ch>=1)&&(encoder_" ~ enc_num ~ "_ctrl_ch<=7))",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==9)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==11)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==17)"
+                ] -%}
+            {
+                "id": "encoder_{{enc_num}}_min_br_behavior",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Behavior When Brightness is Reduced Below the Minimum Value",
+                "order": 5,
+                "address": {{396 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Turn Off the Channel",
+                    "Keep Minimum Brightness"
+                ],
+                "condition": "(encoder_{{enc_num}}_mode==1)&&({{ch_min_br_behavior_conditions|join('||')}})"
             },
             {%- endfor -%}
 
@@ -1631,12 +1652,13 @@
                 "condition": "encoder_{{enc_num}}_mode==1"
             },
             {
-                "name": "Encoder {{enc_num}} Steps",
+                "name": "Encoder {{enc_num}} Steps Counter",
                 "enabled": true,
-                "reg_type": "input",
-                "address": {{360 + ((enc_num - 1) * 2)}},
+                "reg_type": "press_counter",
+                "address": {{364 + (enc_num - 1)}},
                 "type": "value",
-                "format": "s32",
+                "sporadic": true,
+                "format": "u16",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_{{enc_num}}_mode==1"
             },
@@ -2025,7 +2047,7 @@
                     {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
                     "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера.",
                     "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
-                    "Encoder {{enc_num}} Steps": "Шаги энкодера {{enc_num}}",
+                    "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
                 {% endfor -%}
 
                 "Encoder Сonnection Type": "Тип подключения энкодера",
@@ -2165,6 +2187,10 @@
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
                     "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
                 {% endfor -%}
+
+                "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
+                "Turn Off the Channel": "Выключить канал",
+                "Keep Minimum Brightness": "Оставить минимальную яркость",
 
                 "Channel 1_2 Brightness": "Яркость каналов 1_2",
                 "Channel 3_4 Brightness": "Яркость каналов 3_4",
