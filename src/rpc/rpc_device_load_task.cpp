@@ -13,9 +13,10 @@ namespace
     {
         ReadRegisterList(*port, rpcRequest->Device, registerList);
         for (const auto& item: registerList) {
-            data[item.Id] = item.Register->IsSupported()
-                                ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
-                                : UNSUPPORTED_VALUE;
+            data[item.Id] =
+                (item.Register->IsSupported() && !item.Register->GetErrorState().test(TRegister::TError::ReadError))
+                    ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
+                    : UNSUPPORTED_VALUE;
             if (item.Register->GetConfig()->AccessType == TRegisterConfig::EAccessType::READ_ONLY) {
                 readonlyList.append(item.Id);
             }
