@@ -412,7 +412,7 @@
                 "scale": 0.1,
                 "min": 0.1,
                 "max": 6500,
-                "default": 0.1,
+                "default": 3,
                 "fw": "1.25.0",
                 "description": "on_delay_description",
                 "condition": "out{{out_num}}_timer_mode_selection==1"
@@ -426,7 +426,7 @@
                 "scale": 0.1,
                 "min": 0.1,
                 "max": 6500,
-                "default": 0.1,
+                "default": 3,
                 "fw": "1.25.0",
                 "description": "off_delay_description",
                 "condition": "out{{out_num}}_timer_mode_selection==2"
@@ -440,7 +440,7 @@
                 "scale": 0.1,
                 "min": 0.1,
                 "max": 6500,
-                "default": 0.1,
+                "default": 3,
                 "fw": "1.25.0",
                 "description": "on_pulse_description",
                 "condition": "out{{out_num}}_timer_mode_selection==3"
@@ -454,7 +454,7 @@
                 "scale": 0.1,
                 "min": 0.1,
                 "max": 6500,
-                "default": 0.1,
+                "default": 3,
                 "fw": "1.25.0",
                 "description": "off_pulse_description",
                 "condition": "out{{out_num}}_timer_mode_selection==4"
@@ -468,7 +468,7 @@
                 "scale": 1,
                 "min": 1,
                 "max": 65000,
-                "default": 1,
+                "default": 3,
                 "fw": "1.25.0",
                 "description": "cyclic_on_time_description",
                 "condition": "out{{out_num}}_timer_mode_selection==5"
@@ -482,7 +482,7 @@
                 "scale": 1,
                 "min": 1,
                 "max": 65000,
-                "default": 1,
+                "default": 3,
                 "fw": "1.25.0",
                 "description": "cyclic_off_time_description",
                 "condition": "out{{out_num}}_timer_mode_selection==5"
@@ -656,6 +656,30 @@
                 "offset": 1,
                 "fw": "1.24.0",
                 "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Off K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{100 + out_num - 1}},
+                "type": "pushbutton",
+                "group": "gg_outputs_channels",
+                "enabled": false
+            },
+            {
+                "name": "On K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{108 + out_num - 1}},
+                "type": "pushbutton",
+                "group": "gg_outputs_channels",
+                "enabled": false
+            },
+            {
+                "name": "Toggle K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{116 + out_num - 1}},
+                "type": "pushbutton",
+                "group": "gg_outputs_channels",
+                "enabled": false
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -845,6 +869,9 @@
 
                 "K{{out_num}}": "Команда K{{out_num}}",
                 "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
+                "Off K{{out_num}}": "Отключить K{{out_num}}",
+                "On K{{out_num}}": "Включить K{{out_num}}",
+                "Toggle K{{out_num}}": "Переключить K{{out_num}}",
 
                 "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
                 "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
