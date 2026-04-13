@@ -4,7 +4,7 @@ wb-mqtt-serial (2.234.0) stable; urgency=medium
     - Add "Cleaning Mode Remaining Time" channel
     - Add support for antiseize protection function
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 06 Apr 2026 09:36:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 13 Apr 2026 08:25:00 +0300
 
 wb-mqtt-serial (2.233.0) stable; urgency=medium
 
@@ -12,6 +12,18 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
   * Add time sync for WB-MWAC v.2
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 06 Apr 2026 18:06:56 +0500
+
+wb-mqtt-serial (2.232.6) stable; urgency=medium
+
+  * Fix WB-LED template: add missing translations
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 09 Apr 2026 16:57:00 +0300
+
+wb-mqtt-serial (2.232.5) stable; urgency=medium
+
+  * Set value to "unsupported" for registers with read error in device/LoadConfig and device/Load RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Apr 2026 12:30:00 +0300
 
 wb-mqtt-serial (2.232.4) stable; urgency=medium
 
