@@ -485,7 +485,7 @@
                 "order": 2
             },
             "antiseize_duration": {
-                "title": "Valve Stroke Duration (s)",
+                "title": "Cycle Duration (s)",
                 "description": "antiseize_duration_description",
                 "address": 957,
                 "reg_type": "holding",
@@ -871,6 +871,13 @@
                 "group": "hw_info"
             },
             {
+                "name": "Date and Time",
+                "reg_type": "holding",
+                "address": 452,
+                "type": "unixtime",
+                "format": "u64"
+            },
+            {
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
@@ -945,7 +952,9 @@
                 "antiseize_protection_description": "Antiseize protection periodically cycles the valves if they have remained open for a long period.",
                 "antiseize_interval_description": "1..60, default: 30",
                 "antiseize_start_hour_description": "0..23, default: 0",
-                "antiseize_duration_description": "10..120, default: 60"
+                "antiseize_duration_description": "Opening time + closing time of the valve: 10..120, default: 60",
+
+                "Battery State, measured at module startup": "Battery State"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
@@ -1014,7 +1023,7 @@
                 "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery State, measured at module startup": "Состояние батарейки, измеренное при включении модуля",
+                "Battery State, measured at module startup": "Состояние батарейки",
                 "Replacement Required": "Требуется замена",
                 "Normal": "Нормальное",
                 "Good": "Хорошее",
@@ -1040,7 +1049,7 @@
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "Buzzer Behaviour": "Поведение зуммера при срабатывании датчика протечки",
-                "Impact On Antiseize Protection": "Влияние на защиту от закисания",
+                "Impact On Antiseize Protection": "Влияние на защиту от заклинивания",
                 "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно дополнительно задать его поведение в этом случае",
                 "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с",
                 "safety_buzzer_description": "\"Не менять поведение\" - зуммер ведет себя в соответствии с настройками входов. \"Включен\" - зуммер будет включен независимо от настроек входов, когда устройство находится в безопасном режиме и срабатывает датчик протечки",
@@ -1078,14 +1087,14 @@
                 "Actions for Wet Cleaning Mode": "Действия для режима \"Влажная уборка\"",
                 "Buzzer Actions": "Действия для зуммера",
 
-                "Antiseize Protection": "Защита от закисания",
-                "antiseize_protection_description": "Защита от закисания периодически проворачивает краны, если они долго находились в открытом состоянии.",
+                "Antiseize Protection": "Защита от заклинивания",
+                "antiseize_protection_description": "Защита от заклинивания периодически проворачивает краны, если они долго находились в открытом состоянии.",
                 "Start Interval (days)": "Периодичность запуска (дней)",
                 "antiseize_interval_description": "1..60, заводское: 30",
                 "Start Hour": "Час суток для запуска",
                 "antiseize_start_hour_description": "0..23, заводское: 0",
-                "Valve Stroke Duration (s)": "Длительность полного хода привода (с)",
-                "antiseize_duration_description": "10..120, заводское: 60",
+                "Cycle Duration (s)": "Длительность цикла (с)",
+                "antiseize_duration_description": "Время открытия + время закрытия крана: 10..120, заводское: 60",
                 "Action On Start": "Действие при запуске",
                 "No Action (function disabled)": "Нет действия (функция отключена)",
                 "Off/On": "выключить/включить",
@@ -1100,6 +1109,7 @@
                 "Days Until Next Antiseize K1": "Дней до запуска защиты K1",
                 "Days Until Next Antiseize K2": "Дней до запуска защиты K2",
                 "Not set": "Не задано",
+                "Date and Time": "Дата и время",
 
                 "9600 bps": "9600 бит/с",
                 "19200 bps": "19200 бит/с",
