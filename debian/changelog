@@ -1,3 +1,21 @@
+wb-mqtt-serial (2.232.7) stable; urgency=medium
+
+  * Fix WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Apr 2026 11:47:22 +0500
+
+wb-mqtt-serial (2.232.6) stable; urgency=medium
+
+  * Fix WB-LED template: add missing translations
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 09 Apr 2026 16:57:00 +0300
+
+wb-mqtt-serial (2.232.5) stable; urgency=medium
+
+  * Set value to "unsupported" for registers with read error in device/LoadConfig and device/Load RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Apr 2026 12:30:00 +0300
+
 wb-mqtt-serial (2.232.4) stable; urgency=medium
 
   * Fix emscripten macros for WASM module build, no functional changes
