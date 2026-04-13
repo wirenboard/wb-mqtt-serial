@@ -5,6 +5,12 @@ wb-mqtt-serial (2.233.0) stable; urgency=medium
 
  -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Sat, 11 Apr 2026 16:57:00 +0300
 
+wb-mqtt-serial (2.232.7) stable; urgency=medium
+
+  * Fix WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Apr 2026 11:47:22 +0500
+
 wb-mqtt-serial (2.232.6) stable; urgency=medium
 
   * Fix WB-LED template: add missing translations
