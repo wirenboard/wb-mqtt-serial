@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.232.7) stable; urgency=medium
+
+  * Fix WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Apr 2026 11:47:22 +0500
+
 wb-mqtt-serial (2.232.6) stable; urgency=medium
 
   * Fix WB-LED template: add missing translations
