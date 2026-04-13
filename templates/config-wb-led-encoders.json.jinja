@@ -8,7 +8,7 @@
     "hw": [
         {
             "signature": "WB-LED",
-            "fw": "3.8.0-rc1"           {#- TODO: update firmware version #}
+            "fw": "3.8.0-rc1"           {#- TODO: Update to final version #}
         }
     ],
     "device": {
@@ -82,14 +82,26 @@
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
             },
+            {% set ch_titles = [
+                'Channels 1, 2',
+                'CCT1',
+                'Channel 1',
+                'Channel 2',
+                'CCT2',
+                'Channel 3',
+                'RGB Strip',
+                'Channel 4',
+                'Channels 3, 4',
+                'Channels 1, 2, 3, 4',
+            ] -%}
             {% for ch_name in ['1_2', 'CCT1', '1', '2', 'CCT2', '3', 'RGB', '4', '3_4', '1_2_3_4'] -%}
             {
-                "title": "Channel {{ ch_name }}",
+                "title": "{{ ch_titles[loop.index0] }}",
                 "id": "ggg_safety_mode_ch_{{ ch_name }}",
                 "group": "gg_safety_behaviour"
             },
             {
-                "title": "Channel {{ ch_name }}",
+                "title": "{{ ch_titles[loop.index0] }}",
                 "id": "ggg_power_up_behaviour_ch_{{ ch_name }}",
                 "group": "g_power_up_behaviour"
             },
@@ -492,9 +504,9 @@
                 "Channel 2 Brightness",
                 "Channel 3 Brightness",
                 "Channel 4 Brightness",
-                "Channels 1_2 Brightness",
-                "Channels 3_4 Brightness",
-                "Channels 1_2_3_4 Brightness",
+                "Channels 1, 2 Brightness",
+                "Channels 3, 4 Brightness",
+                "Channels 1, 2, 3, 4 Brightness",
                 "CCT1 Temperature",
                 "CCT1 Brightness",
                 "CCT2 Temperature",
@@ -664,11 +676,19 @@
             {% set order = [1, 2, 3, 4, 1, 3, 1] -%}    {# порядок отображения на странице -#}
             {% for inc_dec in ['inc', 'dec'] -%}        {# два варианта: "увеличение", "уменьшение" -#}
             {% set ptr = loop.index0 * 100 -%}          {# "уменьшение" смещено на 100 -#}
-            {% for type_action in ['1', '2', '3', '4', '1_2', '3_4', '1_2_3_4'] -%}
+            {% for type_action in [
+                'Channel 1 Brightness',
+                'Channel 2 Brightness',
+                'Channel 3 Brightness',
+                'Channel 4 Brightness',
+                'Channels 1, 2 Brightness',
+                'Channels 3, 4 Brightness',
+                'Channels 1, 2, 3, 4 Brightness'
+                ] -%}
             {
                 "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
                 "group": "gg_fader_{{inc_dec}}",
-                "title": "Channel {{type_action}} Brightness",
+                "title": "{{type_action}}",
                 "order": {{order[loop.index0]}},
                 "address": {{3000 + loop.index0 + ptr}},
                 "reg_type": "holding",
@@ -1344,7 +1364,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2",
+                "id": "Channels 1_2",
+                "name": "Channels 1, 2",
                 "address": 4,
                 "type": "switch",
                 "reg_type": "coil",
@@ -1353,7 +1374,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2 Brightness",
+                "id": "Channels 1_2 Brightness",
+                "name": "Channels 1, 2 Brightness",
                 "address": 2004,
                 "type": "range",
                 "reg_type": "holding",
@@ -1419,7 +1441,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4",
+                "id": "Channels 1_2_3_4",
+                "name": "Channels 1, 2, 3, 4",
                 "address": 6,
                 "type": "switch",
                 "reg_type": "coil",
@@ -1428,7 +1451,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4 Brightness",
+                "id": "Channels 1_2_3_4 Brightness",
+                "name": "Channels 1, 2, 3, 4 Brightness",
                 "address": 2006,
                 "type": "range",
                 "reg_type": "holding",
@@ -1473,7 +1497,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 3_4",
+                "id": "Channels 3_4",
+                "name": "Channels 3, 4",
                 "address": 5,
                 "type": "switch",
                 "reg_type": "coil",
@@ -1490,7 +1515,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 3_4 Brightness",
+                "id": "Channels 3_4 Brightness",
+                "name": "Channels 3, 4 Brightness",
                 "address": 2005,
                 "type": "range",
                 "reg_type": "holding",
@@ -1732,19 +1758,19 @@
                 "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}}",
                 "inc_dec_ch{{ch_number}}_act_title": "Increase/decrease brightness of channel {{ch_number}}",
                 {% endfor %}
-                "off_ch12_act_title": "Disable channels 1_2",
-                "on_ch12_act_title": "Enable channels 1_2",
-                "tg_ch12_act_title": "Toggle channels 1_2",
-                "inc_ch12_act_title": "Increase brightness of channels 1_2",
-                "dec_ch12_act_title": "Decrease brightness of channels 1_2",
-                "inc_dec_ch12_act_title": "Increase/decrease brightness of channels 1_2",
+                "off_ch12_act_title": "Disable channels 1, 2",
+                "on_ch12_act_title": "Enable channels 1, 2",
+                "tg_ch12_act_title": "Toggle channels 1, 2",
+                "inc_ch12_act_title": "Increase brightness of channels 1, 2",
+                "dec_ch12_act_title": "Decrease brightness of channels 1, 2",
+                "inc_dec_ch12_act_title": "Increase/decrease brightness of channels 1, 2",
 
-                "off_ch34_act_title": "Disable channels 3_4",
-                "on_ch34_act_title": "Enable channels 3_4",
-                "tg_ch34_act_title": "Toggle channels 3_4",
-                "inc_ch34_act_title": "Increase brightness of channels 3_4",
-                "dec_ch34_act_title": "Decrease brightness of channels 3_4",
-                "inc_dec_ch34_act_title": "Increase/decrease brightness of channels 3_4",
+                "off_ch34_act_title": "Disable channels 3, 4",
+                "on_ch34_act_title": "Enable channels 3, 4",
+                "tg_ch34_act_title": "Toggle channels 3, 4",
+                "inc_ch34_act_title": "Increase brightness of channels 3, 4",
+                "dec_ch34_act_title": "Decrease brightness of channels 3, 4",
+                "inc_dec_ch34_act_title": "Increase/decrease brightness of channels 3, 4",
 
                 "off_cct1_act_title": "Disable CCT1",
                 "on_cct1_act_title": "Enable CCT1",
@@ -1794,12 +1820,12 @@
                 "inc_dec_v_act_title": "Increase/decrease brightness of RGB strip (HSV-V)",
                 "inc_dec_hue_ch_time_act_title": "Increase/decrease hue changing time",
 
-                "off_ch1234_act_title": "Disable channels 1_2_3_4",
-                "on_ch1234_act_title": "Enable channels 1_2_3_4",
-                "tg_ch1234_act_title": "Toggle channels 1_2_3_4",
-                "inc_ch1234_act_title": "Increase brightness of channels 1_2_3_4",
-                "dec_ch1234_act_title": "Decrease brightness of channels 1_2_3_4",
-                "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1_2_3_4",
+                "off_ch1234_act_title": "Disable channels 1, 2, 3, 4",
+                "on_ch1234_act_title": "Enable channels 1, 2, 3, 4",
+                "tg_ch1234_act_title": "Toggle channels 1, 2, 3, 4",
+                "inc_ch1234_act_title": "Increase brightness of channels 1, 2, 3, 4",
+                "dec_ch1234_act_title": "Decrease brightness of channels 1, 2, 3, 4",
+                "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1, 2, 3, 4",
 
                 "Dimmer Mode": "Dimmer Mode",
                 "dimmer_mode_description": "Select the operating mode before setting the dimmer",
@@ -1815,9 +1841,9 @@
                 "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
-                    {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
-                    {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
-                    "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
+                {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
                 {% endfor -%}
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
@@ -1859,9 +1885,9 @@
                 "sw_ch2_act_title": "Channel 2",
                 "sw_ch3_act_title": "Channel 3",
                 "sw_ch4_act_title": "Channel 4",
-                "sw_ch12_act_title": "Channel 1_2",
-                "sw_ch34_act_title": "Channel 3_4",
-                "sw_ch1234_act_title": "Channel 1_2_3_4",
+                "sw_ch12_act_title": "Channels 1, 2",
+                "sw_ch34_act_title": "Channels 3, 4",
+                "sw_ch1234_act_title": "Channels 1, 2, 3, 4",
                 "sw_cct1_act_title": "CCT1 Strip",
                 "sw_cct2_act_title": "CCT2 Strip",
                 "sw_rgb_act_title": "RGB Strip"
@@ -1964,23 +1990,23 @@
                 "inc_dec_v_act_title": "Увеличить/уменьшить яркость RGB ленты (HSV-V)",
                 "inc_dec_hue_ch_time_act_title": "Увеличить/уменьшить время непрерывного изменения оттенка (HSV-H) на 1°",
 
-                "off_ch1234_act_title": "Выключить каналы 1_2_3_4",
-                "on_ch1234_act_title": "Включить каналы 1_2_3_4",
-                "tg_ch1234_act_title": "Переключить каналы 1_2_3_4",
-                "inc_ch1234_act_title": "Увеличить яркость каналов 1_2_3_4",
-                "dec_ch1234_act_title": "Уменьшить яркость каналов 1_2_3_4",
-                "inc_dec_ch1234_act_title": "Увеличить/уменьшить яркость каналов 1_2_3_4",
+                "off_ch1234_act_title": "Выключить каналы 1, 2, 3 и 4",
+                "on_ch1234_act_title": "Включить каналы 1, 2, 3 и 4",
+                "tg_ch1234_act_title": "Переключить каналы 1, 2, 3 и 4",
+                "inc_ch1234_act_title": "Увеличить яркость каналов 1, 2, 3 и 4",
+                "dec_ch1234_act_title": "Уменьшить яркость каналов 1, 2, 3 и 4",
+                "inc_dec_ch1234_act_title": "Увеличить/уменьшить яркость каналов 1, 2, 3 и 4",
 
-                "Channels 1_2": "Каналы 1_2",
-                "Channels 3_4": "Каналы 3_4",
+                "Channels 1, 2": "Каналы 1 и 2",
+                "Channels 3, 4": "Каналы 3 и 4",
                 "CCT1": "Лента CCT1",
                 "CCT2": "Лента CCT2",
                 "RGB Strip": "Лента RGB",
                 "Hue Changing": "Изменение оттенка RGB ленты",
-                "Channels 1_2_3_4": "Каналы 1_2_3_4",
+                "Channels 1, 2, 3, 4": "Каналы 1, 2, 3 и 4",
 
-                "Channels 1_2 Brightness": "Яркость каналов 1_2",
-                "Channels 3_4 Brightness": "Яркость каналов 3_4",
+                "Channels 1, 2 Brightness": "Яркость каналов 1 и 2",
+                "Channels 3, 4 Brightness": "Яркость каналов 3 и 4",
                 "CCT1 Temperature": "Цветовая температура ленты CCT1",
                 "CCT1 Brightness": "Яркость ленты CCT1",
                 "CCT2 Temperature": "Цветовая температура ленты CCT2",
@@ -1990,7 +2016,7 @@
                 "RGB Strip Saturation": "Насыщенность цвета RGB ленты (S)",
                 "RGB Strip Brightness": "Яркость RGB ленты (V)",
                 "Hue Changing Rate": "Время изменения оттенка (Hue) на 1° (мс)",
-                "Channels 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
+                "Channels 1, 2, 3, 4 Brightness": "Яркость каналов 1, 2, 3 и 4",
 
                 "Board Temperature": "Температура платы",
                 "Allowed Power": "Разрешенная мощность",
@@ -2019,12 +2045,21 @@
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
 
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
-                    {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
-                    {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
-                    "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
-                    "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
-                    "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
+                {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
+                "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
+                "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
+                "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
                 {% endfor -%}
+
+                "Encoders": "Работа с энкодерами",
+                "Not used": "Не используется",
+                "AB type": "2 сигнала, тип AB",
+
+                "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
+                "Turn Off the Channel": "Выключить канал",
+                "Keep Minimum Brightness": "Оставить минимальную яркость",
 
                 "Encoder Сonnection Type": "Тип подключения энкодера",
                 "Pulses per Step": "Количество импульсов на один шаг",
@@ -2143,35 +2178,17 @@
                 "sw_ch4_act_title" : "Канал 4",
                 "sw_ch12_act_title" : "Каналы 1 и 2",
                 "sw_ch34_act_title" : "Каналы 3 и 4",
-                "sw_ch1234_act_title" : "Каналы 1,2,3,4",
-                "sw_cct1_act_title" : "Каналы CCT1",
-                "sw_cct2_act_title" : "Каналы CCT2",
-                "sw_rgb_act_title" : "Каналы RGB",
-                "Channel RGB" : "Каналы RGB",
+                "sw_ch1234_act_title" : "Каналы 1, 2, 3 и 4",
+                "sw_cct1_act_title" : "Лента CCT1",
+                "sw_cct2_act_title" : "Лента CCT2",
+                "sw_rgb_act_title" : "Лента RGB",
                 "Channel RGB_H" : "Канал H",
                 "Channel RGB_S" : "Канал S",
                 "Channel RGB_V" : "Канал V",
-                "Action Hue" : "Действие с оттенком(H)",
+                "Action Hue" : "Действие с оттенком",
                 "Action Saturation" : "Действие с насыщенностью",
                 "Action Brightness" : "Действие с яркостью",
                 "Action Temperature" : "Действие с температурой",
-
-                "Encoders": "Работа с энкодерами",
-                "Encoder connection type": "Тип подключения энкодера",
-                "Not used": "Не используется",
-                "AB type": "2 сигнала, тип AB",
-                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
-                    "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
-                {% endfor -%}
-
-                "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
-                "Turn Off the Channel": "Выключить канал",
-                "Keep Minimum Brightness": "Оставить минимальную яркость",
-
-                "Channel 1_2 Brightness": "Яркость каналов 1_2",
-                "Channel 3_4 Brightness": "Яркость каналов 3_4",
-                "Channel 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
-                "Channel 1_2_3_4": "Каналы 1_2_3_4",
 
                 "Disabled": "Отключено",
                 "Enabled": "Включено"
