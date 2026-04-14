@@ -3,7 +3,7 @@
 {% set ENCODERS_NUMBER = 2 -%}
 {
     "title": "WB-LED_template_title",
-    "device_type": "WB-LED ENCODERS",
+    "device_type": "WB-LED-since-fw-3.8",
     "group": "g-wb",
     "hw": [
         {
@@ -580,7 +580,7 @@
             {
                 "id": "encoder_{{enc_num}}_mode",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "Encoder Сonnection Type",
+                "title": "Encoder Connection Type",
                 "description": "encoder_{{enc_num}}_mode_description",
                 "order": 1,
                 "address": {{376 + enc_num - 1}},
@@ -2053,15 +2053,15 @@
                 "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
                 {% endfor -%}
 
-                "Encoders": "Работа с энкодерами",
+                "Encoders": "Энкодеры",
                 "Not used": "Не используется",
-                "AB type": "2 сигнала, тип AB",
+                "AB type": "Тип AB",
 
                 "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
                 "Turn Off the Channel": "Выключить канал",
                 "Keep Minimum Brightness": "Оставить минимальную яркость",
 
-                "Encoder Сonnection Type": "Тип подключения энкодера",
+                "Encoder Connection Type": "Тип подключения энкодера",
                 "Pulses per Step": "Количество импульсов на один шаг",
                 "Controlled Channel": "Управляемый канал диммера",
                 "Step of Value Change": "Шаг изменения значения",
