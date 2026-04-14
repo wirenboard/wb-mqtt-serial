@@ -252,6 +252,7 @@
             },
             {# опишем варианты режимы работы входа: кнопка, переключатель с фиксацией -#}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((ch_number - 1) // 2) + 1 -%}
             {
                 "id": "input_{{ch_number}}_mode",
                 "title": "Input Mode",
@@ -264,7 +265,10 @@
                     "Switch"
                 ],
                 "default": 0,
-                "group": "g_input_{{ch_number}}"
+                "group": "g_input_{{ch_number}}" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
+                {% if cond_enc_num <= ENCODERS_NUMBER %}
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                {%- endif %}
             },
             {% endfor -%}
             {# опишем все варианты входа в группах входов, зависящих от режима работы диммера и типа входа (кнопка, переключатель с фиксацией) -#}
@@ -362,6 +366,8 @@
                 ] -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {% for name in range(4) -%}
             {
                 "id": "in{{in_num}}_{{name_actions[name]}}",
@@ -371,7 +377,7 @@
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}))",
+                "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}){{enc_cond}})",
                 "enum": {{ enum[dimmer_mode_number][name] }},
                 "enum_titles": [
                     {% for i_enum in enum[dimmer_mode_number][name] -%}
@@ -386,11 +392,13 @@
                     {% endfor %}
                 ]
             },
-            {%- endfor -%}
-            {%- endfor -%}
-            {%- endfor -%}
+            {% endfor %}
+            {%- endfor %}
+            {%- endfor %}
             {# опишем настройки для варианта входа кнопка с фиксацией -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {% for off_on in ["off", "on"] -%}
             {
                 "id": "in{{in_num}}_switch_{{off_on}}_action",
@@ -400,7 +408,7 @@
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": {{ (off_on == "on") | int }},
-                "condition": "(input_{{in_num}}_mode==1)",
+                "condition": "(input_{{in_num}}_mode==1){{enc_cond}}",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -445,6 +453,8 @@
             -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set enc_cond_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ enc_cond_num ~ '_mode==0)' if (enc_cond_num <= ENCODERS_NUMBER) else '' -%}
             {% for off_on in ["off", "on"]  -%}
             {
                 "id": "in{{in_num}}_switch_{{off_on}}_name",
@@ -454,7 +464,7 @@
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0))",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0){{enc_cond}})",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
@@ -477,7 +487,7 @@
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)))",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)){{enc_cond}})",
                 "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch_non_all[dimmer_mode_number] -%}
@@ -492,9 +502,9 @@
                     {% endfor %}
                 ]
             },
-            {%- endfor -%}
-            {%- endfor -%}
-            {%- endfor -%}
+            {% endfor %}
+            {%- endfor %}
+            {%- endfor %}
 
             {# Энкодеры -#}
             {# Все доступные для управления каналы -#}
@@ -660,7 +670,7 @@
                 ],
                 "condition": "(encoder_{{enc_num}}_mode==1)&&({{ch_min_br_behavior_conditions|join('||')}})"
             },
-            {%- endfor -%}
+            {% endfor %}
 
             {# опишем все W* варианты в группе выхода -#}
             {% set conditions = [
@@ -782,6 +792,8 @@
                время дебонса
                  -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {
                 "id": "in{{in_num}}_lp_hold_time",
                 "title": "lp_hold_time_title",
@@ -793,7 +805,7 @@
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1){{enc_cond}}"
             },
             {
                 "id": "in{{in_num}}_lp_repeat_time",
@@ -806,7 +818,7 @@
                 "default": 20,
                 "min": 5,
                 "max": 500,
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1){{enc_cond}}"
             },
             {
                 "id": "in{{in_num}}_secp_waiting_time",
@@ -819,7 +831,7 @@
                 "default": 300,
                 "min": 0,
                 "max": 2000,
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1){{enc_cond}}"
             },
             {
                 "id": "in{{in_num}}_debounce_time",
@@ -1678,6 +1690,7 @@
             },
             {
                 "name": "Encoder {{enc_num}} Steps Counter",
+                "description": "encoder_steps_counter_desc",
                 "enabled": true,
                 "reg_type": "press_counter",
                 "address": {{364 + (enc_num - 1)}},
@@ -1860,13 +1873,15 @@
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+                "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
 
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
                 {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
                 {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
                 "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
                 {% endfor -%}
+
+                "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
@@ -2064,7 +2079,7 @@
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
-                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
+                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. <br>При подключении энкодера рекомендуется установить значение 2-5 мс.",
 
                 {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
                 {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
@@ -2078,6 +2093,8 @@
                 "Encoders": "Энкодеры",
                 "Not used": "Не используется",
                 "AB type": "Тип AB",
+
+                "encoder_steps_counter_desc": "С учетом параметра «Количество импульсов на один шаг»",
 
                 "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
                 "Turn Off the Channel": "Выключить канал",
