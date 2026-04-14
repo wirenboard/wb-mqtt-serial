@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.233.1) stable; urgency=medium
+
+  * Fix minimum and maximum values setup in WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 Apr 2026 14:28:59 +0500
+
 wb-mqtt-serial (2.233.0) stable; urgency=medium
 
   * Add WB-MCM8-HV template
