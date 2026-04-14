@@ -2605,6 +2605,7 @@
             },
             {% endfor -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {
                 "name": "Input {{in_num}}",
                 "reg_type": "discrete",
@@ -2612,7 +2613,10 @@
                 "address": {{0 + in_num - 1}},
                 "type": "switch",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
+                {% if cond_enc_num <= ENCODERS_NUMBER %}
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                {%- endif %}
             },
             {
                 "name": "Input {{in_num}} Counter",
@@ -2621,9 +2625,11 @@
                 "address": {{32 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
+                {% if cond_enc_num <= ENCODERS_NUMBER %}
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                {%- endif %}
             },
-            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {
                 "name": "Input {{in_num}} Single Press Counter",
                 "enabled": false,
@@ -2632,9 +2638,11 @@
                 "address": {{464 + in_num -1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
-                {% if cond_enc_num <= ENCODERS_NUMBER %}
-                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                "group": "gg_in_{{in_num}}_channels",
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
                 {%- endif %}
             },
             {
@@ -2645,9 +2653,11 @@
                 "address": {{480 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
-                {% if cond_enc_num <= ENCODERS_NUMBER %}
-                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                "group": "gg_in_{{in_num}}_channels",
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
                 {%- endif %}
             },
             {
@@ -2658,9 +2668,11 @@
                 "address": {{496 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
-                {% if cond_enc_num <= ENCODERS_NUMBER %}
-                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                "group": "gg_in_{{in_num}}_channels",
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
                 {%- endif %}
             },
             {
@@ -2671,9 +2683,11 @@
                 "address": {{512 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
-                {% if cond_enc_num <= ENCODERS_NUMBER %}
-                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                "group": "gg_in_{{in_num}}_channels",
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
                 {%- endif %}
             },
             {% endfor -%}
