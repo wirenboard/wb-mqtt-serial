@@ -2,7 +2,7 @@ wb-mqtt-serial (2.232.8) stable; urgency=medium
 
   * MR templates: change defaults for timers, add new channels for commands
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 13 Mar 2026 17:13:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 13 Apr 2026 17:13:00 +0300
 
 wb-mqtt-serial (2.232.7) stable; urgency=medium
 
