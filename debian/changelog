@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.234.0) stable; urgency=medium
+
+  * Add WB-MS new template with multiple w1 support
+  * WB-M1W2 with multiple w1 template: fix artefacts
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 14 Apr 2026 23:34:00 +0700
+
 wb-mqtt-serial (2.233.1) stable; urgency=medium
 
   * Fix minimum and maximum values setup in WB-MAI11 template
