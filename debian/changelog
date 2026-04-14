@@ -1,9 +1,15 @@
+wb-mqtt-serial (2.233.1) stable; urgency=medium
+
+  * Fix minimum and maximum values setup in WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 Apr 2026 14:28:59 +0500
+
 wb-mqtt-serial (2.233.0) stable; urgency=medium
 
   * Add WB-MCM8-HV template
   * WB-MCM8 template: add bit mask of input states channel
 
- -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Sat, 11 Apr 2026 16:57:00 +0300
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 13 Apr 2026 16:57:00 +0300
 
 wb-mqtt-serial (2.232.7) stable; urgency=medium
 
