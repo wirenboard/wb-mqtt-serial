@@ -281,8 +281,8 @@
             {
                 "id": "in{{ ch_num }}_min",
                 "title": "minimum_value_title",
-                "group": "gg_in{{ ch_num }}_p_value",
-                "order": 2,
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_type==%s") }}"
@@ -290,8 +290,8 @@
             {
                 "id": "in{{ ch_num }}_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_p_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_type==%s") }}"
@@ -299,8 +299,8 @@
             {
                 "id": "in{{ ch_num }}_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_p_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "default": 1000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_type==%s") }}"
@@ -501,29 +501,29 @@
             {
                 "id": "in{{ ch_num }}_n_min",
                 "title": "minimum_value_title",
-                "group": "gg_in{{ ch_num }}_n_value",
-                "order": 2,
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
                 "default": 0,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_n_type==%s") }}"
             },
             {
                 "id": "in{{ ch_num }}_n_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_n_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 10000,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_n_type==%s") }}"
             },
             {
                 "id": "in{{ ch_num }}_n_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_n_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 1000,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_n_type==%s") }}"
             },
 {%- endfor %}
             {
