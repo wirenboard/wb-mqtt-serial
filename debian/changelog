@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.233.0) stable; urgency=medium
+
+  * Add new templates for WB-LED and WB-MRGB-D with encoders support
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Mon, 13 Apr 2026 17:53:00 +0300
+
 wb-mqtt-serial (2.232.7) stable; urgency=medium
 
   * Fix WB-MAI11 template
