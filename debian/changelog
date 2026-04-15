@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.234.0) stable; urgency=medium
+
+  * Add unixtime control type
+  * Add time sync for WB-MWAC v.2
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 15 Apr 2026 10:18:26 +0500
+
 wb-mqtt-serial (2.233.1) stable; urgency=medium
 
   * Fix minimum and maximum values setup in WB-MAI11 template
