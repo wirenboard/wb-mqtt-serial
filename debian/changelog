@@ -1,9 +1,16 @@
-wb-mqtt-serial (2.234.0) stable; urgency=medium
+wb-mqtt-serial (2.235.0) stable; urgency=medium
 
   * Add WB-MS new template with multiple w1 support
   * WB-M1W2 with multiple w1 template: fix artefacts
 
- -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 14 Apr 2026 23:34:00 +0700
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 15 Apr 2026 13:45:00 +0700
+
+wb-mqtt-serial (2.234.0) stable; urgency=medium
+
+  * Add unixtime control type
+  * Add time sync for WB-MWAC v.2
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 15 Apr 2026 10:18:26 +0500
 
 wb-mqtt-serial (2.233.1) stable; urgency=medium
 
