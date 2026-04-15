@@ -5,7 +5,7 @@
 {% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
 {
     "title": "WB-MS-v2_template_title",
-    "device_type": "tpl1_wb_ms_v2",
+    "device_type": "WB-MS-v2-since-fw-4.36",
     "group": "g-wb",
     "hw": [
         {
@@ -87,6 +87,11 @@
             {
                 "title": "Debug",
                 "id": "g_debug"
+            },
+            {
+                "title": "Built-in sensors",
+                "id": "gg_debug_built_in_sensors",
+                "group": "g_debug"
             },
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
@@ -553,7 +558,6 @@
                 "name": "TH Sensor Heater Cleaning Mode Enabled",
                 "description": "Only for SHT40 temperature and humidity sensor",
                 "address": 8,
-                "fw": "4.35.0",
                 "reg_type": "coil",
                 "type": "switch",
                 "enabled": false,
@@ -563,7 +567,6 @@
                 "name": "TH Sensor Heater Cleaning Mode Countdown",
                 "description": "Only for SHT40 temperature and humidity sensor",
                 "address": 365,
-                "fw": "4.35.0",
                 "reg_type": "input",
                 "type": "value",
                 "units": "s",
@@ -593,7 +596,6 @@
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
-                "fw": "4.35.0",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -658,7 +660,7 @@
                 "address": 371,
                 "type": "switch",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "VOC Version",
@@ -666,7 +668,7 @@
                 "address": 108,
                 "error_value": "0xFFFF",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "VOC Raw",
@@ -674,7 +676,7 @@
                 "address": 107,
                 "error_value": "0xFFFF",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "VOC Raw R4",
@@ -682,14 +684,14 @@
                 "address": 364,
                 "format": "u16",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "VOC Baseline",
                 "reg_type": "input",
                 "address": 106,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "VOC Equivalent CO2 Concentration",
@@ -700,7 +702,7 @@
                 "unsupported_value": "0xFFFE",
                 "units": "ppm",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "VOC Sensor Status",
@@ -710,7 +712,7 @@
                 "error_value": "0xFFFF",
                 "unsupported_value": "0xFFFE",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "Illuminance Mode",
@@ -718,21 +720,21 @@
                 "address": 103,
                 "readonly": true,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "Successful TH Readings",
                 "reg_type": "input",
                 "address": 101,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "Erroneous TH Readings",
                 "reg_type": "input",
                 "address": 102,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "Temperature Without Compensation",
@@ -744,7 +746,7 @@
                 "scale": 0.01,
                 "error_value": "0x7FFF",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             },
             {
                 "name": "Humidity Without Compensation",
@@ -756,7 +758,7 @@
                 "scale": 0.01,
                 "error_value": "0x7FFF",
                 "enabled": false,
-                "group": "g_debug"
+                "group": "gg_debug_built_in_sensors"
             }
         ],
         "translations": {
@@ -847,6 +849,7 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
+                "Built-in sensors": "Встроенные датчики",
                 "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
                 "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
                 "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",

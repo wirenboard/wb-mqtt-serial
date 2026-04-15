@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.235.0) stable; urgency=medium
+wb-mqtt-serial (2.236.0) stable; urgency=medium
 
   * Add WB-MS new template with multiple w1 support
   * WB-M1W2 with multiple w1 template: fix artefacts
 
  -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 15 Apr 2026 13:45:00 +0700
+
+wb-mqtt-serial (2.235.0) stable; urgency=medium
+
+  * WB-MR templates: change defaults for timers, add new channels for commands
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 15 Apr 2026 09:33:00 +0300
 
 wb-mqtt-serial (2.234.0) stable; urgency=medium
 
@@ -88,7 +94,7 @@ wb-mqtt-serial (2.230.1) stable; urgency=medium
 
 wb-mqtt-serial (2.230.0) stable; urgency=medium
 
-  * MR templates: Add timer functions
+  * WB-MR templates: Add timer functions
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 18 Mar 2026 09:36:00 +0300
 
@@ -307,7 +313,7 @@ wb-mqtt-serial (2.217.1) stable; urgency=medium
 
 wb-mqtt-serial (2.217.0) stable; urgency=medium
 
-  * MR templates: Add delays, change min time for curtains
+  * WB-MR templates: Add delays, change min time for curtains
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 19 Jan 2026 13:47:00 +0300
 
