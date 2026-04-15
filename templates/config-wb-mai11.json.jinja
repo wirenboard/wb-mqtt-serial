@@ -1,7 +1,7 @@
 {% set CHANNELS_NUMBER = 11 -%}
 {% set TYPES_WITH_GAIN = [1, 2, 3, 4, 256, 257, 5888, 0] -%}
-{% set TYPES_WITH_MIN = [5376, 5120, 0, 256] -%}
-{% set TYPES_WITH_MAX_1000 = [5376, 5120, 0, 256, 4864, 4865, 4866] -%}
+{% set TYPES_WITH_MIN = [5376, 5120, 0, 256, 4864, 4865, 4866] -%}
+{% set TYPES_WITH_MAX_1000 = [5376, 5120, 0, 256] -%}
 {% set TYPES_WITH_MAX_10000 = [4864, 4865, 4866] -%}
 {% set TYPES_WITH_SINGLE_RESISTANCE =  [2, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 5632] -%}
 {% set TYPES_WITH_SINGLE_CURRENT = [4864, 4865, 4866, 3] -%}
@@ -281,8 +281,8 @@
             {
                 "id": "in{{ ch_num }}_min",
                 "title": "minimum_value_title",
-                "group": "gg_in{{ ch_num }}_p_value",
-                "order": 2,
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_type==%s") }}"
@@ -290,8 +290,8 @@
             {
                 "id": "in{{ ch_num }}_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_p_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_type==%s") }}"
@@ -299,8 +299,8 @@
             {
                 "id": "in{{ ch_num }}_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_p_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "default": 1000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_type==%s") }}"
@@ -501,29 +501,29 @@
             {
                 "id": "in{{ ch_num }}_n_min",
                 "title": "minimum_value_title",
-                "group": "gg_in{{ ch_num }}_n_value",
-                "order": 2,
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
                 "default": 0,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN, "in%s_n_type==%s") }}"
             },
             {
                 "id": "in{{ ch_num }}_n_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_n_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 10000,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_10000, "in%s_n_type==%s") }}"
             },
             {
                 "id": "in{{ ch_num }}_n_max",
                 "title": "maximum_value_title",
-                "group": "gg_in{{ ch_num }}_n_value",
-                "order": 3,
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 1000,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MAX_1000, "in%s_n_type==%s") }}"
             },
 {%- endfor %}
             {
@@ -1066,7 +1066,9 @@
 {%- for ch_num in range(1, CHANNELS_NUMBER + 1) %}
                 "Input {{ ch_num }}": "IN {{ ch_num }}",
 {%- endfor %}
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime (s)",
+                "minimum_value_title": "Minimum value",
+                "maximum_value_title": "Maximum value"
             },
             "ru": {
                 "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
@@ -1202,7 +1204,9 @@
                 "ADC Loop Duration": "Время цикла опроса АЦП",
                 "Channel P": "Канал P",
                 "Channel N": "Канал N",
-                "Mode": "Режим"
+                "Mode": "Режим",
+                "minimum_value_title": "Минимальное пересчитанное значение",
+                "maximum_value_title": "Максимальное пересчитанное значение"
             }
         }
     }

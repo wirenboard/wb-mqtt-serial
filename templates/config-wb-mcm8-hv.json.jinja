@@ -1,0 +1,233 @@
+{% set title_en = title_en | default("WB-MCM8-HV (8 discrete 230V AC voltage presence detection inputs)") -%}
+{% set title_ru = title_ru | default("WB-MCM8-HV (8-канальный модуль-детектор наличия сетевого напряжения 230 В)") -%}
+{% set device_type = device_type | default("WB-MCM8-HV") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MCM8-HV") -%}
+{% set device_id = device_id | default("wb-mcm8-hv") -%}
+{% set has_signature = has_signature | default(true) -%}
+
+{% set INPUTS_NUMBER = 8 -%}
+{% set FIRST_INPUT = 1 -%}
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}
+    "hw": [
+        {
+            "signature": "WB-MCM8-HV"
+        }
+    ],
+{% endif %}
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{in_num}}",
+                "id": "g_in{{in_num}}"
+            },
+            {
+                "title": "input{{in_num}}_channels",
+                "id": "gg_in{{in_num}}_channels",
+                "group": "g_in{{in_num}}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "g_general"
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info"
+            }
+        ],
+
+        "parameters": {
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_debounce_ms": {
+                "title": "debounce_time_title",
+                "address": {{20 + in_num - 1}},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "g_in{{in_num}}",
+                "order": 2
+            },
+            {% endfor -%}
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input {{in_num}}",
+                "reg_type": "discrete",
+                "address": {{in_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num}} counter",
+                "reg_type": "input",
+                "format": "u32",
+                "address": {{60 + (in_num - 1) * 2}},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {% endfor -%}
+            {
+                "name": "Bit mask of input states",
+                "reg_type": "input",
+                "address": 8,
+                "group": "g_general",
+                "sporadic": true,
+                "enabled": false
+            },
+            {
+                "name": "Reset all counters",
+                "reg_type": "holding",
+                "address": 100,
+                "type": "pushbutton",
+                "group": "g_general"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "1.8.0",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Supply voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+
+                "debounce_time_title": "Debounce Time (ms)"
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}",
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}}": "Вход {{in_num}}",
+                "Input {{in_num}} counter": "Счетчик {{in_num}}",
+                {% endfor -%}
+
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+
+                "debounce_time_title": "Время подавления дребезга (мс)",
+                "Bit mask of input states": "Битовая маска состояний входов",
+                "Reset all counters": "Сбросить все счетчики",
+                "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
+                "FW Version": "Версия прошивки",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
+            }
+        }
+    }
+}
+
