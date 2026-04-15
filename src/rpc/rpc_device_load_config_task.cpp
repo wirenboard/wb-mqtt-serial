@@ -60,6 +60,9 @@ namespace
         }
         for (const auto& item: rpcRequest->DeviceTemplate->GetHardware()) {
             if (item.Signature == model) {
+
+                LOG(Warn) << "loadConfig device version is: " << version << " and template version is: " << item.Fw;
+
                 if (util::CompareVersionStrings(version, item.Fw) >= 0) {
                     return;
                 }
