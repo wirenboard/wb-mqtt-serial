@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.233.0) stable; urgency=medium
+
+  * Add copy of channel control registers with force-on function (MDM,
+    MAO4, LED)
+
+ -- Egor Panchenko <egor.panchenko@wirenboard.com>  Thu, 16 Apr 2026 17:07:50 +0300
+
 wb-mqtt-serial (2.232.7) stable; urgency=medium
 
   * Fix WB-MAI11 template
