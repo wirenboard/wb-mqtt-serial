@@ -5,11 +5,6 @@
 
 #define LOG(logger) ::logger.Log() << "[port] "
 
-namespace
-{
-    const auto MIN_SLEEP_SIENCE_LAST_INTERACTION = std::chrono::microseconds(250);
-}
-
 TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge)
     : BasePort(basePort),
       ModbusTcp(modbusTcp),
@@ -67,7 +62,7 @@ void TFeaturePort::SkipNoise()
 
 void TFeaturePort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
 {
-    BasePort->SleepSinceLastInteraction(std::max(us, MIN_SLEEP_SIENCE_LAST_INTERACTION));
+    BasePort->SleepSinceLastInteraction(us);
 }
 
 std::chrono::microseconds TFeaturePort::GetSendTimeBytes(double bytesNumber) const
