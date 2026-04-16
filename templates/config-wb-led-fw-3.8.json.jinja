@@ -8,7 +8,7 @@
     "hw": [
         {
             "signature": "WB-LED",
-            "fw": "3.8.0-rc1"           {#- TODO: Update to final version #}
+            "fw": "3.8.0-rc3"           {#- TODO: Update to final version #}
         }
     ],
     "device": {
@@ -373,7 +373,7 @@
                 "id": "in{{in_num}}_{{name_actions[name]}}",
                 "group": "gg_in_{{ in_num }}_{{name_actions[name]}}_action",
                 "title": "{{name_actions[name]}}_title",
-                "order": {{name}},
+                "order": 0,
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
                 "default": 0,
@@ -395,6 +395,27 @@
             {% endfor %}
             {%- endfor %}
             {%- endfor %}
+
+            {#- Шаг диммирования для одиночных и двойных нажатий -#}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
+            {% for name in ["sp", "dp"] -%}
+            {
+                "id": "in{{in_num}}_{{name}}_changing_step",
+                "group": "gg_in_{{ in_num }}_{{name}}_action",
+                "title": "Step of Value Change",
+                "order": 1,
+                "address": {{1200 + in_num - 1 + loop.index0 * 20}},
+                "reg_type": "holding",
+                "default": 1,
+                "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(in{{in_num}}_{{name}}>=36864)&&(in{{in_num}}_{{name}}<=49151){{enc_cond}})",
+                "min": 1,
+                "max": 10000
+            },
+            {% endfor %}
+            {%- endfor -%}
+
             {# опишем настройки для варианта входа кнопка с фиксацией -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}

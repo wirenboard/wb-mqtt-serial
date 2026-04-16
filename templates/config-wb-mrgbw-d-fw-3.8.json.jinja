@@ -8,7 +8,7 @@
     "hw": [
         {
             "signature": "WB-MRGBW-D",
-            "fw": "3.8.0-rc1"           {#- TODO: Update to final version #}
+            "fw": "3.8.0-rc3"           {#- TODO: Update to final version #}
         }
     ],
     "device": {
@@ -65,11 +65,13 @@
                 "id": "g_debug"
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% for name_action in ["sp", "lp", "dp", "slp"] -%}
             {
-                "title": "Actions",
-                "id": "gg_in_{{in_num}}_actions",
+                "title": "Action_{{name_action}}",
+                "id": "gg_in_{{in_num}}_{{name_action}}_action",
                 "group": "g_input_{{in_num}}"
             },
+            {% endfor -%}
             {
                 "title": "params",
                 "id": "gg_in_{{in_num}}_params",
@@ -777,9 +779,9 @@
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -815,9 +817,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -858,9 +860,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -896,9 +898,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -939,9 +941,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -972,9 +974,9 @@
             },
                         {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1008,9 +1010,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1041,9 +1043,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1077,9 +1079,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1112,9 +1114,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1151,9 +1153,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1186,9 +1188,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1225,9 +1227,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1258,9 +1260,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1294,9 +1296,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1327,9 +1329,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1363,9 +1365,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1388,9 +1390,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1418,9 +1420,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1443,9 +1445,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1473,9 +1475,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1503,9 +1505,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1536,9 +1538,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1566,9 +1568,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1599,9 +1601,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1634,9 +1636,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1673,9 +1675,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1708,9 +1710,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1747,9 +1749,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1777,9 +1779,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1810,9 +1812,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1840,9 +1842,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1873,9 +1875,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1905,9 +1907,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1941,9 +1943,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1973,9 +1975,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2009,9 +2011,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2053,9 +2055,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2105,9 +2107,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2149,9 +2151,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2201,9 +2203,9 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 0,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2221,9 +2223,9 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_lp_action",
                 "title": "lp_title",
-                "order": 2,
+                "order": 0,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2242,9 +2244,9 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_dp_action",
                 "title": "dp_title",
-                "order": 3,
+                "order": 0,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2262,9 +2264,9 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{in_num}}_slp_action",
                 "title": "slp_title",
-                "order": 4,
+                "order": 0,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -2282,6 +2284,27 @@
                 ]
             },
             {% endfor -%}
+
+            {#- Шаг диммирования для одиночных и двойных нажатий -#}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
+            {% for name in ["sp", "dp"] -%}
+            {
+                "id": "in{{in_num}}_{{name}}_changing_step",
+                "group": "gg_in_{{ in_num }}_{{name}}_action",
+                "title": "Step of Value Change",
+                "order": 1,
+                "address": {{1200 + in_num - 1 + loop.index0 * 20}},
+                "reg_type": "holding",
+                "default": 1,
+                "condition": "((in{{in_num}}_{{name}}>=36864)&&(in{{in_num}}_{{name}}<=49151){{enc_cond}})",
+                "min": 1,
+                "max": 10000
+            },
+            {% endfor %}
+            {%- endfor -%}
+
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
@@ -2882,6 +2905,11 @@
                 "Dimmer Mode": "Dimmer Mode",
                 "dimmer_mode_description": "Select the operating mode before setting the dimmer",
 
+                "Action_sp" : "Action short press",
+                "Action_lp" : "Action long press",
+                "Action_dp" : "Action double press",
+                "Action_slp" : "Action short and after long press",
+
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -3070,6 +3098,11 @@
 
                 "Dimmer Mode": "Режим работы",
                 "dimmer_mode_description": "Выберите режим перед настройкой диммера",
+
+                "Action_sp" : "Действие для короткого нажатия",
+                "Action_lp" : "Действие для длинного нажатия",
+                "Action_dp" : "Действие для двойного нажатия",
+                "Action_slp" : "Действие для короткого, затем длинного нажатия",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки (мс/ед)",
