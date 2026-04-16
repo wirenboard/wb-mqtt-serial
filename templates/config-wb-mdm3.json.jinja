@@ -626,6 +626,15 @@
                 "sporadic": true
             },
             {
+                "name": "Channel {{ch_number + 1}} with Auto On",
+                "reg_type": "holding",
+                "address": {{132 + ch_number}},
+                "type": "range",
+                "max": 100,
+                "group": "channel_{{ch_number + 1}}",
+                "sporadic": true
+            },
+            {
                 "name": "Channel {{ch_number + 1}} Raw Duty (us)",
                 "reg_type": "holding",
                 "address": {{90 + ch_number}},
@@ -757,6 +766,10 @@
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "g_power_up_behaviour_description": "Actions when Power is On",
 
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Channel {{ch_number}} with Auto On": "Channel {{ch_number}} (Auto-Enable)",
+                {% endfor -%}
+
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
@@ -792,6 +805,7 @@
 
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
+                "Channel {{ch_number}} with Auto On": "Канал {{ch_number}} с автовключением",
                 "Channel {{ch_number}} Dimming Curve": "Кривая диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Dimming Type": "Режим диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Min Value (us)": "Нижний порог диммирования канала {{ch_number}} (мкс)",
