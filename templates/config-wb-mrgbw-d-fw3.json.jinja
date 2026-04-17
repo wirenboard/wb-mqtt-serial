@@ -173,6 +173,138 @@
                 "min": 1,
                 "max": 240
             },
+            {
+                "id": "ch_w1_auto_change_period_ms",
+                "title": "Channel 1 (B) Auto-Change Period (ms)",
+                "address": 160,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            },
+            {
+                "id": "ch_w2_auto_change_period_ms",
+                "title": "Channel 2 (R) Auto-Change Period (ms)",
+                "address": 161,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            },
+            {
+                "id": "ch_w3_auto_change_period_ms",
+                "title": "Channel 3 (G) Auto-Change Period (ms)",
+                "address": 162,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
+            },
+            {
+                "id": "ch_w4_auto_change_period_ms",
+                "title": "Channel 4 (W) Auto-Change Period (ms)",
+                "address": 163,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+            },
+            {
+                "id": "ch_w1_w2_auto_change_period_ms",
+                "title": "Channels 1_2 (B_R) Auto-Change Period (ms)",
+                "address": 164,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
+            },
+            {
+                "id": "ch_w3_w4_auto_change_period_ms",
+                "title": "Channels 3_4 (G_W) Auto-Change Period (ms)",
+                "address": 165,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
+            },
+            {
+                "id": "ch_w1_w2_w3_w4_auto_change_period_ms",
+                "title": "Channels 1_2_3_4 Auto-Change Period (ms)",
+                "address": 166,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==512)"
+            },
+            {
+                "id": "ch_cct1_temp_auto_change_period_ms",
+                "title": "CCT1 Temperature Auto-Change Period (ms)",
+                "address": 167,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            },
+            {
+                "id": "ch_cct1_value_auto_change_period_ms",
+                "title": "CCT1 Brightness Auto-Change Period (ms)",
+                "address": 168,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            },
+            {
+                "id": "ch_cct2_temp_auto_change_period_ms",
+                "title": "CCT2 Temperature Auto-Change Period (ms)",
+                "address": 169,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            },
+            {
+                "id": "ch_cct2_value_auto_change_period_ms",
+                "title": "CCT2 Brightness Auto-Change Period (ms)",
+                "address": 170,
+                "reg_type": "holding",
+                "fw": "3.7.1",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_out_params",
+                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "id": "in{{in_num}}_lp_hold_time",
@@ -2205,6 +2337,26 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "Channel 1 (B) Auto-Increase",
+                "address": 272,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channel 1 (B) Auto-Decrease",
+                "address": 304,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "Channel 2 (R)",
                 "address": 1,
                 "type": "switch",
@@ -2222,6 +2374,26 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channel 2 (R) Auto-Increase",
+                "address": 273,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channel 2 (R) Auto-Decrease",
+                "address": 305,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
@@ -2247,6 +2419,26 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "Channels 1_2 (B_R) Auto-Increase",
+                "address": 276,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channels 1_2 (B_R) Auto-Decrease",
+                "address": 308,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "CCT1 (channels 1_2)",
                 "address": 7,
                 "type": "switch",
@@ -2268,6 +2460,26 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "CCT1 Temperature Auto-Increase",
+                "address": 279,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "CCT1 Temperature Auto-Decrease",
+                "address": 311,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "CCT1 Brightness",
                 "address": 2008,
                 "type": "range",
@@ -2276,6 +2488,26 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "CCT1 Brightness Auto-Increase",
+                "address": 280,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "CCT1 Brightness Auto-Decrease",
+                "address": 312,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
@@ -2301,6 +2533,26 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "Channel 3 (G) Auto-Increase",
+                "address": 274,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channel 3 (G) Auto-Decrease",
+                "address": 306,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "Channels 1_2_3_4",
                 "address": 6,
                 "type": "switch",
@@ -2318,6 +2570,26 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==512)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channels 1_2_3_4 Auto-Increase",
+                "address": 278,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==512)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channels 1_2_3_4 Auto-Decrease",
+                "address": 310,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
                 "condition": "(dimmer_mode==512)"
             },
             {
@@ -2343,6 +2615,26 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "CCT2 Temperature Auto-Increase",
+                "address": 281,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "CCT2 Temperature Auto-Decrease",
+                "address": 313,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "CCT2 Brightness",
                 "address": 2010,
                 "type": "range",
@@ -2351,6 +2643,26 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "CCT2 Brightness Auto-Increase",
+                "address": 282,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "CCT2 Brightness Auto-Decrease",
+                "address": 314,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
@@ -2385,6 +2697,26 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "Channels 3_4 (G_W) Auto-Increase",
+                "address": 277,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channels 3_4 (G_W) Auto-Decrease",
+                "address": 309,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "Channel 4 (W) Brightness",
                 "address": 2003,
                 "type": "range",
@@ -2392,6 +2724,26 @@
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channel 4 (W) Auto-Increase",
+                "address": 275,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
+                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "Channel 4 (W) Auto-Decrease",
+                "address": 307,
+                "type": "switch",
+                "reg_type": "coil",
+                "fw": "3.7.1",
+                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             {% for ch_number, ch_name in CHANNELS  -%}
@@ -2776,6 +3128,41 @@
                 "RGB Strip Brightness": "Яркость RGB ленты (V)",
                 "Hue Changing Rate": "Время изменения оттенка (Hue) на 1° (мс)",
                 "Channels 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
+
+                "Channel 1 (B) Auto-Increase": "Авто-увеличение канала 1 (B)",
+                "Channel 1 (B) Auto-Decrease": "Авто-уменьшение канала 1 (B)",
+                "Channel 2 (R) Auto-Increase": "Авто-увеличение канала 2 (R)",
+                "Channel 2 (R) Auto-Decrease": "Авто-уменьшение канала 2 (R)",
+                "Channel 3 (G) Auto-Increase": "Авто-увеличение канала 3 (G)",
+                "Channel 3 (G) Auto-Decrease": "Авто-уменьшение канала 3 (G)",
+                "Channel 4 (W) Auto-Increase": "Авто-увеличение канала 4 (W)",
+                "Channel 4 (W) Auto-Decrease": "Авто-уменьшение канала 4 (W)",
+                "Channels 1_2 (B_R) Auto-Increase": "Авто-увеличение каналов 1_2 (B_R)",
+                "Channels 1_2 (B_R) Auto-Decrease": "Авто-уменьшение каналов 1_2 (B_R)",
+                "Channels 3_4 (G_W) Auto-Increase": "Авто-увеличение каналов 3_4 (G_W)",
+                "Channels 3_4 (G_W) Auto-Decrease": "Авто-уменьшение каналов 3_4 (G_W)",
+                "Channels 1_2_3_4 Auto-Increase": "Авто-увеличение каналов 1_2_3_4",
+                "Channels 1_2_3_4 Auto-Decrease": "Авто-уменьшение каналов 1_2_3_4",
+                "CCT1 Temperature Auto-Increase": "Авто-увеличение цветовой температуры CCT1",
+                "CCT1 Temperature Auto-Decrease": "Авто-уменьшение цветовой температуры CCT1",
+                "CCT1 Brightness Auto-Increase": "Авто-увеличение яркости CCT1",
+                "CCT1 Brightness Auto-Decrease": "Авто-уменьшение яркости CCT1",
+                "CCT2 Temperature Auto-Increase": "Авто-увеличение цветовой температуры CCT2",
+                "CCT2 Temperature Auto-Decrease": "Авто-уменьшение цветовой температуры CCT2",
+                "CCT2 Brightness Auto-Increase": "Авто-увеличение яркости CCT2",
+                "CCT2 Brightness Auto-Decrease": "Авто-уменьшение яркости CCT2",
+
+                "Channel 1 (B) Auto-Change Period (ms)": "Период авто-изменения канала 1 (B) (мс)",
+                "Channel 2 (R) Auto-Change Period (ms)": "Период авто-изменения канала 2 (R) (мс)",
+                "Channel 3 (G) Auto-Change Period (ms)": "Период авто-изменения канала 3 (G) (мс)",
+                "Channel 4 (W) Auto-Change Period (ms)": "Период авто-изменения канала 4 (W) (мс)",
+                "Channels 1_2 (B_R) Auto-Change Period (ms)": "Период авто-изменения каналов 1_2 (B_R) (мс)",
+                "Channels 3_4 (G_W) Auto-Change Period (ms)": "Период авто-изменения каналов 3_4 (G_W) (мс)",
+                "Channels 1_2_3_4 Auto-Change Period (ms)": "Период авто-изменения каналов 1_2_3_4 (мс)",
+                "CCT1 Temperature Auto-Change Period (ms)": "Период авто-изменения цветовой температуры CCT1 (мс)",
+                "CCT1 Brightness Auto-Change Period (ms)": "Период авто-изменения яркости CCT1 (мс)",
+                "CCT2 Temperature Auto-Change Period (ms)": "Период авто-изменения цветовой температуры CCT2 (мс)",
+                "CCT2 Brightness Auto-Change Period (ms)": "Период авто-изменения яркости CCT2 (мс)",
 
                 "Channel 1 (B) Raw PWM": "Прямое управление ШИМ канала 1 (B)",
                 "Channel 2 (R) Raw PWM": "Прямое управление ШИМ канала 2 (R)",
