@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.236.0) stable; urgency=medium
+
+  * Add WB-MS new template with multiple w1 support
+  * WB-M1W2 with multiple w1 template: fix artefacts
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 15 Apr 2026 13:45:00 +0700
+
 wb-mqtt-serial (2.235.0) stable; urgency=medium
 
   * WB-MR templates: change defaults for timers, add new channels for commands
