@@ -19,7 +19,6 @@ namespace
 {
     const chrono::milliseconds NoiseTimeout(1);
     const chrono::milliseconds ContinuousNoiseTimeout(100);
-    const chrono::microseconds MinSleepSinceLastInteraction(250);
     const int ContinuousNoiseReopenNumber = 3;
 }
 
@@ -246,6 +245,10 @@ void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& 
 {
     auto now = chrono::steady_clock::now();
     auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
-    std::this_thread::sleep_for(std::max(us, MinSleepSinceLastInteraction) - delta);
+
+    // receiver triggers on the first stop bit, but transmitter may still be sending second stop bit
+    // wait at least 1 bit time to avoid bus collision issues
+    std::this_thread::sleep_for(std::max(us, GetSendTimeBits(1)) - delta);
+
     LOG(Debug) << GetDescription(false) << ": Sleep " << us.count() << " us";
 }
