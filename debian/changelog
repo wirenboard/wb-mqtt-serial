@@ -1,7 +1,8 @@
 wb-mqtt-serial (2.237.0) stable; urgency=medium
 
   * Add minimal sleep interval between local serial port transactions (250us)
-  * Fix device/LoadConfig RPC common device settings bug
+  * Fix device RPC common device settings bug
+  * Fix firmware update RPC port settings bug
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 17 Apr 2026 13:38:27 +0300
 
