@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.237.0) stable; urgency=medium
+
+  * Add WB-MIR new template with multiple w1 support
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Fri, 17 Apr 2026 19:30:00 +0700
+
 wb-mqtt-serial (2.236.0) stable; urgency=medium
 
   * Add WB-MS new template with multiple w1 support
