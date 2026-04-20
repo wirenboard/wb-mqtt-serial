@@ -96,7 +96,6 @@ namespace
                                    infoData);
         auto responsePduSize =
             Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, FwRegisters::FW_INFO_BLOCK_COUNT);
-        port.SleepSinceLastInteraction(std::chrono::microseconds(0));
         traits.Transaction(port, slaveId, pdu, responsePduSize, infoBlockTimeout, frameTimeout);
     }
 
@@ -113,7 +112,6 @@ namespace
                                            regCount,
                                            block);
                 auto responsePduSize = Modbus::CalcResponsePDUSize(Modbus::FN_WRITE_MULTIPLE_REGISTERS, regCount);
-                port.SleepSinceLastInteraction(std::chrono::microseconds(0));
                 auto res =
                     traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
                 Modbus::ExtractResponseData(Modbus::FN_WRITE_MULTIPLE_REGISTERS, res.Pdu);
@@ -261,7 +259,6 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
                                    {});
         auto responsePduSize =
             Modbus::CalcResponsePDUSize(Modbus::FN_READ_DISCRETE, FwRegisters::COMPONENTS_PRESENCE_COUNT);
-        port.SleepSinceLastInteraction(std::chrono::microseconds(0));
         auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
         auto presenceData = Modbus::ExtractResponseData(Modbus::FN_READ_DISCRETE, res.Pdu);
 
