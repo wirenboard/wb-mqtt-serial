@@ -200,10 +200,6 @@ TReadFrameResult TFileDescriptorPort::ReadFrame(uint8_t* buf,
         throw TResponseTimeoutException();
     }
 
-    // receiver triggers on the first stop bit, but transmitter may still be sending second stop bit
-    // wait 1 bit time to avoid bus collision issues
-    std::this_thread::sleep_for(GetSendTimeBits(1));
-
     LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
