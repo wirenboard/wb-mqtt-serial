@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.238.0) stable; urgency=medium
+
+  * Fix second stop bit transactions collision bug
+  * Fix device RPC common device settings bug
+  * Fix firmware update RPC port settings bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 20 Apr 2026 11:16:57 +0300
+
 wb-mqtt-serial (2.237.0) stable; urgency=medium
 
   * Add WB-MIR new template with multiple w1 support
