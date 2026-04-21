@@ -214,6 +214,7 @@
         "connected_to_mge": {
           "type": "boolean",
           "title": "This port is connected to WB-MGE v.3 gateway",
+          "description": "connected_to_mge_desc",
           "default": false,
           "format": "checkbox",
           "propertyOrder": 3,
@@ -311,7 +312,8 @@
       "connection_timeout_description": "Used for disconnect detection. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between publishing the same values to MQTT. Zero means the values are published every time they read from the device. Negative value means the values are published only when they change. In any case, the values are published only after reading them from the device. If the values are not read, no out-of-turn publication is made.",
-      "rate_limit_desc": "If not set, 100 reads for WB6 and 800 for WB7/WB8 are used to reduce the load on the processor"
+      "rate_limit_desc": "If not set, 100 reads for WB6 and 800 for WB7/WB8 are used to reduce the load on the processor",
+      "connected_to_mge_desc": "Allows using Fast Modbus for devices connected to the gateway"
     },
     "ru": {
       "Enable port": "Включить порт",
@@ -339,7 +341,8 @@
       "Read rate limit (ms)": "Читать не чаще (мс)",
       "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
       "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
-      "rate_limit_desc": "Если не задано, то используется 100 чтений для WB6 и 800 для WB7/WB8, чтобы снизить нагрузку на процессор"
-    }
+      "rate_limit_desc": "Если не задано, то используется 100 чтений для WB6 и 800 для WB7/WB8, чтобы снизить нагрузку на процессор",
+      "connected_to_mge_desc": "Разрешает использование Быстрого Модбаса для устройств, подключенных к шлюзу"
+     }
   }
 }

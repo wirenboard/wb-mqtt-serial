@@ -1,28 +1,34 @@
-{% set INPUTS_NUMBER = 2 -%}
+{% set FIRST_ROM = 1 -%}
+{% set LAST_ROM = 80 -%}
+{% set INPUTS_NUMBER = 1 -%}
 {% set FIRST_INPUT = 1 -%}
 {% set SENSORS_NUMBER = 20 -%}
 {% set FIRST_SENSOR = 1 -%}
 {% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
 {
-    "title": "WB-M1W2_v3_template_title",
-    "device_type": "WB-M1W2 v.3 MULTIPLE W1",
+    "title": "WB-MIR-v.3_template_title",
+    "device_type": "WB-MIR-v3-since-fw-4.35",
     "group": "g-wb",
     "hw": [
         {
-            "signature": "WB-M1W2 v.3",
+            "signature": "WB-MIR v.3",
             "fw": "4.35.0"
         }
     ],
     "device": {
-        "name": "WB-M1W2",
-        "id": "wb-m1w2",
+        "name": "WB-MIR v.3",
+        "id": "wb-mir_v3",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "enable_wb_continuous_read": true,
         "groups": [
+            {
+                "title": "IR Commands",
+                "id": "ir_commands"
+            },
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Input {{in_num}}",
+                "title": "Input",
                 "id": "g_in{{in_num}}"
             },
             {
@@ -37,7 +43,7 @@
                 "group": "g_in{{in_num}}"
             },
             {
-                "title": "input{{in_num}}_channels",
+                "title": "input_channels",
                 "id": "gg_in{{in_num}}_channels",
                 "group": "g_in{{in_num}}",
                 "ui_options": {
@@ -63,11 +69,16 @@
             },
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "title": "1-Wire Bus {{in_num}}",
+                "title": "1-Wire Bus",
                 "id": "gg_w1_bus{{in_num}}_channels",
                 "group": "g_w1_bus"
             },
             {% endfor -%}
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
             {
                 "title": "General",
                 "id": "g_general"
@@ -82,17 +93,17 @@
             },
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "title": "1-Wire Bus {{in_num}}",
+                "title": "1-Wire Bus",
                 "id": "gg_debug_bus{{in_num}}_channels",
                 "group": "g_debug"
             }{% if not loop.last %},{% endif %}
             {% endfor -%}
         ],
+
         "parameters": {
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
-                "fw": "4.32.0",
                 "address": {{275 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -153,32 +164,41 @@
             },
             {% endfor -%}
             {% endfor -%}
-            "baud_rate": {
-                "title": "Baud rate",
-                "description": "baud_rate_description",
-                "address": 110,
+            "safety_timer_s": {
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 1,
                 "reg_type": "holding",
-                "enum": [96, 192, 384, 576, 1152],
-                "default": 96,
-                "enum_titles": [
-                    "9600",
-                    "19200",
-                    "38400",
-                    "57600",
-                    "115200"
-                ],
-                "group": "g_general",
-                "order": 1
+                "min": 1,
+                "max": 65534,
+                "default": 10
             },
-            "disable_indication": {
-                "title": "Status LED",
-                "address": 130,
+            "safety_action": {
+                "title": "Safety Action",
+                "group": "g_safety",
+                "address": 956,
+                "order": 2,
                 "reg_type": "holding",
                 "enum": [0, 1],
-                "enum_titles": ["Enabled", "Disabled"],
                 "default": 0,
-                "group": "g_general",
-                "order": 4
+                "enum_titles": [
+                    "No Action",
+                    "Play IR Command"
+                ]
+            },
+            "safety_command": {
+                "title": "Safety Command",
+                "group": "g_safety",
+                "description": "safety_command_description",
+                "address": 957,
+                "order": 3,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 80,
+                "default": 1,
+                "condition": "safety_action==1"
             },
             "temperature_readings_period_s": {
                 "title": "temperature_readings_period_s_title",
@@ -200,12 +220,135 @@
                 "default": 1,
                 "group": "g_w1_bus",
                 "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
+            },
+            "rs485_response_delay_ms": {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "g_general",
+                "order": 2
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "g_general",
+                "order": 3
             }
         },
+
         "channels": [
+            {
+                "name": "Command size in RAM",
+                "reg_type": "input",
+                "address": 5520,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Play from RAM",
+                "reg_type": "coil",
+                "address": 5002,
+                "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Record to RAM",
+                "id": "Learn to RAM",
+                "reg_type": "coil",
+                "address": 5001,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+            {% set enabled = "true" if rom < 11 else "false" -%}
+            {
+                "name": "Play command {{ rom }}",
+                "id": "Play from ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5100 + rom - 1 }},
+                "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {% endfor -%}
+
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+            {% set enabled = "true" if rom < 11 else "false" -%}
+            {
+                "name": "Command {{ rom }} recording",
+                "id": "Learn to ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5300 + rom - 1 }},
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {
+                "name": "Command {{ rom }} size",
+                "id": "ROM{{ rom }} size",
+                "reg_type": "input",
+                "address": {{ 5400 + rom - 1 }},
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {% endfor -%}
+
+            {
+                "name": "Reset all commands",
+                "id": "Reset all ROM",
+                "reg_type": "coil",
+                "address": 5000,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play a command",
+                "id": "Play from BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5500,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Recording a command",
+                "id": "Learn to BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5502,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "name": "Input {{in_num}}",
+                "name": "Input",
                 "reg_type": "discrete",
                 "address": {{in_num - 1}},
                 "type": "switch",
@@ -214,7 +357,7 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "Input {{in_num}} counter",
+                "name": "Input Counter",
                 "reg_type": "input",
                 "format": "u16",
                 "address": {{277 + in_num - 1}},
@@ -224,8 +367,8 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "Input {{in_num}} Single Press Counter",
-                "reg_type": "press_counter",
+                "name": "Input Single Press Counter",
+                "reg_type": "input",
                 "address": {{464 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
@@ -233,8 +376,8 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "Input {{in_num}} Long Press Counter",
-                "reg_type": "press_counter",
+                "name": "Input Long Press Counter",
+                "reg_type": "input",
                 "address": {{480 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
@@ -242,8 +385,8 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "Input {{in_num}} Double Press Counter",
-                "reg_type": "press_counter",
+                "name": "Input Double Press Counter",
+                "reg_type": "input",
                 "address": {{496 + in_num - 1}},
                 "type": "value",
                 "enabled": false,
@@ -252,8 +395,8 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "Input {{in_num}} Shortlong Press Counter",
-                "reg_type": "press_counter",
+                "name": "Input Shortlong Press Counter",
+                "reg_type": "input",
                 "address": {{512 + in_num - 1}},
                 "type": "value",
                 "enabled": false,
@@ -263,7 +406,7 @@
             },
             {
                 "id": "External Sensor {{in_num}}",
-                "name": "Input {{in_num}} Temperature",
+                "name": "Input Temperature",
                 "reg_type": "input",
                 "address": {{7 + in_num - 1}},
                 "type": "value",
@@ -277,7 +420,7 @@
             },
             {
                 "id": "External Sensor {{in_num}} OK",
-                "name": "Input {{in_num}} Sensor OK",
+                "name": "Input Sensor OK",
                 "reg_type": "discrete",
                 "address": {{16 + in_num - 1}},
                 "type": "switch",
@@ -287,7 +430,7 @@
             },
             {
                 "id": "ext_sens{{in_num}}_last_valid_temp",
-                "name": "Input {{in_num}} Last Valid Temp",
+                "name": "Input Last Valid Temp",
                 "reg_type": "input",
                 "address": {{20 + (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -302,7 +445,7 @@
             },
             {
                 "id": "ext_sens{{in_num}}_presense",
-                "name": "Input {{in_num}} Sensor Presense",
+                "name": "Input Sensor Presense",
                 "reg_type": "input",
                 "address": {{376 + (in_num - FIRST_INPUT)}},
                 "type": "switch",
@@ -313,7 +456,7 @@
             },
             {
                 "id": "ext_sens{{in_num}}_supply",
-                "name": "Input {{in_num}} Sensor Supply",
+                "name": "Input Sensor Supply",
                 "reg_type": "input",
                 "address": {{448 + (in_num - FIRST_INPUT)}},
                 "enum": [0, 1],
@@ -329,7 +472,7 @@
             },
             {
                 "id": "bus{{in_num}}_busy_error_counter",
-                "name": "Busy Error Counter On The Bus {{in_num}}",
+                "name": "Busy Error Counter On The Bus",
                 "reg_type": "input",
                 "address": {{456 + (in_num - FIRST_INPUT)}},
                 "enabled": false,
@@ -340,7 +483,7 @@
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
                 "id": "bus{{in_num}}_temp{{sens_num}}",
-                "name": "Temperature {{in_num}}:{{sens_num}}",
+                "name": "Temperature {{sens_num}}",
                 "reg_type": "input",
                 "address": {{1536 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -354,7 +497,7 @@
             },
             {
                 "id": "bus{{in_num}}_sens{{sens_num}}_ok",
-                "name": "Sensor {{in_num}}:{{sens_num}} OK",
+                "name": "Sensor {{sens_num}} OK",
                 "reg_type": "discrete",
                 "address": {{128 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "switch",
@@ -364,7 +507,7 @@
             },
             {
                 "id": "bus{{in_num}}_last_valid_temp{{sens_num}}",
-                "name": "Last Valid Temp {{in_num}}:{{sens_num}}",
+                "name": "Last Valid Temp {{sens_num}}",
                 "reg_type": "input",
                 "address": {{3584 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "value",
@@ -380,7 +523,7 @@
             {% endfor -%}
             {
                 "id": "bus{{in_num}}_new_sens_count",
-                "name": "New Sensors On The Bus {{in_num}}",
+                "name": "New Sensors On The Bus",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3328 + (in_num - FIRST_INPUT)}},
@@ -391,7 +534,7 @@
             },
             {
                 "id": "bus{{in_num}}_saved_sens_count",
-                "name": "New Sensors Saved On The Bus {{in_num}}",
+                "name": "New Sensors Saved On The Bus",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3336 + (in_num - FIRST_INPUT)}},
@@ -403,7 +546,7 @@
             },
             {
                 "id": "bus{{in_num}}_save_new_sens",
-                "name": "Save New Sensors On The Bus {{in_num}}",
+                "name": "Save New Sensors On The Bus",
                 "reg_type": "coil",
                 "address": {{24 + (in_num - FIRST_INPUT)}},
                 "type": "pushbutton",
@@ -414,7 +557,7 @@
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
                 "id": "bus{{in_num}}_new_sens{{sens_num}}_id",
-                "name": "New Sensor {{in_num}}:{{sens_num}} ID",
+                "name": "New Sensor {{sens_num}} ID",
                 "reg_type": "input",
                 "format": "u64",
                 "address": {{3680 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
@@ -427,7 +570,7 @@
             {% endfor -%}
             {
                 "id": "bus{{in_num}}_found_sens_count",
-                "name": "Sensors Found On The Bus {{in_num}}",
+                "name": "Sensors Found On The Bus",
                 "reg_type": "input",
                 "format": "u8",
                 "address": {{3344 + (in_num - FIRST_INPUT)}},
@@ -440,7 +583,7 @@
             {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
             {
                 "id": "bus{{in_num}}_found_sens{{sens_num}}_id",
-                "name": "Found Sensor {{in_num}}:{{sens_num}} ID",
+                "name": "Found Sensor {{sens_num}} ID",
                 "reg_type": "input",
                 "format": "u64",
                 "address": {{4352 + 4 * (sens_num - FIRST_SENSOR) + 4 * SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
@@ -468,10 +611,10 @@
                 "
             },
             {
-                "name": "Serial",
+                "name": "Serial NO",
+                "type": "text",
                 "reg_type": "input",
                 "address": 270,
-                "type": "text",
                 "format": "u32",
                 "group": "g_hw_info"
             },
@@ -482,7 +625,6 @@
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
-                "fw": "4.34.0",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -497,12 +639,12 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Supply Voltage",
+                "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
+                "scale": 0.001,
                 "type": "value",
                 "units": "V",
-                "scale": 0.001,
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -510,19 +652,9 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
+                "format": "u32",
                 "type": "value",
                 "units": "s",
-                "format": "u32",
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "Minimum Voltage Since Startup",
-                "reg_type": "input",
-                "address": 122,
-                "scale": 0.001,
-                "type": "value",
-                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -558,15 +690,17 @@
                 "group": "g_hw_info"
             }
         ],
+
         "translations": {
             "en": {
+                "WB-MIR-v.3_template_title": "WB-MIR v.3 fw4.35 (Modbus IR remote control)",
+
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
-                "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
+                "temperature_readings_period_s_title": "Temperature sensor poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
                 "w1_sensors_description": "Adding new sensors:<br>1) Make sure that the new sensors are connected to the bus<br>2) Click the 'Save New Sensors On The Bus' button on the device widget<br>3) Click the 'Review config' button<br>4) Click the 'Save config' button<br>New sensors will be saved in free cells.<br><br>If the sensor is not used, specify '0'.",
 
-                "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-channel temperature measurement and pulse-counter module)",
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
@@ -575,34 +709,65 @@
 
                 "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
-                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50"
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
+
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling for the specified time",
+                "poll_timeout_description": "Time without modbus polling after which safety mode will be activated",
+                "safety_command_description": "IR Command that will be played in safety mode"
             },
             "ru": {
-                "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-канальный преобразователь для термометров 1-Wire с функцией счётных входов)",
+                "WB-MIR-v.3_template_title": "WB-MIR v.3 fw4.35 (Modbus-модуль ИК-управления)",
                 "1-Wire Bus": "Шина 1-Wire",
-                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
-                "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} counter": "Счетчик {{in_num}}",
-                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
-                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
-                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
-                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
-                "Input {{in_num}} Temperature": "Температура на входе {{in_num}}",
-                "Input {{in_num}} Sensor OK": "Датчик на входе {{in_num}} подключен",
-                {% endfor -%}
-
+                "IR Commands": "ИК-команды",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
-                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
-                "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
-                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
-                "w1_sensors_description": "Добавление новых датчиков:<br>1) убедитесь, что новые датчики подключены на шину;<br>2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>3) нажмите кнопку «Перечитать настройки»;<br>4) нажмите кнопку «Сохранить настройки».<br>Новые датчики будут сохранены в свободные ячейки.<br><br>Если датчик не используется, укажите '0'.",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
-                "Disabled": "Отключен",
-                "Mode": "Режим работы",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Command size in RAM": "Размер команды в RAM",
+                "Record to RAM": "Запись команды в RAM",
+                "Play from RAM": "Воспроизвести команду из RAM",
+
+                {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+                "Command {{ rom }} recording": "Запись команды {{ rom }}",
+                "Command {{ rom }} size": "Размер команды {{ rom }}",
+                "Play command {{ rom }}": "Воспроизвести команду {{ rom }}",
+                {% endfor -%}
+
+                "Reset all commands": "Стереть все команды",
+                "Play a command": "Воспроизвести команду",
+                "Recording a command": "Запись команды",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
+                "Safety Action": "Действие в безопасном режиме",
+                "No Action": "Ничего не делать",
+                "Play IR Command": "Воспроизвести ИК-команду",
+                "Safety Command": "ИК-команда",
+                "safety_command_description": "ИК-команда, которая будет воcпроизведена в безопасном режиме",
+
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчика 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_period_s_title": "Период опроса датчика температуры (с)",
+                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
+                "w1_sensors_description": "Добавление новых датчиков:<br>1) убедитесь, что новые датчики подключены на шину;<br>2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>3) нажмите кнопку «Перечитать настройки»;<br>4) нажмите кнопку «Сохранить настройки».<br>Новые датчики будут сохранены в свободные ячейки.<br><br>Если датчик не используется, укажите '0'.",
+
+                "Input": "Вход",
+                "Input Counter": "Счетчик",
+                "Input Single Press Counter": "Счетчик коротких нажатий входа",
+                "Input Long Press Counter": "Счетчик длинных нажатий входа",
+                "Input Double Press Counter": "Счетчик двойных нажатий входа",
+                "Input Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа",
+                "Input Temperature": "Температура на входе",
+                "Input Sensor OK": "Датчик на входе подключен",
+                "External Temperature Sensor": "Датчик температуры",
+                "External Temperature Sensor OK": "Датчик температуры подключен",
+
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
                 "Baud rate": "Скорость обмена",
@@ -616,37 +781,37 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
                 "Reset All Counters": "Сбросить все счетчики",
-                "Serial": "Серийный номер",
+
+                "Serial NO": "Серийный номер",
                 "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
-                "Supply Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
                 "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "Disabled": "Отключен",
+                "Mode": "Режим работы",
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",
                 {% endfor -%}
 
-                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
-                "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
-                "Input {{in_num}} Last Valid Temp": "Последняя действ. температура на входе {{in_num}}",
-                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} присутствует",
-                "Input {{in_num}} Sensor Supply": "Питание датчика на входе {{in_num}}",
-                "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
-                "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
-                "Save New Sensors On The Bus {{in_num}}": "Сохранить новые датчики на шине {{in_num}}",
-                "Busy Error Counter On The Bus {{in_num}}" : "Счетчик ошибок занятости на шине {{in_num}}",
-                "Sensors Found On The Bus {{in_num}}": "Обнаружено датчиков на шине {{in_num}}",
+                "1-Wire Bus": "Шина 1-Wire",
+                "Input Last Valid Temp": "Последняя действ. температура на входе",
+                "Input Sensor Presense": "Датчик на входе присутствует",
+                "Input Sensor Supply": "Питание датчика на входе",
+                "New Sensors On The Bus": "Новые датчики на шине",
+                "New Sensors Saved On The Bus": "Сохранено новых датчиков на шине",
+                "Save New Sensors On The Bus": "Сохранить новые датчики на шине",
+                "Busy Error Counter On The Bus": "Счетчик ошибок занятости на шине",
+                "Sensors Found On The Bus": "Обнаружено датчиков на шине",
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
-                "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
-                "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
-                "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действ. температура {{in_num}}:{{sens_num}}",
-                "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
-                "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
-                {% endfor -%}
+                "Temperature {{sens_num}}": "Температура {{sens_num}}",
+                "Sensor {{sens_num}} OK": "Датчик {{sens_num}} подключен",
+                "Last Valid Temp {{sens_num}}": "Последняя действ. температура {{sens_num}}",
+                "New Sensor {{sens_num}} ID": "ID нового датчика {{sens_num}}",
+                "Found Sensor {{sens_num}} ID": "ID обнаруженного датчика {{sens_num}}",
                 {% endfor -%}
 
                 "1-Wire Sensors": "Датчики 1-Wire",
