@@ -29989,6 +29989,7 @@ tpl1_dauerhaft_roll_35_45
 	Move up  =>  Move up
 	Stop  =>  Stop
 tpl1_oni_plc_w_acs_0800_imp
+	Bit mask of input states  =>  Bit mask of input states
 	Encoder 1 angle  =>  Encoder 1 angle
 	Encoder 1 position  =>  Encoder 1 position
 	Encoder 1 revolutions  =>  Encoder 1 revolutions
@@ -30294,6 +30295,18 @@ tpl1_oni_plc_w_emd_0706
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Off K1  =>  Off K1
+	Off K2  =>  Off K2
+	Off K3  =>  Off K3
+	Off K4  =>  Off K4
+	Off K5  =>  Off K5
+	Off K6  =>  Off K6
+	On K1  =>  On K1
+	On K2  =>  On K2
+	On K3  =>  On K3
+	On K4  =>  On K4
+	On K5  =>  On K5
+	On K6  =>  On K6
 	Real State K1  =>  Real State K1
 	Real State K2  =>  Real State K2
 	Real State K3  =>  Real State K3
@@ -30320,6 +30333,12 @@ tpl1_oni_plc_w_emd_0706
 	Timer K4  =>  Timer K4
 	Timer K5  =>  Timer K5
 	Timer K6  =>  Timer K6
+	Toggle K1  =>  Toggle K1
+	Toggle K2  =>  Toggle K2
+	Toggle K3  =>  Toggle K3
+	Toggle K4  =>  Toggle K4
+	Toggle K5  =>  Toggle K5
+	Toggle K6  =>  Toggle K6
 	Uptime  =>  Uptime
 tpl1_wb_mao4
 	Channel 1  =>  Channel 1
