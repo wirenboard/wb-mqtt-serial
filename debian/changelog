@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.224.0-wb103) stable; urgency=medium
+
+  * Add "w1-id" control type
+  * Fix second stop bit transactions collision bug
+  * Fix device RPC common device settings bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 17 Feb 2026 10:53:23 +0300
+
 wb-mqtt-serial (2.224.0-wb102) stable; urgency=medium
 
   * Fix minimum and maximum values setup in WB-MAI11 template
