@@ -41,6 +41,8 @@ private:
     TSerialPortConnectionSettings InitialSettings;
     termios OldTermios;
     size_t RxTrigBytes;
+
+    void WaitForSecondStopBit();
 };
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
