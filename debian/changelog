@@ -1,10 +1,16 @@
+wb-mqtt-serial (2.224.0-wb104) stable; urgency=medium
+
+  * Fix changelog
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 21 Apr 2026 12:19:49 +0300
+
 wb-mqtt-serial (2.224.0-wb103) stable; urgency=medium
 
   * Add "w1-id" control type
   * Fix second stop bit transactions collision bug
   * Fix device RPC common device settings bug
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 17 Feb 2026 10:53:23 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 21 Apr 2026 12:19:37 +0300
 
 wb-mqtt-serial (2.224.0-wb102) stable; urgency=medium
 
