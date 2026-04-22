@@ -1,12 +1,14 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set ENCODERS_NUMBER = 2 -%}
 {
     "title": "WB-LED_template_title",
-    "device_type": "WB-LED",
+    "device_type": "WB-LED-since-fw-3.8",
     "group": "g-wb",
     "hw": [
         {
-            "signature": "WB-LED"
+            "signature": "WB-LED",
+            "fw": "3.8.0-rc3"           {#- TODO: Update to final version #}
         }
     ],
     "device": {
@@ -33,6 +35,30 @@
             },
             {% endfor -%}
             {% endfor -%}
+
+            {
+                "title": "Encoders",
+                "id": "g_encoders"
+            },
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "title": "Encoder {{enc_num}}",
+                "id": "gg_encoder_{{enc_num}}",
+                "group": "g_encoders"
+            },
+            {% endfor -%}
+            {
+                "title": "encoder_channels",
+                "id": "gg_encoder_channels",
+                "group": "g_encoders",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+
+            },
+
             {# объявим группы выходов -#}
             {
                 "title": "Outputs",
@@ -56,14 +82,26 @@
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
             },
+            {% set ch_titles = [
+                'Channels 1, 2',
+                'CCT1',
+                'Channel 1',
+                'Channel 2',
+                'CCT2',
+                'Channel 3',
+                'RGB Strip',
+                'Channel 4',
+                'Channels 3, 4',
+                'Channels 1, 2, 3, 4',
+            ] -%}
             {% for ch_name in ['1_2', 'CCT1', '1', '2', 'CCT2', '3', 'RGB', '4', '3_4', '1_2_3_4'] -%}
             {
-                "title": "Channel {{ ch_name }}",
+                "title": "{{ ch_titles[loop.index0] }}",
                 "id": "ggg_safety_mode_ch_{{ ch_name }}",
                 "group": "gg_safety_behaviour"
             },
             {
-                "title": "Channel {{ ch_name }}",
+                "title": "{{ ch_titles[loop.index0] }}",
                 "id": "ggg_power_up_behaviour_ch_{{ ch_name }}",
                 "group": "g_power_up_behaviour"
             },
@@ -214,20 +252,23 @@
             },
             {# опишем варианты режимы работы входа: кнопка, переключатель с фиксацией -#}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((ch_number - 1) // 2) + 1 -%}
             {
                 "id": "input_{{ch_number}}_mode",
                 "title": "Input Mode",
                 "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
-                "fw":"3.5.0",   
                 "enum": [0, 1],
                 "enum_titles": [
                     "Button",
                     "Switch"
                 ],
                 "default": 0,
-                "group": "g_input_{{ch_number}}"
+                "group": "g_input_{{ch_number}}" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
+                {% if cond_enc_num <= ENCODERS_NUMBER %}
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                {%- endif %}
             },
             {% endfor -%}
             {# опишем все варианты входа в группах входов, зависящих от режима работы диммера и типа входа (кнопка, переключатель с фиксацией) -#}
@@ -325,16 +366,18 @@
                 ] -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {% for name in range(4) -%}
             {
                 "id": "in{{in_num}}_{{name_actions[name]}}",
                 "group": "gg_in_{{ in_num }}_{{name_actions[name]}}_action",
                 "title": "{{name_actions[name]}}_title",
-                "order": {{name}},
+                "order": 0,
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}))",
+                "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}){{enc_cond}})",
                 "enum": {{ enum[dimmer_mode_number][name] }},
                 "enum_titles": [
                     {% for i_enum in enum[dimmer_mode_number][name] -%}
@@ -349,11 +392,34 @@
                     {% endfor %}
                 ]
             },
+            {% endfor %}
+            {%- endfor %}
+            {%- endfor %}
+
+            {#- Шаг диммирования для одиночных и двойных нажатий -#}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
+            {% for name in ["sp", "dp"] -%}
+            {
+                "id": "in{{in_num}}_{{name}}_changing_step",
+                "group": "gg_in_{{ in_num }}_{{name}}_action",
+                "title": "Step of Value Change",
+                "order": 1,
+                "address": {{1200 + in_num - 1 + loop.index0 * 20}},
+                "reg_type": "holding",
+                "default": 1,
+                "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(in{{in_num}}_{{name}}>=36864)&&(in{{in_num}}_{{name}}<=49151){{enc_cond}})",
+                "min": 1,
+                "max": 10000
+            },
+            {% endfor %}
             {%- endfor -%}
-            {%- endfor -%}
-            {%- endfor -%}
+
             {# опишем настройки для варианта входа кнопка с фиксацией -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {% for off_on in ["off", "on"] -%}
             {
                 "id": "in{{in_num}}_switch_{{off_on}}_action",
@@ -362,9 +428,8 @@
                 "order": {{in_num}},
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": {{ (off_on == "on") | int }},
-                "condition": "(input_{{in_num}}_mode==1)",
+                "condition": "(input_{{in_num}}_mode==1){{enc_cond}}",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -409,6 +474,8 @@
             -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set enc_cond_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ enc_cond_num ~ '_mode==0)' if (enc_cond_num <= ENCODERS_NUMBER) else '' -%}
             {% for off_on in ["off", "on"]  -%}
             {
                 "id": "in{{in_num}}_switch_{{off_on}}_name",
@@ -417,9 +484,8 @@
                 "order": {{in_num + 2}},
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0))",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0){{enc_cond}})",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
@@ -441,9 +507,8 @@
                 "order": {{in_num + 2}},
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)))",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)){{enc_cond}})",
                 "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch_non_all[dimmer_mode_number] -%}
@@ -458,9 +523,175 @@
                     {% endfor %}
                 ]
             },
-            {%- endfor -%}
-            {%- endfor -%}
-            {%- endfor -%}
+            {% endfor %}
+            {%- endfor %}
+            {%- endfor %}
+
+            {# Энкодеры -#}
+            {# Все доступные для управления каналы -#}
+            {% set enc_ctrl_ch_titles = [
+                "No Control",
+                "Channel 1 Brightness",
+                "Channel 2 Brightness",
+                "Channel 3 Brightness",
+                "Channel 4 Brightness",
+                "Channels 1, 2 Brightness",
+                "Channels 3, 4 Brightness",
+                "Channels 1, 2, 3, 4 Brightness",
+                "CCT1 Temperature",
+                "CCT1 Brightness",
+                "CCT2 Temperature",
+                "CCT2 Brightness",
+                "Red Brightness",
+                "Green Brightness",
+                "Blue Brightness",
+                "Hue of RGB Strip (circular, HSV-H)",
+                "Saturation of RGB Strip (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)",
+                "Hue Changing Time of RGB Strip"
+                ] -%}
+            {# Конфигурация доступных каналов для каждого режима диммера -#}
+            {% set enc_ctrl_ch_configs = [
+                {
+                    'mode': 0,
+                    'indices': [0, 1, 2, 3, 4]
+                },
+                {
+                    'mode': 1,
+                    'indices': [0, 3, 4, 5]
+                },
+                {
+                    'mode': 2,
+                    'indices': [0, 3, 4, 8, 9]
+                },
+                {
+                    'mode': 16,
+                    'indices': [0, 1, 2, 6]
+                },
+                {
+                    'mode': 17,
+                    'indices': [0, 5, 6]
+                },
+                {
+                    'mode': 18,
+                    'indices': [0, 6, 8, 9]
+                },
+                {
+                    'mode': 32,
+                    'indices': [0, 1, 2, 10, 11]
+                },
+                {
+                    'mode': 33,
+                    'indices': [0, 5, 10, 11]
+                },
+                {
+                    'mode': 34,
+                    'indices': [0, 8, 9, 10, 11]
+                },
+                {
+                    'mode': 256,
+                    'indices': [0, 4, 12, 13, 14, 15, 16, 17, 18]
+                },
+                {
+                    'mode': 512,
+                    'indices': [0, 7]
+                }
+                ] -%}
+            {% set conditions = [
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
+                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
+                "dimmer_mode==512",
+                ] -%}
+
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "id": "encoder_{{enc_num}}_mode",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Encoder Connection Type",
+                "description": "encoder_{{enc_num}}_mode_description",
+                "order": 1,
+                "address": {{376 + enc_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Not used",
+                    "AB type"
+                ]
+            },
+            {
+                "id": "encoder_{{enc_num}}_pps",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Pulses per Step",
+                "order": 2,
+                "address": {{384 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 4,
+                "min": 1,
+                "max": 65535,
+                "condition": "(encoder_{{enc_num}}_mode==1)"
+            },
+            {# Создаём несколько блоков ctrl_ch для разных режимов диммера -#}
+            {% for config in enc_ctrl_ch_configs -%}
+            {
+                "id": "encoder_{{enc_num}}_ctrl_ch",
+                "title": "Controlled Channel",
+                "group": "gg_encoder_{{enc_num}}",
+                "order": 3,
+                "address": {{388 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [
+                    {%- for idx in config.indices -%}
+                    {{idx}}{%- if not loop.last -%},{%- endif -%}
+                    {%- endfor -%}
+                ],
+                "enum_titles": [
+                    {%- for idx in config.indices -%}
+                    "{{enc_ctrl_ch_titles[idx]}}"{%- if not loop.last -%}, {%- endif -%}
+                    {%- endfor -%}
+                ],
+                "condition": "(encoder_{{enc_num}}_mode==1)&&(dimmer_mode=={{config.mode}})"
+            },
+            {% endfor -%}
+            {
+                "id": "encoder_{{enc_num}}_change_step",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Step of Value Change",
+                "order": 4,
+                "address": {{392 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 5,
+                "min": 1,
+                "max": 10000,
+                "condition": "(encoder_{{enc_num}}_mode==1)&&(encoder_{{enc_num}}_ctrl_ch!=0)"
+            },
+            {% set ch_min_br_behavior_conditions = [
+                "((encoder_" ~ enc_num ~ "_ctrl_ch>=1)&&(encoder_" ~ enc_num ~ "_ctrl_ch<=7))",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==9)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==11)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==17)"
+                ] -%}
+            {
+                "id": "encoder_{{enc_num}}_min_br_behavior",
+                "group": "gg_encoder_{{enc_num}}",
+                "title": "Behavior When Brightness is Reduced Below the Minimum Value",
+                "order": 5,
+                "address": {{396 + enc_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Turn Off the Channel",
+                    "Keep Minimum Brightness"
+                ],
+                "condition": "(encoder_{{enc_num}}_mode==1)&&({{ch_min_br_behavior_conditions|join('||')}})"
+            },
+            {% endfor %}
 
             {# опишем все W* варианты в группе выхода -#}
             {% set conditions = [
@@ -476,11 +707,19 @@
             {% set order = [1, 2, 3, 4, 1, 3, 1] -%}    {# порядок отображения на странице -#}
             {% for inc_dec in ['inc', 'dec'] -%}        {# два варианта: "увеличение", "уменьшение" -#}
             {% set ptr = loop.index0 * 100 -%}          {# "уменьшение" смещено на 100 -#}
-            {% for type_action in ['1', '2', '3', '4', '1_2', '3_4', '1_2_3_4'] -%}
+            {% for type_action in [
+                'Channel 1 Brightness',
+                'Channel 2 Brightness',
+                'Channel 3 Brightness',
+                'Channel 4 Brightness',
+                'Channels 1, 2 Brightness',
+                'Channels 3, 4 Brightness',
+                'Channels 1, 2, 3, 4 Brightness'
+                ] -%}
             {
                 "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
                 "group": "gg_fader_{{inc_dec}}",
-                "title": "Channel {{type_action}} Brightness",
+                "title": "{{type_action}}",
                 "order": {{order[loop.index0]}},
                 "address": {{3000 + loop.index0 + ptr}},
                 "reg_type": "holding",
@@ -556,7 +795,6 @@
                 "title": "{{title}}",
                 "order": {{order[loop.index0]}},
                 "address": {{3200 + loop.index0}},
-                "fw": "3.7.0",
                 "reg_type": "holding",
                 "type": "enum",
                 "default": 0,
@@ -575,6 +813,8 @@
                время дебонса
                  -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {
                 "id": "in{{in_num}}_lp_hold_time",
                 "title": "lp_hold_time_title",
@@ -586,7 +826,7 @@
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1){{enc_cond}}"
             },
             {
                 "id": "in{{in_num}}_lp_repeat_time",
@@ -599,7 +839,7 @@
                 "default": 20,
                 "min": 5,
                 "max": 500,
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1){{enc_cond}}"
             },
             {
                 "id": "in{{in_num}}_secp_waiting_time",
@@ -612,7 +852,7 @@
                 "default": 300,
                 "min": 0,
                 "max": 2000,
-                "condition": "input_{{in_num}}_mode!=1"
+                "condition": "(input_{{in_num}}_mode!=1){{enc_cond}}"
             },
             {
                 "id": "in{{in_num}}_debounce_time",
@@ -623,7 +863,7 @@
                 "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
+                "min": 2,
                 "max": 200
             },
             {% endfor -%}
@@ -675,7 +915,6 @@
                 "address": 8,
                 "order": 2,
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "min": 1,
                 "max": 65534,
                 "default": 10
@@ -712,7 +951,6 @@
                 "title": "Action",
                 "reg_type": "holding",
                 "address": {{648 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -729,7 +967,6 @@
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{656 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "min": 1,
                 "max": 100,
                 "default": 50,
@@ -742,7 +979,6 @@
                 "title": "Action",
                 "reg_type": "holding",
                 "address": {{664 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -759,7 +995,6 @@
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{672 + ptr[loop.index0] - 1}},
-                "fw": "3.5.0",
                 "min": 1,
                 "max": 100,
                 "default": 50,
@@ -779,7 +1014,6 @@
             {
                 "id": "safety_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "type": "enum",
                 "address": {{648 + loop.index0}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -809,7 +1043,6 @@
             {
                 "id": "powerup_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "type": "enum",
                 "address": {{664 + loop.index0}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -844,7 +1077,6 @@
                     "title": "Brightness (%)",
                 {% endif -%}
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{656 + loop.index0}},
                 "min": 1,
                 "max": 100,
@@ -865,7 +1097,6 @@
                     "title": "Brightness (%)",
                 {% endif -%}
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{672 + loop.index0}},
                 "min": 1,
                 "max": 100,
@@ -886,7 +1117,6 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{648 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -911,7 +1141,6 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": {{664 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -937,7 +1166,6 @@
                 "id": "safety_mode_ch_rgb_h",
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 656,
                 "min": 0,
                 "max": 360,
@@ -950,7 +1178,6 @@
                 "id": "safety_mode_ch_rgb_s",
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 657,
                 "min": 0,
                 "max": 100,
@@ -963,7 +1190,6 @@
                 "id": "safety_mode_ch_rgb_v",
                 "title": "RGB Strip Brightness",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 658,
                 "min": 1,
                 "max": 100,
@@ -976,7 +1202,6 @@
                 "id": "powerup_mode_ch_rgb_h",
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 672,
                 "min": 0,
                 "max": 360,
@@ -989,7 +1214,6 @@
                 "id": "powerup_mode_ch_rgb_s",
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 673,
                 "min": 0,
                 "max": 100,
@@ -1002,7 +1226,6 @@
                 "id": "powerup_mode_ch_rgb_v",
                 "title": "RGB Strip Brightness",
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "address": 674,
                 "min": 1,
                 "max": 100,
@@ -1019,7 +1242,6 @@
                 "group": "ggg_safety_input_control",
                 "address": {{640 + in_number - 1}},
                 "reg_type": "holding",
-                "fw": "3.5.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -1041,162 +1263,6 @@
                 "enum_titles": ["9600", "19200", "38400", "57600", "115200"],
                 "group": "g_general",
                 "order": 1
-            },
-            {
-                "id": "ch_w1_auto_change_period_ms",
-                "title": "Channel 1 Auto-Change Period (ms)",
-                "address": 160,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)",
-                "order": 2,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_w2_auto_change_period_ms",
-                "title": "Channel 2 Auto-Change Period (ms)",
-                "address": 161,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)",
-                "order": 3,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_w3_auto_change_period_ms",
-                "title": "Channel 3 Auto-Change Period (ms)",
-                "address": 162,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)",
-                "order": 4,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_w4_auto_change_period_ms",
-                "title": "Channel 4 Auto-Change Period (ms)",
-                "address": 163,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)",
-                "order": 5,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_w1_w2_auto_change_period_ms",
-                "title": "Channels 1_2 Auto-Change Period (ms)",
-                "address": 164,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)",
-                "order": 2,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_w3_w4_auto_change_period_ms",
-                "title": "Channels 3_4 Auto-Change Period (ms)",
-                "address": 165,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)",
-                "order": 4,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_w1_w2_w3_w4_auto_change_period_ms",
-                "title": "Channels 1_2_3_4 Auto-Change Period (ms)",
-                "address": 166,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==512)",
-                "order": 2,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_cct1_temp_auto_change_period_ms",
-                "title": "CCT1 Temperature Auto-Change Period (ms)",
-                "address": 167,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)",
-                "order": 2,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_cct1_value_auto_change_period_ms",
-                "title": "CCT1 Brightness Auto-Change Period (ms)",
-                "address": 168,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)",
-                "order": 3,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_cct2_temp_auto_change_period_ms",
-                "title": "CCT2 Temperature Auto-Change Period (ms)",
-                "address": 169,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)",
-                "order": 4,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_cct2_value_auto_change_period_ms",
-                "title": "CCT2 Brightness Auto-Change Period (ms)",
-                "address": 170,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)",
-                "order": 5,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_rgb_color_auto_change_period_ms",
-                "title": "RGB Strip Auto-Change Period (ms)",
-                "address": 171,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==256)",
-                "order": 2,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
-            },
-            {
-                "id": "ch_rgb_w_auto_change_period_ms",
-                "title": "W Strip Auto-Change Period (ms)",
-                "address": 163,
-                "reg_type": "holding",
-                "fw": "3.7.1",
-                "condition": "(dimmer_mode==256)",
-                "order": 3,
-                "default": 1000,
-                "min": 1,
-                "max": 60000
             }
         ],
 
@@ -1233,9 +1299,43 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "RGB Strip with Auto On",
+                "enabled": false,
+                "type": "rgb",
+                "sporadic": true,
+                "consists_of": [
+                    {
+                        "reg_type": "holding",
+                        "address": 2111
+                    },
+                    {
+                        "reg_type": "holding",
+                        "address": 2112
+                    },
+                    {
+                        "reg_type": "holding",
+                        "address": 2113
+                    }
+                ],
+                "condition": "(dimmer_mode==256)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "RGB Strip Hue",
                 "address": 2014,
                 "type": "range",
+                "reg_type": "holding",
+                "min": 0,
+                "max": 360,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==256)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "RGB Strip Hue with Auto On",
+                "address": 2114,
+                "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 360,
@@ -1256,9 +1356,35 @@
             },
             {
                 "group": "gg_out_channels",
+                "name": "RGB Strip Saturation with Auto On",
+                "address": 2115,
+                "type": "range",
+                "enabled": false,
+                "reg_type": "holding",
+                "sporadic": true,
+                "min": 0,
+                "max": 100,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==256)"
+            },
+            {
+                "group": "gg_out_channels",
                 "name": "RGB Strip Brightness",
                 "address": 2016,
                 "type": "range",
+                "reg_type": "holding",
+                "sporadic": true,
+                "min": 0,
+                "max": 100,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==256)"
+            },
+            {
+                "group": "gg_out_channels",
+                "name": "RGB Strip Brightness with Auto On",
+                "address": 2116,
+                "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
@@ -1292,131 +1418,12 @@
                 "name": "Hue Changing Rate with Auto On",
                 "address": 2117,
                 "type": "value",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 3,
                 "max": 10000,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB R Auto-Increase",
-                "address": 283,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB R Auto-Decrease",
-                "address": 315,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB G Auto-Increase",
-                "address": 284,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB G Auto-Decrease",
-                "address": 316,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB B Auto-Increase",
-                "address": 285,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB B Auto-Decrease",
-                "address": 317,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB H Auto-Increase",
-                "address": 286,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB H Auto-Decrease",
-                "address": 318,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB S Auto-Increase",
-                "address": 287,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB S Auto-Decrease",
-                "address": 319,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB V Auto-Increase",
-                "address": 288,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "RGB V Auto-Decrease",
-                "address": 320,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==256)"
             },
             {
@@ -1445,31 +1452,12 @@
                 "name": "Channel 1 Brightness with Auto On",
                 "address": 2100,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channel 1 Auto-Increase",
-                "address": 272,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channel 1 Auto-Decrease",
-                "address": 304,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
@@ -1498,6 +1486,7 @@
                 "name": "Channel 2 Brightness with Auto On",
                 "address": 2101,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
@@ -1507,27 +1496,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 2 Auto-Increase",
-                "address": 273,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channel 2 Auto-Decrease",
-                "address": 305,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 1_2",
+                "id": "Channels 1_2",
+                "name": "Channels 1, 2",
                 "address": 4,
                 "type": "switch",
                 "reg_type": "coil",
@@ -1536,7 +1506,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2 Brightness",
+                "id": "Channels 1_2 Brightness",
+                "name": "Channels 1, 2 Brightness",
                 "address": 2004,
                 "type": "range",
                 "reg_type": "holding",
@@ -1548,34 +1519,15 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2 Brightness with Auto On",
+                "name": "Channels 1, 2 Brightness with Auto On",
                 "address": 2104,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 1_2 Auto-Increase",
-                "address": 276,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 1_2 Auto-Decrease",
-                "address": 308,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
             {
@@ -1604,31 +1556,12 @@
                 "name": "CCT1 Temperature with Auto On",
                 "address": 2107,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT1 Temperature Auto-Increase",
-                "address": 279,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT1 Temperature Auto-Decrease",
-                "address": 311,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
@@ -1648,31 +1581,12 @@
                 "name": "CCT1 Brightness with Auto On",
                 "address": 2108,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT1 Brightness Auto-Increase",
-                "address": 280,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT1 Brightness Auto-Decrease",
-                "address": 312,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
@@ -1701,6 +1615,7 @@
                 "name": "Channel 3 Brightness with Auto On",
                 "address": 2102,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
@@ -1710,27 +1625,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 3 Auto-Increase",
-                "address": 274,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channel 3 Auto-Decrease",
-                "address": 306,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4",
+                "id": "Channels 1_2_3_4",
+                "name": "Channels 1, 2, 3, 4",
                 "address": 6,
                 "type": "switch",
                 "reg_type": "coil",
@@ -1739,7 +1635,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4 Brightness",
+                "id": "Channels 1_2_3_4 Brightness",
+                "name": "Channels 1, 2, 3, 4 Brightness",
                 "address": 2006,
                 "type": "range",
                 "reg_type": "holding",
@@ -1751,34 +1648,15 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4 Brightness with Auto On",
+                "name": "Channels 1, 2, 3, 4 Brightness with Auto On",
                 "address": 2106,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==512)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4 Auto-Increase",
-                "address": 278,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==512)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 1_2_3_4 Auto-Decrease",
-                "address": 310,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==512)"
             },
             {
@@ -1807,31 +1685,12 @@
                 "name": "CCT2 Temperature with Auto On",
                 "address": 2109,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT2 Temperature Auto-Increase",
-                "address": 281,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT2 Temperature Auto-Decrease",
-                "address": 313,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
@@ -1851,6 +1710,7 @@
                 "name": "CCT2 Brightness with Auto On",
                 "address": 2110,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
@@ -1860,27 +1720,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "CCT2 Brightness Auto-Increase",
-                "address": 282,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "CCT2 Brightness Auto-Decrease",
-                "address": 314,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 3_4",
+                "id": "Channels 3_4",
+                "name": "Channels 3, 4",
                 "address": 5,
                 "type": "switch",
                 "reg_type": "coil",
@@ -1897,7 +1738,8 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 3_4 Brightness",
+                "id": "Channels 3_4 Brightness",
+                "name": "Channels 3, 4 Brightness",
                 "address": 2005,
                 "type": "range",
                 "reg_type": "holding",
@@ -1909,34 +1751,15 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 3_4 Brightness with Auto On",
+                "name": "Channels 3, 4 Brightness with Auto On",
                 "address": 2105,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 3_4 Auto-Increase",
-                "address": 277,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channels 3_4 Auto-Decrease",
-                "address": 309,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
             {
@@ -1956,31 +1779,12 @@
                 "name": "Channel 4 Brightness with Auto On",
                 "address": 2103,
                 "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channel 4 Auto-Increase",
-                "address": 275,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
-            },
-            {
-                "group": "gg_out_channels",
-                "name": "Channel 4 Auto-Decrease",
-                "address": 307,
-                "type": "switch",
-                "reg_type": "coil",
-                "fw": "3.7.1",
-                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -2023,6 +1827,7 @@
                 "group": "g_debug"
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {
                 "name": "Input {{in_num}}",
                 "reg_type": "discrete",
@@ -2030,7 +1835,10 @@
                 "address": {{0 + in_num - 1}},
                 "type": "switch",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
+                {% if cond_enc_num <= ENCODERS_NUMBER %}
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                {%- endif %}
             },
             {
                 "name": "Input {{in_num}} Counter",
@@ -2039,7 +1847,10 @@
                 "address": {{32 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels" {%- if cond_enc_num <= ENCODERS_NUMBER %},{% endif -%}
+                {% if cond_enc_num <= ENCODERS_NUMBER %}
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
+                {%- endif %}
             },
             {
                 "name": "Input {{in_num}} Single Press Counter",
@@ -2050,7 +1861,11 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
+                {%- endif %}
             },
             {
                 "name": "Input {{in_num}} Long Press Counter",
@@ -2061,7 +1876,11 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
+                {%- endif %}
             },
             {
                 "name": "Input {{in_num}} Double Press Counter",
@@ -2072,7 +1891,11 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
+                {%- endif %}
             },
             {
                 "name": "Input {{in_num}} Shortlong Press Counter",
@@ -2083,9 +1906,39 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in_{{in_num}}_channels",
-                "condition": "input_{{in_num}}_mode!=1"
+                {% if cond_enc_num <= ENCODERS_NUMBER -%}
+                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
+                {%- else -%}
+                "condition": "(input_{{in_num}}_mode!=1)"
+                {%- endif %}
             },
             {% endfor -%}
+
+            {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "name": "Encoder {{enc_num}} Position",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": {{368 + ((enc_num - 1) * 2)}},
+                "type": "value",
+                "format": "s32",
+                "group": "gg_encoder_channels",
+                "condition": "encoder_{{enc_num}}_mode==1"
+            },
+            {
+                "name": "Encoder {{enc_num}} Steps Counter",
+                "description": "encoder_steps_counter_desc",
+                "enabled": true,
+                "reg_type": "press_counter",
+                "address": {{364 + (enc_num - 1)}},
+                "type": "value",
+                "sporadic": true,
+                "format": "u16",
+                "group": "gg_encoder_channels",
+                "condition": "encoder_{{enc_num}}_mode==1"
+            },
+            {% endfor -%}
+
             {
                 "name": "Serial",
                 "type": "text",
@@ -2101,7 +1954,6 @@
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
-                "fw": "3.6.0",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -2155,7 +2007,7 @@
         ],
         "translations": {
             "en": {
-                "WB-LED_template_title": "WB-LED (4-channel CV LED Dimmer)",
+                "WB-LED_template_title": "WB-LED fw3.8 (4-channel CV LED Dimmer)",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -2178,19 +2030,19 @@
                 "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}}",
                 "inc_dec_ch{{ch_number}}_act_title": "Increase/decrease brightness of channel {{ch_number}}",
                 {% endfor %}
-                "off_ch12_act_title": "Disable channels 1_2",
-                "on_ch12_act_title": "Enable channels 1_2",
-                "tg_ch12_act_title": "Toggle channels 1_2",
-                "inc_ch12_act_title": "Increase brightness of channels 1_2",
-                "dec_ch12_act_title": "Decrease brightness of channels 1_2",
-                "inc_dec_ch12_act_title": "Increase/decrease brightness of channels 1_2",
+                "off_ch12_act_title": "Disable channels 1, 2",
+                "on_ch12_act_title": "Enable channels 1, 2",
+                "tg_ch12_act_title": "Toggle channels 1, 2",
+                "inc_ch12_act_title": "Increase brightness of channels 1, 2",
+                "dec_ch12_act_title": "Decrease brightness of channels 1, 2",
+                "inc_dec_ch12_act_title": "Increase/decrease brightness of channels 1, 2",
 
-                "off_ch34_act_title": "Disable channels 3_4",
-                "on_ch34_act_title": "Enable channels 3_4",
-                "tg_ch34_act_title": "Toggle channels 3_4",
-                "inc_ch34_act_title": "Increase brightness of channels 3_4",
-                "dec_ch34_act_title": "Decrease brightness of channels 3_4",
-                "inc_dec_ch34_act_title": "Increase/decrease brightness of channels 3_4",
+                "off_ch34_act_title": "Disable channels 3, 4",
+                "on_ch34_act_title": "Enable channels 3, 4",
+                "tg_ch34_act_title": "Toggle channels 3, 4",
+                "inc_ch34_act_title": "Increase brightness of channels 3, 4",
+                "dec_ch34_act_title": "Decrease brightness of channels 3, 4",
+                "inc_dec_ch34_act_title": "Increase/decrease brightness of channels 3, 4",
 
                 "off_cct1_act_title": "Disable CCT1",
                 "on_cct1_act_title": "Enable CCT1",
@@ -2240,12 +2092,12 @@
                 "inc_dec_v_act_title": "Increase/decrease brightness of RGB strip (HSV-V)",
                 "inc_dec_hue_ch_time_act_title": "Increase/decrease hue changing time",
 
-                "off_ch1234_act_title": "Disable channels 1_2_3_4",
-                "on_ch1234_act_title": "Enable channels 1_2_3_4",
-                "tg_ch1234_act_title": "Toggle channels 1_2_3_4",
-                "inc_ch1234_act_title": "Increase brightness of channels 1_2_3_4",
-                "dec_ch1234_act_title": "Decrease brightness of channels 1_2_3_4",
-                "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1_2_3_4",
+                "off_ch1234_act_title": "Disable channels 1, 2, 3, 4",
+                "on_ch1234_act_title": "Enable channels 1, 2, 3, 4",
+                "tg_ch1234_act_title": "Toggle channels 1, 2, 3, 4",
+                "inc_ch1234_act_title": "Increase brightness of channels 1, 2, 3, 4",
+                "dec_ch1234_act_title": "Decrease brightness of channels 1, 2, 3, 4",
+                "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1, 2, 3, 4",
 
                 "Dimmer Mode": "Dimmer Mode",
                 "dimmer_mode_description": "Select the operating mode before setting the dimmer",
@@ -2258,7 +2110,15 @@
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+                "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
+
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                "encoder_{{enc_num}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
+                {% endfor -%}
+
+                "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
@@ -2299,65 +2159,15 @@
                 "sw_ch2_act_title": "Channel 2",
                 "sw_ch3_act_title": "Channel 3",
                 "sw_ch4_act_title": "Channel 4",
-                "sw_ch12_act_title": "Channel 1_2",
-                "sw_ch34_act_title": "Channel 3_4",
-                "sw_ch1234_act_title": "Channel 1_2_3_4",
+                "sw_ch12_act_title": "Channels 1, 2",
+                "sw_ch34_act_title": "Channels 3, 4",
+                "sw_ch1234_act_title": "Channels 1, 2, 3, 4",
                 "sw_cct1_act_title": "CCT1 Strip",
                 "sw_cct2_act_title": "CCT2 Strip",
                 "sw_rgb_act_title": "RGB Strip"
             },
             "ru": {
-                "WB-LED_template_title": "WB-LED (4-канальный диммер светодиодных лент)",
-
-                "Channel 1 Auto-Change Period (ms)": "Период автоизменения канала 1 (мс)",
-                "Channel 2 Auto-Change Period (ms)": "Период автоизменения канала 2 (мс)",
-                "Channel 3 Auto-Change Period (ms)": "Период автоизменения канала 3 (мс)",
-                "Channel 4 Auto-Change Period (ms)": "Период автоизменения канала 4 (мс)",
-                "Channels 1_2 Auto-Change Period (ms)": "Период автоизменения каналов 1_2 (мс)",
-                "Channels 3_4 Auto-Change Period (ms)": "Период автоизменения каналов 3_4 (мс)",
-                "Channels 1_2_3_4 Auto-Change Period (ms)": "Период автоизменения каналов 1_2_3_4 (мс)",
-                "CCT1 Temperature Auto-Change Period (ms)": "Период автоизменения температуры CCT1 (мс)",
-                "CCT1 Brightness Auto-Change Period (ms)": "Период автоизменения яркости CCT1 (мс)",
-                "CCT2 Temperature Auto-Change Period (ms)": "Период автоизменения температуры CCT2 (мс)",
-                "CCT2 Brightness Auto-Change Period (ms)": "Период автоизменения яркости CCT2 (мс)",
-                "RGB Strip Auto-Change Period (ms)": "Период автоизменения RGB ленты (мс)",
-                "W Strip Auto-Change Period (ms)": "Период автоизменения W ленты (мс)",
-                "RGB Strip Auto-Increase": "RGB лента автоувеличение",
-                "RGB Strip Auto-Decrease": "RGB лента автоуменьшение",
-                "RGB R Auto-Increase": "RGB R автоувеличение",
-                "RGB R Auto-Decrease": "RGB R автоуменьшение",
-                "RGB G Auto-Increase": "RGB G автоувеличение",
-                "RGB G Auto-Decrease": "RGB G автоуменьшение",
-                "RGB B Auto-Increase": "RGB B автоувеличение",
-                "RGB B Auto-Decrease": "RGB B автоуменьшение",
-                "RGB H Auto-Increase": "RGB H автоувеличение",
-                "RGB H Auto-Decrease": "RGB H автоуменьшение",
-                "RGB S Auto-Increase": "RGB S автоувеличение",
-                "RGB S Auto-Decrease": "RGB S автоуменьшение",
-                "RGB V Auto-Increase": "RGB V автоувеличение",
-                "RGB V Auto-Decrease": "RGB V автоуменьшение",
-                "Channel 1 Auto-Increase": "Канал 1 автоувеличение",
-                "Channel 1 Auto-Decrease": "Канал 1 автоуменьшение",
-                "Channel 2 Auto-Increase": "Канал 2 автоувеличение",
-                "Channel 2 Auto-Decrease": "Канал 2 автоуменьшение",
-                "Channel 3 Auto-Increase": "Канал 3 автоувеличение",
-                "Channel 3 Auto-Decrease": "Канал 3 автоуменьшение",
-                "Channel 4 Auto-Increase": "Канал 4 автоувеличение",
-                "Channel 4 Auto-Decrease": "Канал 4 автоуменьшение",
-                "Channels 1_2 Auto-Increase": "Каналы 1_2 автоувеличение",
-                "Channels 1_2 Auto-Decrease": "Каналы 1_2 автоуменьшение",
-                "Channels 3_4 Auto-Increase": "Каналы 3_4 автоувеличение",
-                "Channels 3_4 Auto-Decrease": "Каналы 3_4 автоуменьшение",
-                "Channels 1_2_3_4 Auto-Increase": "Каналы 1_2_3_4 автоувеличение",
-                "Channels 1_2_3_4 Auto-Decrease": "Каналы 1_2_3_4 автоуменьшение",
-                "CCT1 Temperature Auto-Increase": "CCT1 температура автоувеличение",
-                "CCT1 Temperature Auto-Decrease": "CCT1 температура автоуменьшение",
-                "CCT1 Brightness Auto-Increase": "CCT1 яркость автоувеличение",
-                "CCT1 Brightness Auto-Decrease": "CCT1 яркость автоуменьшение",
-                "CCT2 Temperature Auto-Increase": "CCT2 температура автоувеличение",
-                "CCT2 Temperature Auto-Decrease": "CCT2 температура автоуменьшение",
-                "CCT2 Brightness Auto-Increase": "CCT2 яркость автоувеличение",
-                "CCT2 Brightness Auto-Decrease": "CCT2 яркость автоуменьшение",
+                "WB-LED_template_title": "WB-LED fw3.8 (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
@@ -2454,33 +2264,49 @@
                 "inc_dec_v_act_title": "Увеличить/уменьшить яркость RGB ленты (HSV-V)",
                 "inc_dec_hue_ch_time_act_title": "Увеличить/уменьшить время непрерывного изменения оттенка (HSV-H) на 1°",
 
-                "off_ch1234_act_title": "Выключить каналы 1_2_3_4",
-                "on_ch1234_act_title": "Включить каналы 1_2_3_4",
-                "tg_ch1234_act_title": "Переключить каналы 1_2_3_4",
-                "inc_ch1234_act_title": "Увеличить яркость каналов 1_2_3_4",
-                "dec_ch1234_act_title": "Уменьшить яркость каналов 1_2_3_4",
-                "inc_dec_ch1234_act_title": "Увеличить/уменьшить яркость каналов 1_2_3_4",
+                "off_ch1234_act_title": "Выключить каналы 1, 2, 3 и 4",
+                "on_ch1234_act_title": "Включить каналы 1, 2, 3 и 4",
+                "tg_ch1234_act_title": "Переключить каналы 1, 2, 3 и 4",
+                "inc_ch1234_act_title": "Увеличить яркость каналов 1, 2, 3 и 4",
+                "dec_ch1234_act_title": "Уменьшить яркость каналов 1, 2, 3 и 4",
+                "inc_dec_ch1234_act_title": "Увеличить/уменьшить яркость каналов 1, 2, 3 и 4",
 
-                "Channels 1_2": "Каналы 1_2",
-                "Channels 3_4": "Каналы 3_4",
+                "Channels 1, 2": "Каналы 1 и 2",
+                "Channels 3, 4": "Каналы 3 и 4",
                 "CCT1": "Лента CCT1",
                 "CCT2": "Лента CCT2",
                 "RGB Strip": "Лента RGB",
                 "Hue Changing": "Изменение оттенка RGB ленты",
-                "Channels 1_2_3_4": "Каналы 1_2_3_4",
+                "Channels 1, 2, 3, 4": "Каналы 1, 2, 3 и 4",
 
-                "Channels 1_2 Brightness": "Яркость каналов 1_2",
-                "Channels 3_4 Brightness": "Яркость каналов 3_4",
+                "Channels 1, 2 Brightness": "Яркость каналов 1 и 2",
+                "Channels 3, 4 Brightness": "Яркость каналов 3 и 4",
+                "Channel 1 Brightness with Auto On": "Канал 1 яркость с автовключением",
+                "Channel 2 Brightness with Auto On": "Канал 2 яркость с автовключением",
+                "Channel 3 Brightness with Auto On": "Канал 3 яркость с автовключением",
+                "Channel 4 Brightness with Auto On": "Канал 4 яркость с автовключением",
+                "Channels 1, 2 Brightness with Auto On": "Каналы 1 и 2 яркость с автовключением",
+                "Channels 3, 4 Brightness with Auto On": "Каналы 3 и 4 яркость с автовключением",
                 "CCT1 Temperature": "Цветовая температура ленты CCT1",
                 "CCT1 Brightness": "Яркость ленты CCT1",
                 "CCT2 Temperature": "Цветовая температура ленты CCT2",
                 "CCT2 Brightness": "Яркость ленты CCT2",
+                "CCT1 Temperature with Auto On": "Цветовая температура ленты CCT1 с автовключением",
+                "CCT1 Brightness with Auto On": "Яркость ленты CCT1 с автовключением",
+                "CCT2 Temperature with Auto On": "Цветовая температура ленты CCT2 с автовключением",
+                "CCT2 Brightness with Auto On": "Яркость ленты CCT2 с автовключением",
                 "RGB Palette": "Палитра RGB",
                 "RGB Strip Hue": "Оттенок RGB ленты (H)",
                 "RGB Strip Saturation": "Насыщенность цвета RGB ленты (S)",
                 "RGB Strip Brightness": "Яркость RGB ленты (V)",
                 "Hue Changing Rate": "Время изменения оттенка (Hue) на 1° (мс)",
-                "Channels 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
+                "RGB Strip with Auto On": "RGB полоса с автовключением",
+                "RGB Strip Hue with Auto On": "RGB полоса оттенок с автовключением",
+                "RGB Strip Saturation with Auto On": "RGB полоса насыщенность с автовключением",
+                "RGB Strip Brightness with Auto On": "RGB полоса яркость с автовключением",
+                "Hue Changing Rate with Auto On": "Скорость смены оттенка с автовключением",
+                "Channels 1, 2, 3, 4 Brightness": "Яркость каналов 1, 2, 3 и 4",
+                "Channels 1, 2, 3, 4 Brightness with Auto On": "Каналы 1, 2, 3 и 4 яркость с автовключением",
 
                 "Board Temperature": "Температура платы",
                 "Allowed Power": "Разрешенная мощность",
@@ -2506,7 +2332,40 @@
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
-                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
+                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. <br>При подключении энкодера рекомендуется установить значение 2-5 мс.",
+
+                {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
+                {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
+                {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
+                "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
+                "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
+                "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
+                "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
+                {% endfor -%}
+
+                "Encoders": "Энкодеры",
+                "Not used": "Не используется",
+                "AB type": "Тип AB",
+
+                "encoder_steps_counter_desc": "С учетом параметра «Количество импульсов на один шаг»",
+
+                "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
+                "Turn Off the Channel": "Выключить канал",
+                "Keep Minimum Brightness": "Оставить минимальную яркость",
+
+                "Encoder Connection Type": "Тип подключения энкодера",
+                "Pulses per Step": "Количество импульсов на один шаг",
+                "Controlled Channel": "Управляемый канал диммера",
+                "Step of Value Change": "Шаг изменения значения",
+
+                "No Control": "Управление отключено",
+                "Red Brightness": "Яркость красного",
+                "Green Brightness": "Яркость зеленого",
+                "Blue Brightness": "Яркость синего",
+                "Hue of RGB Strip (circular, HSV-H)": "Оттенок RGB ленты (HSV-H, по кругу)",
+                "Saturation of RGB Strip (HSV-S)": "Насыщенность цвета RGB ленты (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)": "Яркость RGB ленты (HSV-V)",
+                "Hue Changing Time of RGB Strip": "Время непрерывного изменения оттенка RGB ленты",
 
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",
@@ -2611,40 +2470,17 @@
                 "sw_ch4_act_title" : "Канал 4",
                 "sw_ch12_act_title" : "Каналы 1 и 2",
                 "sw_ch34_act_title" : "Каналы 3 и 4",
-                "sw_ch1234_act_title" : "Каналы 1,2,3,4",
-                "sw_cct1_act_title" : "Каналы CCT1",
-                "sw_cct2_act_title" : "Каналы CCT2",
-                "sw_rgb_act_title" : "Каналы RGB",
-                "Channel RGB" : "Каналы RGB",
+                "sw_ch1234_act_title" : "Каналы 1, 2, 3 и 4",
+                "sw_cct1_act_title" : "Лента CCT1",
+                "sw_cct2_act_title" : "Лента CCT2",
+                "sw_rgb_act_title" : "Лента RGB",
                 "Channel RGB_H" : "Канал H",
                 "Channel RGB_S" : "Канал S",
                 "Channel RGB_V" : "Канал V",
-                "Action Hue" : "Действие с оттенком(H)",
+                "Action Hue" : "Действие с оттенком",
                 "Action Saturation" : "Действие с насыщенностью",
                 "Action Brightness" : "Действие с яркостью",
                 "Action Temperature" : "Действие с температурой",
-
-                "Channel 1_2 Brightness": "Яркость каналов 1_2",
-                "Channel 3_4 Brightness": "Яркость каналов 3_4",
-                "Channel 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
-                "Channel 1_2_3_4": "Каналы 1_2_3_4",
-
-                "Channel 1 Brightness with Auto On": "Канал 1 яркость с автовключением",
-                "Channel 2 Brightness with Auto On": "Канал 2 яркость с автовключением",
-                "Channel 3 Brightness with Auto On": "Канал 3 яркость с автовключением",
-                "Channel 4 Brightness with Auto On": "Канал 4 яркость с автовключением",
-                "Channels 1_2 Brightness with Auto On": "Каналы 1_2 яркость с автовключением",
-                "Channels 3_4 Brightness with Auto On": "Каналы 3_4 яркость с автовключением",
-                "Channels 1_2_3_4 Brightness with Auto On": "Каналы 1_2_3_4 яркость с автовключением",
-                "CCT1 Temperature with Auto On": "CCT1 температура с автовключением",
-                "CCT1 Brightness with Auto On": "CCT1 яркость с автовключением",
-                "CCT2 Temperature with Auto On": "CCT2 температура с автовключением",
-                "CCT2 Brightness with Auto On": "CCT2 яркость с автовключением",
-                "RGB Strip with Auto On": "RGB полоса с автовключением",
-                "RGB Strip Hue with Auto On": "RGB полоса оттенок с автовключением",
-                "RGB Strip Saturation with Auto On": "RGB полоса насыщенность с автовключением",
-                "RGB Strip Brightness with Auto On": "RGB полоса яркость с автовключением",
-                "Hue Changing Rate with Auto On": "Скорость смены оттенка с автовключением",
 
                 "Disabled": "Отключено",
                 "Enabled": "Включено"

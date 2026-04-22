@@ -643,8 +643,9 @@
             {
                 "name": "Channel {{ch_number + 1}} with Auto On",
                 "reg_type": "holding",
-                "address": {{132 + ch_number}},
+                "address": {{4 + ch_number}},
                 "type": "range",
+                "enabled": false,
                 "max": 100,
                 "group": "channel_{{ch_number + 1}}",
                 "sporadic": true
@@ -796,14 +797,6 @@
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "g_power_up_behaviour_description": "Actions when Power is On",
-
-                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Channel {{ch_number}} with Auto On": "Channel {{ch_number}} (Auto-Enable)",
-                "Channel {{ch_number}} Auto-Increase": "Channel {{ch_number}} Auto-Increase",
-                "Channel {{ch_number}} Auto-Decrease": "Channel {{ch_number}} Auto-Decrease",
-                "Channel {{ch_number}} Auto-Change Period (ms)": "Channel {{ch_number}} Auto-Change Period (ms)",
-                {% endfor -%}
-
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },

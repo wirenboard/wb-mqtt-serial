@@ -227,6 +227,12 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
             // По умолчанию - true.
             "enabled": true,
 
+            // Применимо для MODBUS TCP. 
+            // Признак того, что это подключение к шлюзу WB-MGE v.3.
+            // Разрешает использование Быстрого Модбаса для устройств, подключенных к шлюзу.
+            // По умолчанию - false.
+            "connected_to_mge": true,
+
             // список устройств на данном порту
             "devices": [
                 {
