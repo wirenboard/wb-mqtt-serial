@@ -13,7 +13,7 @@ enum class TRPCMessageFormat
     RPC_MESSAGE_FORMAT_STR
 };
 
-class TRPCPortLoadRequest
+class TRPCPortLoadRequestBase
 {
 public:
     std::vector<uint8_t> Message;
@@ -22,14 +22,19 @@ public:
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
     TRPCMessageFormat Format;
 
-    TSerialPortConnectionSettings SerialPortSettings;
-
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
 };
 
+class TRPCPortLoadRequest: public TRPCPortLoadRequestBase
+{
+public:
+    TSerialPortConnectionSettings SerialPortSettings;
+};
+
 typedef std::shared_ptr<TRPCPortLoadRequest> PRPCPortLoadRequest;
 
+void ParseRPCPortLoadRequestBase(const Json::Value& data, TRPCPortLoadRequestBase& request);
 void ParseRPCPortLoadRequest(const Json::Value& data, TRPCPortLoadRequest& request);
 std::string FormatResponse(const std::vector<uint8_t>& response, TRPCMessageFormat format);
 std::vector<uint8_t> HexStringToByteVector(const std::string& hexString);
