@@ -561,6 +561,19 @@
         "device_type": {
           "not": {},
           "options": { "hidden": true }
+        },
+        "hidden": {
+          "title": "Hidden",
+          "description": "hidden_channel_description",
+          "type": "boolean",
+          "default": false,
+          "propertyOrder": 29,
+          "options": {
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
         }
       },
       "required": ["name"],
@@ -1177,7 +1190,8 @@
       "sporadic_description": "If a protocol allows, the register is excluded from periodic polling. Its change is sent by a special event",
       "semi_sporadic_description": "If a protocol allows, the register change is sent by a special event. At the same time, periodic polling continues",
       "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped.",
-      "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue"
+      "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue",
+      "hidden_channel_description": "Hidden channels are not displayed in UI, but are published in MQTT. They are useful for channels that are needed for internal purposes, but should not be exposed to users directly"
     },
     "ru": {
       "Response timeout (ms)": "Таймаут ответа (мс)",
@@ -1330,7 +1344,9 @@
       "Minimal interval between requests to the devices (ms)": "Минимальный интервал между запросами к устройству (мс)",
       "hex with prefix '0x'": "шестнадцатеричный вид с префиксом '0x'",
       "Should be hex with prefix '0x'": "Задайте шестнадцатеричное значение с префиксом '0x'",
-      "Register address": "Адрес регистра"
+      "Register address": "Адрес регистра",
+      "Hidden": "Скрытый",
+      "hidden_channel_description": "Канал не отображается в интерфейсе, но публикуется в MQTT. Это полезно для каналов, которые нужны для внутренних целей, но не должны быть доступны пользователям напрямую"
     }
   }
 }

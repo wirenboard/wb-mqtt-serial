@@ -1043,8 +1043,8 @@ namespace Modbus // modbus protocol common utilities
                                               device->GetFrameTimeout(port));
             return value.Get<std::string>();
         } catch (const std::runtime_error& e) {
-            LOG(Warn) << "Unable to read WB device firmware version [slave_id is "
-                      << device->DeviceConfig()->SlaveId + "]: " << e.what();
+            LOG(Debug) << "Unable to read WB device firmware version [slave_id is "
+                       << device->DeviceConfig()->SlaveId + "]: " << e.what();
         }
         return std::string();
     }

@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.239.0) stable; urgency=medium
+
+  * Add device_id parameter to port/Load RPC
+  [ Radmir Khakimov ]
+  * Add WB-MDALI support
+  * Add hidden channels support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 22 Apr 2026 14:37:25 +0500
+
 wb-mqtt-serial (2.238.1) stable; urgency=medium
 
   * Add connected_to_mge Modbus TCP port parameter description
