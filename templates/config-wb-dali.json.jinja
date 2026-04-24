@@ -5,7 +5,7 @@
 {% set FP_BUTTONS_NUMBER = 3 -%}
 
 {
-    "title": "WB-MDALI_template_title",
+    "title": "WB-DALI_template_title",
     "device_type": "WB-DALI",
     "group": "g-wb",
     "hw": [
@@ -17,8 +17,8 @@
         }
     ],
     "device": {
-        "name": "WB-MDALI",
-        "id": "wb-mdali",
+        "name": "WB-DALI",
+        "id": "wb-dali",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "enable_wb_continuous_read": true,
@@ -429,7 +429,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MDALI_template_title": "WB-MDALI (3-channel RS485-DALI gateway)",
+                "WB-DALI_template_title": "WB-DALI (3-channel RS485-DALI gateway)",
                 "debounce_time_title": "Debounce Time (ms)",
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -439,7 +439,7 @@
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600"
             },
             "ru": {
-                "WB-MDALI_template_title": "WB-MDALI (3-канальный шлюз RS485-DALI)",
+                "WB-DALI_template_title": "WB-DALI (3-канальный шлюз RS485-DALI)",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
 
                 {% for in_num in range(FP_BUTTONS_NUMBER) -%}
