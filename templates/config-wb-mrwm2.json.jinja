@@ -832,6 +832,18 @@
                 "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
             {
+                "name": "Test Voltage K{{out_num}}",
+                "reg_type": "holding",
+                "address": {{2000 + out_num - 1}},
+                "type": "range",
+                "units": "V",
+                "format": "u16",
+                "scale": 0.01,
+                "min": 100,
+                "max": 300,
+                "group": "gg_protection_channels"
+            },
+            {
                 "name": "Startup Delay Countdown K{{out_num}}",
                 "reg_type": "input",
                 "fw": "1.21.0",
