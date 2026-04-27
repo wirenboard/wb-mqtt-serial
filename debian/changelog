@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.241.0) stable; urgency=medium
+
+  * Add template for rielta-brshs-rk
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 27 Apr 2026 10:00:00 +0300
+
 wb-mqtt-serial (2.240.0) stable; urgency=medium
 
   * Rename WB-MDALI to WB-DALI
