@@ -1,0 +1,488 @@
+{% set DETECTOR = 3 -%}
+{% set OUTPUT = 3 -%}
+{% set INPUT = 3 -%}
+{% set SENSOR = 6 -%}
+{
+  "device_type": "rielta-brshs-rk",
+  "title": "rielta-brshs-rk_template_title",
+  "group": "g-custom",
+  "device": {
+    "name": "RIELTA-BRSHS-RK",
+    "id": "rielta-brshs-rk",
+    "max_read_registers": 1,
+    "response_timeout_ms": 2000,
+    "force_frame_timeout": true,
+    "groups": [
+      {
+        "title": "Gateway",
+        "id": "gateway"
+      },
+      {
+        "title": "Detectors Channels",
+        "id": "detectors_ch"
+      },
+      {
+        "title": "Outputs Channels",
+        "id": "outputs_ch"
+      },
+      {
+        "title": "Inputs Channels",
+        "id": "inputs_ch"
+      },
+      {
+        "title": "Sensors Channels",
+        "id": "sensors_ch"
+      }
+    ],
+    "channels": [
+      {
+        "id": "input_s1",
+        "name": "Input S1",
+        "reg_type": "input",
+        "address": "0:1:1",
+        "group": "gateway",
+        "type": "switch",
+        "readonly": true
+      },
+      {
+        "id": "input_s2",
+        "name": "Input S2",
+        "reg_type": "input",
+        "address": "0:2:1",
+        "group": "gateway",
+        "type": "switch",
+        "readonly": true
+      },
+      {
+        "id": "binding",
+        "name": "Binding",
+        "reg_type": "input",
+        "address": "0:3:1",
+        "group": "gateway",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "power",
+        "name": "Power",
+        "reg_type": "input",
+        "address": "0:5:1",
+        "group": "gateway",
+        "type": "switch",
+        "readonly": true
+      },
+      {
+        "id": "backup_power",
+        "name": "Backup Power",
+        "reg_type": "input",
+        "address": "0:4:1",
+        "group": "gateway",
+        "type": "switch",
+        "readonly": true
+      },
+      {
+        "id": "opened",
+        "name": "Opened",
+        "reg_type": "input",
+        "address": "0:6:1",
+        "group": "gateway",
+        "type": "switch",
+        "readonly": true
+      },
+      {
+        "id": "repeater_mode",
+        "name": "Repeater Mode",
+        "reg_type": "input",
+        "address": "0:7:1",
+        "group": "gateway",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {% for i in range(1, DETECTOR + 1) -%}
+      {% set enabled = 'true' if i < 2 else 'false' -%}
+      {
+        "id": "detector_{{ i }}",
+        "name": "Detector {{ i }}",
+        "reg_type": "input",
+        "address": "{{ i }}:0:1",
+        "group": "detectors_ch",
+        "type": "switch",
+        "enabled": {{enabled}},
+        "readonly": true
+      },
+      {
+        "id": "detector_{{ i }}_connection",
+        "name": "Detector {{ i }} Connection",
+        "reg_type": "input",
+        "address": "{{ i }}:3:1",
+        "group": "detectors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "detector_{{ i }}_power",
+        "name": "Detector {{ i }} Power",
+        "reg_type": "input",
+        "address": "{{ i }}:5:1",
+        "group": "detectors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "detector_{{ i }}_backup_power",
+        "name": "Detector {{ i }} Backup Power",
+        "reg_type": "input",
+        "address": "{{ i }}:4:1",
+        "group": "detectors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "detector_{{ i }}_opened",
+        "name": "Detector {{ i }} Opened",
+        "reg_type": "input",
+        "address": "{{ i }}:6:1",
+        "group": "detectors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "detector_{{ i }}_registered",
+        "name": "Detector {{ i }} Registered",
+        "reg_type": "input",
+        "address": "{{ i }}:7:1",
+        "group": "detectors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {% endfor -%}
+      {% for i in range(1, OUTPUT + 1) -%}
+      {% set enabled = 'true' if i < 2 else 'false' -%}
+      {
+        "id": "output_{{ i }}",
+        "name": "Output {{ i }}",
+        "reg_type": "holding",
+        "address": "{{ i-1 }}:0:3",
+        "group": "outputs_ch",
+        "enabled": {{enabled}},
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "enum_titles": [
+          "Turned Off",
+          "Turned On",
+          "Turned 0,5 Hz",
+          "Turned 1 Hz"
+        ],
+        "readonly": true
+      },
+      {
+        "id": "output_{{ i }}_command",
+        "name": "Output {{ i }} Command",
+        "reg_type": "holding",
+        "write_address": "{{ i-1 }}",
+        "group": "outputs_ch",
+        "enabled": {{enabled}},
+        "enum": [
+          128,
+          384,
+          640,
+          896
+        ],
+        "enum_titles": [
+          "Off",
+          "On",
+          "0,5 Hz",
+          "1 Hz"
+        ]
+      },
+      {
+        "id": "output_{{ i }}_connection",
+        "name": "Output {{ i }} Connection",
+        "reg_type": "holding",
+        "address": "{{ i-1 }}:3:1",
+        "group": "outputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "output_{{ i }}_power",
+        "name": "Output {{ i }} Power",
+        "reg_type": "holding",
+        "address": "{{ i-1 }}:5:1",
+        "group": "outputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "output_{{ i }}_backup_power",
+        "name": "Output {{ i }} Backup Power",
+        "reg_type": "holding",
+        "address": "{{ i-1 }}:4:1",
+        "group": "outputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "output_{{ i }}_opened",
+        "name": "Output {{ i }} Opened",
+        "reg_type": "holding",
+        "address": "{{ i-1 }}:6:1",
+        "group": "outputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "output_{{ i }}_registered",
+        "name": "Output {{ i }} Registered",
+        "reg_type": "holding",
+        "address": "{{ i-1 }}:7:1",
+        "group": "outputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {% endfor -%}
+      {% for i in range(1, INPUT + 1) -%}
+      {% set enabled = 'true' if i < 2 else 'false' -%}
+      {
+        "id": "input_{{ i }}",
+        "name": "Input {{ i }}",
+        "reg_type": "input",
+        "address": "{{ i+33 }}:0:4",
+        "group": "inputs_ch",
+        "enabled": {{enabled}},
+        "readonly": true,
+        "enum": [
+          0,
+          1,
+          2,
+          4,
+          9,
+          10,
+          12
+        ],
+        "enum_titles": [
+          "Disebled",
+          "Alert",
+          "Armed",
+          "Disarmed",
+          "Long Alert",
+          "Long Armed",
+          "Long Disarmed"
+        ]
+      },
+      {
+        "id": "input_{{ i }}_power",
+        "name": "Input {{ i }} Power",
+        "reg_type": "input",
+        "address": "{{ i+33 }}:5:1",
+        "group": "inputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "input_{{ i }}_backup_power",
+        "name": "Input {{ i }} Backup Power",
+        "reg_type": "input",
+        "address": "{{ i+33 }}:4:1",
+        "group": "inputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "input_{{ i }}_opened",
+        "name": "Input {{ i }} Opened",
+        "reg_type": "input",
+        "address": "{{ i+33 }}:6:1",
+        "group": "inputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "input_{{ i }}_registered",
+        "name": "Input {{ i }} Registered",
+        "reg_type": "input",
+        "address": "{{ i+33 }}:7:1",
+        "group": "inputs_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {% endfor -%}
+      {% for i in range(1, SENSOR + 1) -%}
+      {% set enabled = 'true' if i < 3 else 'false' -%}
+      {% set comma = ',' if i < SENSOR else '' -%}
+      {
+        "id": "sensor_{{ i }}",
+        "name": "Sensor {{ i }}",
+        "reg_type": "input",
+        "address": "{{ i+65 }}",
+        "group": "sensors_ch",
+        "format": "s8",
+        "byte_order": "little_endian",
+        "enabled": {{enabled}},
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_upper_threshold",
+        "name": "Sensor {{ i }} Upper Threshold",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:0:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_lower_threshold",
+        "name": "Sensor {{ i }} Lower Threshold",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:1:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_connection",
+        "name": "Sensor {{ i }} Connection",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:3:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_power",
+        "name": "Sensor {{ i }} Power",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:5:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_backup_power",
+        "name": "Sensor {{ i }} Backup Power",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:4:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_opened",
+        "name": "Sensor {{ i }} Opened",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:6:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      },
+      {
+        "id": "sensor_{{ i }}_registered",
+        "name": "Sensor {{ i }} Registered",
+        "reg_type": "input",
+        "address": "{{ i+65 }}:7:1",
+        "group": "sensors_ch",
+        "type": "switch",
+        "enabled": false,
+        "readonly": true
+      }{{comma}}
+      {% endfor -%}
+    ],
+    "parameters": {},
+    "translations": {
+      "en": {
+        "rielta-brshs-rk_template_title": "RIELTA-BRSHS-RK"
+      },
+      "ru": {
+        "rielta-brshs-rk_template_title": "РИЭЛТА-БРШС-РК",
+        "Gateway": "Шлюз",
+        "Detectors Channels": "Каналы извещателей",
+        "Outputs Channels": "Каналы выходов",
+        "Inputs Channels": "Каналы входов",
+        "Sensors Channels": "Каналы датчиков",
+        "Input S1": "Вход S1",
+        "Input S2": "Вход S2",
+        "Binding": "Связывание",
+        "Power": "Питание",
+        "Backup Power": "Резервное питание",
+        "Opened": "Вскрытие",
+        "Repeater Mode": "Режим ретранслятора",
+        {% for i in range(1, DETECTOR + 1) -%}
+        "Detector {{ i }}": "Извещатель {{ i }}",
+        "Detector {{ i }} Connection": "Извещатель {{ i }} — связь",
+        "Detector {{ i }} Power": "Извещатель {{ i }} — питание",
+        "Detector {{ i }} Backup Power": "Извещатель {{ i }} — резервное питание",
+        "Detector {{ i }} Opened": "Извещатель {{ i }} — вскрытие",
+        "Detector {{ i }} Registered": "Извещатель {{ i }} — зарегистрирован",
+        {% endfor -%}
+        {% for i in range(1, OUTPUT + 1) -%}
+        "Output {{ i }}": "Выход {{ i }}",
+        "Output {{ i }} Command": "Выход {{ i }} — команда",
+        "Output {{ i }} Connection": "Выход {{ i }} — связь",
+        "Output {{ i }} Power": "Выход {{ i }} — питание",
+        "Output {{ i }} Backup Power": "Выход {{ i }} — резервное питание",
+        "Output {{ i }} Opened": "Выход {{ i }} — вскрытие",
+        "Output {{ i }} Registered": "Выход {{ i }} — зарегистрирован",
+        {% endfor -%}
+        "Turned Off": "Выключено",
+        "Turned On": "Включено",
+        "Turned 0,5 Hz": "Включено 0,5 Гц",
+        "Turned 1 Hz": "Включено 1 Гц",
+        "Off": "Выключить",
+        "On": "Включить",
+        "0,5 Hz": "0,5 Гц",
+        "1 Hz": "1 Гц",
+        {% for i in range(1, INPUT + 1) -%}
+        "Input {{ i }}": "Вход {{ i }}",
+        "Input {{ i }} Power": "Вход {{ i }} — питание",
+        "Input {{ i }} Backup Power": "Вход {{ i }} — резервное питание",
+        "Input {{ i }} Opened": "Вход {{ i }} — вскрытие",
+        "Input {{ i }} Registered": "Вход {{ i }} — зарегистрирован",
+        {% endfor -%}
+        "Disebled": "Выключено",
+        "Alert": "Тревога",
+        "Armed": "Взятие",
+        "Disarmed": "Снятие",
+        "Long Alert": "Длинное — тревога",
+        "Long Armed": "Длинное — взятие",
+        "Long Disarmed": "Длинное — снятие",
+        {% for i in range(1, SENSOR + 1) -%}
+        {% set comma = ',' if i < SENSOR else '' -%}
+        "Sensor {{ i }}": "Датчик {{ i }}",
+        "Sensor {{ i }} Upper Threshold": "Датчик {{ i }} — верхний порог",
+        "Sensor {{ i }} Lower Threshold": "Датчик {{ i }} — нижний порог",
+        "Sensor {{ i }} Connection": "Датчик {{ i }} — связь",
+        "Sensor {{ i }} Power": "Датчик {{ i }} — питание",
+        "Sensor {{ i }} Backup Power": "Датчик {{ i }} — резервное питание",
+        "Sensor {{ i }} Opened": "Датчик {{ i }} — вскрытие",
+        "Sensor {{ i }} Registered": "Датчик {{ i }} — зарегистрирован"{{comma}}
+        {% endfor -%}
+      }
+    }
+  }
+}
