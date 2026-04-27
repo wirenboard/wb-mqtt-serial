@@ -23981,7 +23981,7 @@ WB-MCM8
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-WB-MCM8-HV
+WB-MCM8HV
 	Bit mask of input states  =>  Bit mask of input states
 	FW Version  =>  FW Version
 	HW Batch Number  =>  HW Batch Number
