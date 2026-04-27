@@ -1,8 +1,23 @@
-wb-mqtt-serial (2.239.0) stable; urgency=medium
+wb-mqtt-serial (2.241.0) stable; urgency=medium
 
   * Add new templates for WB-LED and WB-MRGB-D with encoders and dimming step support
 
- -- Maxim Toropov <maxim.toropov@wirenboard.com>  Mon, 27 Apr 2026 17:00:00 +0300
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Mon, 4 May 2026 17:00:00 +0300
+
+wb-mqtt-serial (2.240.0) stable; urgency=medium
+
+  * Rename WB-MDALI to WB-DALI
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 24 Apr 2026 19:33:55 +0500
+
+wb-mqtt-serial (2.239.0) stable; urgency=medium
+
+  * Add device_id parameter to port/Load RPC
+  [ Radmir Khakimov ]
+  * Add WB-MDALI support
+  * Add hidden channels support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 22 Apr 2026 14:37:25 +0500
 
 wb-mqtt-serial (2.238.1) stable; urgency=medium
 
