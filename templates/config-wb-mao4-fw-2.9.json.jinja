@@ -276,6 +276,17 @@
                 "max": 500,
                 "order": 5
             },
+            {
+                "id": "channel{{ch_number}}_auto_change_period_ms",
+                "title": "Channel {{ch_number}} Auto-Change Period (ms)",
+                "address": {{159 + ch_number}},
+                "reg_type": "holding",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "output{{ch_number}}",
+                "order": 6
+            },
             {% endfor -%}
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
@@ -771,6 +782,24 @@
                 "group": "output_channels"
             },
             {
+                "name": "Channel {{index + 1}} Auto-Increase",
+                "reg_type": "coil",
+                "address": {{0x110 + index}},
+                "type": "switch",
+                "enabled": false,
+                "sporadic": true,
+                "group": "output_channels"
+            },
+            {
+                "name": "Channel {{index + 1}} Auto-Decrease",
+                "reg_type": "coil",
+                "address": {{0x120 + index}},
+                "type": "switch",
+                "enabled": false,
+                "sporadic": true,
+                "group": "output_channels"
+            },
+            {
                 "name": "Channel {{index + 1}}",
                 "reg_type": "holding",
                 "address": {{index}},
@@ -945,6 +974,9 @@
                 "Channel {{ch_number}} Switch": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Dimming Level": "Уровень диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Dimming Level with Auto On": "Канал {{ch_number}} с автовключением",
+                "Channel {{ch_number}} Auto-Increase": "Авто-увеличение канала {{ch_number}}",
+                "Channel {{ch_number}} Auto-Decrease": "Авто-уменьшение канала {{ch_number}}",
+                "Channel {{ch_number}} Auto-Change Period (ms)": "Период авто-изменения канала {{ch_number}} (мс)",
                 "Channel {{ch_number}}": "Напряжение канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}

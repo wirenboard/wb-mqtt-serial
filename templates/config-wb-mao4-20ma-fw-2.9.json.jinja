@@ -388,6 +388,16 @@
                 "max": 500,
                 "group": "gg_output_{{ ch_number }}_rates"
             },
+            {
+                "id": "channel{{ch_number}}_auto_change_period_ms",
+                "title": "Channel {{ch_number}} Auto-Change Period (ms)",
+                "address": {{159 + ch_number}},
+                "reg_type": "holding",
+                "min": 1,
+                "max": 500,
+                "default": 10,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
             {% endfor -%}
             {
                 "id": "safety_timer_s",
@@ -605,6 +615,22 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
+                "name": "Channel {{index + 1}} Auto-Increase",
+                "reg_type": "coil",
+                "address": {{0x110 + index}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
+                "name": "Channel {{index + 1}} Auto-Decrease",
+                "reg_type": "coil",
+                "address": {{0x120 + index}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
                 "id": "channel_{{index + 1}}_current",
                 "name": "Channel {{index + 1}} Current",
                 "reg_type": "holding",
@@ -768,6 +794,9 @@
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
                 "Channel {{ch_number}} Level with Auto On": "Канал {{ch_number}} с автовключением",
+                "Channel {{ch_number}} Auto-Increase": "Авто-увеличение канала {{ch_number}}",
+                "Channel {{ch_number}} Auto-Decrease": "Авто-уменьшение канала {{ch_number}}",
+                "Channel {{ch_number}} Auto-Change Period (ms)": "Период авто-изменения канала {{ch_number}} (мс)",
                 "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
                 "Channel {{ch_number}} Fault": "Ошибка канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
