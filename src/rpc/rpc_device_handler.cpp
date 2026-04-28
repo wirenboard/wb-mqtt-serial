@@ -66,14 +66,11 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
         }
         ProtocolParams = deviceFactory.GetProtocolParams(protocolName);
         auto config = std::make_shared<TDeviceConfig>("RPC Device", request["slave_id"].asString(), protocolName);
-        if (ProtocolParams.protocol->IsModbus()) {
-            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "max_reg_hole", config->MaxRegHole);
-            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "max_bit_hole", config->MaxBitHole);
-            WBMQTT::JSON::Get(DeviceTemplate->GetTemplate(), "min_read_registers", config->MaxReadRegisters);
-        }
+        bool isWbDevice = !DeviceTemplate->GetHardware().empty() ||
+                          DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
+        LoadCommonDeviceParameters(*config, DeviceTemplate->GetTemplate(), isWbDevice);
         Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
-        Device->SetWbDevice(!DeviceTemplate->GetHardware().empty() ||
-                            DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool());
+        Device->SetWbDevice(isWbDevice);
     } else {
         Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);

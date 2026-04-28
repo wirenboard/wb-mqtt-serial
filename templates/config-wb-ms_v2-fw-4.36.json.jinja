@@ -4,18 +4,18 @@
 {% set FIRST_SENSOR = 1 -%}
 {% set SENSORS_NUMBER_WITH_RESERVE = 40 -%}
 {
-    "title": "WB-M1W2_v3_template_title",
-    "device_type": "WB-M1W2 v.3 MULTIPLE W1",
+    "title": "WB-MS-v2_template_title",
+    "device_type": "WB-MS-v2-since-fw-4.36",
     "group": "g-wb",
     "hw": [
         {
-            "signature": "WB-M1W2 v.3",
-            "fw": "4.35.0"
+            "signature": "WBMSv2",
+            "fw": "4.36.0"
         }
     ],
     "device": {
-        "name": "WB-M1W2",
-        "id": "wb-m1w2",
+        "name": "WB-MS v.2",
+        "id": "wb-ms",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "enable_wb_continuous_read": true,
@@ -69,6 +69,14 @@
             },
             {% endfor -%}
             {
+                "title": "Air Quality",
+                "id": "g_air_quality"
+            },
+            {
+                "title": "Illuminance",
+                "id": "g_illuminance"
+            },
+            {
                 "title": "General",
                 "id": "g_general"
             },
@@ -79,6 +87,11 @@
             {
                 "title": "Debug",
                 "id": "g_debug"
+            },
+            {
+                "title": "Built-in sensors",
+                "id": "gg_debug_built_in_sensors",
+                "group": "g_debug"
             },
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
@@ -92,7 +105,6 @@
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
-                "fw": "4.32.0",
                 "address": {{275 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -153,6 +165,56 @@
             },
             {% endfor -%}
             {% endfor -%}
+            "temperature_readings_period_s": {
+                "title": "temperature_readings_period_s_title",
+                "description": "temperature_readings_period_s_description",
+                "address": 98,
+                "reg_type": "holding",
+                "default": 2,
+                "min": 1,
+                "max": 60,
+                "group": "g_w1_bus",
+                "order": 1
+            },
+            "temperature_readings_filter_deg": {
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
+                "address": 99,
+                "reg_type": "holding",
+                "scale": 0.0625,
+                "default": 1,
+                "group": "g_w1_bus",
+                "order": 2
+            },
+            "th_sensor_heater_enabled": {
+                "title": "TH Sensor Heater Enabled",
+                "address": 2,
+                "reg_type": "coil",
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
+                "default": 0,
+                "group": "g_air_quality",
+                "order": 1
+            },
+            "selfheating_compensation_deg": {
+                "title": "Self-Heating Compensation (°C)",
+                "description": "selfheating_compensation_deg_description",
+                "address": 245,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "group": "g_air_quality",
+                "order": 2
+            },
+            "illuminance_filter_time_const_ms": {
+                "title": "Low-pass Filter Time Constant (ms)",
+                "address": 90,
+                "reg_type": "holding",
+                "scale": 0.1,
+                "default": 20,
+                "group": "g_illuminance",
+                "order": 1
+            },
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -170,6 +232,14 @@
                 "group": "g_general",
                 "order": 1
             },
+            "rs485_response_delay_ms": {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "g_general",
+                "order": 2
+            },
             "disable_indication": {
                 "title": "Status LED",
                 "address": 130,
@@ -178,28 +248,7 @@
                 "enum_titles": ["Enabled", "Disabled"],
                 "default": 0,
                 "group": "g_general",
-                "order": 4
-            },
-            "temperature_readings_period_s": {
-                "title": "temperature_readings_period_s_title",
-                "description": "temperature_readings_period_s_description",
-                "address": 101,
-                "reg_type": "holding",
-                "default": 2,
-                "min": 1,
-                "max": 60,
-                "group": "g_w1_bus",
-                "order": 1
-            },
-            "temperature_readings_filter_deg": {
-                "title": "temperature_readings_filter_deg_title",
-                "description": "temperature_readings_filter_deg_description",
-                "address": 99,
-                "reg_type": "holding",
-                "scale": 0.0625,
-                "default": 1,
-                "group": "g_w1_bus",
-                "order": 2
+                "order": 3
             }
         },
         "channels": [
@@ -265,7 +314,7 @@
                 "id": "External Sensor {{in_num}}",
                 "name": "Input {{in_num}} Temperature",
                 "reg_type": "input",
-                "address": {{7 + in_num - 1}},
+                "address": {{6 + in_num - 1}},
                 "type": "value",
                 "units": "deg C",
                 "format": "s16",
@@ -356,7 +405,7 @@
                 "id": "bus{{in_num}}_sens{{sens_num}}_ok",
                 "name": "Sensor {{in_num}}:{{sens_num}} OK",
                 "reg_type": "discrete",
-                "address": {{128 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "address": {{500 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "type": "switch",
                 "enabled": false,
                 "group": "gg_in{{in_num}}_status",
@@ -455,7 +504,7 @@
             {
                 "name": "Reset All Counters",
                 "reg_type": "holding",
-                "address": 100,
+                "address": 463,
                 "value": 1,
                 "type": "pushbutton",
                 "enabled": false,
@@ -466,6 +515,71 @@
                         {%- if not loop.last -%} || {%- endif -%}
                     {%- endfor -%}
                 "
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "address": 4,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0x7FFF",
+                "group": "g_air_quality"
+            },
+            {
+                "name": "Humidity",
+                "reg_type": "input",
+                "address": 5,
+                "type": "rel_humidity",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0xFFFF",
+                "group": "g_air_quality"
+            },
+            {
+                "name": "Air Quality (VOC)",
+                "reg_type": "input",
+                "address": 11,
+                "units": "ppb",
+                "error_value": "0xFFFF",
+                "group": "g_air_quality"
+            },
+            {
+                "name": "Air Quality Index",
+                "reg_type": "input",
+                "address": 12,
+                "scale": 1,
+                "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
+                "enabled": false,
+                "group": "g_air_quality"
+            },
+            {
+                "name": "TH Sensor Heater Cleaning Mode Enabled",
+                "description": "Only for SHT40 temperature and humidity sensor",
+                "address": 8,
+                "reg_type": "coil",
+                "type": "switch",
+                "enabled": false,
+                "group": "g_air_quality"
+            },
+            {
+                "name": "TH Sensor Heater Cleaning Mode Countdown",
+                "description": "Only for SHT40 temperature and humidity sensor",
+                "address": 365,
+                "reg_type": "input",
+                "type": "value",
+                "units": "s",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_air_quality"
+            },
+            {
+                "name": "Illuminance",
+                "reg_type": "input",
+                "address": 2,
+                "type": "lux",
+                "group": "g_illuminance"
             },
             {
                 "name": "Serial",
@@ -482,7 +596,6 @@
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
-                "fw": "4.34.0",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -497,12 +610,11 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Supply Voltage",
+                "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
-                "type": "value",
-                "units": "V",
                 "scale": 0.001,
+                "type": "voltage",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -510,8 +622,6 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "type": "value",
-                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "g_hw_info"
@@ -521,8 +631,7 @@
                 "reg_type": "input",
                 "address": 122,
                 "scale": 0.001,
-                "type": "value",
-                "units": "V",
+                "type": "voltage",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -530,8 +639,7 @@
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "value",
-                "units": "deg C",
+                "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
@@ -542,20 +650,115 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "value",
-                "units": "V",
+                "type": "voltage",
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "Minimum MCU Voltage Since Startup",
+                "name": "VOC Sensor Installed",
                 "reg_type": "input",
-                "address": 119,
-                "scale": 0.001,
-                "type": "value",
-                "units": "V",
+                "address": 371,
+                "type": "switch",
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "VOC Version",
+                "reg_type": "input",
+                "address": 108,
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "VOC Raw",
+                "reg_type": "input",
+                "address": 107,
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "VOC Raw R4",
+                "reg_type": "input",
+                "address": 364,
+                "format": "u16",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "VOC Baseline",
+                "reg_type": "input",
+                "address": 106,
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "VOC Equivalent CO2 Concentration",
+                "reg_type": "input",
+                "address": 360,
+                "format": "u16",
+                "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
+                "units": "ppm",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "VOC Sensor Status",
+                "reg_type": "input",
+                "address": 363,
+                "format": "u16",
+                "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "Illuminance Mode",
+                "reg_type": "holding",
+                "address": 103,
+                "readonly": true,
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "Successful TH Readings",
+                "reg_type": "input",
+                "address": 101,
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "Erroneous TH Readings",
+                "reg_type": "input",
+                "address": 102,
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "Temperature Without Compensation",
+                "reg_type": "input",
+                "address": 284,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0x7FFF",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
+            },
+            {
+                "name": "Humidity Without Compensation",
+                "reg_type": "input",
+                "address": 285,
+                "type": "value",
+                "units": "%, RH",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0x7FFF",
+                "enabled": false,
+                "group": "gg_debug_built_in_sensors"
             }
         ],
         "translations": {
@@ -566,8 +769,11 @@
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
                 "w1_sensors_description": "Adding new sensors:<br>1) Make sure that the new sensors are connected to the bus<br>2) Click the 'Save New Sensors On The Bus' button on the device widget<br>3) Click the 'Review config' button<br>4) Click the 'Save config' button<br>New sensors will be saved in free cells.<br><br>If the sensor is not used, specify '0'.",
 
-                "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-channel temperature measurement and pulse-counter module)",
-                "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
+                "WB-MS-v2_template_title": "WB-MS v.2 fw4.36 (Modbus sensor)",
+                "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)",
+                "Uptime": "Uptime (s)",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -578,7 +784,7 @@
                 "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50"
             },
             "ru": {
-                "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-канальный преобразователь для термометров 1-Wire с функцией счётных входов)",
+                "WB-MS-v2_template_title": "WB-MS v.2 fw4.36 (универсальный Modbus-датчик)",
                 "1-Wire Bus": "Шина 1-Wire",
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
@@ -591,22 +797,14 @@
                 "Input {{in_num}} Sensor OK": "Датчик на входе {{in_num}} подключен",
                 {% endfor -%}
 
-                "General": "Общее",
-                "HW Info": "Данные модуля",
-                "Debug": "Диагностика",
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
                 "w1_sensors_description": "Добавление новых датчиков:<br>1) убедитесь, что новые датчики подключены на шину;<br>2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>3) нажмите кнопку «Перечитать настройки»;<br>4) нажмите кнопку «Сохранить настройки».<br>Новые датчики будут сохранены в свободные ячейки.<br><br>Если датчик не используется, укажите '0'.",
-                "Status LED": "Индикатор состояния",
-                "Enabled": "Активен",
-                "Disabled": "Отключен",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
@@ -616,15 +814,6 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
                 "Reset All Counters": "Сбросить все счетчики",
-                "Serial": "Серийный номер",
-                "HW Batch Number": "Номер партии",
-                "FW Version": "Версия прошивки",
-                "Supply Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
-                "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",
@@ -653,7 +842,53 @@
                 "Sensors Temperature": "Температура датчиков",
                 "Sensors Status": "Состояние датчиков",
                 "Parasitic": "Паразитное",
-                "External": "Внешнее"
+                "External": "Внешнее",
+
+                "Air Quality": "Параметры воздуха",
+                "Illuminance": "Освещенность",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Built-in sensors": "Встроенные датчики",
+                "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
+                "TH Sensor Heater Cleaning Mode Enabled": "Включить режим очистки датчика TH",
+                "TH Sensor Heater Cleaning Mode Countdown": "Оставшееся время очистки датчика TH",
+                "Only for SHT40 temperature and humidity sensor": "Только для датчика температуры и влажности SHT40",
+                "no": "нет",
+                "yes": "да",
+                "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",
+                "selfheating_compensation_deg_description": "Значение компенсации вычитается из измеренной температуры",
+                "Low-pass Filter Time Constant (ms)": "Время усреднения освещенности (мс)",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Temperature": "Температура",
+                "Humidity": "Влажность",
+                "Air Quality (VOC)": "Качество воздуха (VOC)",
+                "Air Quality Index": "Индекс качества воздуха (AQI)",
+                "VOC Baseline": "Смещение уровня VOC",
+                "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Disabled": "Отключен",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "VOC Sensor Installed": "Датчик VOC установлен",
+                "VOC Version": "Версия датчика VOC",
+                "VOC Raw": "Сырое значение датчика VOC",
+                "VOC Raw R4": "Сырое значение датчика VOC R4",
+                "VOC Equivalent CO2 Concentration": "Эквивалентное качеству воздуха значение CO₂ (eCO₂)",
+                "VOC Sensor Status": "Состояние датчика VOC",
+                "Illuminance Mode": "Режим измерения освещенности",
+                "Successful TH Readings": "Успешные запросы к датчику TH",
+                "Erroneous TH Readings": "Ошибочные запросы к датчику TH",
+                "Temperature Without Compensation": "Температура до компенсации",
+                "Humidity Without Compensation": "Влажность до компенсации"
             }
         }
     }

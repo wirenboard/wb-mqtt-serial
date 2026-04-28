@@ -417,6 +417,8 @@ namespace
         }
 
         deviceWithChannels.Channels.push_back(channel);
+
+        Get(channel_data, "hidden", channel->Hidden);
     }
 
     void LoadChannel(TSerialDeviceWithChannels& deviceWithChannels,
@@ -484,7 +486,9 @@ namespace
                      const TLoadingContext& context,
                      const TRegisterTypeMap& typeMap)
     {
-        if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool()) {
+        const auto isDisabled =
+            !channel_data.get("enabled", true).asBool() && !channel_data.get("hidden", false).asBool();
+        if (isDisabled) {
             if (IsSerialNumberChannel(channel_data)) {
                 deviceWithChannels.Device->SetSnRegister(LoadRegisterConfig(channel_data,
                                                                             typeMap,
@@ -539,43 +543,6 @@ namespace
             for (const auto& setupItem: device_data["setup"])
                 LoadSetupItem(device, setupItem, typeMap, context);
         }
-    }
-
-    void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWbDevice)
-    {
-        if (device_data.isMember("password")) {
-            device_config.Password.clear();
-            for (const auto& passwordItem: device_data["password"]) {
-                device_config.Password.push_back(static_cast<uint8_t>(ToUint64(passwordItem, "password item")));
-            }
-        }
-
-        if (device_data.isMember("delay_ms")) {
-            LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
-        }
-
-        if (isWbDevice) {
-            device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
-        }
-
-        Get(device_data, "frame_timeout_ms", device_config.FrameTimeout);
-        if (device_config.FrameTimeout.count() < 0) {
-            device_config.FrameTimeout = DefaultFrameTimeout;
-        }
-        Get(device_data, "response_timeout_ms", device_config.ResponseTimeout);
-        Get(device_data, "device_timeout_ms", device_config.DeviceTimeout);
-        Get(device_data, "device_max_fail_cycles", device_config.DeviceMaxFailCycles);
-        Get(device_data, "max_write_fail_time_s", device_config.MaxWriteFailTime);
-        Get(device_data, "max_reg_hole", device_config.MaxRegHole);
-        Get(device_data, "max_bit_hole", device_config.MaxBitHole);
-        Get(device_data, "max_read_registers", device_config.MaxReadRegisters);
-        Get(device_data, "min_read_registers", device_config.MinReadRegisters);
-        Get(device_data, "max_write_registers", device_config.MaxWriteRegisters);
-        Get(device_data, "guard_interval_us", device_config.RequestDelay);
-        Get(device_data, "stride", device_config.Stride);
-        Get(device_data, "shift", device_config.Shift);
-        Get(device_data, "access_level", device_config.AccessLevel);
-        Get(device_data, "min_request_interval", device_config.MinRequestInterval);
     }
 
     void LoadDevice(PPortConfig port_config,
@@ -1056,6 +1023,43 @@ const std::string& IDeviceFactory::GetCustomChannelSchemaRef() const
 const IRegisterAddressFactory& IDeviceFactory::GetRegisterAddressFactory() const
 {
     return *RegisterAddressFactory;
+}
+
+void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value& device_data, bool isWbDevice)
+{
+    if (device_data.isMember("password")) {
+        device_config.Password.clear();
+        for (const auto& passwordItem: device_data["password"]) {
+            device_config.Password.push_back(static_cast<uint8_t>(ToUint64(passwordItem, "password item")));
+        }
+    }
+
+    if (device_data.isMember("delay_ms")) {
+        LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
+    }
+
+    if (isWbDevice) {
+        device_config.MaxWriteRegisters = Modbus::MAX_WRITE_REGISTERS;
+    }
+
+    Get(device_data, "frame_timeout_ms", device_config.FrameTimeout);
+    if (device_config.FrameTimeout.count() < 0) {
+        device_config.FrameTimeout = DefaultFrameTimeout;
+    }
+    Get(device_data, "response_timeout_ms", device_config.ResponseTimeout);
+    Get(device_data, "device_timeout_ms", device_config.DeviceTimeout);
+    Get(device_data, "device_max_fail_cycles", device_config.DeviceMaxFailCycles);
+    Get(device_data, "max_write_fail_time_s", device_config.MaxWriteFailTime);
+    Get(device_data, "max_reg_hole", device_config.MaxRegHole);
+    Get(device_data, "max_bit_hole", device_config.MaxBitHole);
+    Get(device_data, "max_read_registers", device_config.MaxReadRegisters);
+    Get(device_data, "min_read_registers", device_config.MinReadRegisters);
+    Get(device_data, "max_write_registers", device_config.MaxWriteRegisters);
+    Get(device_data, "guard_interval_us", device_config.RequestDelay);
+    Get(device_data, "stride", device_config.Stride);
+    Get(device_data, "shift", device_config.Shift);
+    Get(device_data, "access_level", device_config.AccessLevel);
+    Get(device_data, "min_request_interval", device_config.MinRequestInterval);
 }
 
 PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
