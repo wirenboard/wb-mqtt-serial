@@ -40,7 +40,7 @@
         ],
         "channels": [
             {
-                "name": "Voltage",
+                "name": "voltage",
                 "address": "1.0.12.7.0.255",
                 "reg_type": "default",
                 "type": "value",
@@ -50,7 +50,7 @@
                 "precision": 1
             },
             {
-                "name": "Current",
+                "name": "current",
                 "address": "1.0.11.7.0.255",
                 "reg_type": "default",
                 "type": "value",
@@ -60,7 +60,7 @@
                 "precision": 3
             },
             {
-                "name": "Frequency",
+                "name": "frequency",
                 "address": "1.0.14.7.0.255",
                 "reg_type": "default",
                 "type": "value",
@@ -79,7 +79,7 @@
                 "precision": 3
             },
             {
-                "name": "Temperature",
+                "name": "temperature",
                 "address": "0.0.96.9.0.255",
                 "reg_type": "default",
                 "type": "value",
@@ -238,6 +238,10 @@
         ],
         "translations": {
             "en": {
+                "voltage": "Voltage",
+                "current": "Current",
+                "frequency": "Frequency",
+                "temperature": "Temperature",
                 "power_factor": "Power Factor",
                 "current_imbalance": "Current Imbalance",
                 "active_power_in": "Active Power In",
@@ -275,10 +279,10 @@
                 "active_energy_in_t2": "Активная энергия T2 прием",
                 "active_energy_out_t1": "Активная энергия T1 отдача",
                 "active_energy_out_t2": "Активная энергия T2 отдача",
-                "Voltage": "Напряжение",
-                "Current": "Ток",
-                "Frequency": "Частота",
-                "Temperature": "Температура"
+                "voltage": "Напряжение",
+                "current": "Ток",
+                "frequency": "Частота",
+                "temperature": "Температура"
             }
         }
     }

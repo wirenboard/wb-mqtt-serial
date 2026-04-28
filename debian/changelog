@@ -1,8 +1,94 @@
-wb-mqtt-serial (2.233.0) stable; urgency=medium
+wb-mqtt-serial (2.241.0) stable; urgency=medium
 
   * Add Milur 107S Tempalte
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 08 Apr 2026 18:26:00 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 28 Apr 2026 17:28:00 +0300
+
+wb-mqtt-serial (2.240.1) stable; urgency=medium
+
+  * Remove WB-M1W2 multiple w1 template
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 28 Apr 2026 11:50:00 +0700
+
+wb-mqtt-serial (2.240.0) stable; urgency=medium
+
+  * Rename WB-MDALI to WB-DALI
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 24 Apr 2026 19:33:55 +0500
+
+wb-mqtt-serial (2.239.0) stable; urgency=medium
+
+  * Add device_id parameter to port/Load RPC
+  [ Radmir Khakimov ]
+  * Add WB-MDALI support
+  * Add hidden channels support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 22 Apr 2026 14:37:25 +0500
+
+wb-mqtt-serial (2.238.1) stable; urgency=medium
+
+  * Add connected_to_mge Modbus TCP port parameter description
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 21 Apr 2026 10:29:33 +0500
+
+wb-mqtt-serial (2.238.0) stable; urgency=medium
+
+  * Fix second stop bit transactions collision bug
+  * Fix device RPC common device settings bug
+  * Fix firmware update RPC port settings bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 20 Apr 2026 11:16:57 +0300
+
+wb-mqtt-serial (2.237.0) stable; urgency=medium
+
+  * Add WB-MIR new template with multiple w1 support
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Fri, 17 Apr 2026 19:30:00 +0700
+
+wb-mqtt-serial (2.236.0) stable; urgency=medium
+
+  * Add WB-MS new template with multiple w1 support
+  * WB-M1W2 with multiple w1 template: fix artefacts
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 15 Apr 2026 13:45:00 +0700
+
+wb-mqtt-serial (2.235.0) stable; urgency=medium
+
+  * WB-MR templates: change defaults for timers, add new channels for commands
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 15 Apr 2026 09:33:00 +0300
+
+wb-mqtt-serial (2.234.0) stable; urgency=medium
+
+  * Add unixtime control type
+  * Add time sync for WB-MWAC v.2
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 15 Apr 2026 10:18:26 +0500
+
+wb-mqtt-serial (2.233.1) stable; urgency=medium
+
+  * Fix minimum and maximum values setup in WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 Apr 2026 14:28:59 +0500
+
+wb-mqtt-serial (2.233.0) stable; urgency=medium
+
+  * Add WB-MCM8-HV template
+  * WB-MCM8 template: add bit mask of input states channel
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 13 Apr 2026 16:57:00 +0300
+
+wb-mqtt-serial (2.232.7) stable; urgency=medium
+
+  * Fix WB-MAI11 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Apr 2026 11:47:22 +0500
+
+wb-mqtt-serial (2.232.6) stable; urgency=medium
+
+  * Fix WB-LED template: add missing translations
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 09 Apr 2026 16:57:00 +0300
 
 wb-mqtt-serial (2.232.5) stable; urgency=medium
 
