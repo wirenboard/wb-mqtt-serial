@@ -25366,6 +25366,10 @@ WB-MRWM2
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Off K1  =>  Off K1
+	Off K2  =>  Off K2
+	On K1  =>  On K1
+	On K2  =>  On K2
 	P L1  =>  P L1
 	P L2  =>  P L2
 	Real State K1  =>  Real State K1
@@ -25376,6 +25380,10 @@ WB-MRWM2
 	Startup Delay Countdown K1  =>  Startup Delay Countdown K1
 	Startup Delay Countdown K2  =>  Startup Delay Countdown K2
 	Supply Voltage  =>  Supply Voltage
+	Timer K1  =>  Timer K1
+	Timer K2  =>  Timer K2
+	Toggle K1  =>  Toggle K1
+	Toggle K2  =>  Toggle K2
 	Uptime  =>  Uptime
 	Urms L1  =>  Urms L1
 	Urms L2  =>  Urms L2
