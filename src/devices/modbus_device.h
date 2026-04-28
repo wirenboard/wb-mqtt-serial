@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <exception>
 #include <memory>
 #include <stdint.h>
@@ -55,6 +56,7 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
     bool EnableWbContinuousRead;
     bool ContinuousReadEnabled;
+    std::chrono::system_clock::time_point LastMWACTimeSync;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
@@ -75,4 +77,7 @@ public:
 protected:
     void PrepareImpl(TPort& port) override;
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
+
+private:
+    void SyncMWACTime(TPort& port);
 };
