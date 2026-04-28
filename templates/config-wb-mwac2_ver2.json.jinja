@@ -110,26 +110,6 @@
                 "description": "wet_cleaning_mode_description"
             },
             {
-                "title": "Antiseize Protection",
-                "id": "g_antiseize_protection",
-                "description": "antiseize_protection_description"
-            },
-            {
-                "title": "Action On Start",
-                "id": "gg_antiseize_action",
-                "group": "g_antiseize_protection"
-            },
-            {
-                "title": "Antiseize Channels",
-                "id": "gg_antiseize_channels",
-                 "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                },
-                "group": "g_antiseize_protection"
-            },
-            {
                 "title": "Safety Behaviour",
                 "description": "safety_behaviour_description",
                 "id": "gg_safety_behaviour",
@@ -170,7 +150,7 @@
                 "reg_type": "holding",
                 "default": 1,
                 "min": 1,
-                "max": 10000,
+                "max:": 10000,
                 "group": "counter{{ lp_in_num }}",
                 "order": 2
             },
@@ -446,75 +426,6 @@
                 "group": "g_safety",
                 "order": 2
             },
-            "safety_antiseize": {
-                "title": "Impact On Antiseize Protection",
-                "address": 953,
-                "reg_type": "holding",
-                "fw": "1.24.0",
-                "enum": [0, 1],
-                "default": 0,
-                "enum_titles": [
-                    "Allow Antiseize In Safety Mode",
-                    "Move Antiseize To Next Day"
-                ],
-                "group": "g_safety",
-                "order": 3
-            },
-            "antiseize_interval": {
-                "title": "Start Interval (days)",
-                "description": "antiseize_interval_description",
-                "address": 955,
-                "reg_type": "holding",
-                "fw": "1.24.0",
-                "default": 30,
-                "min": 1,
-                "max": 60,
-                "group": "g_antiseize_protection",
-                "order": 1
-            },
-            "antiseize_start_hour": {
-                "title": "Start Hour",
-                "description": "antiseize_start_hour_description",
-                "address": 956,
-                "reg_type": "holding",
-                "fw": "1.24.0",
-                "default": 0,
-                "min": 0,
-                "max": 23,
-                "group": "g_antiseize_protection",
-                "order": 2
-            },
-            "antiseize_duration": {
-                "title": "Cycle Duration (s)",
-                "description": "antiseize_duration_description",
-                "address": 957,
-                "reg_type": "holding",
-                "fw": "1.24.0",
-                "default": 60,
-                "min": 10,
-                "max": 120,
-                "group": "g_antiseize_protection",
-                "order": 3
-            },
-            {% for out_num in [OUT_NUM_K1, OUT_NUM_K2] -%}
-            "out{{ out_num }}_antiseize_behaviour": {
-                "title": {%- if out_num == OUT_NUM_K1 %} "Output K1",
-                        {%- elif out_num == OUT_NUM_K2 %} "Output K2",
-                        {%- endif %}
-                "address": {{ 958 + (out_num - 1) }},
-                "reg_type": "holding",
-                "fw": "1.24.0",
-                "enum": [0, 1, 2],
-                "default": 0,
-                "enum_titles": [
-                    "No Action (function disabled)",
-                    "Off/On",
-                    "On/Off"
-                ],
-                "group": "gg_antiseize_action",
-                "order": {{ out_num }}
-            },
-            {% endfor -%}
             "baud_rate": {
                 "title": "Baud Rate",
                 "description": "baud_rate_description",
@@ -770,16 +681,6 @@
                 "group": "wet_cleaning_mode"
             },
             {
-                "name": "Cleaning Mode Remaining Time",
-                "reg_type": "input",
-                "address": 976,
-                "type": "value",
-                "units": "min",
-                "enabled": false,
-                "fw": "1.24.0",
-                "group": "wet_cleaning_mode"
-            },
-            {
                 "name": "Buzzer",
                 "reg_type": "coil",
                 "address": 4,
@@ -787,42 +688,6 @@
                 "sporadic": true,
                 "group": "gg_outputs_channels"
             },
-            {% for out_num in [OUT_NUM_K1, OUT_NUM_K2] -%}
-            {
-                "name": {%- if out_num == OUT_NUM_K1 %} "Antiseize Last Status K1"
-                        {%- elif out_num == OUT_NUM_K2 %} "Antiseize Last Status K2"
-                        {%- endif %},
-                "reg_type": "input",
-                "address": {{ 960 + (out_num - 1) }},
-                "type": "value",
-                "enum": [0, 1, 2, 3, 4],
-                "enum_titles": [
-                    "Completed",
-                    "In Progress: Closing",
-                    "In Progress: Opening",
-                    "Interrupted",
-                    "Never Started"
-                ],
-                "enabled": false,
-                "group": "gg_antiseize_channels",
-                "condition": "out{{ out_num }}_antiseize_behaviour!=0",
-                "fw": "1.24.0"
-            },
-            {
-                "name": {%- if out_num == OUT_NUM_K1 %} "Days Until Next Antiseize K1"
-                        {%- elif out_num == OUT_NUM_K2 %} "Days Until Next Antiseize K2"
-                        {%- endif %},
-                "reg_type": "input",
-                "address": {{ 962 + (out_num - 1) }},
-                "type": "value",
-                "enum": [65535],
-                "enum_titles": ["Not set"],
-                "enabled": false,
-                "group": "gg_antiseize_channels",
-                "condition": "out{{ out_num }}_antiseize_behaviour!=0",
-                "fw": "1.24.0"
-            },
-            {% endfor -%}
             {
                 "name": "Serial",
                 "reg_type": "input",
@@ -868,15 +733,6 @@
                 "type": "value",
                 "units": "s",
                 "format": "u32",
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Date and Time",
-                "reg_type": "holding",
-                "address": 452,
-                "type": "unixtime",
-                "format": "u64",
                 "enabled": false,
                 "group": "hw_info"
             },
@@ -934,7 +790,7 @@
                 "safety_mode_description": "If the RS-485 connection is lost, the module will work autonomously, but you can additionally set its behavior in this case",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab",
                 "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10s",
-                "safety_buzzer_description": "\"Does not affect\" - buzzer behaves according to the input settings. \"On\" - the buzzer will be ON regardless of the input settings when the device is in safety mode and the leakage sensor is triggered",
+                "safety_buzzer_description": "\"Does not affect\" - the buzzer behaves according to the input settings. \"On\" - the buzzer will be ON regardless of the input settings when the device is in safety mode and the leakage sensor is triggered",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately",
                 "relays_state_after_poweron_description": "Default - Switch To the Safety State",
 
@@ -950,14 +806,7 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300ms",
 
                 "counter_offset_description": "Added to the volume counter to match the readings",
-                "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation",
-
-                "antiseize_protection_description": "Antiseize protection periodically cycles the valves if they have remained open for a long period.",
-                "antiseize_interval_description": "1...60, default: 30",
-                "antiseize_start_hour_description": "0...23, default: 0",
-                "antiseize_duration_description": "Opening time + closing time of the valve: 10...120, default: 60",
-
-                "Battery State, measured at module startup": "Battery State"
+                "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
@@ -975,7 +824,6 @@
                 "counter_pulse_weight_description": "Количество литров на импульс со счетчика. Указано на счетчике и/или документации к нему",
 
                 "Cleaning Mode": "Влажная уборка",
-                "Cleaning Mode Remaining Time": "Оставшееся время уборки",
                 "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки",
                 "wet_cleaning_mode_timer_description": "1 - 360 мин",
                 "Wet Cleaning Mode Timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
@@ -1026,7 +874,7 @@
                 "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery State, measured at module startup": "Состояние батарейки",
+                "Battery State, measured at module startup": "Состояние батарейки, измеренное при включении модуля",
                 "Replacement Required": "Требуется замена",
                 "Normal": "Нормальное",
                 "Good": "Хорошее",
@@ -1045,14 +893,11 @@
                 "On": "Включен",
                 "Restore Outputs State After Leakage Fix": "Восстанавливать состояние кранов после устранения протечки",
                 "Does not affect": "Не менять поведение",
-                "Allow Antiseize In Safety Mode": "Разрешить запуск в безопасном режиме",
-                "Move Antiseize To Next Day": "Перенести запуск на следующий день",
 
                 "Safety Mode": "Безопасный режим",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "Buzzer Behaviour": "Поведение зуммера при срабатывании датчика протечки",
-                "Impact On Antiseize Protection": "Влияние на защиту от закисания",
                 "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно дополнительно задать его поведение в этом случае",
                 "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с",
                 "safety_buzzer_description": "\"Не менять поведение\" - зуммер ведет себя в соответствии с настройками входов. \"Включен\" - зуммер будет включен независимо от настроек входов, когда устройство находится в безопасном режиме и срабатывает датчик протечки",
@@ -1064,7 +909,7 @@
                 "Don't Change": "Не блокировать",
                 "Disable in Safety Mode": "Блокировать в безопасном режиме",
                 "Enable Only in Safety Mode": "Разрешить только в безопасном режиме",
-                "relays_state_after_poweron_description": "По умолчанию - перевести в безопасное состояние",
+                "relays_state_after_poweron_description": "По умолчанию - Перевести в безопасное состояние",
 
                 "Press Parameters": "Параметры нажатий",
                 "debounce_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс",
@@ -1089,30 +934,6 @@
                 "Actions for Leakage Mode": "Действия для режима \"Протечка\"",
                 "Actions for Wet Cleaning Mode": "Действия для режима \"Влажная уборка\"",
                 "Buzzer Actions": "Действия для зуммера",
-
-                "Antiseize Protection": "Защита от закисания",
-                "antiseize_protection_description": "Защита от закисания периодически проворачивает краны, если они долго находились в открытом состоянии.",
-                "Start Interval (days)": "Периодичность запуска (дней)",
-                "antiseize_interval_description": "1...60, по умолчанию: 30",
-                "Start Hour": "Час суток для запуска",
-                "antiseize_start_hour_description": "0...23, по умолчанию: 0",
-                "Cycle Duration (s)": "Длительность цикла (с)",
-                "antiseize_duration_description": "Время открытия + время закрытия крана: 10...120, по умолчанию: 60",
-                "Action On Start": "Действие при запуске",
-                "No Action (function disabled)": "Ничего не делать (функция отключена)",
-                "Off/On": "выключить/включить",
-                "On/Off": "включить/выключить",
-                "Antiseize Last Status K1": "Статус защиты K1",
-                "Antiseize Last Status K2": "Статус защиты K2",
-                "Completed": "Успешно завершена",
-                "In Progress: Closing": "В процессе: закрытие",
-                "In Progress: Opening": "В процессе: открытие",
-                "Interrupted": "Прервана",
-                "Never Started": "Ни разу не выполнялась",
-                "Days Until Next Antiseize K1": "Дней до запуска защиты K1",
-                "Days Until Next Antiseize K2": "Дней до запуска защиты K2",
-                "Not set": "Не задано",
-                "Date and Time": "Дата и время",
 
                 "9600 bps": "9600 бит/с",
                 "19200 bps": "19200 бит/с",
