@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.241.0) stable; urgency=medium
+
+  * config-wb-mrwm2.json.jinja: Add timer functions
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 28 Apr 2026 15:17:00 +0300
+
 wb-mqtt-serial (2.240.1) stable; urgency=medium
 
   * Remove WB-M1W2 multiple w1 template

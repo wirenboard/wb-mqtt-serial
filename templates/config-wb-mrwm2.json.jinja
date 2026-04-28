@@ -96,27 +96,55 @@
             },
             {
                 "title": "Protective Functions",
-                "fw": "1.21.0",
-                "id": "g_voltage_control"
+                "id": "g_protective_functions"
+            },
+            {
+                "title": "Startup Delay (s)",
+                "id": "gg_startup_delay_params",
+                "description": "startup_delay_description",
+                "group": "g_protective_functions"
+            },
+            {
+                "title": "Restart Delay (s)",
+                "id": "gg_restart_delay_params",
+                "description": "restart_delay_description",
+                "group": "g_protective_functions"
+            },
+            {
+                "title": "Voltage Control",
+                "id": "gg_voltage_control_params",
+                "group": "g_protective_functions"
+            },
+            {
+                "title": "Displayed Protection Channels",
+                "id": "gg_protection_channels",
+                "group": "g_protective_functions",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Timers",
+                "id": "g_timer_relay"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Delays K{{out_num}}",
-                "id": "gg_out{{out_num}}_delay_params",
-                "fw": "1.21.0",
-                "group": "g_voltage_control"
+                "title": "Output {{out_num}}",
+                "id": "gg_timer_{{out_num}}",
+                "group": "g_timer_relay"
             },
             {
-                "title": "Voltage Control K{{out_num}}",
-                "id": "gg_out{{out_num}}_voltage_params",
-                "fw": "1.21.0",
-                "group": "g_voltage_control"
+                "title": "Output {{out_num}}",
+                "id": "gg_voltage_control_params_{{out_num}}",
+                "group": "gg_voltage_control_params"
             },
             {% endfor -%}
             {
-                "title": "Displayed Voltage Control Channels",
-                "id": "gg_voltage_control_channels",
-                "group": "g_voltage_control",
+                "title": "Timer Channels",
+                "id": "gg_timer_channels",
+                "group": "g_timer_relay",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -390,49 +418,35 @@
                 "max": 65534,
                 "default": 10
             },
-
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "startup_delay_ctrl_dis_{{out_num}}": {
-                "title": "Startup Delay (s)",
-                "description": "startup_delay_ctrl_dis_description",
+            "out{{out_num}}_startup_delay_params": {
+                "title": "Output {{out_num}}",
+                "group": "gg_startup_delay_params",
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "group": "gg_out{{out_num}}_delay_params",
-                "order": 1,
-                "condition": "is_voltage_control_for_{{out_num}}_enabled!=1"
+                "order": {{out_num}},
+                "fw": "1.21.0"
             },
-            "startup_delay_ctrl_en_{{out_num}}": {
-                "title": "Startup Delay (s)",
-                "description": "startup_delay_ctrl_en_description",
-                "address": {{1728 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 3,
-                "max": 999,
-                "default": 10,
-                "required": true,
-                "group": "gg_out{{out_num}}_delay_params",
-                "order": 1,
-                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
-            },
-            "restart_delay_{{out_num}}": {
-                "title": "Restart Delay (s)",
-                "description": "restart_delay_description",
+            "out{{out_num}}_restart_delay_params": {
+                "title": "Output {{out_num}}",
+                "group": "gg_restart_delay_params",
                 "address": {{1736 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "group": "gg_out{{out_num}}_delay_params",
-                "order": 2
+                "order": {{out_num}},
+                "fw": "1.21.0",
+                "condition": "isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0"
             },
             "undervoltage_threshold_{{out_num}}": {
                 "title": "Undervoltage Threshold (V)",
+                "group": "gg_voltage_control_params_{{out_num}}",
                 "description": "undervoltage_description",
                 "address": {{1704 + out_num - 1}},
                 "reg_type": "holding",
@@ -440,11 +454,12 @@
                 "min": 120,
                 "max": 220,
                 "default": 207,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 3
+                "order": {{out_num}},
+                "fw": "1.21.0"
             },
             "overvoltage_threshold_{{out_num}}": {
                 "title": "Overvoltage Threshold (V)",
+                "group": "gg_voltage_control_params_{{out_num}}",
                 "description": "overvoltage_description",
                 "address": {{1712 + out_num - 1}},
                 "reg_type": "holding",
@@ -452,11 +467,12 @@
                 "min": 230,
                 "max": 277,
                 "default": 242,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 4
+                "order": {{out_num}},
+                "fw": "1.21.0"
             },
             "is_voltage_control_for_{{out_num}}_enabled": {
-                "title": "Voltage Protection Trip",
+                "title": "Voltage Protection",
+                "group": "gg_voltage_control_params_{{out_num}}",
                 "address": {{1696 + out_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -465,11 +481,12 @@
                     "Disable",
                     "Enable"
                 ],
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 5
+                "order": {{out_num}},
+                "fw": "1.21.0"
             },
-            "delay_off_{{out_num}}": {
+            "voltage_dip_duration_{{out_num}}": {
                 "title": "Voltage Dip Duration (s)",
+                "group": "gg_voltage_control_params_{{out_num}}",
                 "description": "voltage_dip_duration_description",
                 "address": {{1720 + out_num - 1}},
                 "reg_type": "holding",
@@ -477,13 +494,113 @@
                 "min": 0.5,
                 "max": 10,
                 "default": 5,
-                "required": true,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 6,
+                "order": {{out_num}},
+                "fw": "1.21.0",
                 "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
+            "out{{out_num}}_timer_mode_selection": {
+                "title": "Function",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num}},
+                "address": {{1760 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5],
+                "enum_titles": [
+                    "Not Used",
+                    "On Delay",
+                    "Off Delay",
+                    "On Pulse",
+                    "Off Pulse",
+                    "On/Off Cycle"
+                ],
+                "fw": "1.24.0"
+            },
+            "out{{out_num}}_on_delay_params": {
+                "title": "Timeout (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1768 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "fw": "1.24.0",
+                "description": "on_delay_description",
+                "condition": "out{{out_num}}_timer_mode_selection==1"
+            },
+            "out{{out_num}}_off_delay_params": {
+                "title": "Timeout (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1776 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "fw": "1.24.0",
+                "description": "off_delay_description",
+                "condition": "out{{out_num}}_timer_mode_selection==2"
+            },
+            "out{{out_num}}_on_pulse_params": {
+                "title": "Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1784 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "fw": "1.24.0",
+                "description": "on_pulse_description",
+                "condition": "out{{out_num}}_timer_mode_selection==3"
+            },
+            "out{{out_num}}_off_pulse_params": {
+                "title": "Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1792 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "fw": "1.24.0",
+                "description": "off_pulse_description",
+                "condition": "out{{out_num}}_timer_mode_selection==4"
+            },
+            "out{{out_num}}_cyclic_on_time_params": {
+                "title": "On Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 1}},
+                "address": {{1800 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 1,
+                "min": 1,
+                "max": 65000,
+                "default": 3,
+                "fw": "1.24.0",
+                "description": "cyclic_on_time_description",
+                "condition": "out{{out_num}}_timer_mode_selection==5"
+            },
+            "out{{out_num}}_cyclic_off_time_params": {
+                "title": "Off Time (s)",
+                "group": "gg_timer_{{out_num}}",
+                "order": {{out_num + 2}},
+                "address": {{1808 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 1,
+                "min": 1,
+                "max": 65000,
+                "default": 3,
+                "fw": "1.24.0",
+                "description": "cyclic_off_time_description",
+                "condition": "out{{out_num}}_timer_mode_selection==5"
+            },
             {% endfor -%}
-
             "baud_rate": {
                     "title": "Baud rate",
                     "description": "baud_rate_description",
@@ -623,8 +740,37 @@
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
-                "fw": "1.21.0",
-                "group": "gg_outputs_channels"
+                "sporadic": true,
+                "enabled": false,
+                "group": "gg_outputs_channels",
+                "fw": "1.21.0"
+            },
+            {
+                "name": "Off K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{100 + out_num - 1}},
+                "type": "pushbutton",
+                "group": "gg_outputs_channels",
+                "fw": "1.24.0",
+                "enabled": false
+            },
+            {
+                "name": "On K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{108 + out_num - 1}},
+                "type": "pushbutton",
+                "group": "gg_outputs_channels",
+                "fw": "1.24.0",
+                "enabled": false
+            },
+            {
+                "name": "Toggle K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{116 + out_num - 1}},
+                "type": "pushbutton",
+                "group": "gg_outputs_channels",
+                "fw": "1.24.0",
+                "enabled": false
             },
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -662,18 +808,28 @@
                 "name": "Urms Normal K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{80 + out_num - 1}},
-                "type": "switch",
+                "type": "value",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Out of limits",
+                    "Normal"
+                ],
                 "fw": "1.21.0",
-                "group": "gg_voltage_control_channels"
+                "group": "gg_protection_channels"
             },
             {
                 "name": "Blocking K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{88 + out_num - 1}},
-                "type": "switch",
+                "type": "value",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Unblocked",
+                    "Blocked"
+                ],
                 "fw": "1.21.0",
-                "group": "gg_voltage_control_channels",
-                "condition": "(startup_delay_ctrl_dis_{{out_num}}>0)||(startup_delay_ctrl_en_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
+                "group": "gg_protection_channels",
+                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -683,8 +839,8 @@
                 "units": "s",
                 "format": "u16",
                 "scale": 0.1,
-                "group": "gg_voltage_control_channels",
-                "condition": "(startup_delay_ctrl_dis_{{out_num}}>0)||(startup_delay_ctrl_en_{{out_num}}>0)"
+                "group": "gg_protection_channels",
+                "condition": "out{{out_num}}_startup_delay_params>0"
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
@@ -694,10 +850,33 @@
                 "units": "s",
                 "format": "u16",
                 "scale": 0.1,
-                "group": "gg_voltage_control_channels",
-                "condition": "restart_delay_{{out_num}}>0"
+                "group": "gg_protection_channels",
+                "condition": "out{{out_num}}_restart_delay_params>0"
             },
-
+            {
+                "name": "Timer K{{out_num}}",
+                "reg_type": "input",
+                "fw": "1.24.0",
+                "address": {{1864 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "gg_timer_channels",
+                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==4"
+            },
+            {
+                "name": "Timer K{{out_num}}",
+                "reg_type": "input",
+                "fw": "1.24.0",
+                "address": {{1864 + out_num - 1}},
+                "units": "s",
+                "format": "u16",
+                "scale": 1,
+                "enabled": false,
+                "group": "gg_timer_channels",
+                "condition": "out{{out_num}}_timer_mode_selection==5"
+            },
             {% endfor -%}
 
             {
@@ -802,15 +981,25 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Startup Delay Timer K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Restart Delay Timer K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
+                "Urms Normal K{{out_num}}": "Voltage Status L{{out_num}}",
+                "Blocking K{{out_num}}": "Blocking Status K{{out_num}}",
                 {% endfor -%}
-                "undervoltage_description": "120 to 220, factory default - 207",
-                "overvoltage_description": "230 to 277, factory default - 242",
-                "voltage_dip_duration_description": "0.5 to 10, factory default - 5",
-                "startup_delay_ctrl_dis_description": "0 to 999, factory default - 0",
-                "startup_delay_ctrl_en_description": "3 to 999, factory default - 10",
-                "restart_delay_description": "0 to 999, factory default - 0"
+                "Startup Delay (s)": "Startup Delay When Power On (s)",
+                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)",
+                "undervoltage_description": "120...220, default: 207",
+                "overvoltage_description": "230...277, default: 242",
+                "voltage_dip_duration_description": "0.5...10, default: 5",
+                "startup_delay_description": "0...999, default: 0",
+                "restart_delay_description": "0...999, default: 0",
+
+                "on_delay_description": "0.1...6500",
+                "off_delay_description": "0.1...6500",
+                "on_pulse_description": "0.1...6500",
+                "off_pulse_description": "0.1...6500",
+                "cyclic_on_time_description": "1...65000",
+                "cyclic_off_time_description": "1...65000"
             },
             "ru": {
                 "WB-MRWM2-template-title": "WB-MRWM2 (2-канальный модуль реле с измерением мощности)",
@@ -828,6 +1017,7 @@
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
                 "Protective Functions": "Защитные функции",
+                "Timers": "Таймеры",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -839,15 +1029,23 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Команда K{{out_num}}",
                 "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
-                "Delays K{{out_num}}": "Задержки K{{out_num}}",
-                "Voltage Control K{{out_num}}": "Контроль напряжения K{{out_num}}",
+                "Off K{{out_num}}": "Отключить K{{out_num}}",
+                "On K{{out_num}}": "Включить K{{out_num}}",
+                "Toggle K{{out_num}}": "Переключить K{{out_num}}",
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
-                "Urms Normal K{{out_num}}": "Норма Urms L{{out_num}}",
-                "Blocking K{{out_num}}": "Блокировка/Задержка K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Таймер ЗВ K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Таймер ЗПВ K{{out_num}}",
+                "Urms Normal K{{out_num}}": "Статус контроля напряжения L{{out_num}}",
+                "Blocking K{{out_num}}": "Статус блокировки K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
+                "Timer K{{out_num}}": "Таймер K{{out_num}}",
                 {% endfor -%}
+
+                "Voltage Control": "Контроль напряжения",
+                "Out of limits": "Выход за пределы",
+                "Normal": "Норма",
+                "Unblocked": "Разблокирован",
+                "Blocked": "Блокирован",
 
                 "Output Safe State": "Безопасное состояние выходов",
 
@@ -921,21 +1119,32 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
-                "Voltage Protection Trip": "Блокировка по напряжению",
+                "Voltage Protection": "Блокировка по напряжению",
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
                 "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
                 "Voltage Dip Duration (s)": "Допустимая длительность провала (с)",
-                "Startup Delay (s)": "Задержка включения (с)",
+                "Startup Delay (s)": "Задержка включения при подаче питания (с)",
                 "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
                 "Disable": "Не активна",
                 "Enable": "Активна",
 
-                "undervoltage_description": "120...220, заводское - 207",
-                "overvoltage_description": "230...277, заводское - 242",
-                "voltage_dip_duration_description": "0.5...10, заводское - 5",
-                "startup_delay_ctrl_dis_description": "0...999, заводское - 0",
-                "startup_delay_ctrl_en_description": "3...999, заводское - 10",
-                "restart_delay_description": "0...999, заводское - 0",
+                "undervoltage_description": "120...220, по умолчанию: 207",
+                "overvoltage_description": "230...277, по умолчанию: 242",
+                "voltage_dip_duration_description": "0.5...10, по умолчанию: 5",
+                "startup_delay_description": "0...999, по умолчанию: 0",
+                "restart_delay_description": "0...999, по умолчанию: 0",
+
+                "Function": "Функция",
+                "Not Used": "Не используется",
+                "On Delay": "Задержка включения",
+                "Off Delay": "Задержка отключения",
+                "On Pulse": "Включить на время",
+                "Off Pulse": "Отключить на время",
+                "On/Off Cycle": "Цикл On/Off",
+                "On Time (s)": "Включено (с)",
+                "Off Time (s)": "Отключено (с)",
+                "Timeout (s)": "Таймаут (с)",
+                "Time (s)": "Время (с)",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
