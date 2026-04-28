@@ -96,16 +96,8 @@
       },
       "required": [ "msg", "response_size" ]
     },
-    "modbus_request": {
+    "modbus_header_data": {
       "properties": {
-        "protocol": {
-          "type": "string",
-          "enum": [ "modbus", "modbus-tcp" ]
-        },
-        "slave_id": {
-          "type": "integer",
-          "minimum": 0
-        },
         "function": {
           "type": "integer",
           "enum": [1, 2, 3, 4, 5, 6, 15, 16, 23]
@@ -127,24 +119,66 @@
           "minimum": 1
         }
       },
-      "required": [ "protocol", "slave_id", "function", "address" ]
+      "required": [ "function", "address" ]
+    },
+    "modbus_request": {
+      "allOf": [
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": [ "modbus", "modbus-tcp" ]
+            },
+            "slave_id": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [ "protocol", "slave_id"]
+        },
+        { "$ref" : "#/definitions/modbus_header_data" }  
+      ]
+    },
+    "request_with_port_config": {
+      "allOf": [
+        {
+          "oneOf": [
+            { "$ref" : "#/definitions/serial_port_config"},
+            { "$ref" : "#/definitions/tcp_port_config"}
+          ]
+        },
+        {
+            "oneOf": [
+              { "$ref" : "#/definitions/raw_request"},
+              { "$ref" : "#/definitions/modbus_request"}
+          ]
+        }
+      ]
+    },
+    "request_with_device_id": {
+      "allOf": [
+        {       
+          "properties": {
+            "device_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["device_id"]
+        },
+        { "$ref" : "#/definitions/modbus_header_data"}
+      ]
     }
   },
 
   "allOf": [
     {
       "oneOf": [
-        { "$ref" : "#/definitions/serial_port_config"},
-        { "$ref" : "#/definitions/tcp_port_config"}
+        { "$ref" : "#/definitions/request_with_port_config"},
+        { "$ref" : "#/definitions/request_with_device_id"}
       ]
     },
     { "$ref" : "#/definitions/timeouts_config" },
-    { "$ref" : "#/definitions/request_data" },
-    {
-      "oneOf": [
-        { "$ref" : "#/definitions/raw_request"},
-        { "$ref" : "#/definitions/modbus_request"}
-      ]
-    }
+    { "$ref" : "#/definitions/request_data" }
   ]
 }
