@@ -563,7 +563,7 @@
                 "Brightness of RGB Strip (HSV-V)",
                 "Hue Changing Time of RGB Strip",
                 "CCT1, CCT2 Temperature",
-                "CCT1, CCT2 Brightness",
+                "CCT1, CCT2 Brightness"
                 ] -%}
             {# Конфигурация доступных каналов для каждого режима диммера -#}
             {% set enc_ctrl_ch_configs = [
@@ -1870,7 +1870,7 @@
                 "inc_ch{{ch_number}}_act_title": "Increase brightness of channel {{ch_number}}",
                 "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}}",
                 "inc_dec_ch{{ch_number}}_act_title": "Increase/decrease brightness of channel {{ch_number}}",
-                {% endfor %}
+                {% endfor -%}
                 "off_ch12_act_title": "Disable channels 1, 2",
                 "on_ch12_act_title": "Enable channels 1, 2",
                 "tg_ch12_act_title": "Toggle channels 1, 2",
@@ -2054,7 +2054,7 @@
                 "Channel {{ch_number}} Raw PWM": "Прямое управление ШИМ канала {{ch_number}}",
                 "Channel {{ch_number}} Minimum Value": "Нижний порог диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Maximum Value": "Верхний порог диммирования канала {{ch_number}}",
-                {% endfor %}
+                {% endfor -%}
                 "off_ch12_act_title": "Выключить каналы 1 и 2",
                 "on_ch12_act_title": "Включить каналы 1 и 2",
                 "tg_ch12_act_title": "Переключить каналы 1 и 2",
