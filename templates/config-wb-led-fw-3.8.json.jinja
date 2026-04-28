@@ -1831,10 +1831,38 @@
             },
             {
                 "group": "gg_out_channels",
+                "id": "CCT1_CCT2 Temperature with Auto On",
+                "name": "CCT1, CCT2 Temperature with Auto On",
+                "address": 2118,
+                "type": "range",
+                "enabled": false,
+                "reg_type": "holding",
+                "sporadic": true,
+                "min": 0,
+                "max": 100,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==768)"
+            },
+            {
+                "group": "gg_out_channels",
                 "id": "CCT1_CCT2 Brightness",
                 "name": "CCT1, CCT2 Brightness",
                 "address": 2019,
                 "type": "range",
+                "reg_type": "holding",
+                "sporadic": true,
+                "min": 0,
+                "max": 100,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==768)"
+            },
+            {
+                "group": "gg_out_channels",
+                "id": "CCT1_CCT2 Brightness with Auto On",
+                "name": "CCT1, CCT2 Brightness with Auto On",
+                "address": 2119,
+                "type": "range",
+                "enabled": false,
                 "reg_type": "holding",
                 "sporadic": true,
                 "min": 0,
@@ -2388,7 +2416,9 @@
                 "Channels 1, 2, 3, 4 Brightness": "Яркость каналов 1, 2, 3 и 4",
                 "Channels 1, 2, 3, 4 Brightness with Auto On": "Каналы 1, 2, 3 и 4 яркость с автовключением",
                 "CCT1, CCT2 Temperature": "Цветовая температура лент CCT1 и CCT2",
+                "CCT1, CCT2 Temperature with Auto On": "Цветовая температура лент CCT1 и CCT2 с автовключением"
                 "CCT1, CCT2 Brightness": "Яркость лент CCT1 и CCT2",
+                "CCT1, CCT2 Brightness with Auto On": "Яркость лент CCT1 и CCT2 с автовключением",
 
                 "Board Temperature": "Температура платы",
                 "Allowed Power": "Разрешенная мощность",
