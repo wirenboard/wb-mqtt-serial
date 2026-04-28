@@ -26663,15 +26663,9 @@ WB-MWAC-v2
 	Uptime  =>  Uptime
 	iVout Overloaded  =>  iVout Overloaded
 WB-MWAC-v2 ver2
-	Antiseize Last Status K1  =>  Antiseize Last Status K1
-	Antiseize Last Status K2  =>  Antiseize Last Status K2
 	Battery State, measured at module startup  =>  Battery State
 	Buzzer  =>  Buzzer
 	Cleaning Mode  =>  Cleaning Mode
-	Cleaning Mode Remaining Time  =>  Cleaning Mode Remaining Time
-	Date and Time  =>  Date and Time
-	Days Until Next Antiseize K1  =>  Days Until Next Antiseize K1
-	Days Until Next Antiseize K2  =>  Days Until Next Antiseize K2
 	FW Version  =>  FW Version
 	HW Batch Number  =>  HW Batch Number
 	Input F1  =>  Input F1
