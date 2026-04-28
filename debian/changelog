@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.240.1) stable; urgency=medium
+
+  * Remove WB-M1W2 multiple w1 template
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 28 Apr 2026 11:50:00 +0700
+
 wb-mqtt-serial (2.240.0) stable; urgency=medium
 
   * Rename WB-MDALI to WB-DALI
