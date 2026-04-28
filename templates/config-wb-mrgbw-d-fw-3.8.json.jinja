@@ -8,7 +8,7 @@
     "hw": [
         {
             "signature": "WB-MRGBW-D",
-            "fw": "3.8.0-rc3"           {#- TODO: Update to final version #}
+            "fw": "3.8.0-rc4"           {#- TODO: Update to final version #}
         }
     ],
     "device": {
@@ -142,7 +142,7 @@
                 "description": "dimmer_mode_description",
                 "address": 4000,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512],
+                "enum": [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768],
                 "default": 256,
                 "enum_titles": [
                     "W + W + W + W",
@@ -155,7 +155,8 @@
                     "2*W + CCT",
                     "CCT + CCT",
                     "RGB + W",
-                    "4*W"
+                    "4*W",
+                    "2*CCT"
                 ],
                 "order": 1,
                 "required": true
@@ -280,7 +281,9 @@
                 "Hue of RGB Strip (circular, HSV-H)",
                 "Saturation of RGB Strip (HSV-S)",
                 "Brightness of RGB Strip (HSV-V)",
-                "Hue Changing Time of RGB Strip"
+                "Hue Changing Time of RGB Strip",
+                "CCT1, CCT2 Temperature",
+                "CCT1, CCT2 Brightness"
                 ] -%}
             {# Конфигурация доступных каналов для каждого режима диммера -#}
             {% set enc_ctrl_ch_configs = [
@@ -327,16 +330,11 @@
                 {
                     'mode': 512,
                     'indices': [0, 7]
+                },
+                {
+                    'mode': 768,
+                    'indices': [0, 19, 20]
                 }
-                ] -%}
-            {% set conditions = [
-                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
-                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
-                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
-                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
-                "dimmer_mode==512",
                 ] -%}
 
             {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
@@ -406,7 +404,8 @@
                 "((encoder_" ~ enc_num ~ "_ctrl_ch>=1)&&(encoder_" ~ enc_num ~ "_ctrl_ch<=7))",
                 "(encoder_" ~ enc_num ~ "_ctrl_ch==9)",
                 "(encoder_" ~ enc_num ~ "_ctrl_ch==11)",
-                "(encoder_" ~ enc_num ~ "_ctrl_ch==17)"
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==17)",
+                "(encoder_" ~ enc_num ~ "_ctrl_ch==20)"
                 ] -%}
             {
                 "id": "encoder_{{enc_num}}_min_br_behavior",
@@ -594,6 +593,22 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
+            {# 2CCT -#}
+            {% set type_name = ['cct1_cct2_t', 'cct1_cct2_v'] -%}
+            {% for title in ['CCT1, CCT2 Temperature', 'CCT1, CCT2 Brightness'] -%}
+            {
+                "id": "fader_inc_{{type_name[loop.index0]}}",
+                "group": "gg_fader_inc",
+                "title": "{{title}}",
+                "order": {{loop.index0 + 1}},
+                "address": {{3014 + loop.index0}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 0,
+                "max": 30000,
+                "condition": "dimmer_mode==768"
+            },
+            {% endfor -%}
             {
                 "id": "fader_dec_w1",
                 "group": "gg_fader_dec",
@@ -750,15 +765,33 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
+            {# 2CCT -#}
+            {% set type_name = ['cct1_cct2_t', 'cct1_cct2_v'] -%}
+            {% for title in ['CCT1, CCT2 Temperature', 'CCT1, CCT2 Brightness'] -%}
+            {
+                "id": "fader_dec_{{type_name[loop.index0]}}",
+                "group": "gg_fader_dec",
+                "title": "{{title}}",
+                "order": {{loop.index0 + 1}},
+                "address": {{3114 + loop.index0}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 0,
+                "max": 30000,
+                "condition": "dimmer_mode==768"
+            },
+            {% endfor -%}
             {# режим работы CCT лент -#}
-            {% set order = [1, 2] -%}
+            {% set order = [1, 2, 3] -%}
             {% set conditions = [
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
                 "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                "dimmer_mode==768"
                 ] -%}
-            {% for title in ['CCT1', 'CCT2'] -%}
+            {% set ids = ['cct1', 'cct2', 'cct1_cct2'] -%}
+            {% for title in ['CCT1', 'CCT2', 'CCT1, CCT2'] -%}
             {
-                "id": "power_normalization_cct{{order[loop.index0]}}",
+                "id": "power_normalization_{{ids[loop.index0]}}",
                 "group": "gg_cct_power_normalization",
                 "title": "{{title}}",
                 "order": {{order[loop.index0]}},
@@ -2283,6 +2316,102 @@
                     "inc_dec_ch1234_act_title"
                 ]
             },
+
+            {#- 2CCT -#}
+            {
+                "id": "in{{in_num}}_sp",
+                "group": "gg_in_{{in_num}}_sp_action",
+                "title": "sp_title",
+                "order": 0,
+                "address": {{1000 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(dimmer_mode==768){{enc_cond}}",
+                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979],
+                "enum_titles": [
+                    "no_act_title",
+                    "all_off_act_title",
+                    "off_cct1_cct2_act_title",
+                    "on_cct1_cct2_act_title",
+                    "tg_cct1_cct2_act_title",
+                    "inc_temp_cct1_cct2_act_title",
+                    "inc_br_cct1_cct2_act_title",
+                    "dec_temp_cct1_cct2_act_title",
+                    "dec_br_cct1_cct2_act_title"
+                ]
+            },
+            {
+                "id": "in{{in_num}}_lp",
+                "group": "gg_in_{{in_num}}_lp_action",
+                "title": "lp_title",
+                "order": 0,
+                "address": {{1020 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(dimmer_mode==768){{enc_cond}}",
+                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075],
+                "enum_titles": [
+                    "no_act_title",
+                    "all_off_act_title",
+                    "off_cct1_cct2_act_title",
+                    "on_cct1_cct2_act_title",
+                    "tg_cct1_cct2_act_title",
+                    "inc_temp_cct1_cct2_act_title",
+                    "inc_br_cct1_cct2_act_title",
+                    "dec_temp_cct1_cct2_act_title",
+                    "dec_br_cct1_cct2_act_title",
+                    "inc_dec_temp_cct1_cct2_act_title",
+                    "inc_dec_br_cct1_cct2_act_title"
+                ]
+            },
+            {
+                "id": "in{{in_num}}_dp",
+                "group": "gg_in_{{in_num}}_dp_action",
+                "title": "dp_title",
+                "order": 0,
+                "address": {{1040 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(dimmer_mode==768){{enc_cond}}",
+                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979],
+                "enum_titles": [
+                    "no_act_title",
+                    "all_off_act_title",
+                    "off_cct1_cct2_act_title",
+                    "on_cct1_cct2_act_title",
+                    "tg_cct1_cct2_act_title",
+                    "inc_temp_cct1_cct2_act_title",
+                    "inc_br_cct1_cct2_act_title",
+                    "dec_temp_cct1_cct2_act_title",
+                    "dec_br_cct1_cct2_act_title"
+                ]
+            },
+            {
+                "id": "in{{in_num}}_slp",
+                "group": "gg_in_{{in_num}}_slp_action",
+                "title": "slp_title",
+                "order": 0,
+                "address": {{1060 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(dimmer_mode==768){{enc_cond}}",
+                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075],
+                "enum_titles": [
+                    "no_act_title",
+                    "all_off_act_title",
+                    "off_cct1_cct2_act_title",
+                    "on_cct1_cct2_act_title",
+                    "tg_cct1_cct2_act_title",
+                    "inc_temp_cct1_cct2_act_title",
+                    "inc_br_cct1_cct2_act_title",
+                    "dec_temp_cct1_cct2_act_title",
+                    "dec_br_cct1_cct2_act_title",
+                    "inc_dec_temp_cct1_cct2_act_title",
+                    "inc_dec_br_cct1_cct2_act_title"
+                ]
+            },
+            {#- #}
+
             {% endfor -%}
 
             {#- Шаг диммирования для одиночных и двойных нажатий -#}
@@ -2626,6 +2755,46 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
+
+            {#- 2CCT mode #}
+            {
+                "group": "gg_out_channels",
+                "id": "CCT1_CCT2",
+                "name": "CCT1, CCT2",
+                "address": 11,
+                "type": "switch",
+                "reg_type": "coil",
+                "sporadic": true,
+                "condition": "(dimmer_mode==768)"
+            },
+            {
+                "group": "gg_out_channels",
+                "id": "CCT1_CCT2 Temperature",
+                "name": "CCT1, CCT2 Temperature",
+                "address": 2018,
+                "type": "range",
+                "reg_type": "holding",
+                "sporadic": true,
+                "min": 0,
+                "max": 100,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==768)"
+            },
+            {
+                "group": "gg_out_channels",
+                "id": "CCT1_CCT2 Brightness",
+                "name": "CCT1, CCT2 Brightness",
+                "address": 2019,
+                "type": "range",
+                "reg_type": "holding",
+                "sporadic": true,
+                "min": 0,
+                "max": 100,
+                "error_value": "0xFFFF",
+                "condition": "(dimmer_mode==768)"
+            },
+            {# -#}
+
             {% for ch_number, ch_name in CHANNELS  -%}
             {
                 "name": "Channel {{ch_number}} ({{ch_name}}) Raw PWM",
@@ -2867,6 +3036,16 @@
                 "inc_dec_temp_cct2_act_title": "Increase/decrease temperature of CCT2",
                 "inc_dec_br_cct2_act_title": "Increase/decrease brightness of CCT2",
 
+                "off_cct1_cct2_act_title": "Disable CCT1, CCT2",
+                "on_cct1_cct2_act_title": "Enable CCT1, CCT2",
+                "tg_cct1_cct2_act_title": "Toggle CCT1, CCT2",
+                "inc_temp_cct1_cct2_act_title": "Increase temperature of CCT1, CCT2",
+                "inc_br_cct1_cct2_act_title": "Increase brightness of CCT1, CCT2",
+                "dec_temp_cct1_cct2_act_title": "Decrease temperature of CCT1, CCT2",
+                "dec_br_cct1_cct2_act_title": "Decrease brightness of CCT1, CCT2",
+                "inc_dec_temp_cct1_cct2_act_title": "Increase/decrease temperature of CCT1, CCT2",
+                "inc_dec_br_cct1_cct2_act_title": "Increase/decrease brightness of CCT1, CCT2",
+
                 "off_rgb_act_title": "Disable RGB",
                 "off_hue_change_act_title": "Disable hue changing",
                 "on_rgb_act_title": "Enable RGB",
@@ -3008,6 +3187,16 @@
                 "inc_dec_temp_cct2_act_title": "Увеличить/уменьшить цветовую температуру CCT2",
                 "inc_dec_br_cct2_act_title": "Увеличить/уменьшить яркость CCT2",
 
+                "off_cct1_cct2_act_title": "Выключить CCT1 и CCT2",
+                "on_cct1_cct2_act_title": "Включить CCT1 и CCT2",
+                "tg_cct1_cct2_act_title": "Переключить CCT1 и CCT2",
+                "inc_temp_cct1_cct2_act_title": "Увеличить цветовую температуру CCT1 и CCT2",
+                "inc_br_cct1_cct2_act_title": "Увеличить яркость CCT1 и CCT2",
+                "dec_temp_cct1_cct2_act_title": "Уменьшить цветовую температуру CCT1 и CCT2",
+                "dec_br_cct1_cct2_act_title": "Уменьшить яркость CCT1 и CCT2",
+                "inc_dec_temp_cct1_cct2_act_title": "Увеличить/уменьшить цветовую температуру CCT1 и CCT2",
+                "inc_dec_br_cct1_cct2_act_title": "Увеличить/уменьшить яркость CCT1 и CCT2",
+
                 "off_rgb_act_title": "Выключить RGB",
                 "off_hue_change_act_title": "Выключить непрерывное изменение оттенка (HSV-H)",
                 "on_rgb_act_title": "Включить RGB",
@@ -3057,6 +3246,7 @@
 
                 "CCT1": "Лента CCT1",
                 "CCT2": "Лента CCT2",
+                "CCT1, CCT2 Strips": "Ленты CCT1 и CCT2",
 
                 "Channel 1 (B) Brightness": "Яркость канала 1 (B)",
                 "Channel 2 (R) Brightness": "Яркость канала 2 (R)",
@@ -3142,6 +3332,9 @@
                 "Saturation of RGB Strip (HSV-S)": "Насыщенность цвета RGB ленты (HSV-S)",
                 "Brightness of RGB Strip (HSV-V)": "Яркость RGB ленты (HSV-V)",
                 "Hue Changing Time of RGB Strip": "Время непрерывного изменения оттенка RGB ленты",
+
+                "CCT1, CCT2 Temperature": "Цветовая температура лент CCT1 и CCT2",
+                "CCT1, CCT2 Brightness": "Яркость лент CCT1 и CCT2",
 
                 "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
                 "Turn Off the Channel": "Выключить канал",
