@@ -272,21 +272,6 @@
                 "order": 2
             },
             {% endfor -%}{% endfor -%}
-            {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
-            {
-                "id": "channel_{{ch_number + 1}}_auto_change_period_ms",
-                "title": "Channel {{ch_number + 1}} Auto-Change Period (ms)",
-                "address": {{160 + ch_number}},
-                "reg_type": "holding",
-                "sporadic": true,
-                "min": 1,
-                "max": 500,
-                "default": 10,
-                "group": "channel_{{ch_number + 1}}",
-                "order": 10
-            },
-            {% endfor -%}
-
             {
                 "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
@@ -629,19 +614,17 @@
                 "sporadic": true
             },
             {
-                "name": "Channel {{ch_number + 1}} Auto-Decrease",
-                "reg_type": "coil",
-                "address": {{272 + ch_number}},
-                "type": "switch",
-                "enabled": false,
-                "sporadic": true,
-                "group": "channel_{{ch_number + 1}}"
-            },
-            {
-                "name": "Channel {{ch_number + 1}} Auto-Increase",
-                "reg_type": "coil",
-                "address": {{288 + ch_number}},
-                "type": "switch",
+                "name": "Channel {{ch_number + 1}} Auto-Change",
+                "reg_type": "holding",
+                "address": {{24 + ch_number}},
+                "type": "value",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Stop",
+                    "Decrease",
+                    "Increase",
+                    "Increase/Decrease"
+                ],
                 "enabled": false,
                 "sporadic": true,
                 "group": "channel_{{ch_number + 1}}"
@@ -812,9 +795,7 @@
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
                 "Channel {{ch_number}} with Auto On": "Канал {{ch_number}} с автовключением",
-                "Channel {{ch_number}} Auto-Increase": "Авто-увеличение канала {{ch_number}}",
-                "Channel {{ch_number}} Auto-Decrease": "Авто-уменьшение канала {{ch_number}}",
-                "Channel {{ch_number}} Auto-Change Period (ms)": "Период авто-изменения канала {{ch_number}} (мс)",
+                "Channel {{ch_number}} Auto-Change": "Авто-изменение канала {{ch_number}}",
                 "Channel {{ch_number}} Dimming Curve": "Кривая диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Dimming Type": "Режим диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Min Value (us)": "Нижний порог диммирования канала {{ch_number}} (мкс)",
@@ -846,6 +827,10 @@
                 "Turn Off": "Выключить",
                 "Turn On": "Включить",
                 "Toggle": "Переключить",
+                "Stop": "Стоп",
+                "Increase": "Увеличение",
+                "Decrease": "Уменьшение",
+                "Increase/Decrease": "Увеличение/уменьшение",
                 "Decrease level": "Уменьшить уровень",
                 "Increase level": "Увеличить уровень",
                 "Increase/Decrease level": "Увеличить/уменьшить уровень",
