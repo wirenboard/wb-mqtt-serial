@@ -5975,8 +5975,10 @@ WB-LED-since-fw-3.8
 	CCT1 Temperature with Auto On  =>  CCT1 Temperature with Auto On
 	CCT1, CCT2  =>  CCT1_CCT2
 	CCT1, CCT2 Brightness  =>  CCT1_CCT2 Brightness
+	CCT1, CCT2 Brightness Auto-Change  =>  CCT1, CCT2 Brightness Auto-Change
 	CCT1, CCT2 Brightness with Auto On  =>  CCT1_CCT2 Brightness with Auto On
 	CCT1, CCT2 Temperature  =>  CCT1_CCT2 Temperature
+	CCT1, CCT2 Temperature Auto-Change  =>  CCT1, CCT2 Temperature Auto-Change
 	CCT1, CCT2 Temperature with Auto On  =>  CCT1_CCT2 Temperature with Auto On
 	CCT2  =>  CCT2
 	CCT2 Brightness  =>  CCT2 Brightness
@@ -25786,8 +25788,10 @@ WB-MRGBW-D-since-fw-3.8
 	CCT1 Temperature with Auto On  =>  CCT1 Temperature with Auto On
 	CCT1, CCT2  =>  CCT1_CCT2
 	CCT1, CCT2 Brightness  =>  CCT1_CCT2 Brightness
+	CCT1, CCT2 Brightness Auto-Change  =>  CCT1, CCT2 Brightness Auto-Change
 	CCT1, CCT2 Brightness with Auto On  =>  CCT1_CCT2 Brightness with Auto On
 	CCT1, CCT2 Temperature  =>  CCT1_CCT2 Temperature
+	CCT1, CCT2 Temperature Auto-Change  =>  CCT1, CCT2 Temperature Auto-Change
 	CCT1, CCT2 Temperature with Auto On  =>  CCT1_CCT2 Temperature with Auto On
 	CCT2 (channels 3, 4)  =>  CCT2 (channels 3_4)
 	CCT2 Brightness  =>  CCT2 Brightness
