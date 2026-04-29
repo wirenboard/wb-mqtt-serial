@@ -3039,6 +3039,45 @@
             },
             {# -#}
 
+            {% set AUTO_CHANGE_CHANNELS = [
+                ("Channel 1 (B)", 0, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
+                ("Channel 2 (R)", 1, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
+                ("Channel 3 (G)", 2, "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"),
+                ("Channel 4 (W)", 3, "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"),
+                ("Channels 1, 2 (B, R)", 4, "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"),
+                ("Channels 3, 4 (G, W)", 5, "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"),
+                ("Channels 1, 2, 3, 4", 6, "(dimmer_mode==512)"),
+                ("CCT1 Temperature", 7, "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"),
+                ("CCT1 Brightness", 8, "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"),
+                ("CCT2 Temperature", 9, "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"),
+                ("CCT2 Brightness", 10, "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"),
+                ("Red", 11, "(dimmer_mode==256)"),
+                ("Green", 12, "(dimmer_mode==256)"),
+                ("Blue", 13, "(dimmer_mode==256)"),
+                ("RGB Strip Hue", 14, "(dimmer_mode==256)"),
+                ("RGB Strip Saturation", 15, "(dimmer_mode==256)"),
+                ("RGB Strip Brightness", 16, "(dimmer_mode==256)"),
+                ("Hue Changing Rate", 17, "(dimmer_mode==256)")
+            ] -%}
+            {% for title, index, condition in AUTO_CHANGE_CHANNELS -%}
+            {
+                "group": "gg_out_channels",
+                "name": "{{title}} Auto-Change",
+                "address": {{180 + index}},
+                "type": "value",
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Stop",
+                    "Decrease",
+                    "Increase",
+                    "Increase/Decrease"
+                ],
+                "enabled": false,
+                "sporadic": true,
+                "condition": "{{condition}}"
+            },
+            {% endfor -%}
             {% for ch_number, ch_name in CHANNELS  -%}
             {
                 "name": "Channel {{ch_number}} ({{ch_name}}) Raw PWM",
