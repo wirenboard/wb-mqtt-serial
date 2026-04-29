@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.240.2) stable; urgency=medium
+
+  * Fix WB-MWAC v.2 time sync.
+    WB-MWAC does not have timezone information. 
+    To reflect the actual local time in the device, the time is sent as UTC time with local time values.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 29 Apr 2026 21:06:12 +0500
+
 wb-mqtt-serial (2.240.1) stable; urgency=medium
 
   * Remove WB-M1W2 multiple w1 template
