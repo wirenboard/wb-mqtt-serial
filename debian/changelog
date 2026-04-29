@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.241.0) stable; urgency=medium
+
+  * Add Milur 107S Tempalte
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 28 Apr 2026 17:28:00 +0300
+
 wb-mqtt-serial (2.240.1) stable; urgency=medium
 
   * Remove WB-M1W2 multiple w1 template

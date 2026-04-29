@@ -729,6 +729,26 @@ Milur 104/105
 	Total power  =>  Total power
 	Total reactive energy  =>  Total reactive energy
 	Voltage  =>  Voltage
+Milur 107S
+	active_energy_in  =>  active_energy_in
+	active_energy_in_t1  =>  active_energy_in_t1
+	active_energy_in_t2  =>  active_energy_in_t2
+	active_energy_out  =>  active_energy_out
+	active_energy_out_t1  =>  active_energy_out_t1
+	active_energy_out_t2  =>  active_energy_out_t2
+	active_power_in  =>  active_power_in
+	active_power_out  =>  active_power_out
+	current  =>  current
+	current_imbalance  =>  current_imbalance
+	frequency  =>  frequency
+	power_factor  =>  power_factor
+	reactive_energy_in  =>  reactive_energy_in
+	reactive_energy_out  =>  reactive_energy_out
+	reactive_power_in  =>  reactive_power_in
+	reactive_power_out  =>  reactive_power_out
+	temperature  =>  temperature
+	total_power  =>  total_power
+	voltage  =>  voltage
 NEVA MT 113/123/124
 	A energy  =>  A energy
 	A energy T1  =>  A energy T1
