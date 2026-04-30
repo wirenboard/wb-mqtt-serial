@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.224.0-wb105) stable; urgency=medium
+
+  * Add new template for WB-M1W2 v.3 with multiple sensors per channel feature (fw4.35)
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 30 Apr 2026 11:06:00 +0300
+
 wb-mqtt-serial (2.224.0-wb104) stable; urgency=medium
 
   [ Ilya Titov ]
