@@ -707,7 +707,12 @@
                 "name": "AC on L-N",
                 "reg_type": "input",
                 "address": 97,
-                "type": "switch",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "No voltage",
+                    "Voltage stable",
+                    "Voltage unstable"
+                ],
                 "group": "gg_general_channels"
             },
             {
@@ -877,6 +882,9 @@
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
                 "AC on L-N": "Напряжение на клеммах L-N",
+                "No voltage": "Нет напряжения",
+                "Voltage stable": "Напряжение стабильно",
+                "Voltage unstable": "Напряжение нестабильно",
                 "Overcurrent": "Перегрузка по току",
                 "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
                 "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
