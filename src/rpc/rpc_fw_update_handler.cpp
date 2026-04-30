@@ -204,7 +204,7 @@ TRPCFwUpdateHandler::TRequestParams TRPCFwUpdateHandler::ParseRequestParams(cons
     params.PortPath = request["port"]["path"].asString();
 
     params.Protocol = request.get("protocol", "modbus").asString();
-    params.PortSettings = ParseRPCSerialPortSettings(request);
+    params.PortSettings = ParseRPCSerialPortSettings(request["port"]);
 
     return params;
 }

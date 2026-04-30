@@ -1453,10 +1453,10 @@ TEST_F(FwHandlerTest, ParseRequestParamsPortSettings)
     Json::Value request;
     request["slave_id"] = 1;
     request["port"]["path"] = "/dev/ttyRS485-1";
-    request["baud_rate"] = 115200;
-    request["parity"] = "E";
-    request["data_bits"] = 8;
-    request["stop_bits"] = 2;
+    request["port"]["baud_rate"] = 115200;
+    request["port"]["parity"] = "E";
+    request["port"]["data_bits"] = 8;
+    request["port"]["stop_bits"] = 2;
 
     auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
     EXPECT_EQ(params.PortSettings.BaudRate, 115200);

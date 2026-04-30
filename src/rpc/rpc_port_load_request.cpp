@@ -31,7 +31,7 @@ std::vector<uint8_t> HexStringToByteVector(const std::string& hexString)
     return byteVector;
 }
 
-void ParseRPCPortLoadRequest(const Json::Value& data, TRPCPortLoadRequest& request)
+void ParseRPCPortLoadRequestBase(const Json::Value& data, TRPCPortLoadRequestBase& request)
 {
 
     std::string messageStr, formatStr;
@@ -53,7 +53,11 @@ void ParseRPCPortLoadRequest(const Json::Value& data, TRPCPortLoadRequest& reque
     WBMQTT::JSON::Get(data, "response_timeout", request.ResponseTimeout);
     WBMQTT::JSON::Get(data, "frame_timeout", request.FrameTimeout);
     WBMQTT::JSON::Get(data, "total_timeout", request.TotalTimeout);
+}
 
+void ParseRPCPortLoadRequest(const Json::Value& data, TRPCPortLoadRequest& request)
+{
+    ParseRPCPortLoadRequestBase(data, request);
     request.SerialPortSettings = ParseRPCSerialPortSettings(data);
 }
 

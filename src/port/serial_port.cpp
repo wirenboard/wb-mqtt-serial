@@ -231,7 +231,9 @@ std::chrono::microseconds TSerialPort::GetSendTimeBits(size_t bitsNumber) const
 
 uint8_t TSerialPort::ReadByte(const std::chrono::microseconds& timeout)
 {
-    return Base::ReadByte(CalcResponseTimeout(timeout) + GetLinuxLag(Settings.BaudRate) + GetSendTimeBytes(1));
+    auto res = Base::ReadByte(CalcResponseTimeout(timeout) + GetLinuxLag(Settings.BaudRate) + GetSendTimeBytes(1));
+    WaitForSecondStopBit();
+    return res;
 }
 
 TReadFrameResult TSerialPort::ReadFrame(uint8_t* buf,
@@ -240,12 +242,14 @@ TReadFrameResult TSerialPort::ReadFrame(uint8_t* buf,
                                         const std::chrono::microseconds& frameTimeout,
                                         TFrameCompletePred frameComplete)
 {
-    return Base::ReadFrame(buf,
-                           count,
-                           CalcResponseTimeout(responseTimeout) + GetLinuxLag(Settings.BaudRate) +
-                               GetSendTimeBytes(RxTrigBytes),
-                           frameTimeout + std::chrono::milliseconds(15) + GetSendTimeBytes(RxTrigBytes),
-                           frameComplete);
+    auto res = Base::ReadFrame(buf,
+                               count,
+                               CalcResponseTimeout(responseTimeout) + GetLinuxLag(Settings.BaudRate) +
+                                   GetSendTimeBytes(RxTrigBytes),
+                               frameTimeout + std::chrono::milliseconds(15) + GetSendTimeBytes(RxTrigBytes),
+                               frameComplete);
+    WaitForSecondStopBit();
+    return res;
 }
 
 void TSerialPort::WriteBytes(const uint8_t* buf, int count)
@@ -266,4 +270,14 @@ std::string TSerialPort::GetDescription(bool verbose) const
 const TSerialPortSettings& TSerialPort::GetSettings() const
 {
     return Settings;
+}
+
+void TSerialPort::WaitForSecondStopBit()
+{
+    // receiver triggers on the first stop bit, but transmitter may still be sending second stop bit
+    // wait 1 bit time to avoid bus collision issues
+    std::this_thread::sleep_for(GetSendTimeBits(1));
+
+    // update last interaction time after waiting
+    LastInteraction = std::chrono::steady_clock::now();
 }

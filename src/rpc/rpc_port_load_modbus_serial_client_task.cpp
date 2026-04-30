@@ -49,7 +49,7 @@ PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& reque
     PRPCPortLoadModbusRequest RPCRequest = std::make_shared<TRPCPortLoadModbusRequest>(parametersCache);
 
     try {
-        ParseRPCPortLoadRequest(request, *RPCRequest);
+        ParseRPCPortLoadRequestBase(request, *RPCRequest);
         WBMQTT::JSON::Get(request, "slave_id", RPCRequest->SlaveId);
         WBMQTT::JSON::Get(request, "address", RPCRequest->Address);
         WBMQTT::JSON::Get(request, "count", RPCRequest->Count);
@@ -57,6 +57,10 @@ PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& reque
         WBMQTT::JSON::Get(request, "write_count", RPCRequest->WriteCount);
         WBMQTT::JSON::Get(request, "function", RPCRequest->Function);
         WBMQTT::JSON::Get(request, "protocol", RPCRequest->Protocol);
+        if (!request.isMember("device_id")) {
+            RPCRequest->SerialPortSettings =
+                std::make_unique<TSerialPortConnectionSettings>(ParseRPCSerialPortSettings(request));
+        }
     } catch (const std::runtime_error& e) {
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
@@ -115,14 +119,9 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
     }
 }
 
-TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
-                                                                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                                                       WBMQTT::TMqttRpcServer::TErrorCallback onError,
-                                                                       TRPCDeviceParametersCache& parametersCache)
-    : Request(ParseRPCPortLoadModbusRequest(request, parametersCache))
+TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request)
+    : Request(request)
 {
-    Request->OnResult = onResult;
-    Request->OnError = onError;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
@@ -143,8 +142,12 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
-        TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        ExecRPCPortLoadModbusRequest(*port, Request);
+        if (Request->SerialPortSettings) {
+            TSerialPortSettingsGuard settingsGuard(port, *Request->SerialPortSettings);
+            ExecRPCPortLoadModbusRequest(*port, Request);
+        } else {
+            ExecRPCPortLoadModbusRequest(*port, Request);
+        }
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());

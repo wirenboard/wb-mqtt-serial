@@ -51,12 +51,24 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
 {
     ValidateRPCRequest(request, RequestPortLoadSchema);
     try {
+        TSerialClientParams clientParams = SerialClientTaskRunner.GetSerialClientParams(request);
         auto protocol = request.get("protocol", "raw").asString();
+        if (clientParams.Device) {
+            protocol = clientParams.Device->Protocol()->GetName();
+        }
         if ((protocol == "modbus") || (protocol == "modbus-tcp")) {
-            SerialClientTaskRunner.RunTask(
-                request,
-                std::make_shared<TRPCPortLoadModbusSerialClientTask>(request, onResult, onError, ParametersCache));
+            auto rpcRequest = ParseRPCPortLoadModbusRequest(request, ParametersCache);
+            rpcRequest->OnResult = onResult;
+            rpcRequest->OnError = onError;
+            if (clientParams.Device) {
+                rpcRequest->SlaveId = std::stoul(clientParams.Device->DeviceConfig()->SlaveId);
+                rpcRequest->Protocol = protocol;
+            }
+            SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCPortLoadModbusSerialClientTask>(rpcRequest));
         } else {
+            if (protocol != "raw") {
+                throw TRPCException("The device's protocol is not supported", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
             SerialClientTaskRunner.RunTask(
                 request,
                 std::make_shared<TRPCPortLoadRawSerialClientTask>(request, onResult, onError));

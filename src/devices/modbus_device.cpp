@@ -152,11 +152,15 @@ void TModbusDevice::SyncMWACTime(TPort& port)
         if (std::chrono::duration_cast<std::chrono::hours>(now - LastMWACTimeSync).count() > 24) {
             auto config = WbRegisters::GetRegisterConfig(WbRegisters::MWAC_UNIXTIME_REGISTER_NAME);
             try {
+                const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
+                std::tm localTm{};
+                localtime_r(&nowTimeT, &localTm);
+                const auto deviceTime = timegm(&localTm);
                 Modbus::WriteRegister(*ModbusTraits,
                                       port,
                                       SlaveId,
                                       *config,
-                                      TRegisterValue(std::chrono::system_clock::to_time_t(now)),
+                                      TRegisterValue(deviceTime),
                                       ModbusCache,
                                       DeviceConfig()->RequestDelay,
                                       GetResponseTimeout(port),
