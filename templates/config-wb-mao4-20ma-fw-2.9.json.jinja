@@ -605,6 +605,22 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
+                "name": "Channel {{index + 1}} Auto-Change",
+                "reg_type": "holding",
+                "address": {{24 + index}},
+                "type": "value",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Stop",
+                    "Decrease",
+                    "Increase",
+                    "Increase/Decrease"
+                ],
+                "enabled": false,
+                "sporadic": true,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
                 "id": "channel_{{index + 1}}_current",
                 "name": "Channel {{index + 1}} Current",
                 "reg_type": "holding",
@@ -768,6 +784,7 @@
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
                 "Channel {{ch_number}} Level with Auto On": "Канал {{ch_number}} с автовключением",
+                "Channel {{ch_number}} Auto-Change": "Авто-изменение канала {{ch_number}}",
                 "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
                 "Channel {{ch_number}} Fault": "Ошибка канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
@@ -783,6 +800,10 @@
                 "Turn Off": "Выключить",
                 "Turn On": "Включить",
                 "Toggle": "Переключить",
+                "Stop": "Стоп",
+                "Decrease": "Уменьшение",
+                "Increase": "Увеличение",
+                "Increase/Decrease": "Увеличение/уменьшение",
                 "Decrease Level": "Уменьшить уровень",
                 "Increase Level": "Увеличить уровень",
                 "Increase/Decrease Level": "Увеличить/уменьшить уровень",
