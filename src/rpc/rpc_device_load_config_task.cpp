@@ -220,13 +220,15 @@ namespace
         std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
         std::string deviceModel;
         Json::Value parameters;
-        if (rpcRequest->ParametersCache.Contains(id)) {
-            Json::Value cache = rpcRequest->ParametersCache.Get(id);
-            deviceModel = cache["model"].asString();
-            parameters = cache["parameters"];
-        }
-        if (parameters.isNull()) {
-            LoadConfigParameters(port, rpcRequest, parameters);
+        if (rpcRequest->DeviceFromConfig && !rpcRequest->Force) {
+            if (rpcRequest->ParametersCache.Contains(id)) {
+                Json::Value cache = rpcRequest->ParametersCache.Get(id);
+                deviceModel = cache["model"].asString();
+                parameters = cache["parameters"];
+            }
+            if (parameters.isNull()) {
+                LoadConfigParameters(port, rpcRequest, parameters);
+            }
         }
 
         port->SkipNoise();
@@ -292,6 +294,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                              configFileName,
                                                              parametersCache);
     res->ParseSettings(request, onResult, onError);
+    res->Force = request["force"].asBool();
     return res;
 }
 
