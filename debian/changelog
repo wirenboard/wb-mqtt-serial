@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.241.0) stable; urgency=medium
 
   * Add new templates for WB-LED and WB-MRGB-D with encoders and dimming step support, new 2CCT mode
+  * Change switch actions config order to channel -> action in WB-LED template
     [Egor Panchenko]
   * Add auto-enable registers for WB-LED and WB-MRGB-D fw 3.8
 
