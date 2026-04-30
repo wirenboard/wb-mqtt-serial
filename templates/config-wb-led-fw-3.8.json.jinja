@@ -1,6 +1,41 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set ENCODERS_NUMBER = 2 -%}
+{% set AUTO_CHANGE_PARAMETERS = [
+    ("Channel 1", 0, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
+    ("Channel 2", 1, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
+    ("Channel 3", 2, "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"),
+    ("Channel 4", 3, "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"),
+    ("Channels 1, 2", 4, "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"),
+    ("Channels 3, 4", 5, "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"),
+    ("Channels 1, 2, 3, 4", 6, "(dimmer_mode==512)"),
+    ("CCT1 Temperature", 7, "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"),
+    ("CCT1 Brightness", 8, "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"),
+    ("CCT2 Temperature", 9, "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"),
+    ("CCT2 Brightness", 10, "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"),
+    ("Red", 11, "(dimmer_mode==256)"),
+    ("Green", 12, "(dimmer_mode==256)"),
+    ("Blue", 13, "(dimmer_mode==256)"),
+    ("RGB Strip Hue", 14, "(dimmer_mode==256)"),
+    ("RGB Strip Saturation", 15, "(dimmer_mode==256)"),
+    ("RGB Strip Brightness", 16, "(dimmer_mode==256)"),
+    ("CCT1, CCT2 Temperature", 18, "(dimmer_mode==768)"),
+    ("CCT1, CCT2 Brightness", 19, "(dimmer_mode==768)")
+] -%}
+{% macro auto_change_period_parameter(title, index, condition) -%}
+            {
+                "id": "auto_change_period_{{ index }}",
+                "group": "gg_out_params",
+                "title": "{{ title }} Auto-Change Period",
+                "address": {{160 + index}},
+                "reg_type": "holding",
+                "min": 1,
+                "max": 30000,
+                "default": 10,
+                "units": "ms",
+                "condition": "{{condition}}"
+            },
+{%- endmacro %}
 {% macro auto_change_control(title, index, condition) -%}
             {
                 "group": "gg_out_channels",
@@ -1288,6 +1323,9 @@
             },
             {% endfor -%}
             {#  -#}
+            {% for title, index, condition in AUTO_CHANGE_PARAMETERS -%}
+            {{ auto_change_period_parameter(title, index, condition) }}
+            {% endfor -%}
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
@@ -2560,6 +2598,25 @@
                 "RGB Strip Brightness Auto-Change": "Автоизменение яркости RGB ленты (V)",
                 "CCT1, CCT2 Temperature Auto-Change": "Автоизменение цветовой температуры лент CCT1 и CCT2",
                 "CCT1, CCT2 Brightness Auto-Change": "Автоизменение яркости лент CCT1 и CCT2",
+                "Channel 1 Auto-Change Period": "Период автоизменения канала 1",
+                "Channel 2 Auto-Change Period": "Период автоизменения канала 2",
+                "Channel 3 Auto-Change Period": "Период автоизменения канала 3",
+                "Channel 4 Auto-Change Period": "Период автоизменения канала 4",
+                "Channels 1, 2 Auto-Change Period": "Период автоизменения каналов 1 и 2",
+                "Channels 3, 4 Auto-Change Period": "Период автоизменения каналов 3 и 4",
+                "Channels 1, 2, 3, 4 Auto-Change Period": "Период автоизменения каналов 1, 2, 3 и 4",
+                "CCT1 Temperature Auto-Change Period": "Период автоизменения цветовой температуры ленты CCT1",
+                "CCT1 Brightness Auto-Change Period": "Период автоизменения яркости ленты CCT1",
+                "CCT2 Temperature Auto-Change Period": "Период автоизменения цветовой температуры ленты CCT2",
+                "CCT2 Brightness Auto-Change Period": "Период автоизменения яркости ленты CCT2",
+                "Red Auto-Change Period": "Период автоизменения красного",
+                "Green Auto-Change Period": "Период автоизменения зеленого",
+                "Blue Auto-Change Period": "Период автоизменения синего",
+                "RGB Strip Hue Auto-Change Period": "Период автоизменения оттенка RGB ленты (H)",
+                "RGB Strip Saturation Auto-Change Period": "Период автоизменения насыщенности RGB ленты (S)",
+                "RGB Strip Brightness Auto-Change Period": "Период автоизменения яркости RGB ленты (V)",
+                "CCT1, CCT2 Temperature Auto-Change Period": "Период автоизменения цветовой температуры лент CCT1 и CCT2",
+                "CCT1, CCT2 Brightness Auto-Change Period": "Период автоизменения яркости лент CCT1 и CCT2",
 
                 "Board Temperature": "Температура платы",
                 "Allowed Power": "Разрешенная мощность",
