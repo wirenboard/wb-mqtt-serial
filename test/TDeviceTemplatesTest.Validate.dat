@@ -6028,7 +6028,6 @@ WB-LED-since-fw-3.8
 	HW Batch Number  =>  HW Batch Number
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
-	Hue Changing Rate Auto-Change  =>  Hue Changing Rate Auto-Change
 	Hue Changing Rate with Auto On  =>  Hue Changing Rate with Auto On
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
@@ -25838,7 +25837,6 @@ WB-MRGBW-D-since-fw-3.8
 	Green Auto-Change  =>  Green Auto-Change
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
-	Hue Changing Rate Auto-Change  =>  Hue Changing Rate Auto-Change
 	Hue Changing Rate with Auto On  =>  Hue Changing Rate with Auto On
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
