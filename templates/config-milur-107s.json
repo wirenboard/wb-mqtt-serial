@@ -1,0 +1,289 @@
+{
+    "title": "Milur 107S",
+    "device_type": "Milur 107S",
+    "group": "g-power-meter",
+    "device": {
+        "name": "Milur 107S",
+        "id": "milur_107s",
+        "protocol": "dlms",
+        "password": [
+            "0x37",
+            "0x38",
+            "0x39",
+            "0x34",
+            "0x35",
+            "0x36"
+        ],
+        "dlms_auth": 1,
+        "dlms_client_address": 32,
+        "groups": [
+            {
+                "title": "Measurements",
+                "id": "measurements"
+            },
+            {
+                "title": "Power",
+                "id": "power"
+            },
+            {
+                "title": "Energy",
+                "id": "energy"
+            },
+            {
+                "title": "Tariffs",
+                "id": "tariffs"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            }
+        ],
+        "channels": [
+            {
+                "name": "voltage",
+                "address": "1.0.12.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "V",
+                "readonly": true,
+                "group": "measurements",
+                "precision": 1
+            },
+            {
+                "name": "current",
+                "address": "1.0.11.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "A",
+                "readonly": true,
+                "group": "measurements",
+                "precision": 3
+            },
+            {
+                "name": "frequency",
+                "address": "1.0.14.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "Hz",
+                "readonly": true,
+                "group": "measurements",
+                "precision": 2
+            },
+            {
+                "name": "power_factor",
+                "address": "1.0.13.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "readonly": true,
+                "group": "measurements",
+                "precision": 3
+            },
+            {
+                "name": "temperature",
+                "address": "0.0.96.9.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "deg C",
+                "readonly": true,
+                "group": "measurements",
+                "precision": 1
+            },
+            {
+                "name": "current_imbalance",
+                "address": "1.0.128.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "readonly": true,
+                "group": "measurements",
+                "precision": 3
+            },
+            {
+                "name": "active_power_in",
+                "address": "1.0.1.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "W",
+                "readonly": true,
+                "group": "power",
+                "precision": 2
+            },
+            {
+                "name": "active_power_out",
+                "address": "1.0.2.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "W",
+                "readonly": true,
+                "group": "power",
+                "precision": 2
+            },
+            {
+                "name": "reactive_power_in",
+                "address": "1.0.3.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "var",
+                "readonly": true,
+                "group": "power",
+                "precision": 2
+            },
+            {
+                "name": "reactive_power_out",
+                "address": "1.0.4.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "var",
+                "readonly": true,
+                "group": "power",
+                "precision": 2
+            },
+            {
+                "name": "total_power",
+                "address": "1.0.9.7.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "VA",
+                "readonly": true,
+                "group": "power",
+                "precision": 2
+            },
+            {
+                "name": "active_energy_in",
+                "address": "1.0.1.8.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kWh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "energy",
+                "precision": 2
+            },
+            {
+                "name": "active_energy_out",
+                "address": "1.0.2.8.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kWh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "energy",
+                "precision": 2
+            },
+            {
+                "name": "reactive_energy_in",
+                "address": "1.0.3.8.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kvarh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "energy",
+                "precision": 2
+            },
+            {
+                "name": "reactive_energy_out",
+                "address": "1.0.4.8.0.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kvarh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "energy",
+                "precision": 2
+            },
+            {
+                "name": "active_energy_in_t1",
+                "address": "1.0.1.8.1.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kWh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "tariffs",
+                "precision": 2
+            },
+            {
+                "name": "active_energy_in_t2",
+                "address": "1.0.1.8.2.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kWh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "tariffs",
+                "precision": 2
+            },
+            {
+                "name": "active_energy_out_t1",
+                "address": "1.0.2.8.1.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kWh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "tariffs",
+                "precision": 2
+            },
+            {
+                "name": "active_energy_out_t2",
+                "address": "1.0.2.8.2.255",
+                "reg_type": "default",
+                "type": "value",
+                "units": "kWh",
+                "scale": 0.001,
+                "readonly": true,
+                "group": "tariffs",
+                "precision": 2
+            }
+        ],
+        "translations": {
+            "en": {
+                "voltage": "Voltage",
+                "current": "Current",
+                "frequency": "Frequency",
+                "temperature": "Temperature",
+                "power_factor": "Power Factor",
+                "current_imbalance": "Current Imbalance",
+                "active_power_in": "Active Power In",
+                "active_power_out": "Active Power Out",
+                "reactive_power_in": "Reactive Power In",
+                "reactive_power_out": "Reactive Power Out",
+                "total_power": "Apparent Power",
+                "active_energy_in": "Active Energy Consumed",
+                "active_energy_out": "Active Energy Returned",
+                "reactive_energy_in": "Reactive Energy In",
+                "reactive_energy_out": "Reactive Energy Out",
+                "active_energy_in_t1": "Active Energy In T1",
+                "active_energy_in_t2": "Active Energy In T2",
+                "active_energy_out_t1": "Active Energy Out T1",
+                "active_energy_out_t2": "Active Energy Out T2"
+            },
+            "ru": {
+                "Measurements": "Измерения",
+                "Power": "Мощность",
+                "Energy": "Энергия",
+                "Tariffs": "Тарифы",
+                "General": "Общее",
+                "power_factor": "Коэффициент мощности",
+                "current_imbalance": "Небаланс токов",
+                "active_power_in": "Активная мощность прием",
+                "active_power_out": "Активная мощность отдача",
+                "reactive_power_in": "Реактивная мощность прием",
+                "reactive_power_out": "Реактивная мощность отдача",
+                "total_power": "Полная мощность",
+                "active_energy_in": "Активная энергия прием",
+                "active_energy_out": "Активная энергия отдача",
+                "reactive_energy_in": "Реактивная энергия прием",
+                "reactive_energy_out": "Реактивная энергия отдача",
+                "active_energy_in_t1": "Активная энергия T1 прием",
+                "active_energy_in_t2": "Активная энергия T2 прием",
+                "active_energy_out_t1": "Активная энергия T1 отдача",
+                "active_energy_out_t2": "Активная энергия T2 отдача",
+                "voltage": "Напряжение",
+                "current": "Ток",
+                "frequency": "Частота",
+                "temperature": "Температура"
+            }
+        }
+    }
+}
