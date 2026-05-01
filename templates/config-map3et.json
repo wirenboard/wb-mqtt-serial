@@ -1081,7 +1081,7 @@
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases",
                 "ct_params_description": "Warning! Current transformer parameters (turns and phi) are preset at factory. Changing them is not recommended unless absolutely necessary.",
                 "Supply Voltage": "5V Supply",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime"
             },
             "ru": {
                 "WB-MAP3ET_template_title": "WB-MAP3ET (3-фазный счетчик электроэнергии)",
@@ -1150,7 +1150,7 @@
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение 5 В",
-                "Uptime": "Время работы с момента включения (с)",
+                "Uptime": "Время работы с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК"
             }
