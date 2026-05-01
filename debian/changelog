@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.242.5) stable; urgency=medium
+
+  * Templates map3e-fw2, map3et, map3ev: fix uptime title translate
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 14:00:00 +0300
+
 wb-mqtt-serial (2.242.4) stable; urgency=medium
 
   * Template map6s-fw2: change types to 'value' and add units
