@@ -667,7 +667,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
    ```files
    templates\config-danfoss-ekc-204a1-wb-ref-deprecated.json (Старый переименованый шаблон)
-   templates\config-danfoss-ekc-204a1-wb-ref.json (Новый актуальный шаблон)
+   templates\config-danfoss-ekc-204a1-wb-ref.json (Новый актуальный шаблон - который будем изменять)
    ```
 
 3. Старый шаблон необходимо отметить устаревшим для сокрытия в новых установках.
