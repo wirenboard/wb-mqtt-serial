@@ -1383,7 +1383,7 @@
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime"
             },
             "ru": {
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (многоканальный счетчик электроэнергии)",
@@ -1465,7 +1465,7 @@
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение 5 В",
-                "Uptime": "Время работы с момента включения (с)",
+                "Uptime": "Время работы с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК"
             }
