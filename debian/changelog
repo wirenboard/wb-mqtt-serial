@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.242.4) stable; urgency=medium
+
+  * Template map6s-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 13:00:00 +0300
+
 wb-mqtt-serial (2.242.3) stable; urgency=medium
 
   * Template map3et: change types to 'value' and add units
