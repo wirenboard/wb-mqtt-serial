@@ -6,12 +6,9 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 Драйвер master-slave протоколов для устройств, работающих через
 последовательный порт. Драйвер предназначен для устройств [Wiren Board](https://wirenboard.com/ru) и соответствует [Конвенции Wiren Board MQTT](https://github.com/wirenboard/conventions/blob/main/README.md).
 
-## Сборка
-
-Инструкции по сборке (сборка .deb-пакетов через wbdev и рабочий процесс devcontainer-cli) описаны в [BUILD.md](https://github.com/wirenboard/codestyle/blob/devcontainer-cli/BUILD.md) в репозитории `codestyle`.
-
 **Содержание**
 
+- [Сборка](#сборка)
 - [Описание](#описание)
   - [Поддерживаемые протоколы](#поддерживаемые-протоколы)
   - [Управление драйвером](#управление-драйвером)
@@ -39,10 +36,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
   - [Обработка счётчиков нажатий](#обработка-счётчиков-нажатий)
 - [Протоколы](#протоколы)
   - [Поддержка различных протоколов на одной шине](#поддержка-различных-протоколов-на-одной-шине)
+  - [Modbus](#modbus)
   - [Широковещательные сообщения](#широковещательные-сообщения)
-  - [IEC/ГОСТ МЭК 61107 режим C](#iec/гост-мэк-61107-режим-с)
+  - [IEC/ГОСТ МЭК 61107 режим С](#iecгост-мэк-61107-режим-с)
   - [Энергомера ГОСТ МЭК 61107](#энергомера-гост-мэк-61107)
-  - [Энергомера протокол CE](#энергомера-протокол-се)
+  - [Энергомера протокол СЕ](#энергомера-протокол-се)
   - [НЕВА МТ 32х ГОСТ МЭК 61107](#нева-мт-32х-гост-мэк-61107)
   - [DLMS/COSEM и СПОДЭС](#dlmscosem-и-сподэс)
   - [Somfy SDN](#somfy-sdn)
@@ -51,7 +49,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
   - [Dauerhaft](#dauerhaft)
   - [Меркурий 200](#меркурий-200)
   - [Меркурий 230](#меркурий-230)
-  - [Таблица шаблонов device_type](#таблица-шаблонов-device_type)
+  - [Таблица шаблонов device\_type](#таблица-шаблонов-device_type)
+
+## Сборка
+
+Инструкции по сборке (сборка .deb-пакетов через wbdev и рабочий процесс devcontainer-cli) описаны в [BUILD.md](https://github.com/wirenboard/codestyle/blob/devcontainer-cli/BUILD.md) в репозитории `codestyle`.
 
 ## Описание
 
@@ -395,8 +397,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             // При этом, если параметр "address" не указывать, то будет доступна только запись по адресу в "write_address".
                             "write_address": 10,
 
-                            // Тип элемента управления, например: "temperature", "text", "switch"
-                            "type": "temperature",
+                            // Тип элемента управления, например: "value", "text", "switch"
+                            "type": "value",
+                            // Тип элемента управления, например: "deg C", "V", "A"
+                            "units": "deg C",
 
                             // Формат канала, задаётся для регистров типа "holding" и "input".
                             // Возможные значения:
@@ -510,7 +514,8 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             "name": "Temp 2",
                             "reg_type": "input",
                             "address": 3,
-                            "type": "temperature",
+                            "type": "value",
+                            "units": "deg C",
                             "format": "s8"
                         }
                     ]
@@ -617,6 +622,22 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 }
 ```
 
+Обратите внимание что начиная с 2026г. вместо старых специфичных типов - вроде температуры:
+
+```jsonc
+    "type": "temperature",
+```
+
+Нужно использовать общий тип `value` и отдельно указывать `unit`:
+
+```jsonc
+    "type": "value",
+    "units": "deg C",
+```
+
+Актуальные разрешенные типы и единицы измерения можно посмотреть в конвенции WB:
+- https://github.com/wirenboard/conventions
+
 ### Шаблоны конфигурации
 
 Шаблоны создаются для удобства конфигурации Modbus-устройств.
@@ -634,11 +655,35 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
 Для создания собственного шаблона можно скопировать существующий из папки `/usr/share/wb-mqtt-serial/templates`, изменить в нем нужные параметры, добавить необходимые регистры устройства и сохранить его в папку `/etc/wb-mqtt-serial.conf.d/templates` с новым именем.
 
-При необходимости внести обратно несовместимые изменения в шаблон, его необходимо отметить устаревшим (добавить `"deprecated": true`) и создать его копию (при этом в `device_type` нового шаблона добавить префикс с версией `tpl1_`, `tpl2_` и т.д.).
+#### Устаревание шаблона
+
+Если необходимо внести обратно-несовместимые изменения в шаблон:
+
+1. **Создайте копию** текущего шаблона, которая станет устаревшей.
+
+2. **Переименуйте** созданную копию, добавив к имени файла постфикс `-deprecated`.
+
+   В итоге у вас получится два разных файла, например:
+
+   ```files
+   templates/config-danfoss-ekc-204a1-wb-ref-deprecated.json (Старый переименованный шаблон)
+   templates/config-danfoss-ekc-204a1-wb-ref.json (Новый актуальный шаблон, который будем изменять)
+   ```
+
+3. **Отметьте старый шаблон как устаревший**, чтобы скрыть его при новых установках.
+   Для этого добавьте параметр `"deprecated": true` внутрь JSON-схемы старого шаблона.
+
+4. **Обновите `device_type`** в файле *нового* шаблона, добавив префикс с версией (`tpl1_`, `tpl2_` и т.д.).
+   Например:
+   * Было (в старом): `"device_type": "danfoss_ekc_204a1_wb_ref",`
+   * Станет (в новом): `"device_type": "tpl1_danfoss_ekc_204a1_wb_ref",`
+
+ > **Обратите внимание:** значение `device_type` в старом (устаревшем) шаблоне менять нельзя! 
+ > Это необходимо, чтобы он продолжал работать у пользователей, которые уже его используют.
+
+#### Пример шаблона
 
 После добавления шаблона конфигурации вы можете выбрать новое устройство из выпадающего списка в настройках serial устройств в веб-интерфейсе контроллера Wiren Board.
-
-Пример шаблона:
 
 ```jsonc
 {
@@ -895,7 +940,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 |connection_timeout_ms      | 5000      |
 |connection_max_fail_cycles | 2         |
 
-#### Замечания для TCP или MODBUS TCP порта
+### Замечания для TCP или MODBUS TCP порта
 
 При использовании TCP мостов, драйвер не видит разницы между двумя ситуациями:
 
