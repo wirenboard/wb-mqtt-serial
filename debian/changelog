@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.242.6) stable; urgency=medium
+
+  * Fix unexpected channel publishes if a device has only sporadic channels
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 04 May 2026 19:48:06 +0500
+
 wb-mqtt-serial (2.242.5) stable; urgency=medium
 
   * Rename WB-MCM8-HV to WB-MCM8HV
