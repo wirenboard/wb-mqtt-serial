@@ -148,8 +148,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         // and pushbutton channels (always publish value "1")
         auto publishPolicy = PublishPolicy;
         if ((reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS &&
-             reg->IsExcludedFromPolling()) ||
-            reg->Device()->IsSporadicOnly() || it->second->Type == "pushbutton")
+             reg->IsExcludedFromPolling()) || it->second->Type == "pushbutton")
         {
             publishPolicy.Policy = TPublishParameters::PublishAll;
         }
