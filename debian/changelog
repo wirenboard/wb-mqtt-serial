@@ -1,8 +1,52 @@
-wb-mqtt-serial (2.241.0) stable; urgency=medium
+wb-mqtt-serial (2.243.0) stable; urgency=medium
 
   * Add template for rielta-brshs-rk
 
- -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 27 Apr 2026 10:00:00 +0300
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 04 May 2026 10:00:00 +0300
+
+wb-mqtt-serial (2.242.4) stable; urgency=medium
+
+  * Template map6s-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 13:00:00 +0300
+
+wb-mqtt-serial (2.242.3) stable; urgency=medium
+
+  * Template map3et: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.242.2) stable; urgency=medium
+
+  * Template map3ev: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 11:00:00 +0300
+
+wb-mqtt-serial (2.242.1) stable; urgency=medium
+
+  * Template map3e-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Thu, 30 Apr 2026 18:00:00 +0300
+
+wb-mqtt-serial (2.242.0) stable; urgency=medium
+
+  * Template map12e-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Thu, 30 Apr 2026 17:00:00 +0300
+
+wb-mqtt-serial (2.241.1) stable; urgency=medium
+
+  * Fix WB-MWAC v.2 time sync.
+    WB-MWAC does not have timezone information. 
+    To reflect the actual local time in the device, the time is sent as UTC time with local time values.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 29 Apr 2026 21:06:12 +0500
+
+wb-mqtt-serial (2.241.0) stable; urgency=medium
+
+  * Add Milur 107S Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 28 Apr 2026 17:28:00 +0300
 
 wb-mqtt-serial (2.240.0) stable; urgency=medium
 
