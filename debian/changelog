@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.243.0) stable; urgency=medium
+
+  * MS, MSW templates: Add channels for absolute humidity and dew point
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 5 May 2026 09:37:00 +0300
+
 wb-mqtt-serial (2.242.6) stable; urgency=medium
 
   * Fix unexpected channel publishes if a device has only sporadic channels
@@ -43,7 +49,7 @@ wb-mqtt-serial (2.242.0) stable; urgency=medium
 wb-mqtt-serial (2.241.1) stable; urgency=medium
 
   * Fix WB-MWAC v.2 time sync.
-    WB-MWAC does not have timezone information. 
+    WB-MWAC does not have timezone information.
     To reflect the actual local time in the device, the time is sent as UTC time with local time values.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 29 Apr 2026 21:06:12 +0500
