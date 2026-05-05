@@ -30418,10 +30418,8 @@ tpl1_wb_mrgbw_d
 	Uptime  =>  Uptime
 	White  =>  White
 tpl1_wb_ms_v2
-	Absolute Humidity  =>  Absolute Humidity
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Air Quality Index  =>  Air Quality Index
-	Dew Point  =>  Dew Point
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	External Sensor 1  =>  External Sensor 1
 	External Sensor 2  =>  External Sensor 2
