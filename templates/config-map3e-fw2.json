@@ -1089,7 +1089,7 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime"
             },
             "ru": {
                 "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-фазный счетчик электроэнергии)",
@@ -1157,7 +1157,7 @@
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение 5 В",
-                "Uptime": "Время работы с момента включения (с)",
+                "Uptime": "Время работы с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК"
             }
