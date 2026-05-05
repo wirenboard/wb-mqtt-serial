@@ -236,7 +236,7 @@
                 "address": 366,
                 "fw": "4.36.0",
                 "type": "value",
-                "units": "g/m³",
+                "units": "g/m^3",
                 "format": "u16",
                 "scale": 0.01,
                 "error_value": "0xFFFF",
