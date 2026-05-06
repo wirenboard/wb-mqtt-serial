@@ -4,6 +4,24 @@ wb-mqtt-serial (2.243.0) stable; urgency=medium
 
  -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 4 May 2026 10:00:00 +0300
 
+wb-mqtt-serial (2.242.7) stable; urgency=medium
+
+  * Templates map3e-fw2, map3et, map3ev: fix uptime title translate
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Thu, 5 May 2026 14:00:00 +0300
+
+wb-mqtt-serial (2.242.6) stable; urgency=medium
+
+  * Fix unexpected channel publishes if a device has only sporadic channels
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 04 May 2026 19:48:06 +0500
+
+wb-mqtt-serial (2.242.5) stable; urgency=medium
+
+  * Rename WB-MCM8-HV to WB-MCM8HV
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 4 May 2026 18:02:30 +0700
+
 wb-mqtt-serial (2.242.4) stable; urgency=medium
 
   * Template map6s-fw2: change types to 'value' and add units
