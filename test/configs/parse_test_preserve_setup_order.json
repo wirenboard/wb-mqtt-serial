@@ -1,0 +1,14 @@
+{
+    "debug": false,
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "devices": [
+                {
+                    "device_type": "preserve setup order",
+                    "slave_id": 1
+                }
+            ]
+        }
+    ]
+}
