@@ -399,7 +399,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
                             // Тип элемента управления, например: "value", "text", "switch"
                             "type": "value",
-                            // Тип элемента управления, например: "deg C", "V", "A"
+                            // Единицы измерения, например: "deg C", "V", "A"
                             "units": "deg C",
 
                             // Формат канала, задаётся для регистров типа "holding" и "input".
