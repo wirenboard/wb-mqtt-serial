@@ -428,10 +428,9 @@
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
+                "min": 1,
                 "max": 200,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "{{encoder_disabled_condition}}",
                 "order": 3
             },
             {% endfor -%}
@@ -451,20 +450,6 @@
                 "group": "gg_encoder_{{encoder_number}}",
                 "order": 1
             },
-            {% for input_index in range(0, 2) -%}
-            {
-                "id": "encoder_{{encoder_number}}_input_{{input_index + 1}}_debounce_time",
-                "title": "Input {{(encoder_number - 1) * 2 + input_index + 1}} Debounce Time (ms)",
-                "address": {{1160 + (encoder_number - 1) * 2 + input_index}},
-                "reg_type": "holding",
-                "default": 50,
-                "min": 1,
-                "max": 200,
-                "group": "gg_encoder_{{encoder_number}}",
-                "condition": "encoder_{{encoder_number}}_mode==1",
-                "order": {{2 + input_index}}
-            },
-            {% endfor -%}
             {
                 "id": "encoder_{{encoder_number}}_pulses_per_step",
                 "title": "Pulses per Step",
