@@ -1060,6 +1060,7 @@ void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value&
     Get(device_data, "shift", device_config.Shift);
     Get(device_data, "access_level", device_config.AccessLevel);
     Get(device_data, "min_request_interval", device_config.MinRequestInterval);
+    Get(device_data, "preserve_setup_order", device_config.PreserveSetupOrder);
 }
 
 PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
