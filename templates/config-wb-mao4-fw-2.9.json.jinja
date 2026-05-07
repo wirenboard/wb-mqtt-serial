@@ -292,6 +292,7 @@
             },
             {% endfor -%}
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            {% set encoder_disabled_condition = "encoder_1_mode!=1" if ch_number < 2 else "1==1" -%}
             {
                 "id": "input_{{ch_number + 1}}_mode",
                 "title": "Input Mode",
@@ -303,7 +304,8 @@
                     "Switch"
                 ],
                 "default": 0,
-                "group": "input_{{ch_number + 1}}"
+                "group": "input_{{ch_number + 1}}",
+                "condition": "{{encoder_disabled_condition}}"
             },
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
@@ -315,7 +317,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
+                "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "order": 1
             },
             {
@@ -328,7 +330,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
+                "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {
@@ -364,7 +366,7 @@
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
+                "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "order": 1
             },
             {
@@ -384,7 +386,7 @@
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
                 "order": 2,
-                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=4)"
+                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=4)&&{{encoder_disabled_condition}}"
             },
             {
                 "id": "{{action_bind}}_action_all",
@@ -401,7 +403,7 @@
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "{{ action_bind }}_number==100"
+                "condition": "{{ action_bind }}_number==100&&{{encoder_disabled_condition}}"
             },
             {
                 "id": "{{action_bind}}_action_scene",
@@ -416,7 +418,7 @@
                 ],
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "{{ action_bind }}_number>=32&&{{ action_bind }}_number<=39"
+                "condition": "{{ action_bind }}_number>=32&&{{ action_bind }}_number<=39&&{{encoder_disabled_condition}}"
             },
             {% endfor -%}
             {% for sw_act in ["off", "on"] -%}
@@ -439,7 +441,7 @@
                 ],
                 "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_mode==1",
+                "condition": "input_{{ch_number + 1}}_mode==1&&{{encoder_disabled_condition}}",
                 "order": 1
             },
             {
@@ -455,7 +457,7 @@
                 ],
                 "default": {{ 0 if sw_act == "off" else 1}},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {
@@ -470,7 +472,7 @@
                 ],
                 "default": {{ 0 if sw_act == "off" else 1}},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {
@@ -486,7 +488,7 @@
                 ],
                 "default": {{ 0 if sw_act == "off" else 1 }},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=32&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=39",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=32&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=39&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {% endfor -%}
@@ -776,11 +778,13 @@
         ],
         "channels": [
             {% for index in range(0, INPUTS_NUMBER) -%}
+            {% set encoder_disabled_condition = "encoder_1_mode!=1" if index < 2 else "1==1" -%}
             {
                 "name": "Input {{index + 1}}",
                 "reg_type": "discrete",
                 "address": {{index}},
                 "type": "switch",
+                "condition": "{{encoder_disabled_condition}}",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -790,6 +794,7 @@
                 "type": "value",
                 "sporadic": true,
                 "enabled": true,
+                "condition": "{{encoder_disabled_condition}}",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -798,7 +803,7 @@
                 "address": {{464 + index}},
                 "type": "value",
                 "sporadic": true,
-                "condition": "input_{{index + 1}}_mode!=1",
+                "condition": "input_{{index + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -807,7 +812,7 @@
                 "address": {{480 + index}},
                 "type": "value",
                 "sporadic": true,
-                "condition": "input_{{index + 1}}_mode!=1",
+                "condition": "input_{{index + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -816,7 +821,7 @@
                 "address": {{496 + index}},
                 "type": "value",
                 "sporadic": true,
-                "condition": "input_{{index + 1}}_mode!=1",
+                "condition": "input_{{index + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -825,7 +830,7 @@
                 "address": {{512 + index}},
                 "type": "value",
                 "sporadic": true,
-                "condition": "input_{{index + 1}}_mode!=1",
+                "condition": "input_{{index + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "group": "input_{{index + 1}}_counters"
             },
             {% endfor -%}
