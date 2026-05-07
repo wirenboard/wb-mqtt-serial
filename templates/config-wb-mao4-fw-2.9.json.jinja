@@ -8,6 +8,9 @@
 
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set ENCODERS_NUMBER = 2 -%}
+{% set ENCODER_CHANGE_STEP_DEFAULT = 10 -%}
+{% set ENCODER_CHANGE_STEP_MAX = 1000 -%}
 {% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
 {% set LIGHT_SCENES_NUMBER = 8 -%}
 
@@ -101,6 +104,17 @@
                     }
                 }
             },
+            {
+                "title": "Encoders",
+                "id": "g_encoders"
+            },
+            {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "title": "Encoder {{encoder_number}}",
+                "id": "gg_encoder_{{encoder_number}}",
+                "group": "g_encoders"
+            },
+            {% endfor -%}
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
             {
                 "title": "Light Scene {{ ls_number }}",
@@ -686,6 +700,79 @@
                 "default": 0,
                 "group": "general"
             }
+            ,
+            {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "id": "encoder_{{encoder_number}}_mode",
+                "title": "Encoder Mode",
+                "address": {{376 + encoder_number - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "AB"
+                ],
+                "default": 0,
+                "group": "gg_encoder_{{encoder_number}}",
+                "order": 1
+            },
+            {
+                "id": "encoder_{{encoder_number}}_pulses_per_step",
+                "title": "Pulses per Step",
+                "address": {{384 + encoder_number - 1}},
+                "reg_type": "holding",
+                "min": 1,
+                "max": 100,
+                "default": 4,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1",
+                "order": 2
+            },
+            {
+                "id": "encoder_{{encoder_number}}_controlled_channel",
+                "title": "Controlled Channel",
+                "address": {{388 + encoder_number - 1}},
+                "reg_type": "holding",
+                "enum": [0, {% for ch_number in range(1, OUTPUTS_NUMBER + 1) %}{{ch_number}}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum_titles": [
+                    "No Action",
+                    {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                    "Channel {{ch_number}}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
+                ],
+                "default": 0,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1",
+                "order": 3
+            },
+            {
+                "id": "encoder_{{encoder_number}}_change_step",
+                "title": "Level Change Step",
+                "address": {{392 + encoder_number - 1}},
+                "reg_type": "holding",
+                "min": 1,
+                "max": {{ENCODER_CHANGE_STEP_MAX}},
+                "default": {{ENCODER_CHANGE_STEP_DEFAULT}},
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1&&encoder_{{encoder_number}}_controlled_channel!=0",
+                "order": 4
+            },
+            {
+                "id": "encoder_{{encoder_number}}_disable_prohibit",
+                "title": "Ignore Control Lock",
+                "address": {{396 + encoder_number - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "default": 0,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1&&encoder_{{encoder_number}}_controlled_channel!=0",
+                "order": 5
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
         ],
         "channels": [
             {% for index in range(0, INPUTS_NUMBER) -%}
@@ -740,6 +827,27 @@
                 "sporadic": true,
                 "condition": "input_{{index + 1}}_mode!=1",
                 "group": "input_{{index + 1}}_counters"
+            },
+            {% endfor -%}
+            {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "name": "Encoder {{encoder_number}} Position",
+                "reg_type": "holding",
+                "address": {{368 + (encoder_number - 1) * 2}},
+                "type": "value",
+                "format": "u32",
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1",
+                "sporadic": true
+            },
+            {
+                "name": "Encoder {{encoder_number}} Steps Counter",
+                "reg_type": "input",
+                "address": {{364 + encoder_number - 1}},
+                "type": "value",
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1",
+                "sporadic": true
             },
             {% endfor -%}
             {% for index in range(0, OUTPUTS_NUMBER) -%}
@@ -923,6 +1031,13 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
+                "Encoders": "Энкодеры",
+                "Encoder Mode": "Режим энкодера",
+                "AB": "AB",
+                "Pulses per Step": "Импульсов на шаг",
+                "Controlled Channel": "Управляемый канал",
+                "Level Change Step": "Шаг изменения уровня",
+                "Ignore Control Lock": "Игнорировать блокировку управления",
                 "Outputs Mode": "Режим работы выходов",
                 "PWM 10 V": "ШИМ с амплитудой 10 В",
                 "Analog 0-10 V": "Аналоговый режим 0-10 В",
@@ -968,6 +1083,12 @@
                 "Channel {{ch_number}} Auto-Change": "Авто-изменение канала {{ch_number}}",
                 "Channel {{ch_number}}": "Напряжение канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
+                {% endfor -%}
+
+                {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+                "Encoder {{encoder_number}}": "Энкодер {{encoder_number}}",
+                "Encoder {{encoder_number}} Position": "Положение энкодера {{encoder_number}}",
+                "Encoder {{encoder_number}} Steps Counter": "Счетчик шагов энкодера {{encoder_number}}",
                 {% endfor -%}
 
                 "Outputs Common Settings": "Общие настройки выходов",
