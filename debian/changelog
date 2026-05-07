@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.245.0) stable; urgency=medium
+
+  * MS, MSW templates: Add channels for absolute humidity and dew point
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 06 May 2026 13:07:00 +0300
+
 wb-mqtt-serial (2.244.0) stable; urgency=medium
 
   * Add "preserve_setup_order" device template option
