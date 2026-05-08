@@ -558,7 +558,7 @@
                 "enum_titles": [
                     "No Action",
                     {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-                    "Channel {{ch_number}}"{% if not loop.last %},{% endif %}
+                    "Controlled Channel {{ch_number}}"{% if not loop.last %},{% endif %}
                     {% endfor -%}
                 ],
                 "default": 0,
@@ -878,6 +878,9 @@
                 "AB": "AB",
                 "Pulses per Step": "Импульсов на шаг",
                 "Controlled Channel": "Управляемый канал",
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Controlled Channel {{ch_number}}": "Канал {{ch_number}}",
+                {% endfor -%}
                 "Level Change Step": "Шаг изменения уровня",
                 "Ignore Control Lock": "Игнорировать блокировку управления",
                 "Baud rate": "Скорость обмена",
