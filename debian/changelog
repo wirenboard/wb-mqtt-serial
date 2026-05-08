@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.242.0) stable; urgency=medium
+
+  * Add short press dimming step controls for WB-MDM3, WB-MAO4 and WB-MAO4-20mA
+
+ -- Egor Panchenko <egor.panchenko@wirenboard.com>  Fri, 8 May 2026 21:00:00 +0300
+
 wb-mqtt-serial (2.241.0) stable; urgency=medium
 
   * Add new templates for WB-MDM3 and WB-MAO4 with auto-on channel and remote swooth change support
