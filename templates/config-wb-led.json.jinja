@@ -1,5 +1,13 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set ENCODERS_NUMBER = 2 -%}
+{% set ENCODER_CONTROLLED_CHANNELS = (
+    "Channel 1", "Channel 2", "Channel 3", "Channel 4",
+    "Channels 1_2", "Channels 3_4", "Channels 1_2_3_4",
+    "CCT1 Temperature", "CCT1 Brightness", "CCT2 Temperature", "CCT2 Brightness",
+    "RGB Red", "RGB Green", "RGB Blue", "RGB Hue", "RGB Saturation", "RGB Brightness",
+    "Hue Changing Rate"
+) -%}
 {
     "title": "WB-LED_template_title",
     "device_type": "WB-LED",
@@ -32,6 +40,17 @@
                 "group": "g_input_{{in_num}}"
             },
             {% endfor -%}
+            {% endfor -%}
+            {
+                "title": "Encoders",
+                "id": "g_encoders"
+            },
+            {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "title": "Encoder {{encoder_number}}",
+                "id": "gg_encoder_{{encoder_number}}",
+                "group": "g_encoders"
+            },
             {% endfor -%}
             {# объявим группы выходов -#}
             {
@@ -1029,6 +1048,77 @@
                 ]
             },
             {% endfor -%}
+            {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "id": "encoder_{{encoder_number}}_mode",
+                "title": "Encoder Mode",
+                "address": {{376 + encoder_number - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "AB"
+                ],
+                "default": 0,
+                "group": "gg_encoder_{{encoder_number}}",
+                "order": 1
+            },
+            {
+                "id": "encoder_{{encoder_number}}_pulses_per_step",
+                "title": "Pulses per Step",
+                "address": {{384 + encoder_number - 1}},
+                "reg_type": "holding",
+                "min": 1,
+                "default": 4,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1",
+                "order": 2
+            },
+            {
+                "id": "encoder_{{encoder_number}}_controlled_channel",
+                "title": "Controlled Channel",
+                "address": {{388 + encoder_number - 1}},
+                "reg_type": "holding",
+                "enum": [0, {% for _ in ENCODER_CONTROLLED_CHANNELS %}{{loop.index}}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum_titles": [
+                    "No Action",
+                    {% for channel_title in ENCODER_CONTROLLED_CHANNELS -%}
+                    "{{channel_title}}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
+                ],
+                "default": 0,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1",
+                "order": 3
+            },
+            {
+                "id": "encoder_{{encoder_number}}_change_step",
+                "title": "Level Change Step",
+                "address": {{392 + encoder_number - 1}},
+                "reg_type": "holding",
+                "min": 1,
+                "max": 360,
+                "default": 1,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1&&encoder_{{encoder_number}}_controlled_channel!=0",
+                "order": 4
+            },
+            {
+                "id": "encoder_{{encoder_number}}_disable_prohibit",
+                "title": "Ignore Control Lock",
+                "address": {{396 + encoder_number - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "default": 0,
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1&&encoder_{{encoder_number}}_controlled_channel!=0",
+                "order": 5
+            },
+            {% endfor -%}
             {#  -#}
             {
                 "id": "baud_rate",
@@ -1446,6 +1536,25 @@
                 "condition": "input_{{in_num}}_mode!=1"
             },
             {% endfor -%}
+            {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+            {
+                "name": "Encoder {{encoder_number}} Position",
+                "reg_type": "holding",
+                "address": {{368 + (encoder_number - 1) * 2}},
+                "type": "value",
+                "format": "u32",
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1"
+            },
+            {
+                "name": "Encoder {{encoder_number}} Steps Counter",
+                "reg_type": "input",
+                "address": {{364 + encoder_number - 1}},
+                "type": "value",
+                "group": "gg_encoder_{{encoder_number}}",
+                "condition": "encoder_{{encoder_number}}_mode==1"
+            },
+            {% endfor -%}
             {
                 "name": "Serial",
                 "type": "text",
@@ -1628,6 +1737,18 @@
 
                 "hue_fader_description": "Time for changing hue by 360°. Please note that the hue is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+
+                "Encoders": "Encoders",
+                "Encoder Mode": "Encoder Mode",
+                "Pulses per Step": "Pulses per Step",
+                "Controlled Channel": "Controlled Channel",
+                "Level Change Step": "Level Change Step",
+                "Ignore Control Lock": "Ignore Control Lock",
+                {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+                "Encoder {{encoder_number}}": "Encoder {{encoder_number}}",
+                "Encoder {{encoder_number}} Position": "Encoder {{encoder_number}} Position",
+                "Encoder {{encoder_number}} Steps Counter": "Encoder {{encoder_number}} Steps Counter",
+                {% endfor -%}
 
                 "Uptime": "Uptime (s)",
                 "light_scenes_description": "Light scenes description",
@@ -1825,6 +1946,18 @@
                 "channel_max_value_description": "Значение ШИМ для канала, соответствующее максимальной яркости (100%)",
 
                 "hue_fader_description": "Время изменения оттенка (Hue) на 360°. Учтите, что оттенок изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
+
+                "Encoders": "Энкодеры",
+                "Encoder Mode": "Режим энкодера",
+                "Pulses per Step": "Импульсов на шаг",
+                "Controlled Channel": "Управляемый канал",
+                "Level Change Step": "Шаг изменения уровня",
+                "Ignore Control Lock": "Игнорировать блокировку управления",
+                {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+                "Encoder {{encoder_number}}": "Энкодер {{encoder_number}}",
+                "Encoder {{encoder_number}} Position": "Позиция энкодера {{encoder_number}}",
+                "Encoder {{encoder_number}} Steps Counter": "Счетчик шагов энкодера {{encoder_number}}",
+                {% endfor -%}
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
