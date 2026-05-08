@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.246.0) stable; urgency=medium
+
+  * templates/config-wb-mwac2_ver2.json.jinja:
+    - Add "Cleaning Mode Remaining Time" channel
+    - Add support for antiseize protection function
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 07 May 2026 11:01:00 +0300
+
 wb-mqtt-serial (2.245.0) stable; urgency=medium
 
   * MS, MSW templates: Add channels for absolute humidity and dew point
