@@ -388,6 +388,17 @@
                 "max": 500,
                 "group": "gg_output_{{ ch_number }}_rates"
             },
+            {
+                "id": "action{{ch_number}}_short_press_step",
+                "title": "Short Press Step (0.1%)",
+                "description": "short_press_step_description",
+                "address": {{976 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 10,
+                "min": 1,
+                "max": 1000,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
             {% endfor -%}
             {
                 "id": "safety_timer_s",
@@ -741,6 +752,7 @@
                 "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
                 "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
                 "action_repeat_time_description": "When button is held for a long time, level will change with specified rate.",
+                "short_press_step_description": "When a short press action increases or decreases level, channel level changes by this step through the fader",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except single and long. Adds a delay to the response to a single press",
@@ -826,9 +838,11 @@
                 "Decrement Rate (ms/%)": "Темп изменения уровня в сторону уменьшения (мс/%)",
                 "Increment Rate (ms/%)": "Темп изменения уровня в сторону увеличения (мс/%)",
                 "Changing Rate for Long Press Actions (ms/%)": "Темп изменения уровня при долгих нажатиях (мс/%)",
+                "Short Press Step (0.1%)": "Шаг изменения уровня коротким нажатием (0,1%)",
                 "decrement_rate_description": "При скачкообразном изменении уровня или выключении канала, уровень будет плавно уменьшаться с заданным темпом. При значении 0, уровень уменьшится мгновенно",
                 "increment_rate_description": "При скачкообразном изменении уровня или включении канала, уровень будет плавно увеличиваться с заданным темпом. При значении 0, уровень увеличится мгновенно",
                 "action_repeat_time_description": "При удержании кнопки уровень будет изменяться с заданным темпом",
+                "short_press_step_description": "При коротком нажатии с действием увеличения или уменьшения уровень канала меняется на этот шаг через фейдер",
 
                 "Safety Mode": "Безопасный режим",
                 "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",

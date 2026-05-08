@@ -276,6 +276,18 @@
                 "max": 500,
                 "order": 5
             },
+            {
+                "id": "action{{ch_number}}_short_press_step",
+                "title": "Short Press Step (%)",
+                "description": "short_press_step_description",
+                "group": "output{{ch_number}}",
+                "address": {{976 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 1,
+                "min": 1,
+                "max": 100,
+                "order": 6
+            },
             {% endfor -%}
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
@@ -904,6 +916,7 @@
                 "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will increase instantly",
                 "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will decrease instantly",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
+                "short_press_step_description": "When a short press action increases or decreases brightness, channel level changes by this step through the fader",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
@@ -977,6 +990,7 @@
                 "Dimming level decrement rate (ms/%)": "Темп уменьшения уровня яркости (мс/%)",
                 "Dimming level increment rate (ms/%)": "Темп увеличения уровня яркости (мс/%)",
                 "Action repeat time (ms)": "Длительность периода повторения действий (мс)",
+                "Short Press Step (%)": "Шаг изменения яркости коротким нажатием (%)",
 
                 "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
                 "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
@@ -1044,7 +1058,8 @@
 
                 "decrease_rate_description": "Во время плавных переходов, выходной уровень будет уменьшаться на 1% через указанный период времени. При 0 значении, уровень уменьшится мгновенно",
                 "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени. При 0 значении, уровень увеличится мгновенно",
-                "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени"
+                "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
+                "short_press_step_description": "При коротком нажатии с действием увеличения или уменьшения яркость канала меняется на этот шаг через фейдер"
             }
         }
     }
