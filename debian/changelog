@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.246.1) stable; urgency=medium
+
+  * Apply preserve_setup_order and max_write_registers=1 to WBIO
+    modbus_io templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 08 May 2026 09:55:28 +0300
+
 wb-mqtt-serial (2.246.0) stable; urgency=medium
 
   * templates/config-wb-mwac2_ver2.json.jinja:
