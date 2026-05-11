@@ -1,8 +1,23 @@
-wb-mqtt-serial (2.246.0) stable; urgency=medium
+wb-mqtt-serial (2.247.0) stable; urgency=medium
 
   * Add WB-MAI6 new template with measurement registers in order
 
  -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 11 May 2026 19:30:00 +0700
+
+wb-mqtt-serial (2.246.1) stable; urgency=medium
+
+  * Apply preserve_setup_order and max_write_registers=1 to WBIO
+    modbus_io templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 08 May 2026 09:55:28 +0300
+
+wb-mqtt-serial (2.246.0) stable; urgency=medium
+
+  * templates/config-wb-mwac2_ver2.json.jinja:
+    - Add "Cleaning Mode Remaining Time" channel
+    - Add support for antiseize protection function
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 07 May 2026 11:01:00 +0300
 
 wb-mqtt-serial (2.245.0) stable; urgency=medium
 
