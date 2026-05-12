@@ -427,20 +427,65 @@
             {% endfor %}
             {%- endfor -%}
 
-            {# опишем настройки для варианта входа кнопка с фиксацией -#}
+            {#- Настройка действий для переключателей -#}
+            {% set modes_list = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768] -%}
+            {% set switch_act_channels = [
+                {   "value": 0,     "title": "no_act_title",                    "modes": modes_list     },
+                {   "value": 1,     "title": "sw_ch1_act_title",                "modes": [0, 16, 32]    },
+                {   "value": 2,     "title": "sw_ch2_act_title",                "modes": [0, 16, 32]    },
+                {   "value": 3,     "title": "sw_ch3_act_title",                "modes": [0, 1, 2]      },
+                {   "value": 4,     "title": "sw_ch4_act_title",                "modes": [0, 1, 2, 256] },
+                {   "value": 5,     "title": "sw_ch12_act_title",               "modes": [1, 17, 33]    },
+                {   "value": 6,     "title": "sw_ch34_act_title",               "modes": [16, 17, 18]   },
+                {   "value": 7,     "title": "sw_ch1234_act_title",             "modes": [512]          },
+                {   "value": 8,     "title": "sw_cct1_act_title",               "modes": [2, 18, 34]    },
+                {   "value": 9,     "title": "sw_cct2_act_title",               "modes": [32, 33, 34]   },
+                {   "value": 10,    "title": "sw_rgb_act_title",                "modes": [256]          },
+                {   "value": 11,    "title": "sw_rgb_hue_changing_act_title",   "modes": [256]          },
+                {   "value": 12,    "title": "sw_cct1_cct2_act_title",          "modes": [768]          },
+                {   "value": 100,   "title": "sw_all_act_title",                "modes": modes_list     }
+            ] -%}
+            {% set switch_act_values = [0, 1, 2] -%}
+            {% set switch_act_titles = ["Turn Off", "Turn On", "Toggle"] -%}
+
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
-            {% for off_on in ["off", "on"] -%}
+            {% for mode in modes_list -%}
+            {% set filtered_sw = [] -%}
+            {% for ch in switch_act_channels if mode in ch.modes -%}{% set _ = filtered_sw.append(ch) -%}{% endfor -%}
+            {% for off_on in ['off', 'on'] -%}
+            {
+                "id": "in{{in_num}}_switch_{{off_on}}_name",
+                "group": "gg_input_{{in_num}}_switch_{{off_on}}_action",
+                "title": "input_switch_{{off_on}}_title",
+                "order": 1,
+                "address": {{704 + (16 * loop.index0) + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{mode}}){{enc_cond}})",
+                "enum": [{{ filtered_sw | map(attribute="value") | join(", ") }}],
+                "enum_titles": [
+                    {% for ch in filtered_sw -%}
+                    "{{ ch.title }}"
+                    {%- if not loop.last -%}
+                    ,
+                    {% endif -%}
+                    {% endfor %}
+                ]
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {% for off_on in ['off', 'on'] -%}
             {
                 "id": "in{{in_num}}_switch_{{off_on}}_action",
-                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "group": "gg_input_{{in_num}}_switch_{{off_on}}_action",
                 "title": "switch_action",
-                "order": {{in_num}},
-                "address": {{736 + (loop.index0 * 16) + in_num - 1}},
+                "order": 2,
+                "address": {{736 + (16 * loop.index0) + in_num - 1}},
                 "reg_type": "holding",
                 "default": {{ (off_on == "on") | int }},
-                "condition": "(input_{{in_num}}_mode==1){{enc_cond}}",
+                "condition": "((input_{{in_num}}_mode==1)&&(in{{in_num}}_switch_{{off_on}}_name>0)&&(in{{in_num}}_switch_{{off_on}}_name!=100){{enc_cond}})",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -448,96 +493,19 @@
                     "Toggle"
                 ]
             },
-            {% endfor -%}
-            {% endfor -%}
-            {% set enum_switch = [
-                [0, 1, 2, 3, 4, 100],
-                [0, 5, 3, 4, 100],
-                [0, 8, 3, 4, 100],
-                [0, 1, 2, 6, 100],
-                [0, 5, 6, 100],
-                [0, 8, 6, 100],
-                [0, 1, 2, 9, 100],
-                [0, 5, 9, 100],
-                [0, 8, 9, 100],
-                [0, 10, 11, 4, 100],
-                [0, 7, 100],
-                [0, 12, 100]
-                ] -%}
-            {% set enum_switch_non_all = [
-                [0, 1, 2, 3, 4],
-                [0, 5, 3, 4],
-                [0, 8, 3, 4],
-                [0, 1, 2, 6],
-                [0, 5, 6],
-                [0, 8, 6],
-                [0, 1, 2, 9],
-                [0, 5, 9],
-                [0, 8, 9],
-                [0, 10, 11, 4],
-                [0, 7],
-                [0, 12]
-                ] -%}
-            {% set action_switch_code = [0, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] -%}
-            {% set action_switch_name =
-                [
-                    "no_act_title", "sw_all_act_title", "sw_ch1_act_title", "sw_ch2_act_title", "sw_ch3_act_title", "sw_ch4_act_title", "sw_ch12_act_title", "sw_ch34_act_title", "sw_ch1234_act_title", "sw_cct1_act_title",
-                    "sw_cct2_act_title", "sw_rgb_act_title", "sw_rgb_hue_changing_act_title", "sw_cct1_cct2_act_title"
-                ]
-            -%}
-            {% for dimmer_mode_number in range(12) -%}
-            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-            {% set enc_cond_num = ((in_num - 1) // 2) + 1 -%}
-            {% set enc_cond = '&&(encoder_' ~ enc_cond_num ~ '_mode==0)' if (enc_cond_num <= ENCODERS_NUMBER) else '' -%}
-            {% for off_on in ["off", "on"]  -%}
             {
-                "id": "in{{in_num}}_switch_{{off_on}}_name",
-                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
-                "title": "input_switch_{{off_on}}_title",
-                "order": {{in_num + 2}},
-                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
+                "id": "in{{in_num}}_switch_{{off_on}}_action",
+                "group": "gg_input_{{in_num}}_switch_{{off_on}}_action",
+                "title": "switch_action",
+                "order": 2,
+                "address": {{736 + (16 * loop.index0) + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0){{enc_cond}})",
-                "enum": {{ enum_switch[dimmer_mode_number] }},
-                "enum_titles": [
-                    {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
-                    {% for i_action_switch_code in action_switch_code -%}
-                    {% if i_action_switch_code == i_enum_switch -%}
-                        "{{ action_switch_name[loop.index0] }}"
-                    {%- endif -%}
-                    {%- endfor -%}
-                    {%- if not loop.last -%}
-                    ,
-                    {% endif -%}
-                    {% endfor %}
-                ]
+                "default": {{ (off_on == "on") | int }},
+                "condition": "((input_{{in_num}}_mode==1)&&(in{{in_num}}_switch_{{off_on}}_name>0)&&(in{{in_num}}_switch_{{off_on}}_name==100){{enc_cond}})",
+                "enum": [0],
+                "enum_titles": ["Turn Off"]
             },
-            {
-                "id": "in{{in_num}}_switch_{{off_on}}_name_non_all",
-                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
-                "title": "input_switch_{{off_on}}_title",
-                "order": {{in_num + 2}},
-                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)){{enc_cond}})",
-                "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
-                "enum_titles": [
-                    {% for i_enum_switch in enum_switch_non_all[dimmer_mode_number] -%}
-                    {% for i_action_switch_code in action_switch_code -%}
-                    {% if i_action_switch_code == i_enum_switch -%}
-                        "{{ action_switch_name[loop.index0] }}"
-                    {%- endif -%}
-                    {%- endfor -%}
-                    {%- if not loop.last -%}
-                    ,
-                    {% endif -%}
-                    {% endfor %}
-                ]
-            },
-            {% endfor %}
-            {%- endfor %}
+            {% endfor -%}
             {%- endfor -%}
 
             {# Энкодеры -#}
