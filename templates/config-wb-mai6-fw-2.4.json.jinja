@@ -7,7 +7,7 @@
 {% set has_signature = has_signature | default(true) -%}
 
 {% set CHANNELS_NUMBER = 6 -%}
-{% set TYPES_WITH_GAIN = [3, 257] -%}
+{% set TYPES_WITH_GAIN = [3, 257, 261] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 5890, 5891, 5892, 5893, 5894, 5895, 6144] -%}
@@ -175,7 +175,8 @@
                     2,
                     3,
                     257,
-                    258
+                    258,
+                    261
                 ],
                 "enum_titles": [
                     "P: Disabled",
@@ -240,7 +241,8 @@
                     "P: two-wire resistance measurement",
                     "P: current measurement",
                     "voltage measurement in differential mode from -2 to 2 V",
-                    "three-wire resistance measurement"
+                    "three-wire resistance measurement",
+                    "voltage measurement in differential with WB-VDIV"
                 ]
             },
             {
@@ -862,6 +864,19 @@
                 "condition": "in{{ ch_num }}_type==257||in{{ ch_num }}_type==5376"
             },
             {
+                "name": "IN {{ch_num}} Voltage",
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x{{ '%04x' | format(1792 + (ch_num - 1) * 2) }}",
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "in{{ ch_num }}_type==261"
+            },
+            {
                 "name": "IN {{ch_num}} P Voltage",
                 "type": "value",
                 "units": "V",
@@ -1364,6 +1379,7 @@
                 "P: 0-10 V sensor": "P: измерение напряжения 0-10 В",
                 "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
                 "voltage measurement in differential mode from -2 to 2 V": "дифф. режим измерения напряжения от -2 до 2 В",
+                "voltage measurement in differential with WB-VDIV": "дифф. режим измерения напряжения с делителем WB-VDIV",
                 "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
                 "P: NTC thermistor 100k (B = 3950 K)": "P: термистор NTC 100 кОм (B = 3950 K)",
                 "P: NTC thermistor 10k (B = 3950 K)": "P: термистор NTC 10 кОм (B = 3950 K)",

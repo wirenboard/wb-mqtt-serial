@@ -2,7 +2,7 @@ wb-mqtt-serial (2.247.0) stable; urgency=medium
 
   * Add WB-MAI6 new template with measurement registers in order
 
- -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 11 May 2026 19:30:00 +0700
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 13 May 2026 20:14:00 +0700
 
 wb-mqtt-serial (2.246.1) stable; urgency=medium
 
