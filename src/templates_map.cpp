@@ -121,12 +121,17 @@ namespace
                 for (auto it = sectionNodes.begin(); it != sectionNodes.end(); ++it) {
                     try {
                         ValidateConditionAndAddDependencies(*it, exprCache);
-                        if (section == "channels") {
-                            ValidateChannelAddresses(*it, restrictWriteAddress);
-                        }
                     } catch (const runtime_error& e) {
-                        throw runtime_error("Failed to parse " + section + "[" + GetNodeName(*it, it.name()) +
-                                            "]: " + e.what());
+                        throw runtime_error("Failed to parse condition in " + section + "[" +
+                                            GetNodeName(*it, it.name()) + "]: " + e.what());
+                    }
+                    if (section == "channels") {
+                        try {
+                            ValidateChannelAddresses(*it, restrictWriteAddress);
+                        } catch (const runtime_error& e) {
+                            throw runtime_error("Failed to validate addresses in " + section + "[" +
+                                                GetNodeName(*it, it.name()) + "]: " + e.what());
+                        }
                     }
                 }
             }
