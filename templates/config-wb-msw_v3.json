@@ -142,6 +142,18 @@
                 "group": "motion",
                 "order": 1
             },
+            "rc_filter_time_const_ms": {
+                "title": "RC Filter Time Constant (ms)",
+                "address": 278,
+                "description": "rc_filter_time_const_description",
+                "reg_type": "holding",
+                "min": 10,
+                "max": 2000,
+                "default": 2000,
+                "group": "motion",
+                "fw": "4.37.0",
+                "order": 2
+            },
             "safety_timer_s": {
                 "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
@@ -1709,6 +1721,8 @@
                 "CO2 MH-Z19 Temperature": "CO₂ MH-Z19 Temperature",
                 "CO2 MH-Z19 Autocalibration Ticks": "CO₂ MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)",
                 "CO2 MH-Z19 Autocalibration Count": "CO₂ MH-Z19 Autocalibration Count",
+                "Low-pass Filter Time Constant (s)": "Maximum Motion Window (s)",
+                "rc_filter_time_const_description": "Larger value means slower decay of Current Motion and stronger smoothing, smaller value - faster decay and noisier signal.",
                 "g_safety_description": "Safety mode is activated if there is no Modbus polling within the specified timeout",
                 "poll_timeout_description": "Timeout without Modbus polling after which safety mode will be activated",
                 "safety_command_description": "IR Command that will be played in safety mode"
@@ -1738,6 +1752,8 @@
                 "selfheating_compensation_deg_description": "Значение компенсации вычитается из измеренной температуры",
                 "Low-pass Filter Time Constant (ms)": "Время усреднения шума (мс)",
                 "Low-pass Filter Time Constant (s)": "Время усреднения движения (с)",
+                "RC Filter Time Constant (ms)": "Постоянная времени RC-фильтра (мс)",
+                "rc_filter_time_const_description": "Чем больше значение параметра, тем медленнее затухание Текущего движения и сильнее сглаживание, а чем меньше, тем быстрее затухание, но более шумный сигнал.",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
