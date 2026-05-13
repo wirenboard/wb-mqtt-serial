@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.247.1) stable; urgency=medium
+
+  * Add write_address bits validation
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 May 2026 16:23:12 +0500
+
 wb-mqtt-serial (2.247.0) stable; urgency=medium
 
   * MS, MSW templates: Add RC filter time constant

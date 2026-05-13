@@ -70,9 +70,50 @@ namespace
         return name;
     }
 
-    void ValidateConditionsAndAddDependencies(Json::Value& deviceTemplate)
+    //! True for protocols that reject inconsistent bit offset/width between "write_address" and "address".
+    bool ProtocolRestrictsWriteAddress(const std::string& protocol)
+    {
+        return protocol == "modbus" || protocol == "modbus-tcp" || protocol == "modbus_io"
+               || protocol == "modbus_io-tcp";
+    }
+
+    void ValidateRegisterAddressesInTemplate(const Json::Value& regCfg, bool restrictWriteAddress)
+    {
+        if (!restrictWriteAddress) {
+            return;
+        }
+        if (!HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
+            return;
+        }
+        auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
+        if (writeAddress.BitWidth == 0) {
+            return;
+        }
+        if (!HasNoEmptyProperty(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME)) {
+            throw TConfigParserException(
+                "\"write_address\" with bit offset/width requires \"address\" to read the other bits");
+        }
+        auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
+        if (writeAddress.BitOffset != addr.BitOffset || writeAddress.BitWidth != addr.BitWidth) {
+            throw TConfigParserException("Bit offset/width in \"write_address\" must match \"address\"");
+        }
+    }
+
+    void ValidateChannelAddresses(const Json::Value& channel, bool restrictWriteAddress)
+    {
+        if (channel.isMember("consists_of")) {
+            for (const auto& part: channel["consists_of"]) {
+                ValidateRegisterAddressesInTemplate(part, restrictWriteAddress);
+            }
+        } else {
+            ValidateRegisterAddressesInTemplate(channel, restrictWriteAddress);
+        }
+    }
+
+    void ValidateAndAnnotateTemplateSections(Json::Value& deviceTemplate, const std::string& protocol)
     {
         Expressions::TExpressionsCache exprCache;
+        const bool restrictWriteAddress = ProtocolRestrictsWriteAddress(protocol);
         std::vector<std::string> sections = {"channels", "setup", "parameters"};
         for (const auto& section: sections) {
             if (deviceTemplate.isMember(section)) {
@@ -80,8 +121,11 @@ namespace
                 for (auto it = sectionNodes.begin(); it != sectionNodes.end(); ++it) {
                     try {
                         ValidateConditionAndAddDependencies(*it, exprCache);
+                        if (section == "channels") {
+                            ValidateChannelAddresses(*it, restrictWriteAddress);
+                        }
                     } catch (const runtime_error& e) {
-                        throw runtime_error("Failed to parse condition in " + section + "[" +
+                        throw runtime_error("Failed to parse " + section + "[" +
                                             GetNodeName(*it, it.name()) + "]: " + e.what());
                     }
                 }
@@ -369,7 +413,7 @@ const Json::Value& TDeviceTemplate::GetTemplate()
         if (!IsDeprecated()) {
             try {
                 Validator->Validate(root);
-                ValidateConditionsAndAddDependencies(root["device"]);
+                ValidateAndAnnotateTemplateSections(root["device"], Protocol);
                 // Check that parameters with same ids have same addresses (for parameters declared as array)
                 ValidateParameterProperties(root["device"]["parameters"]);
             } catch (const std::runtime_error& e) {
