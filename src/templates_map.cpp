@@ -73,8 +73,8 @@ namespace
     //! True for protocols that reject inconsistent bit offset/width between "write_address" and "address".
     bool ProtocolRestrictsWriteAddress(const std::string& protocol)
     {
-        return protocol == "modbus" || protocol == "modbus-tcp" || protocol == "modbus_io"
-               || protocol == "modbus_io-tcp";
+        return protocol == "modbus" || protocol == "modbus-tcp" || protocol == "modbus_io" ||
+               protocol == "modbus_io-tcp";
     }
 
     void ValidateRegisterAddressesInTemplate(const Json::Value& regCfg, bool restrictWriteAddress)
@@ -125,8 +125,8 @@ namespace
                             ValidateChannelAddresses(*it, restrictWriteAddress);
                         }
                     } catch (const runtime_error& e) {
-                        throw runtime_error("Failed to parse " + section + "[" +
-                                            GetNodeName(*it, it.name()) + "]: " + e.what());
+                        throw runtime_error("Failed to parse " + section + "[" + GetNodeName(*it, it.name()) +
+                                            "]: " + e.what());
                     }
                 }
             }
