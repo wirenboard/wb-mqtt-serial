@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.0) stable; urgency=medium
+
+  * Add WB-MAI6 new template with measurement registers in order
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 14 May 2026 16:18:00 +0700
+
 wb-mqtt-serial (2.247.1) stable; urgency=medium
 
   * Add write_address bits validation
