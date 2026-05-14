@@ -9,6 +9,8 @@
         "max_read_registers": 0,
         "response_timeout_ms": 40,
         "frame_timeout_ms": 8,
+        "preserve_setup_order": true,
+        "max_write_registers": 1,
         "setup": [
             {
                 "title": "IODIR",
