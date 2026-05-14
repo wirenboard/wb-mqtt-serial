@@ -49,10 +49,7 @@ void TTcpPort::Open()
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     struct addrinfo* rawResult = nullptr;
-    auto rc = getaddrinfo(Settings.Address.c_str(),
-                          std::to_string(Settings.Port).c_str(),
-                          &hints,
-                          &rawResult);
+    auto rc = getaddrinfo(Settings.Address.c_str(), std::to_string(Settings.Port).c_str(), &hints, &rawResult);
     if (rc != 0 || !rawResult) {
         throw TSerialDeviceException("no such host: " + Settings.Address + ": " + gai_strerror(rc));
     }
