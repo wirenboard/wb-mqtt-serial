@@ -2,6 +2,7 @@
 #include "serial_exc.h"
 
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,21 +40,20 @@ void TTcpPort::Open()
         throw TSerialDeviceException("port is already open");
     }
 
-    struct hostent* server = gethostbyname(Settings.Address.c_str());
-    if (!server) {
-        throw TSerialDeviceException("no such host: " + Settings.Address);
+    struct addrinfo hints = {};
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    struct addrinfo* rawResult = nullptr;
+    auto rc = getaddrinfo(Settings.Address.c_str(), std::to_string(Settings.Port).c_str(), &hints, &rawResult);
+    if (rc != 0 || !rawResult) {
+        throw TSerialDeviceException("no such host: " + Settings.Address + ": " + gai_strerror(rc));
     }
+    std::unique_ptr<struct addrinfo, decltype(&freeaddrinfo)> addrInfo(rawResult, &freeaddrinfo);
 
-    Fd = socket(AF_INET, SOCK_STREAM, 0);
+    Fd = socket(addrInfo->ai_family, addrInfo->ai_socktype, addrInfo->ai_protocol);
     if (Fd < 0) {
         throw TSerialDeviceErrnoException("cannot open tcp port: ", errno);
     }
-
-    struct sockaddr_in serv_addr;
-    memset((char*)&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    memmove((char*)&serv_addr.sin_addr.s_addr, (char*)server->h_addr, server->h_length);
-    serv_addr.sin_port = htons(Settings.Port);
 
     // set socket to non-blocking state
     auto arg = fcntl(Fd, F_GETFL, NULL);
@@ -61,7 +61,7 @@ void TTcpPort::Open()
     fcntl(Fd, F_SETFL, arg);
 
     try {
-        if (connect(Fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        if (connect(Fd, addrInfo->ai_addr, addrInfo->ai_addrlen) < 0) {
             if (errno != EINPROGRESS) {
                 throw std::runtime_error("connect error: " + FormatErrno(errno));
             }
