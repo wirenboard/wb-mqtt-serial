@@ -42,9 +42,6 @@ void TTcpPort::Open()
         throw TSerialDeviceException("port is already open");
     }
 
-    // getaddrinfo() is thread-safe, unlike gethostbyname() which uses a shared
-    // static buffer and corrupts results when called concurrently from multiple
-    // port loop threads (one thread per port, see TMQTTSerialDriver::Start).
     struct addrinfo hints = {};
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
