@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.180.2-wb107) stable; urgency=medium
+
+  * Fix race condition on gethostbyname() when starting TCP ports
+  * Improve log when port closed due to repetitive errors
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 14 May 2026 16:23:00 +0300
+
 wb-mqtt-serial (2.180.2-wb106) stable; urgency=medium
 
   * WB-UPS v.3 template: fix battery temperature register format
