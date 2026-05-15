@@ -1,6 +1,62 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set ENCODERS_NUMBER = 2 -%}
+{% set AUTO_CHANGE_PARAMETERS = [
+    ("Red", 11, 10, "(dimmer_mode==256)"),
+    ("Green", 12, 11, "(dimmer_mode==256)"),
+    ("Blue", 13, 12, "(dimmer_mode==256)"),
+    ("RGB Strip Hue", 14, 13, "(dimmer_mode==256)"),
+    ("RGB Strip Saturation", 15, 14, "(dimmer_mode==256)"),
+    ("RGB Strip Brightness", 16, 15, "(dimmer_mode==256)"),
+    ("Hue Changing Rate", 17, 16, "(dimmer_mode==256)"),
+    ("Channel 1", 0, 20, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
+    ("Channel 2", 1, 21, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
+    ("Channels 1, 2", 4, 22, "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"),
+    ("CCT1 Temperature", 7, 23, "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"),
+    ("CCT1 Brightness", 8, 24, "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"),
+    ("Channel 3", 2, 25, "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"),
+    ("Channels 1, 2, 3, 4", 6, 26, "(dimmer_mode==512)"),
+    ("CCT2 Temperature", 9, 27, "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"),
+    ("CCT2 Brightness", 10, 28, "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"),
+    ("Channels 3, 4", 5, 29, "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"),
+    ("Channel 4", 3, 30, "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"),
+    ("CCT1, CCT2 Temperature", 18, 31, "(dimmer_mode==768)"),
+    ("CCT1, CCT2 Brightness", 19, 32, "(dimmer_mode==768)")
+] -%}
+{% macro auto_change_time_parameter(title, index, order, condition) -%}
+            {
+                "id": "auto_change_time_{{ index }}",
+                "group": "gg_out_params",
+                "title": "{{ title }} Auto-Change Rate",
+                "order": {{order}},
+                "address": {{2300 + index}},
+                "reg_type": "holding",
+                "min": 5,
+                "max": 500,
+                "default": 20,
+                "units": "ms",
+                "condition": "{{condition}}"
+            },
+{%- endmacro %}
+{% macro auto_change_control(title, index, condition) -%}
+            {
+                "group": "gg_out_channels",
+                "name": "{{ title }} Auto-Change",
+                "address": {{2200 + index}},
+                "type": "value",
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Stop",
+                    "Decrease",
+                    "Increase",
+                    "Increase/Decrease"
+                ],
+                "enabled": false,
+                "sporadic": true,
+                "condition": "{{condition}}"
+            },
+{%- endmacro %}
 {
     "title": "WB-LED_template_title",
     "device_type": "WB-LED-since-fw-3.8",
@@ -427,65 +483,20 @@
             {% endfor %}
             {%- endfor -%}
 
-            {#- Настройка действий для переключателей -#}
-            {% set modes_list = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768] -%}
-            {% set switch_act_channels = [
-                {   "value": 0,     "title": "no_act_title",                    "modes": modes_list     },
-                {   "value": 1,     "title": "sw_ch1_act_title",                "modes": [0, 16, 32]    },
-                {   "value": 2,     "title": "sw_ch2_act_title",                "modes": [0, 16, 32]    },
-                {   "value": 3,     "title": "sw_ch3_act_title",                "modes": [0, 1, 2]      },
-                {   "value": 4,     "title": "sw_ch4_act_title",                "modes": [0, 1, 2, 256] },
-                {   "value": 5,     "title": "sw_ch12_act_title",               "modes": [1, 17, 33]    },
-                {   "value": 6,     "title": "sw_ch34_act_title",               "modes": [16, 17, 18]   },
-                {   "value": 7,     "title": "sw_ch1234_act_title",             "modes": [512]          },
-                {   "value": 8,     "title": "sw_cct1_act_title",               "modes": [2, 18, 34]    },
-                {   "value": 9,     "title": "sw_cct2_act_title",               "modes": [32, 33, 34]   },
-                {   "value": 10,    "title": "sw_rgb_act_title",                "modes": [256]          },
-                {   "value": 11,    "title": "sw_rgb_hue_changing_act_title",   "modes": [256]          },
-                {   "value": 12,    "title": "sw_cct1_cct2_act_title",          "modes": [768]          },
-                {   "value": 100,   "title": "sw_all_act_title",                "modes": modes_list     }
-            ] -%}
-            {% set switch_act_values = [0, 1, 2] -%}
-            {% set switch_act_titles = ["Turn Off", "Turn On", "Toggle"] -%}
-
+            {# опишем настройки для варианта входа кнопка с фиксацией -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
-            {% for mode in modes_list -%}
-            {% set filtered_sw = [] -%}
-            {% for ch in switch_act_channels if mode in ch.modes -%}{% set _ = filtered_sw.append(ch) -%}{% endfor -%}
-            {% for off_on in ['off', 'on'] -%}
-            {
-                "id": "in{{in_num}}_switch_{{off_on}}_name",
-                "group": "gg_input_{{in_num}}_switch_{{off_on}}_action",
-                "title": "input_switch_{{off_on}}_title",
-                "order": 1,
-                "address": {{704 + (16 * loop.index0) + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{mode}}){{enc_cond}})",
-                "enum": [{{ filtered_sw | map(attribute="value") | join(", ") }}],
-                "enum_titles": [
-                    {% for ch in filtered_sw -%}
-                    "{{ ch.title }}"
-                    {%- if not loop.last -%}
-                    ,
-                    {% endif -%}
-                    {% endfor %}
-                ]
-            },
-            {% endfor -%}
-            {% endfor -%}
-            {% for off_on in ['off', 'on'] -%}
+            {% for off_on in ["off", "on"] -%}
             {
                 "id": "in{{in_num}}_switch_{{off_on}}_action",
-                "group": "gg_input_{{in_num}}_switch_{{off_on}}_action",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
                 "title": "switch_action",
-                "order": 2,
-                "address": {{736 + (16 * loop.index0) + in_num - 1}},
+                "order": {{in_num}},
+                "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": {{ (off_on == "on") | int }},
-                "condition": "((input_{{in_num}}_mode==1)&&(in{{in_num}}_switch_{{off_on}}_name>0)&&(in{{in_num}}_switch_{{off_on}}_name!=100){{enc_cond}})",
+                "condition": "(input_{{in_num}}_mode==1){{enc_cond}}",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -493,19 +504,96 @@
                     "Toggle"
                 ]
             },
-            {
-                "id": "in{{in_num}}_switch_{{off_on}}_action",
-                "group": "gg_input_{{in_num}}_switch_{{off_on}}_action",
-                "title": "switch_action",
-                "order": 2,
-                "address": {{736 + (16 * loop.index0) + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ (off_on == "on") | int }},
-                "condition": "((input_{{in_num}}_mode==1)&&(in{{in_num}}_switch_{{off_on}}_name>0)&&(in{{in_num}}_switch_{{off_on}}_name==100){{enc_cond}})",
-                "enum": [0],
-                "enum_titles": ["Turn Off"]
-            },
             {% endfor -%}
+            {% endfor -%}
+            {% set enum_switch = [
+                [0, 1, 2, 3, 4, 100],
+                [0, 5, 3, 4, 100],
+                [0, 8, 3, 4, 100],
+                [0, 1, 2, 6, 100],
+                [0, 5, 6, 100],
+                [0, 8, 6, 100],
+                [0, 1, 2, 9, 100],
+                [0, 5, 9, 100],
+                [0, 8, 9, 100],
+                [0, 10, 11, 4, 100],
+                [0, 7, 100],
+                [0, 12, 100]
+                ] -%}
+            {% set enum_switch_non_all = [
+                [0, 1, 2, 3, 4],
+                [0, 5, 3, 4],
+                [0, 8, 3, 4],
+                [0, 1, 2, 6],
+                [0, 5, 6],
+                [0, 8, 6],
+                [0, 1, 2, 9],
+                [0, 5, 9],
+                [0, 8, 9],
+                [0, 10, 11, 4],
+                [0, 7],
+                [0, 12]
+                ] -%}
+            {% set action_switch_code = [0, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] -%}
+            {% set action_switch_name =
+                [
+                    "no_act_title", "sw_all_act_title", "sw_ch1_act_title", "sw_ch2_act_title", "sw_ch3_act_title", "sw_ch4_act_title", "sw_ch12_act_title", "sw_ch34_act_title", "sw_ch1234_act_title", "sw_cct1_act_title",
+                    "sw_cct2_act_title", "sw_rgb_act_title", "sw_rgb_hue_changing_act_title", "sw_cct1_cct2_act_title"
+                ]
+            -%}
+            {% for dimmer_mode_number in range(12) -%}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set enc_cond_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ enc_cond_num ~ '_mode==0)' if (enc_cond_num <= ENCODERS_NUMBER) else '' -%}
+            {% for off_on in ["off", "on"]  -%}
+            {
+                "id": "in{{in_num}}_switch_{{off_on}}_name",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "title": "input_switch_{{off_on}}_title",
+                "order": {{in_num + 2}},
+                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0){{enc_cond}})",
+                "enum": {{ enum_switch[dimmer_mode_number] }},
+                "enum_titles": [
+                    {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
+                    {% for i_action_switch_code in action_switch_code -%}
+                    {% if i_action_switch_code == i_enum_switch -%}
+                        "{{ action_switch_name[loop.index0] }}"
+                    {%- endif -%}
+                    {%- endfor -%}
+                    {%- if not loop.last -%}
+                    ,
+                    {% endif -%}
+                    {% endfor %}
+                ]
+            },
+            {
+                "id": "in{{in_num}}_switch_{{off_on}}_name_non_all",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "title": "input_switch_{{off_on}}_title",
+                "order": {{in_num + 2}},
+                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)){{enc_cond}})",
+                "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
+                "enum_titles": [
+                    {% for i_enum_switch in enum_switch_non_all[dimmer_mode_number] -%}
+                    {% for i_action_switch_code in action_switch_code -%}
+                    {% if i_action_switch_code == i_enum_switch -%}
+                        "{{ action_switch_name[loop.index0] }}"
+                    {%- endif -%}
+                    {%- endfor -%}
+                    {%- if not loop.last -%}
+                    ,
+                    {% endif -%}
+                    {% endfor %}
+                ]
+            },
+            {% endfor %}
+            {%- endfor %}
             {%- endfor -%}
 
             {# Энкодеры -#}
@@ -1237,6 +1325,9 @@
             },
             {% endfor -%}
             {#  -#}
+            {% for title, index, order, condition in AUTO_CHANGE_PARAMETERS -%}
+            {{ auto_change_time_parameter(title, index, order, condition) }}
+            {% endfor -%}
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
@@ -1304,6 +1395,21 @@
                 ],
                 "condition": "(dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "Red",
+                11,
+                "(dimmer_mode==256)"
+            ) }}
+            {{ auto_change_control(
+                "Green",
+                12,
+                "(dimmer_mode==256)"
+            ) }}
+            {{ auto_change_control(
+                "Blue",
+                13,
+                "(dimmer_mode==256)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "RGB Strip Hue",
@@ -1329,6 +1435,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "RGB Strip Hue",
+                14,
+                "(dimmer_mode==256)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "RGB Strip Saturation",
@@ -1354,6 +1465,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "RGB Strip Saturation",
+                15,
+                "(dimmer_mode==256)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "RGB Strip Brightness",
@@ -1379,6 +1495,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "RGB Strip Brightness",
+                16,
+                "(dimmer_mode==256)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "Hue Changing",
@@ -1413,6 +1534,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "Hue Changing Rate",
+                17,
+                "(dimmer_mode==256)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "Channel 1",
@@ -1447,6 +1573,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
+            {{ auto_change_control(
+                "Channel 1",
+                0,
+                "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "Channel 2",
@@ -1481,6 +1612,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
+            {{ auto_change_control(
+                "Channel 2",
+                1,
+                "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "id": "Channels 1_2",
@@ -1517,6 +1653,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
+            {{ auto_change_control(
+                "Channels 1, 2",
+                4,
+                "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "CCT1",
@@ -1551,6 +1692,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
+            {{ auto_change_control(
+                "CCT1 Temperature",
+                7,
+                "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "CCT1 Brightness",
@@ -1576,6 +1722,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
+            {{ auto_change_control(
+                "CCT1 Brightness",
+                8,
+                "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "Channel 3",
@@ -1610,6 +1761,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
+            {{ auto_change_control(
+                "Channel 3",
+                2,
+                "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "id": "Channels 1_2_3_4",
@@ -1646,6 +1802,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==512)"
             },
+            {{ auto_change_control(
+                "Channels 1, 2, 3, 4",
+                6,
+                "(dimmer_mode==512)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "CCT2",
@@ -1680,6 +1841,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
+            {{ auto_change_control(
+                "CCT2 Temperature",
+                9,
+                "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "CCT2 Brightness",
@@ -1705,6 +1871,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
+            {{ auto_change_control(
+                "CCT2 Brightness",
+                10,
+                "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "id": "Channels 3_4",
@@ -1749,6 +1920,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
+            {{ auto_change_control(
+                "Channels 3, 4",
+                5,
+                "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "Channel 4 Brightness",
@@ -1774,6 +1950,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "Channel 4",
+                3,
+                "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+            ) }}
 
             {#- 2CCT mode #}
             {
@@ -1813,6 +1994,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==768)"
             },
+            {{ auto_change_control(
+                "CCT1, CCT2 Temperature",
+                18,
+                "(dimmer_mode==768)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "id": "CCT1_CCT2 Brightness",
@@ -1840,6 +2026,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==768)"
             },
+            {{ auto_change_control(
+                "CCT1, CCT2 Brightness",
+                19,
+                "(dimmer_mode==768)"
+            ) }}
             {# -#}
 
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -2248,6 +2439,10 @@
                 "cct_power_normalization_title": "Нормализация мощности CCT лент",
 
                 "Actions": "Действия ",
+                "Stop": "Стоп",
+                "Decrease": "Уменьшение",
+                "Increase": "Увеличение",
+                "Increase/Decrease": "Увеличение/уменьшение",
 
                 "Outputs": "Выходы",
                 "General": "Общее",
@@ -2373,6 +2568,9 @@
                 "CCT1 Brightness with Auto On": "Яркость ленты CCT1 с автовключением",
                 "CCT2 Temperature with Auto On": "Цветовая температура ленты CCT2 с автовключением",
                 "CCT2 Brightness with Auto On": "Яркость ленты CCT2 с автовключением",
+                "Red": "Красный",
+                "Green": "Зеленый",
+                "Blue": "Синий",
                 "RGB Palette": "Палитра RGB",
                 "RGB Strip Hue": "Оттенок RGB ленты (H)",
                 "RGB Strip Saturation": "Насыщенность цвета RGB ленты (S)",
@@ -2389,6 +2587,47 @@
                 "CCT1, CCT2 Temperature with Auto On": "Цветовая температура лент CCT1 и CCT2 с автовключением",
                 "CCT1, CCT2 Brightness": "Яркость лент CCT1 и CCT2",
                 "CCT1, CCT2 Brightness with Auto On": "Яркость лент CCT1 и CCT2 с автовключением",
+
+                "Channel 1 Auto-Change": "Автоизменение канала 1",
+                "Channel 2 Auto-Change": "Автоизменение канала 2",
+                "Channel 3 Auto-Change": "Автоизменение канала 3",
+                "Channel 4 Auto-Change": "Автоизменение канала 4",
+                "Channels 1, 2 Auto-Change": "Автоизменение каналов 1 и 2",
+                "Channels 3, 4 Auto-Change": "Автоизменение каналов 3 и 4",
+                "Channels 1, 2, 3, 4 Auto-Change": "Автоизменение каналов 1, 2, 3 и 4",
+                "CCT1 Temperature Auto-Change": "Автоизменение цветовой температуры ленты CCT1",
+                "CCT1 Brightness Auto-Change": "Автоизменение яркости ленты CCT1",
+                "CCT2 Temperature Auto-Change": "Автоизменение цветовой температуры ленты CCT2",
+                "CCT2 Brightness Auto-Change": "Автоизменение яркости ленты CCT2",
+                "Red Auto-Change": "Автоизменение красного",
+                "Green Auto-Change": "Автоизменение зеленого",
+                "Blue Auto-Change": "Автоизменение синего",
+                "RGB Strip Hue Auto-Change": "Автоизменение оттенка RGB ленты (H)",
+                "RGB Strip Saturation Auto-Change": "Автоизменение насыщенности RGB ленты (S)",
+                "RGB Strip Brightness Auto-Change": "Автоизменение яркости RGB ленты (V)",
+                "CCT1, CCT2 Temperature Auto-Change": "Автоизменение цветовой температуры лент CCT1 и CCT2",
+                "CCT1, CCT2 Brightness Auto-Change": "Автоизменение яркости лент CCT1 и CCT2",
+                "Hue Changing Rate Auto-Change": "Автоизменение времени смены оттенка (мс/°)",
+                "Channel 1 Auto-Change Rate": "Скорость автоизменения канала 1 (мс/ед)",
+                "Channel 2 Auto-Change Rate": "Скорость автоизменения канала 2 (мс/ед)",
+                "Channel 3 Auto-Change Rate": "Скорость автоизменения канала 3 (мс/ед)",
+                "Channel 4 Auto-Change Rate": "Скорость автоизменения канала 4 (мс/ед)",
+                "Channels 1, 2 Auto-Change Rate": "Скорость автоизменения каналов 1 и 2 (мс/ед)",
+                "Channels 3, 4 Auto-Change Rate": "Скорость автоизменения каналов 3 и 4 (мс/ед)",
+                "Channels 1, 2, 3, 4 Auto-Change Rate": "Скорость автоизменения каналов 1, 2, 3 и 4 (мс/ед)",
+                "CCT1 Temperature Auto-Change Rate": "Скорость автоизменения цветовой температуры ленты CCT1 (мс/ед)",
+                "CCT1 Brightness Auto-Change Rate": "Скорость автоизменения яркости ленты CCT1 (мс/ед)",
+                "CCT2 Temperature Auto-Change Rate": "Скорость автоизменения цветовой температуры ленты CCT2 (мс/ед)",
+                "CCT2 Brightness Auto-Change Rate": "Скорость автоизменения яркости ленты CCT2 (мс/ед)",
+                "Red Auto-Change Rate": "Скорость автоизменения красного (мс/ед)",
+                "Green Auto-Change Rate": "Скорость автоизменения зеленого (мс/ед)",
+                "Blue Auto-Change Rate": "Скорость автоизменения синего (мс/ед)",
+                "RGB Strip Hue Auto-Change Rate": "Скорость автоизменения оттенка RGB ленты (H) (мс/°)",
+                "RGB Strip Saturation Auto-Change Rate": "Скорость автоизменения насыщенности RGB ленты (S) (мс/ед)",
+                "RGB Strip Brightness Auto-Change Rate": "Скорость автоизменения яркости RGB ленты (V) (мс/ед)",
+                "CCT1, CCT2 Temperature Auto-Change Rate": "Скорость автоизменения цветовой температуры лент CCT1 и CCT2 (мс/ед)",
+                "CCT1, CCT2 Brightness Auto-Change Rate": "Скорость автоизменения яркости лент CCT1 и CCT2 (мс/ед)",
+                "Hue Changing Rate Auto-Change Rate": "Скорость автоизменения времени смены оттенка (мс/ед)",
 
                 "Board Temperature": "Температура платы",
                 "Allowed Power": "Разрешенная мощность",
