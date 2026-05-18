@@ -1,9 +1,29 @@
-wb-mqtt-serial (2.248.0) stable; urgency=medium
+wb-mqtt-serial (2.249.0) stable; urgency=medium
 
   * config-wb-mrwm2.json.jinja: Add timer functions
   * MR templates: Add condition for restart delay
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 15 May 2026 15:02:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 18 May 2026 10:13:00 +0300
+
+wb-mqtt-serial (2.248.1) stable; urgency=medium
+
+  * Fix race condition on gethostbyname() when starting TCP ports
+  * Fix units typo in logs
+    Co-authored by: Claude Opus 4.7
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 14 May 2026 15:23:00 +0300
+
+wb-mqtt-serial (2.248.0) stable; urgency=medium
+
+  * Add WB-MAI6 new template with measurement registers in order
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 14 May 2026 16:18:00 +0700
+
+wb-mqtt-serial (2.247.1) stable; urgency=medium
+
+  * Add write_address bits validation
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 May 2026 16:23:12 +0500
 
 wb-mqtt-serial (2.247.0) stable; urgency=medium
 

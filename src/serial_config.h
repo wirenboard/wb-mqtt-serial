@@ -87,9 +87,12 @@ class TUint32RegisterAddressFactory: public IRegisterAddressFactory
 {
     TUint32RegisterAddress BaseRegisterAddress;
     size_t BytesPerRegister;
+    bool RestrictWriteAddress;
 
 public:
-    TUint32RegisterAddressFactory(size_t bytesPerRegister = 1);
+    //! @p restrictWriteAddress — reject configs where @c write_address has bit offset/width
+    //! that disagrees with @c address (or is set without @c address at all).
+    TUint32RegisterAddressFactory(size_t bytesPerRegister = 1, bool restrictWriteAddress = false);
 
     TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
                                       const IRegisterAddress& deviceBaseAddress,
