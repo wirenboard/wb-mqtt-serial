@@ -492,7 +492,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_restart_delay_params",
-                "condition": "out{{out_num}}_restart_delay_params>0"
+                "condition": "out{{out_num}}_restart_delay_params>0&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
             {
                 "name": "Timer K{{out_num}}",

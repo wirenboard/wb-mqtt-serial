@@ -829,7 +829,7 @@
                 ],
                 "fw": "1.21.0",
                 "group": "gg_protection_channels",
-                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
+                "condition": "is_voltage_control_for_{{out_num}}_enabled==1||out{{out_num}}_startup_delay_params>0||(out{{out_num}}_restart_delay_params>0&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0))"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -851,7 +851,7 @@
                 "format": "u16",
                 "scale": 0.1,
                 "group": "gg_protection_channels",
-                "condition": "out{{out_num}}_restart_delay_params>0"
+                "condition": "out{{out_num}}_restart_delay_params>0&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
             {
                 "name": "Timer K{{out_num}}",
@@ -878,7 +878,6 @@
                 "condition": "out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
-
             {
                 "name": "Serial",
                 "reg_type": "input",
@@ -981,17 +980,17 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Protection Startup Delay K{{out_num}}",
                 "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
                 "Urms Normal K{{out_num}}": "Voltage Status L{{out_num}}",
                 "Blocking K{{out_num}}": "Blocking Status K{{out_num}}",
                 {% endfor -%}
-                "Startup Delay (s)": "Startup Delay When Power On (s)",
+                "Startup Delay (s)": "Protection Startup Delay (s)",
                 "Restart Delay (s)": "Restart Delay After Output Turn Off (s)",
                 "undervoltage_description": "120...220, default: 207",
                 "overvoltage_description": "230...277, default: 242",
                 "voltage_dip_duration_description": "0.5...10, default: 5",
-                "startup_delay_description": "0...999, default: 0",
+                "startup_delay_description": "Starts at power on or voltage normalization after blocking by voltage control. 0...999, default: 0",
                 "restart_delay_description": "0...999, default: 0",
 
                 "on_delay_description": "0.1...6500",
@@ -1036,7 +1035,7 @@
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
                 "Urms Normal K{{out_num}}": "Статус контроля напряжения L{{out_num}}",
                 "Blocking K{{out_num}}": "Статус блокировки K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Защитная задержка включения K{{out_num}}",
                 "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
                 "Timer K{{out_num}}": "Таймер K{{out_num}}",
                 {% endfor -%}
@@ -1123,7 +1122,7 @@
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
                 "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
                 "Voltage Dip Duration (s)": "Допустимая длительность провала (с)",
-                "Startup Delay (s)": "Задержка включения при подаче питания (с)",
+                "Startup Delay (s)": "Защитная задержка включения (с)",
                 "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
                 "Disable": "Не активна",
                 "Enable": "Активна",
@@ -1131,7 +1130,7 @@
                 "undervoltage_description": "120...220, по умолчанию: 207",
                 "overvoltage_description": "230...277, по умолчанию: 242",
                 "voltage_dip_duration_description": "0.5...10, по умолчанию: 5",
-                "startup_delay_description": "0...999, по умолчанию: 0",
+                "startup_delay_description": "Отсчитывается при подаче питания на устройство или нормализации напряжения после блокировки функцией контроля напряжения. 0...999, по умолчанию: 0",
                 "restart_delay_description": "0...999, по умолчанию: 0",
 
                 "Function": "Функция",

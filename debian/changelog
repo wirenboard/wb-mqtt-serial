@@ -1,8 +1,9 @@
 wb-mqtt-serial (2.248.0) stable; urgency=medium
 
   * config-wb-mrwm2.json.jinja: Add timer functions
+  * MR templates: Add condition for restart delay
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 14 May 2026 09:17:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 15 May 2026 15:02:00 +0300
 
 wb-mqtt-serial (2.247.0) stable; urgency=medium
 
