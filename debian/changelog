@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.248.1-wb101) stable; urgency=medium
+
+  * config-wb-mrwm2.json.jinja: Add timer functions
+  * MR templates: Add condition for restart delay
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 09 Jun 2026 17:55:00 +0300
+
 wb-mqtt-serial (2.248.1-wb100) stable; urgency=medium
 
   * Fix WB-LED and WB-MRGBW-D fw3 templates: use 'sporadic' type for some output registers
