@@ -18,7 +18,7 @@
             "max_read_registers": 0,
             "frame_timeout_ms": 0,
             "response_timeout_ms": 8,
-            "continue_polling_on_unsupported": true,
+            "continue_polling_on_illegal_modbus_exception": true,
             "channels": [
                 {
                     "name" : "White",
