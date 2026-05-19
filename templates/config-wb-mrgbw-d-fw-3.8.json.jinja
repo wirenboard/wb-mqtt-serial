@@ -8,6 +8,7 @@
     ("RGB Strip Hue", 14, 13, "(dimmer_mode==256)"),
     ("RGB Strip Saturation", 15, 14, "(dimmer_mode==256)"),
     ("RGB Strip Brightness", 16, 15, "(dimmer_mode==256)"),
+    ("Hue Changing Rate", 17, 16, "(dimmer_mode==256)"),
     ("Channel 1 (B)", 0, 20, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
     ("Channel 2 (R)", 1, 21, "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"),
     ("Channels 1, 2 (B, R)", 4, 22, "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"),
@@ -25,7 +26,7 @@
 {% macro auto_change_time_parameter(title, index, order, condition) -%}
             {
                 "id": "auto_change_time_{{ index }}",
-                "group": "gg_out_params",
+                "group": "gg_out_auto_change_params",
                 "title": "{{ title }} Auto-Change Rate",
                 "order": {{order}},
                 "address": {{2300 + index}},
@@ -39,7 +40,7 @@
 {%- endmacro %}
 {% macro auto_change_control(title, index, condition) -%}
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_change",
                 "name": "{{ title }} Auto-Change",
                 "address": {{2200 + index}},
                 "type": "value",
@@ -187,6 +188,21 @@
                         "disable_title": true
                     }
                 }
+            },
+            {
+                "title": "Outputs Channels with Auto On",
+                "id": "gg_out_channels_auto_on",
+                "group": "g_outputs"
+            },
+            {
+                "title": "Auto-Change",
+                "id": "gg_out_channels_auto_change",
+                "group": "g_outputs"
+            },
+            {
+                "title": "Auto-Change Rates",
+                "id": "gg_out_auto_change_params",
+                "group": "g_outputs"
             }
         ],
 
@@ -2538,7 +2554,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "RGB Palette with Auto On",
                 "enabled": false,
                 "type": "rgb",
@@ -2580,18 +2596,20 @@
                 "address": 2014,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 360,
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "RGB Strip Hue with Auto On",
                 "address": 2114,
                 "type": "range",
                 "enabled": false,
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 360,
                 "error_value": "0xFFFF",
@@ -2615,7 +2633,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "RGB Strip Saturation with Auto On",
                 "address": 2115,
                 "type": "range",
@@ -2645,7 +2663,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "RGB Strip Brightness with Auto On",
                 "address": 2116,
                 "type": "range",
@@ -2684,7 +2702,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Hue Changing Rate with Auto On",
                 "address": 2117,
                 "type": "value",
@@ -2696,6 +2714,11 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==256)"
             },
+            {{ auto_change_control(
+                "Hue Changing Rate",
+                17,
+                "(dimmer_mode==256)"
+            ) }}
             {
                 "group": "gg_out_channels",
                 "name": "Channel 1 (B)",
@@ -2718,7 +2741,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channel 1 (B) Brightness with Auto On",
                 "address": 2100,
                 "type": "range",
@@ -2757,7 +2780,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channel 2 (R) Brightness with Auto On",
                 "address": 2101,
                 "type": "range",
@@ -2798,7 +2821,7 @@
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channels 1, 2 (B, R) Brightness with Auto On",
                 "address": 2104,
                 "type": "range",
@@ -2838,7 +2861,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "CCT1 Temperature with Auto On",
                 "address": 2107,
                 "type": "range",
@@ -2868,7 +2891,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "CCT1 Brightness with Auto On",
                 "address": 2108,
                 "type": "range",
@@ -2907,7 +2930,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channel 3 (G) Brightness with Auto On",
                 "address": 2102,
                 "type": "range",
@@ -2948,7 +2971,7 @@
                 "condition": "(dimmer_mode==512)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channels 1, 2, 3, 4 Brightness with Auto On",
                 "address": 2106,
                 "type": "range",
@@ -2988,7 +3011,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "CCT2 Temperature with Auto On",
                 "address": 2109,
                 "type": "range",
@@ -3018,7 +3041,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "CCT2 Brightness with Auto On",
                 "address": 2110,
                 "type": "range",
@@ -3068,7 +3091,7 @@
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channels 3, 4 (G, W) Brightness with Auto On",
                 "address": 2105,
                 "type": "range",
@@ -3097,7 +3120,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "name": "Channel 4 (W) Brightness with Auto On",
                 "address": 2103,
                 "type": "range",
@@ -3140,7 +3163,7 @@
                 "condition": "(dimmer_mode==768)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "id": "CCT1_CCT2 Temperature with Auto On",
                 "name": "CCT1, CCT2 Temperature with Auto On",
                 "address": 2118,
@@ -3172,7 +3195,7 @@
                 "condition": "(dimmer_mode==768)"
             },
             {
-                "group": "gg_out_channels",
+                "group": "gg_out_channels_auto_on",
                 "id": "CCT1_CCT2 Brightness with Auto On",
                 "name": "CCT1, CCT2 Brightness with Auto On",
                 "address": 2119,
@@ -3556,6 +3579,7 @@
                 "RGB Strip Brightness Auto-Change": "Автоизменение яркости RGB ленты (V)",
                 "CCT1, CCT2 Temperature Auto-Change": "Автоизменение цветовой температуры лент CCT1 и CCT2",
                 "CCT1, CCT2 Brightness Auto-Change": "Автоизменение яркости лент CCT1 и CCT2",
+                "Hue Changing Rate Auto-Change": "Автоизменение времени смены оттенка (мс/°)",
                 "Channel 1 (B) Auto-Change Rate": "Скорость автоизменения канала 1 (B) (мс/ед)",
                 "Channel 2 (R) Auto-Change Rate": "Скорость автоизменения канала 2 (R) (мс/ед)",
                 "Channel 3 (G) Auto-Change Rate": "Скорость автоизменения канала 3 (G) (мс/ед)",
@@ -3575,8 +3599,13 @@
                 "RGB Strip Brightness Auto-Change Rate": "Скорость автоизменения яркости RGB ленты (V) (мс/ед)",
                 "CCT1, CCT2 Temperature Auto-Change Rate": "Скорость автоизменения цветовой температуры лент CCT1 и CCT2 (мс/ед)",
                 "CCT1, CCT2 Brightness Auto-Change Rate": "Скорость автоизменения яркости лент CCT1 и CCT2 (мс/ед)",
+                "Hue Changing Rate Auto-Change Rate": "Скорость автоизменения времени смены оттенка (мс/ед)",
 
                 "Outputs": "Выходы",
+                "Outputs Channels": "Каналы выходов",
+                "Outputs Channels with Auto On": "Каналы выходов с автовключением",
+                "Auto-Change": "Автоизменение",
+                "Auto-Change Rates": "Скорость автоизменения",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
