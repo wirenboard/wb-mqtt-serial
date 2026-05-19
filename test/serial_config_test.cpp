@@ -364,7 +364,8 @@ TEST_F(TConfigParserTest, PreserveSetupOrder)
 
 TEST_F(TConfigParserTest, ContinuePollingOnIllegalModbusException)
 {
-    auto portConfigs = GetConfig("configs/config-modbus-continue-polling-on-illegal-modbus-exception.json")->PortConfigs;
+    auto portConfigs =
+        GetConfig("configs/config-modbus-continue-polling-on-illegal-modbus-exception.json")->PortConfigs;
     EXPECT_FALSE(portConfigs.empty());
 
     auto devices = portConfigs[0]->Devices;

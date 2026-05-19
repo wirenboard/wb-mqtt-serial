@@ -1035,9 +1035,8 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
     }
 }
 
-class TModbusContinuePollingOnIllegalModbusExceptionIntegrationTest: 
-    public TSerialDeviceIntegrationTest,
-    public TModbusExpectations
+class TModbusContinuePollingOnIllegalModbusExceptionIntegrationTest: public TSerialDeviceIntegrationTest,
+                                                                     public TModbusExpectations
 {
 protected:
     void SetUp() override
