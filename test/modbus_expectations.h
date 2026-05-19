@@ -25,6 +25,7 @@ public:
     void EnqueueHoldingPackUnavailableOnBorderReadResponse();
     void EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     void EnqueueHoldingPackUnavailableAndHolesReadResponse();
+    void EnqueueHoldingContinuePollingOnIllegalModbusExceptionReadResponse();
 
     void EnqueueHoldingUnsupportedOnBorderReadResponse();
 

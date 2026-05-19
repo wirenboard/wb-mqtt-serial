@@ -130,6 +130,12 @@ struct TDeviceConfig
     //! defined in the template instead of being sorted by register type/address.
     bool PreserveSetupOrder = false;
 
+    //! If true, registers that reply with a Modbus "illegal" exception
+    //! (ILLEGAL_FUNCTION / ILLEGAL_DATA_ADDRESS / ILLEGAL_DATA_VALUE) stay
+    //! in the polling list and are continuously reported with ReadError
+    //! instead of being permanently excluded.
+    bool ContinuePollingOnIllegalModbusException = false;
+
     explicit TDeviceConfig(const std::string& name = "",
                            const std::string& slave_id = "",
                            const std::string& protocol = "");

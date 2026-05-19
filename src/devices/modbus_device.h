@@ -42,6 +42,9 @@ public:
         TModbusDeviceConfig config;
         config.CommonConfig = deviceConfig;
         WBMQTT::JSON::Get(data, "enable_wb_continuous_read", config.EnableWbContinuousRead);
+        WBMQTT::JSON::Get(data, 
+                          "continue_polling_on_illegal_modbus_exception",
+                           deviceConfig->ContinuePollingOnIllegalModbusException);
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 

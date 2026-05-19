@@ -362,6 +362,16 @@ TEST_F(TConfigParserTest, PreserveSetupOrder)
     EXPECT_EQ(names, (std::vector<std::string>{"s_third", "s_first", "s_second"}));
 }
 
+TEST_F(TConfigParserTest, ContinuePollingOnIllegalModbusException)
+{
+    auto portConfigs = GetConfig("configs/config-modbus-continue-polling-on-illegal-modbus-exception.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    EXPECT_TRUE(devices[0]->Device->DeviceConfig()->ContinuePollingOnIllegalModbusException);
+}
+
 TEST_F(TConfigParserTest, BigIntegers)
 {
     auto portConfigs = GetConfig("configs/config-big-integers.json")->PortConfigs;
