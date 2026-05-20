@@ -1177,6 +1177,13 @@
           "type": "boolean",
           "default": false,
           "propertyOrder": 9
+        },
+        "continue_polling_on_illegal_modbus_exception": {
+          "title": "Continue polling on illegal Modbus exception",
+          "description": "continue_polling_on_illegal_modbus_exception_desc",
+          "type": "boolean",
+          "default": false,
+          "propertyOrder": 10
         }
       }
     }
