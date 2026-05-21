@@ -192,17 +192,23 @@
             {
                 "title": "Outputs Channels with Auto On",
                 "id": "gg_out_channels_auto_on",
+                "description": "gg_out_channels_auto_on_description",
                 "group": "g_outputs"
             },
             {
                 "title": "Auto-Change",
-                "id": "gg_out_channels_auto_change",
-                "group": "g_outputs"
+                "id": "g_auto_change",
+                "description": "g_auto_change_description"
             },
             {
-                "title": "Auto-Change Rates",
+                "title": "Controls",
+                "id": "gg_out_channels_auto_change",
+                "group": "g_auto_change"
+            },
+            {
+                "title": "Rates",
                 "id": "gg_out_auto_change_params",
-                "group": "g_outputs"
+                "group": "g_auto_change"
             }
         ],
 
@@ -3535,6 +3541,9 @@
                 "hue_fader_description": "Time for changing hue by 360°. Please note that the hue is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
+                "gg_out_channels_auto_on_description": "Writing to these channels sets the value and automatically enables the channel if it was disabled",
+                "g_auto_change_description": "Smooth value change control. Write 1 to start decreasing, 2 to start increasing, 3 to invert the current direction; 0 stops the change. Rate (ms per unit) is set per channel",
+
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -3605,10 +3614,14 @@
                 "Outputs Channels": "Каналы выходов",
                 "Outputs Channels with Auto On": "Каналы выходов с автовключением",
                 "Auto-Change": "Автоизменение",
-                "Auto-Change Rates": "Скорость автоизменения",
+                "Controls": "Управление",
+                "Rates": "Скорости",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
+
+                "gg_out_channels_auto_on_description": "Запись в каналы этой группы выставляет значение и автоматически включает канал, если он был выключен",
+                "g_auto_change_description": "Плавное изменение значения канала. Запись 1 запускает плавное уменьшение, 2 — плавное увеличение, 3 — смену направления; 0 останавливает. Скорость (мс на единицу) задаётся отдельно для каждого канала",
 
                 "no_act_title": "Нет действия",
                 "all_off_act_title": "Выключить все каналы",
