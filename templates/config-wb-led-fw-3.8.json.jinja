@@ -40,7 +40,7 @@
 {%- endmacro %}
 {% macro auto_change_control(title, index, condition) -%}
             {
-                "group": "gg_out_channels_auto_change",
+                "group": "g_auto_change",
                 "name": "{{ title }} Auto-Change",
                 "address": {{2200 + index}},
                 "type": "value",
@@ -276,6 +276,12 @@
                 }
             },
             {
+                "title": "Outputs Channels with Auto On",
+                "id": "gg_out_channels_auto_on",
+                "description": "gg_out_channels_auto_on_description",
+                "group": "g_outputs"
+            },
+            {
                 "title": "Outputs Channels",
                 "id": "gg_out_channels",
                 "group": "g_outputs",
@@ -286,19 +292,8 @@
                 }
             },
             {
-                "title": "Outputs Channels with Auto On",
-                "id": "gg_out_channels_auto_on",
-                "description": "gg_out_channels_auto_on_description",
-                "group": "g_outputs"
-            },
-            {
                 "title": "Auto-Change Rates",
                 "id": "gg_out_auto_change_params",
-                "group": "g_auto_change"
-            },
-            {
-                "title": "Controls",
-                "id": "gg_out_channels_auto_change",
                 "group": "g_auto_change"
             }
         ],
@@ -2514,8 +2509,6 @@
                 "Outputs Channels": "Каналы выходов",
                 "Outputs Channels with Auto On": "Каналы выходов с автовключением",
                 "Auto-Change": "Автоизменение",
-                "Controls": "Управление",
-                "Rates": "Скорости",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -2671,9 +2664,9 @@
                 "Channels 1, 2 Auto-Change": "Каналы 1 и 2",
                 "Channels 3, 4 Auto-Change": "Каналы 3 и 4",
                 "Channels 1, 2, 3, 4 Auto-Change": "Каналы 1, 2, 3 и 4",
-                "CCT1 Temperature Auto-Change": "ЦТ CCT1",
+                "CCT1 Temperature Auto-Change": "Цветовая температура CCT1",
                 "CCT1 Brightness Auto-Change": "Яркость CCT1",
-                "CCT2 Temperature Auto-Change": "ЦТ CCT2",
+                "CCT2 Temperature Auto-Change": "Цветовая температура CCT2",
                 "CCT2 Brightness Auto-Change": "Яркость CCT2",
                 "Red Auto-Change": "Красный",
                 "Green Auto-Change": "Зелёный",
@@ -2681,7 +2674,7 @@
                 "RGB Strip Hue Auto-Change": "Оттенок",
                 "RGB Strip Saturation Auto-Change": "Насыщенность",
                 "RGB Strip Brightness Auto-Change": "Яркость",
-                "CCT1, CCT2 Temperature Auto-Change": "ЦТ CCT1 и CCT2",
+                "CCT1, CCT2 Temperature Auto-Change": "Цветовая температура CCT1 и CCT2",
                 "CCT1, CCT2 Brightness Auto-Change": "Яркость CCT1 и CCT2",
                 "Hue Changing Rate Auto-Change": "Скорость смены оттенка",
                 "Channel 1 Auto-Change Rate": "Канал 1 (мс/ед)",
@@ -2691,9 +2684,9 @@
                 "Channels 1, 2 Auto-Change Rate": "Каналы 1 и 2 (мс/ед)",
                 "Channels 3, 4 Auto-Change Rate": "Каналы 3 и 4 (мс/ед)",
                 "Channels 1, 2, 3, 4 Auto-Change Rate": "Каналы 1, 2, 3 и 4 (мс/ед)",
-                "CCT1 Temperature Auto-Change Rate": "ЦТ CCT1 (мс/ед)",
+                "CCT1 Temperature Auto-Change Rate": "Цветовая температура CCT1 (мс/ед)",
                 "CCT1 Brightness Auto-Change Rate": "Яркость CCT1 (мс/ед)",
-                "CCT2 Temperature Auto-Change Rate": "ЦТ CCT2 (мс/ед)",
+                "CCT2 Temperature Auto-Change Rate": "Цветовая температура CCT2 (мс/ед)",
                 "CCT2 Brightness Auto-Change Rate": "Яркость CCT2 (мс/ед)",
                 "Red Auto-Change Rate": "Красный (мс/ед)",
                 "Green Auto-Change Rate": "Зелёный (мс/ед)",
@@ -2701,7 +2694,7 @@
                 "RGB Strip Hue Auto-Change Rate": "Оттенок (мс/ед)",
                 "RGB Strip Saturation Auto-Change Rate": "Насыщенность (мс/ед)",
                 "RGB Strip Brightness Auto-Change Rate": "Яркость (мс/ед)",
-                "CCT1, CCT2 Temperature Auto-Change Rate": "ЦТ CCT1 и CCT2 (мс/ед)",
+                "CCT1, CCT2 Temperature Auto-Change Rate": "Цветовая температура CCT1 и CCT2 (мс/ед)",
                 "CCT1, CCT2 Brightness Auto-Change Rate": "Яркость CCT1 и CCT2 (мс/ед)",
                 "Hue Changing Rate Auto-Change Rate": "Скорость смены оттенка (мс/ед)",
 
