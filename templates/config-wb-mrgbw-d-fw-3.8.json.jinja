@@ -109,6 +109,11 @@
                 "id": "g_outputs"
             },
             {
+                "title": "Auto-Change",
+                "id": "g_auto_change",
+                "description": "g_auto_change_description"
+            },
+            {
                 "title": "General",
                 "id": "g_general"
             },
@@ -196,18 +201,13 @@
                 "group": "g_outputs"
             },
             {
-                "title": "Auto-Change",
-                "id": "g_auto_change",
-                "description": "g_auto_change_description"
+                "title": "Rates",
+                "id": "gg_out_auto_change_params",
+                "group": "g_auto_change"
             },
             {
                 "title": "Controls",
                 "id": "gg_out_channels_auto_change",
-                "group": "g_auto_change"
-            },
-            {
-                "title": "Rates",
-                "id": "gg_out_auto_change_params",
                 "group": "g_auto_change"
             }
         ],
@@ -3542,7 +3542,7 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "gg_out_channels_auto_on_description": "Writing a non-zero value to these channels sets the value and automatically enables the channel if it was disabled",
-                "g_auto_change_description": "Smooth value change control. Write 1 to start decreasing, 2 to start increasing, 3 to invert the current direction; 0 stops the change. Rate (ms per unit) is set per channel",
+                "g_auto_change_description": "Channels in this group start automatic smooth change of light parameters in either direction, or with direction inversion, the same way as long-press of local buttons",
 
                 "Uptime": "Uptime (s)"
             },
@@ -3621,7 +3621,7 @@
                 "Debug": "Диагностика",
 
                 "gg_out_channels_auto_on_description": "Запись в каналы этой группы значения >0 выставляет значение и автоматически включает канал, если он был выключен",
-                "g_auto_change_description": "Плавное изменение значения канала. Запись 1 запускает плавное уменьшение, 2 — плавное увеличение, 3 — смену направления; 0 останавливает. Скорость (мс на единицу) задаётся отдельно для каждого канала",
+                "g_auto_change_description": "Каналы из этой группы позволяют запускать автоматическое изменение параметров света в любую сторону, либо со сменой направления так же как это происходит для долгих нажатий локальных кнопок",
 
                 "no_act_title": "Нет действия",
                 "all_off_act_title": "Выключить все каналы",
