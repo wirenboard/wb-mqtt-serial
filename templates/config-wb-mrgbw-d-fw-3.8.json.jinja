@@ -40,7 +40,7 @@
 {%- endmacro %}
 {% macro auto_change_control(title, index, condition) -%}
             {
-                "group": "g_auto_change",
+                "group": "gg_out_channels_auto_change",
                 "name": "{{ title }} Auto-Change",
                 "address": {{2200 + index}},
                 "type": "value",
@@ -117,6 +117,16 @@
                 "title": "Auto-Change Rates",
                 "id": "gg_out_auto_change_params",
                 "group": "g_auto_change"
+            },
+            {
+                "title": "Auto-Change",
+                "id": "gg_out_channels_auto_change",
+                "group": "g_auto_change",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "General",
