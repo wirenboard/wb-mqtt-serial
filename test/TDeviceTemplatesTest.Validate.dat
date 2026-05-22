@@ -18931,6 +18931,10 @@ WB-MAO4-20mA-since-fw-2.9
 	Channel 4 Fault  =>  channel_4_fault
 	Channel 4 Level  =>  channel_4_level
 	Channel 4 Level with Auto On  =>  channel_4_level_auto_on
+	Encoder 1 Position  =>  Encoder 1 Position
+	Encoder 1 Steps Counter  =>  Encoder 1 Steps Counter
+	Encoder 2 Position  =>  Encoder 2 Position
+	Encoder 2 Steps Counter  =>  Encoder 2 Steps Counter
 	FW Version  =>  fw_version
 	HW Batch Number  =>  hw_batch_number
 	Input 1  =>  input_1
@@ -18987,6 +18991,8 @@ WB-MAO4-since-fw-2.9
 	Channel 4 Dimming Level with Auto On  =>  Channel 4 Dimming Level with Auto On
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	Channel 4 Switch  =>  Channel 4 Switch
+	Encoder 1 Position  =>  Encoder 1 Position
+	Encoder 1 Steps Counter  =>  Encoder 1 Steps Counter
 	FW Version  =>  FW Version
 	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
@@ -24217,6 +24223,12 @@ WB-MDM3-since-fw-2.12
 	Channel 3 Auto-Change  =>  Channel 3 Auto-Change
 	Channel 3 Raw Duty (us)  =>  Channel 3 Raw Duty (us)
 	Channel 3 with Auto On  =>  Channel 3 with Auto On
+	Encoder 1 Position  =>  Encoder 1 Position
+	Encoder 1 Steps Counter  =>  Encoder 1 Steps Counter
+	Encoder 2 Position  =>  Encoder 2 Position
+	Encoder 2 Steps Counter  =>  Encoder 2 Steps Counter
+	Encoder 3 Position  =>  Encoder 3 Position
+	Encoder 3 Steps Counter  =>  Encoder 3 Steps Counter
 	FW Version  =>  FW Version
 	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
