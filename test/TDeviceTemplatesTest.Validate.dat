@@ -5964,7 +5964,6 @@ WB-LED
 	Uptime  =>  Uptime
 WB-LED-since-fw-3.8
 	Allowed Power  =>  Allowed Power
-	Blue Auto-Change  =>  Blue Auto-Change
 	Board Temperature  =>  Board Temperature
 	CCT1  =>  CCT1
 	CCT1 Brightness  =>  CCT1 Brightness
@@ -6024,7 +6023,6 @@ WB-LED-since-fw-3.8
 	Encoder 2 Position  =>  Encoder 2 Position
 	Encoder 2 Steps Counter  =>  Encoder 2 Steps Counter
 	FW Version  =>  FW Version
-	Green Auto-Change  =>  Green Auto-Change
 	HW Batch Number  =>  HW Batch Number
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
@@ -6060,16 +6058,18 @@ WB-LED-since-fw-3.8
 	RGB Palette  =>  RGB Palette
 	RGB Strip  =>  RGB Strip
 	RGB Strip Auto-On  =>  RGB Strip Auto-On
+	RGB Strip Blue Auto-Change  =>  RGB Strip Blue Auto-Change
 	RGB Strip Brightness  =>  RGB Strip Brightness
 	RGB Strip Brightness Auto-Change  =>  RGB Strip Brightness Auto-Change
 	RGB Strip Brightness Auto-On  =>  RGB Strip Brightness Auto-On
+	RGB Strip Green Auto-Change  =>  RGB Strip Green Auto-Change
 	RGB Strip Hue  =>  RGB Strip Hue
 	RGB Strip Hue Auto-Change  =>  RGB Strip Hue Auto-Change
 	RGB Strip Hue Auto-On  =>  RGB Strip Hue Auto-On
+	RGB Strip Red Auto-Change  =>  RGB Strip Red Auto-Change
 	RGB Strip Saturation  =>  RGB Strip Saturation
 	RGB Strip Saturation Auto-Change  =>  RGB Strip Saturation Auto-Change
 	RGB Strip Saturation Auto-On  =>  RGB Strip Saturation Auto-On
-	Red Auto-Change  =>  Red Auto-Change
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
@@ -25778,7 +25778,6 @@ WB-MRGBW-D fw3
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRGBW-D-since-fw-3.8
-	Blue Auto-Change  =>  Blue Auto-Change
 	CCT1 (channels 1, 2)  =>  CCT1 (channels 1_2)
 	CCT1 Brightness  =>  CCT1 Brightness
 	CCT1 Brightness Auto-Change  =>  CCT1 Brightness Auto-Change
@@ -25835,7 +25834,6 @@ WB-MRGBW-D-since-fw-3.8
 	Encoder 1 Position  =>  Encoder 1 Position
 	Encoder 1 Steps Counter  =>  Encoder 1 Steps Counter
 	FW Version  =>  FW Version
-	Green Auto-Change  =>  Green Auto-Change
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
 	Hue Changing Rate Auto-Change  =>  Hue Changing Rate Auto-Change
@@ -25863,16 +25861,18 @@ WB-MRGBW-D-since-fw-3.8
 	RGB Palette  =>  RGB Palette
 	RGB Palette Auto-On  =>  RGB Palette Auto-On
 	RGB Strip  =>  RGB Strip
+	RGB Strip Blue Auto-Change  =>  RGB Strip Blue Auto-Change
 	RGB Strip Brightness  =>  RGB Strip Brightness
 	RGB Strip Brightness Auto-Change  =>  RGB Strip Brightness Auto-Change
 	RGB Strip Brightness Auto-On  =>  RGB Strip Brightness Auto-On
+	RGB Strip Green Auto-Change  =>  RGB Strip Green Auto-Change
 	RGB Strip Hue  =>  RGB Strip Hue
 	RGB Strip Hue Auto-Change  =>  RGB Strip Hue Auto-Change
 	RGB Strip Hue Auto-On  =>  RGB Strip Hue Auto-On
+	RGB Strip Red Auto-Change  =>  RGB Strip Red Auto-Change
 	RGB Strip Saturation  =>  RGB Strip Saturation
 	RGB Strip Saturation Auto-Change  =>  RGB Strip Saturation Auto-Change
 	RGB Strip Saturation Auto-On  =>  RGB Strip Saturation Auto-On
-	Red Auto-Change  =>  Red Auto-Change
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime

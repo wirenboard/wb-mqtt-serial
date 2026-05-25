@@ -2,9 +2,9 @@
 {% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
 {% set ENCODERS_NUMBER = 1 -%}
 {% set AUTO_CHANGE_PARAMETERS = [
-    ("Red", "rgb_red_auto_change_period", 11, 10, "(dimmer_mode==256)"),
-    ("Green", "rgb_green_auto_change_period", 12, 11, "(dimmer_mode==256)"),
-    ("Blue", "rgb_blue_auto_change_period", 13, 12, "(dimmer_mode==256)"),
+    ("RGB Strip Red", "rgb_red_auto_change_period", 11, 10, "(dimmer_mode==256)"),
+    ("RGB Strip Green", "rgb_green_auto_change_period", 12, 11, "(dimmer_mode==256)"),
+    ("RGB Strip Blue", "rgb_blue_auto_change_period", 13, 12, "(dimmer_mode==256)"),
     ("RGB Strip Hue", "rgb_hue_auto_change_period", 14, 13, "(dimmer_mode==256)"),
     ("RGB Strip Saturation", "rgb_saturation_auto_change_period", 15, 14, "(dimmer_mode==256)"),
     ("RGB Strip Brightness", "rgb_brightness_auto_change_period", 16, 15, "(dimmer_mode==256)"),
@@ -2592,17 +2592,17 @@
                 "condition": "(dimmer_mode==256)"
             },
             {{ auto_change_control(
-                "Red",
+                "RGB Strip Red",
                 11,
                 "(dimmer_mode==256)"
             ) }}
             {{ auto_change_control(
-                "Green",
+                "RGB Strip Green",
                 12,
                 "(dimmer_mode==256)"
             ) }}
             {{ auto_change_control(
-                "Blue",
+                "RGB Strip Blue",
                 13,
                 "(dimmer_mode==256)"
             ) }}
@@ -3590,9 +3590,9 @@
                 "CCT1 Brightness Auto-Change": "Авто-изменение яркости CCT1",
                 "CCT2 Temperature Auto-Change": "Авто-изменение цветовой температуры CCT2",
                 "CCT2 Brightness Auto-Change": "Авто-изменение яркости CCT2",
-                "Red Auto-Change": "Авто-изменение красного",
-                "Green Auto-Change": "Авто-изменение зелёного",
-                "Blue Auto-Change": "Авто-изменение синего",
+                "RGB Strip Red Auto-Change": "Авто-изменение красного RGB ленты",
+                "RGB Strip Green Auto-Change": "Авто-изменение зелёного RGB ленты",
+                "RGB Strip Blue Auto-Change": "Авто-изменение синего RGB ленты",
                 "RGB Strip Hue Auto-Change": "Авто-изменение оттенка RGB ленты (H)",
                 "RGB Strip Saturation Auto-Change": "Авто-изменение насыщенности RGB ленты (S)",
                 "RGB Strip Brightness Auto-Change": "Авто-изменение яркости RGB ленты (V)",
@@ -3610,9 +3610,9 @@
                 "CCT1 Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости CCT1 (мс/ед)",
                 "CCT2 Temperature Period Auto-Change (ms/unit)": "Период авто-изменения цветовой температуры CCT2 (мс/ед)",
                 "CCT2 Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости CCT2 (мс/ед)",
-                "Red Period Auto-Change (ms/unit)": "Период авто-изменения красного (мс/ед)",
-                "Green Period Auto-Change (ms/unit)": "Период авто-изменения зелёного (мс/ед)",
-                "Blue Period Auto-Change (ms/unit)": "Период авто-изменения синего (мс/ед)",
+                "RGB Strip Red Period Auto-Change (ms/unit)": "Период авто-изменения красного RGB ленты (мс/ед)",
+                "RGB Strip Green Period Auto-Change (ms/unit)": "Период авто-изменения зелёного RGB ленты (мс/ед)",
+                "RGB Strip Blue Period Auto-Change (ms/unit)": "Период авто-изменения синего RGB ленты (мс/ед)",
                 "RGB Strip Hue Period Auto-Change (ms/unit)": "Период авто-изменения оттенка (мс/ед)",
                 "RGB Strip Saturation Period Auto-Change (ms/unit)": "Период авто-изменения насыщенности (мс/ед)",
                 "RGB Strip Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости (мс/ед)",
