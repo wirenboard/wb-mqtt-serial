@@ -1,0 +1,197 @@
+{# Jinja-макросы для канонических служебных каналов Wiren Board (СТП 001-2025
+   изд.03, Приложение А) и их переводов (СТП 003-2026).
+
+   Подключается так:
+
+       {%- from "_macros/wb_service.j2" import
+           channel_sn, channel_fw, channel_uptime, channel_hw_batch_number,
+           channel_supply_voltage, channel_min_supply_voltage_since_startup,
+           channel_mcu_temperature, channel_mcu_voltage,
+           channel_bus_power_supply,
+           service_translations_ru
+       -%}
+
+   Каждый channel_*-макрос эмитит ОДИН JSON-объект `{ ... }` без хвостовой
+   запятой. Запятая между объектами — ответственность вызывающего шаблона.
+
+   Канонические соответствия:
+     - поле `id`   — снейк-кейс идентификатор (используется как MQTT-топик);
+     - поле `name` — отображаемое имя в UI на английском (Title Case);
+     - русский перевод — через `service_translations_ru()` в секции
+       `translations.ru`.
+
+   Физические величины (Supply Voltage, MCU Temperature и т. п.) описываются
+   как `type: value` + `units` — согласно Wiren Board MQTT Conventions §3.
+   Type-синонимы (`voltage`, `temperature`, …) помечены deprecated и в новых
+   шаблонах не используются.
+-#}
+
+{#- Service channels --------------------------------------------------------#}
+
+{%- macro channel_sn(address=270, group="g_hw_info") -%}
+{
+                "name": "Serial Number",
+                "id": "sn",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "text",
+                "format": "u32",
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_fw(address=250, group="g_hw_info") -%}
+{
+                "name": "Firmware Version",
+                "id": "fw",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_uptime(address=104, group="g_hw_info") -%}
+{
+                "name": "Uptime",
+                "id": "uptime",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "text",
+                "format": "u32",
+                "units": "s",
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_hw_batch_number(address=304, fw="1.23.0", group="g_hw_info") -%}
+{
+                "name": "HW Batch Number",
+                "id": "hw_batch_number",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "{{ fw }}",
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_supply_voltage(address=121, group="g_hw_info") -%}
+{
+                "name": "Supply Voltage",
+                "id": "supply_voltage",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_min_supply_voltage_since_startup(address=122, group="g_hw_info") -%}
+{
+                "name": "Min Supply Voltage Since Startup",
+                "id": "min_supply_voltage_since_startup",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_mcu_temperature(address=124, group="g_hw_info") -%}
+{
+                "name": "MCU Temperature",
+                "id": "mcu_temperature",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_mcu_voltage(address=123, group="g_hw_info") -%}
+{
+                "name": "MCU Voltage",
+                "id": "mcu_voltage",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_bus_power_supply(address=4, group="g_hw_info") -%}
+{
+                "name": "Bus Power Supply",
+                "id": "bus_power_supply",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "switch",
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#- Translations -----------------------------------------------------------#}
+
+{#-
+   Канонические русские переводы служебных каналов и стандартных групп
+   (СТП 001-2025 изд.03, Приложения А и Б; СТП 003-2026 — Sentence case
+   для RU, "е" вместо "ё", единицы измерения в скобках после названия).
+-#}
+{%- set wb_translations_ru = {
+    "Serial Number":                     "Серийный номер",
+    "Firmware Version":                  "Версия прошивки",
+    "Uptime":                            "Время работы с момента включения",
+    "HW Batch Number":                   "Номер партии",
+    "Supply Voltage":                    "Напряжение питания",
+    "Min Supply Voltage Since Startup":  "Минимальное напряжение питания с момента включения",
+    "MCU Temperature":                   "Температура МК",
+    "MCU Voltage":                       "Напряжение питания МК",
+    "Bus Power Supply":                  "Состояние питания на шине",
+    "General":                           "Общее",
+    "HW Info":                           "Данные модуля",
+    "Debug":                             "Диагностика",
+    "Inputs":                            "Входы",
+    "Outputs":                           "Выходы",
+    "Safety Mode":                       "Безопасный режим"
+} %}
+
+{#-
+   Эмитит пары "key": "перевод" для подмножества канонических переводов.
+   Параметр `keys` — список английских имён (поле `name` каналов или `title`
+   групп). Без хвостовой запятой; запятая после макроса — на стороне вызова.
+   Если ключа нет в словаре — пропускается без ошибки.
+-#}
+{%- macro service_translations_ru(keys) -%}
+{%- set entries = [] -%}
+{%- for k in keys -%}
+    {%- if k in wb_translations_ru -%}
+        {%- set _ = entries.append((k, wb_translations_ru[k])) -%}
+    {%- endif -%}
+{%- endfor -%}
+{%- for k, v in entries -%}
+"{{ k }}": "{{ v }}"
+{%- if not loop.last %},
+                {% endif -%}
+{%- endfor -%}
+{%- endmacro %}

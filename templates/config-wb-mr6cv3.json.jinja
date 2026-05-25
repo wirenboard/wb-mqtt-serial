@@ -1,3 +1,34 @@
+{%- from "_macros/wb_service.j2" import
+        channel_sn, channel_fw, channel_uptime, channel_hw_batch_number,
+        channel_supply_voltage, channel_min_supply_voltage_since_startup,
+        channel_mcu_temperature, channel_mcu_voltage,
+        channel_bus_power_supply,
+        service_translations_ru
+-%}
+{%- from "_macros/wb_inputs.j2" import
+        channel_input_state, channel_input_counter, channel_input_freq,
+        press_counters_for_input, input_translations_ru
+-%}
+{%- from "_macros/wb_outputs.j2" import
+        channel_k, channel_k_readonly, channel_k_real_state,
+        channel_k_off, channel_k_on, channel_k_toggle,
+        channel_k_startup_delay_countdown,
+        channel_k_restart_delay_countdown,
+        channel_k_timer_countdown,
+        output_translations_ru
+-%}
+{%- from "_macros/wb_groups.j2" import
+        group_general, group_hw_info, group_safety, group_outputs, group_inputs,
+        groups_for_input, group_translations_ru
+-%}
+{%- from "_macros/wb_mr_input_params.j2" import
+        params_input_basic, params_input_mapping_matrix,
+        params_input_button_actions, params_input_curtain_button_actions
+-%}
+{%- from "_macros/wb_mr_output_params.j2" import
+        params_output_safety, params_output_delays, params_output_timer
+-%}
+{%- from "_macros/wb_mr_curtain_params.j2" import params_curtain -%}
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
@@ -21,51 +52,12 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
+            {{ group_inputs() }},
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title": "Input {{in_num}}",
-                "id": "g_in{{in_num}}"
-            },
-            {
-                "title": "Actions for outputs when the input is closed / opened",
-                "id": "gg_in{{in_num}}_mapping_matrix_actions",
-                "group": "g_in{{in_num}}"
-            },
-            {
-                "title": "Press Parameters",
-                "id": "gg_in{{in_num}}_press_params",
-                "group": "g_in{{in_num}}"
-            },
-            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-            {
-                "title": "Curtain {{curtain_num}} Actions",
-                "id": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
-                "group": "g_in{{in_num}}"
-            },
-            {% endfor -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title": "Output {{out_num}} Actions",
-                "id": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "group": "g_in{{in_num}}"
-            },
-            {% endfor -%}
-            {
-                "title": "input{{in_num}}_channels",
-                "id": "gg_in{{in_num}}_channels",
-                "group": "g_in{{in_num}}",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
+            {{ groups_for_input(in_num, OUTPUTS_NUMBER, CURTAINS_NUMBER) }},
             {% endfor -%}
 
-            {
-                "title": "Outputs",
-                "id": "g_outputs"
-            },
+            {{ group_outputs() }},
             {
                 "title": "Output Safe State",
                 "id": "g_outputs_safe_position",
@@ -82,10 +74,7 @@
                     }
                 }
             },
-            {
-                "title": "Safety Mode",
-                "id": "g_safety"
-            },
+            {{ group_safety() }},
             {
                 "title": "Safety Behaviour",
                 "id": "g_safety_behaviour",
@@ -159,14 +148,8 @@
                     }
                 }
             },
-            {
-                "title": "General",
-                "id": "g_general"
-            },
-            {
-                "title": "HW Info",
-                "id": "g_hw_info"
-            }
+            {{ group_general() }},
+            {{ group_hw_info() }}
         ],
 
         "setup": [
@@ -180,541 +163,36 @@
 
         "parameters": {
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
-            {% if in_num == 0 -%}
-            "in{{in_num}}_mode": {
-                "title": "Mode",
-                "address": 16,
-                "reg_type": "holding",
-                "enum": [2, 3, 4, 6],
-                "default": 2,
-                "enum_titles": [
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
-                ],
-                "group": "g_in{{in_num}}",
-                "order": 1
-            },
-            {% else -%}
-            "in{{in_num}}_mode": {
-                "title": "Mode",
-                "address": {{9 + in_num - 1}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 6],
-                "default": 0,
-                "enum_titles": [
-                    "Push button",
-                    "Latching switch",
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
-                ],
-                "group": "g_in{{in_num}}",
-                "order": 1
-            },
-            {% endif -%}
-            "in{{in_num}}_debounce_ms": {
-                "title": "debounce_time_title",
-                "description": "debounce_time_description",
-                {% if in_num == 0 -%}
-                "address": 27,
-                {% else -%}
-                "address": {{20 + in_num - 1}},
-                {% endif -%}
-                "reg_type": "holding",
-                "min": 0,
-                "max": 2000,
-                "default": 50,
-                "group": "g_in{{in_num}}",
-                "order": 2
-            },
-            "in{{in_num}}_lp_hold_time": {
-                "group": "gg_in{{in_num}}_press_params",
-                "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
-                "order": 1,
-                {% if in_num == 0 -%}
-                "address": 1107,
-                {% else -%}
-                "address": {{1100 + in_num - 1}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 500,
-                "max": 5000,
-                "condition": "in{{in_num}}_mode==6"
-            },
-            "in{{in_num}}_secp_waiting_time": {
-                "group": "gg_in{{in_num}}_press_params",
-                "title": "secp_waiting_time_title",
-                "description": "secp_waiting_time_description",
-                "order": 2,
-                {% if in_num == 0 -%}
-                "address": 1147,
-                {% else -%}
-                "address": {{1140 + in_num - 1}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000,
-                "condition": "in{{in_num}}_mode==6"
-            },
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {% set curtain_num = (out_num + 1) // 2 -%}
-            "in{{in_num}}_out{{out_num}}_actions": {
-                "group": "gg_in{{in_num}}_mapping_matrix_actions",
-                "title": "Output {{out_num}}",
-                "order": {{out_num}},
-                {% if in_num == 0 -%}
-                "address": {{440 + out_num - 1}},
-                {% else -%}
-                "address": {{384 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-                "enum_titles": [
-                    "no action / no action",
-                    "no action / reset",
-                    "no action / set",
-                    "no action / toggle",
-
-                    "reset / no action",
-                    "reset / reset",
-                    "reset / set",
-                    "reset / toggle",
-
-                    "set / no action",
-                    "set / reset",
-                    "set / set",
-                    "set / toggle",
-
-                    "toggle / no action",
-                    "toggle / reset",
-                    "toggle / set",
-                    "toggle / toggle"
-                ],
-                "condition": "in{{in_num}}_mode==4&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
-            },
+            {{ params_input_basic(in_num) }},
+            {{ params_input_mapping_matrix(in_num, OUTPUTS_NUMBER, MMATRIX_OUTPUTS_NUMBER) }},
+            {{ params_input_button_actions(in_num, OUTPUTS_NUMBER, MMATRIX_OUTPUTS_NUMBER) }},
+            {{ params_input_curtain_button_actions(in_num, CURTAINS_NUMBER, CURTAINS_MMATRIX_OUTPUTS_NUMBER, fw="1.21.0") }},
             {% endfor -%}
-
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {% set curtain_num = (out_num + 1) // 2 -%}
-            "in{{in_num}}_out{{out_num}}_sp": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "sp_title",
-                "order": 1,
-                {% if in_num == 0 -%}
-                "address": {{600 + out_num - 1}},
-                {% else -%}
-                "address": {{544 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
-            },
-            "in{{in_num}}_out{{out_num}}_lp": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "lp_title",
-                "order": 2,
-                {% if in_num == 0 -%}
-                "address": {{664 + out_num - 1}},
-                {% else -%}
-                "address": {{608 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
-            },
-            "in{{in_num}}_out{{out_num}}_dp": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "dp_title",
-                "order": 3,
-                {% if in_num == 0 -%}
-                "address": {{728 + out_num - 1}},
-                {% else -%}
-                "address": {{672 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
-            },
-            "in{{in_num}}_out{{out_num}}_slp": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "slp_title",
-                "order": 4,
-                {% if in_num == 0 -%}
-                "address": {{792 + out_num - 1}},
-                {% else -%}
-                "address": {{736 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
-            },
+            {{ params_output_safety(out_num, "safe_position", "g_outputs_safe_position", "g_safety_behaviour") }},
+            {{ params_output_delays(out_num) }},
+            {{ params_output_timer(out_num) }},
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-            "in{{in_num}}_curtain{{curtain_num}}_sp": {
-                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
-                "title": "sp_title",
-                "order": 1,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1400 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop"],
-                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
-            },
-            "in{{in_num}}_curtain{{curtain_num}}_lp": {
-                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
-                "title": "lp_title",
-                "order": 2,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1432 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5, 6, 7],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
-                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
-            },
-            "in{{in_num}}_curtain{{curtain_num}}_dp": {
-                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
-                "title": "dp_title",
-                "order": 3,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1464 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop"],
-                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
-            },
-            "in{{in_num}}_curtain{{curtain_num}}_slp": {
-                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
-                "title": "slp_title",
-                "order": 4,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1496 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5, 6, 7],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
-                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
-            },
-            {% endfor -%}
-            {% endfor -%}
-
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {% set curtain_num = (out_num + 1) // 2 -%}
-            "out{{out_num}}_safe_position": {
-                "title": "Output {{out_num}}",
-                "group": "g_outputs_safe_position",
-                "address": {{930 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "order": {{2 + out_num - 1}},
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Off",
-                    "On"
-                ],
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            "out{{out_num}}_safety_behaviour": {
-                "title": "Output {{out_num}}",
-                "group": "g_safety_behaviour",
-                "address": {{938 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Don't change output state",
-                    "Switch output to safety state"
-                ],
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            "out{{out_num}}_safety_input_control": {
-                "title": "Output {{out_num}}",
-                "group": "gg_safety_input_control",
-                "address": {{946 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
-                ],
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            "out{{out_num}}_startup_delay_params": {
-                "title": "Output {{out_num}}",
-                "group": "gg_startup_delay_params",
-                "address": {{1728 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0,
-                "max": 999,
-                "default": 0,
-                "order": {{out_num}},
-                "fw": "1.24.0",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            "out{{out_num}}_restart_delay_params": {
-                "title": "Output {{out_num}}",
-                "group": "gg_restart_delay_params",
-                "address": {{1736 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0,
-                "max": 999,
-                "default": 0,
-                "order": {{out_num}},
-                "fw": "1.24.0",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
-            },
-            "out{{out_num}}_timer_mode_selection": {
-                "title": "Function",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num}},
-                "address": {{1760 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5],
-                "enum_titles": [
-                    "Not Used",
-                    "On Delay",
-                    "Off Delay",
-                    "On Pulse",
-                    "Off Pulse",
-                    "On/Off Cycle"
-                ],
-                "fw": "1.25.0",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            "out{{out_num}}_on_delay_params": {
-                "title": "Timeout (s)",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num + 1}},
-                "address": {{1768 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0.1,
-                "max": 6500,
-                "default": 3,
-                "fw": "1.25.0",
-                "description": "on_delay_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
-            },
-            "out{{out_num}}_off_delay_params": {
-                "title": "Timeout (s)",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num + 1}},
-                "address": {{1776 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0.1,
-                "max": 6500,
-                "default": 3,
-                "fw": "1.25.0",
-                "description": "off_delay_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
-            },
-            "out{{out_num}}_on_pulse_params": {
-                "title": "Time (s)",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num + 1}},
-                "address": {{1784 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0.1,
-                "max": 6500,
-                "default": 3,
-                "fw": "1.25.0",
-                "description": "on_pulse_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==3"
-            },
-            "out{{out_num}}_off_pulse_params": {
-                "title": "Time (s)",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num + 1}},
-                "address": {{1792 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0.1,
-                "max": 6500,
-                "default": 3,
-                "fw": "1.25.0",
-                "description": "off_pulse_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==4"
-            },
-            "out{{out_num}}_cyclic_on_time_params": {
-                "title": "On Time (s)",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num + 1}},
-                "address": {{1800 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 1,
-                "min": 1,
-                "max": 65000,
-                "default": 3,
-                "fw": "1.25.0",
-                "description": "cyclic_on_time_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
-            },
-            "out{{out_num}}_cyclic_off_time_params": {
-                "title": "Off Time (s)",
-                "group": "gg_timer_{{out_num}}",
-                "order": {{out_num + 2}},
-                "address": {{1808 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 1,
-                "min": 1,
-                "max": 65000,
-                "default": 3,
-                "fw": "1.25.0",
-                "description": "cyclic_off_time_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
-            },
-            {% endfor -%}
-            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-            "curtain{{curtain_num}}_mode": {
-                "title": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control",
-                "group": "gg_curtain_{{curtain_num}}",
-                "address": {{ 1280 + curtain_num - 1 }},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs",
-                    "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close"
-                ],
-                "order": 1
-            },
-            "curtain{{curtain_num}}_open_time": {
-                "title": "Open time (s)",
-                "description": "curtain_zero_time_description",
-                "group": "gg_curtain_{{curtain_num}}",
-                "address": {{ 1328 + curtain_num - 1 }},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "scale": 0.1,
-                "default": 10.0,
-                "min": 0,
-                "max": 600.0,
-                "order": 2,
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            "curtain{{curtain_num}}_close_time": {
-                "title": "Close time (s)",
-                "description": "curtain_zero_time_description",
-                "group": "gg_curtain_{{curtain_num}}",
-                "address": {{ 1332 + curtain_num - 1 }},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "scale": 0.1,
-                "default": 10.0,
-                "min": 0,
-                "max": 600.0,
-                "order": 3,
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            "curtain{{curtain_num}}_deadtime": {
-                "title": "Dead time (ms)",
-                "group": "gg_curtain_{{curtain_num}}",
-                "address": {{ 1336 + curtain_num - 1 }},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 500,
-                "min": 50,
-                "max": 10000,
-                "order": 4,
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            "curtain{{curtain_num}}_safety_action": {
-                "title": "Action when safety mode is activated",
-                "group": "gg_curtain_{{curtain_num}}",
-                "address": {{1288 + curtain_num - 1}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "no action",
-                    "open",
-                    "close"
-                ],
-                "order": 5,
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            "curtain{{curtain_num}}_powerup_action": {
-                "title": "Power up action",
-                "group": "gg_curtain_{{curtain_num}}",
-                "address": {{1284 + curtain_num - 1}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "no action",
-                    "open",
-                    "close"
-                ],
-                "order": 6,
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            "curtain{{curtain_num}}_safety_input_control": {
-                "title": "Curtain {{curtain_num}}",
-                "group": "gg_safety_input_control",
-                "order": {{curtain_num}},
-                "address": {{1292 + curtain_num - 1}},
-                "reg_type": "holding",
-                "fw": "1.21.0",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
-                ],
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
+            {{ params_curtain(curtain_num, fw="1.21.0") }},
             {% endfor -%}
             "baud_rate": {
-                    "title": "Baud rate",
-                    "description": "baud_rate_description",
-                    "address": 110,
-                    "reg_type": "holding",
-                    "enum": [96, 192, 384, 576, 1152],
-                    "default": 96,
-                    "enum_titles": [
-                        "9600",
-                        "19200",
-                        "38400",
-                        "57600",
-                        "115200"
-                    ],
-                    "group": "g_general",
-                    "order": 1
+                "title": "Baud Rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "order": 1,
+                "group": "g_general"
             },
-
             "outputs_power_on_state": {
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
@@ -726,32 +204,31 @@
                 "order": 1,
                 "group": "g_outputs"
             },
-
             "safety_mode_source": {
                 "title": "Safety Mode Trigger",
-                "group": "g_safety",
                 "address": 19,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
-                "order": 1,
                 "enum_titles": [
                     "Poll timeout or loss bus power supply",
                     "Loss bus power supply",
                     "Poll timeout"
-                ]
+                ],
+                "order": 1,
+                "group": "g_safety"
             },
             "poll_timeout_s": {
                 "title": "Safety Poll Timeout (s)",
-                "group": "g_safety",
                 "description": "poll_timeout_description",
                 "address": 8,
-                "order": 2,
                 "reg_type": "holding",
                 "min": 1,
-                "condition" : "isDefined(safety_mode_source)&&safety_mode_source!=1",
                 "max": 65534,
-                "default": 10
+                "default": 10,
+                "order": 2,
+                "group": "g_safety",
+                "condition": "isDefined(safety_mode_source)&&safety_mode_source!=1"
             }
         },
 
@@ -762,216 +239,37 @@
                 ("false", "isDefined(in"~in_num~"_mode)==0||in"~in_num~"_mode=="~NO_SPORADIC_MODE),
                 ("true", "isDefined(in"~in_num~"_mode)&&in"~in_num~"_mode!="~NO_SPORADIC_MODE),
             ] -%}
-            {
-                "name": "Input {{in_num}}",
-                "reg_type": "discrete",
-                {% if in_num == 0 -%}
-                "address": 7,
-                {% else -%}
-                "address": {{in_num - 1}},
-                {% endif -%}
-                "type": "switch",
-                "sporadic": {{s_en}},
-                "condition": "{{s_cond}}",
-                "group": "gg_in{{in_num}}_channels"
-            },
-            {
-                "name": "Input {{in_num}} counter",
-                "reg_type": "input",
-                {% if in_num == 0 -%}
-                "address": 39,
-                {% else -%}
-                "address": {{32 + in_num - 1}},
-                {% endif -%}
-                "type": "value",
-                "sporadic": {{s_en}},
-                "condition": "{{s_cond}}",
-                "group": "gg_in{{in_num}}_channels"
-            },
+            {%- set state_addr = 7 if in_num == 0 else in_num - 1 -%}
+            {%- set counter_addr = 39 if in_num == 0 else 32 + in_num - 1 -%}
+            {{ channel_input_state(in_num, state_addr, sporadic=s_en, condition=s_cond) }},
+            {{ channel_input_counter(in_num, counter_addr, sporadic=s_en, condition=s_cond) }},
             {% endfor -%}
-            {
-                "name": "Input {{in_num}} freq",
-                "reg_type": "input",
-                {% if in_num == 0 -%}
-                "address": 54,
-                {% else -%}
-                "address": {{40 + (in_num - 1) * 2}},
-                {% endif -%}
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-5,
-                "round_to": 0.001,
-                "enabled": false,
-                "group": "gg_in{{in_num}}_channels"
-            },
-            {
-                "name": "Input {{in_num}} Single Press Counter",
-                "enabled": false,
-                "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 471,
-                {% else -%}
-                "address": {{464 + in_num - 1}},
-                {% endif -%}
-                "type": "value",
-                "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==6"
-            },
-            {
-                "name": "Input {{in_num}} Long Press Counter",
-                "enabled": false,
-                "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 487,
-                {% else -%}
-                "address": {{480 + in_num - 1}},
-                {% endif -%}
-                "type": "value",
-                "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==6"
-            },
-            {
-                "name": "Input {{in_num}} Double Press Counter",
-                "enabled": false,
-                "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 503,
-                {% else -%}
-                "address": {{496 + in_num - 1}},
-                {% endif -%}
-                "type": "value",
-                "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==6"
-            },
-            {
-                "name": "Input {{in_num}} Shortlong Press Counter",
-                "enabled": false,
-                "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 519,
-                {% else -%}
-                "address": {{512 + in_num - 1}},
-                {% endif -%}
-                "type": "value",
-                "sporadic": true,
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==6"
-            },
+            {%- set freq_addr = 54 if in_num == 0 else 40 + (in_num - 1) * 2 -%}
+            {{ channel_input_freq(in_num, freq_addr) }},
+            {%- set single_addr = 471 if in_num == 0 else 464 + in_num - 1 -%}
+            {%- set long_addr = 487 if in_num == 0 else 480 + in_num - 1 -%}
+            {%- set double_addr = 503 if in_num == 0 else 496 + in_num - 1 -%}
+            {%- set shortlong_addr = 519 if in_num == 0 else 512 + in_num - 1 -%}
+            {{ press_counters_for_input(in_num, single_addr, long_addr, double_addr, shortlong_addr, condition="in"~in_num~"_mode==6") }},
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {% set curtain_num = (out_num + 1) // 2 -%}
-            {
-                "name": "K{{out_num}}",
-                "reg_type": "coil",
-                "address": {{out_num - 1}},
-                "type": "switch",
-                "sporadic": true,
-                "group": "gg_outputs_channels",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            {
-                "name": "K{{out_num}}",
-                "reg_type": "coil",
-                "readonly": true,
-                "address": {{out_num - 1}},
-                "type": "switch",
-                "sporadic": true,
-                "group": "gg_outputs_channels",
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            {
-                "name": "Real State K{{out_num}}",
-                "reg_type": "discrete",
-                "address": {{96 + out_num - 1}},
-                "type": "switch",
-                "sporadic": true,
-                "fw": "1.24.0",
-                "enabled": false,
-                "group": "gg_outputs_channels",
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
-            },
-            {
-                "name": "Off K{{out_num}}",
-                "reg_type": "coil",
-                "address": {{100 + out_num - 1}},
-                "type": "pushbutton",
-                "group": "gg_outputs_channels",
-                "fw": "1.26.0",
-                "enabled": false
-            },
-            {
-                "name": "On K{{out_num}}",
-                "reg_type": "coil",
-                "address": {{108 + out_num - 1}},
-                "type": "pushbutton",
-                "group": "gg_outputs_channels",
-                "fw": "1.26.0",
-                "enabled": false
-            },
-            {
-                "name": "Toggle K{{out_num}}",
-                "reg_type": "coil",
-                "address": {{116 + out_num - 1}},
-                "type": "pushbutton",
-                "group": "gg_outputs_channels",
-                "fw": "1.26.0",
-                "enabled": false
-            },
-            {
-                "name": "Startup Delay Countdown K{{out_num}}",
-                "reg_type": "input",
-                "fw": "1.24.0",
-                "address": {{1744 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "gg_startup_delay_params",
-                "condition": "out{{out_num}}_startup_delay_params>0"
-            },
-            {
-                "name": "Restart Delay Countdown K{{out_num}}",
-                "reg_type": "input",
-                "fw": "1.24.0",
-                "address": {{1752 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "gg_restart_delay_params",
-                "condition": "out{{out_num}}_restart_delay_params>0&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
-            },
-            {
-                "name": "Timer K{{out_num}}",
-                "reg_type": "input",
-                "fw": "1.25.0",
-                "address": {{1864 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==4"
-            },
-            {
-                "name": "Timer K{{out_num}}",
-                "reg_type": "input",
-                "fw": "1.25.0",
-                "address": {{1864 + out_num - 1}},
-                "units": "s",
-                "format": "u16",
-                "scale": 1,
-                "enabled": false,
-                "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==5"
-            },
+            {% set not_curtain = "isDefined(curtain"~curtain_num~"_mode)==0||curtain"~curtain_num~"_mode==0" -%}
+            {{ channel_k(out_num, out_num - 1, condition=not_curtain) }},
+            {{ channel_k_readonly(out_num, out_num - 1, condition="curtain"~curtain_num~"_mode==1") }},
+            {{ channel_k_real_state(out_num, 96 + out_num - 1, condition=not_curtain) }},
+            {{ channel_k_off(out_num, 100 + out_num - 1) }},
+            {{ channel_k_on(out_num, 108 + out_num - 1) }},
+            {{ channel_k_toggle(out_num, 116 + out_num - 1) }},
+            {{ channel_k_startup_delay_countdown(out_num, 1744 + out_num - 1, condition="out"~out_num~"_startup_delay_params>0") }},
+            {{ channel_k_restart_delay_countdown(out_num, 1752 + out_num - 1, condition="out"~out_num~"_restart_delay_params>0&&(isDefined(out"~out_num~"_timer_mode_selection)==0||out"~out_num~"_timer_mode_selection==0)") }},
+            {{ channel_k_timer_countdown(out_num, 1864 + out_num - 1, scale=0.1, condition="out"~out_num~"_timer_mode_selection==1||out"~out_num~"_timer_mode_selection==2||out"~out_num~"_timer_mode_selection==3||out"~out_num~"_timer_mode_selection==4") }},
+            {{ channel_k_timer_countdown(out_num, 1864 + out_num - 1, scale=1, condition="out"~out_num~"_timer_mode_selection==5") }},
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {
                 "name": "Curtain {{curtain_num}} Open",
+                "id": "curtain{{curtain_num}}_open",
                 "reg_type": "coil",
                 "address": {{16 + (curtain_num - 1) * 2}},
                 "type": "switch",
@@ -981,6 +279,7 @@
             },
             {
                 "name": "Curtain {{curtain_num}} Close",
+                "id": "curtain{{curtain_num}}_close",
                 "reg_type": "coil",
                 "address": {{17 + (curtain_num - 1) * 2}},
                 "type": "switch",
@@ -989,96 +288,22 @@
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
-            {
-                "name": "Serial",
-                "type": "text",
-                "reg_type": "input",
-                "address": 270,
-                "format": "u32",
-                "group": "g_hw_info"
-            },
-            {
-                "name": "HW Batch Number",
-                "type": "text",
-                "reg_type": "input",
-                "address": 304,
-                "format": "string",
-                "string_data_size": 16,
-                "fw": "1.23.0",
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "FW Version",
-                "reg_type": "input",
-                "address": 250,
-                "type": "text",
-                "format": "string",
-                "string_data_size": 16,
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "Supply Voltage",
-                "reg_type": "input",
-                "address": 121,
-                "type": "voltage",
-                "scale": 0.001,
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "Uptime",
-                "reg_type": "input",
-                "address": 104,
-                "type": "text",
-                "format": "u32",
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "Minimum Voltage Since Startup",
-                "reg_type": "input",
-                "address": 122,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "MCU Temperature",
-                "reg_type": "input",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "MCU Voltage",
-                "reg_type": "input",
-                "address": 123,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false,
-                "group": "g_hw_info"
-            },
-            {
-                "name": "Bus Power Supply",
-                "reg_type": "input",
-                "address": 4,
-                "type": "switch",
-                "group": "g_hw_info"
-            }
+            {{ channel_sn() }},
+            {{ channel_hw_batch_number() }},
+            {{ channel_fw() }},
+            {{ channel_supply_voltage() }},
+            {{ channel_uptime() }},
+            {{ channel_min_supply_voltage_since_startup() }},
+            {{ channel_mcu_temperature() }},
+            {{ channel_mcu_voltage() }},
+            {{ channel_bus_power_supply() }}
         ],
 
         "translations": {
             "en": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only",
-                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
@@ -1098,13 +323,7 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
-                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
-
-                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                "K{{out_num}}": "Command K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
-                {% endfor -%}
+                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored",
 
                 "Curtains Control": "Actuator Control",
 
@@ -1132,22 +351,12 @@
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
-                "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} counter": "Счетчик {{in_num}}",
-                "Input {{in_num}} freq": "Частота {{in_num}}",
-                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
-                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
-                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
-                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                {{ input_translations_ru(in_num) }},
                 {% endfor -%}
 
-                "Outputs": "Выходы",
-                "Safety Mode": "Безопасный режим",
+                {{ group_translations_ru() }},
                 "Protective Functions": "Защитные функции",
                 "Timers": "Таймеры",
-                "General": "Общее",
-                "HW Info": "Данные модуля",
-                "Debug": "Диагностика",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
 
@@ -1156,20 +365,11 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
-
-                "K{{out_num}}": "Команда K{{out_num}}",
-                "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
-                "Off K{{out_num}}": "Отключить K{{out_num}}",
-                "On K{{out_num}}": "Включить K{{out_num}}",
-                "Toggle K{{out_num}}": "Переключить K{{out_num}}",
-
-                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
-                "Timer K{{out_num}}": "Таймер K{{out_num}}",
+                {{ output_translations_ru(out_num) }},
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
-                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояния выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
+                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояния выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован",
 
                 "no action": "нет действия",
                 "reset": "выключить",
@@ -1205,7 +405,7 @@
 
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
-                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
                 "safety_behaviour_description": "Действие при переходе модуля в безопасный режим",
                 "Outputs State After Power On": "Состояния выходов при подаче питания",
@@ -1269,12 +469,12 @@
                 "Time (s)": "Время (с)",
 
                 "Curtains Control": "Управление приводом",
-                "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
-                "Open time (s)": "Время открытия (с)",
-                "Close time (s)": "Время закрытия (с)",
-                "Dead time (ms)": "Пауза при смене направления (мс)",
-                "Action when safety mode is activated": "Действие при переходе в безопасный режим",
-                "Power up action": "Действие при подаче питания",
+                "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы",
+                "Open Time (s)": "Время открытия (с)",
+                "Close Time (s)": "Время закрытия (с)",
+                "Dead Time (ms)": "Пауза при смене направления (мс)",
+                "Action When Safety Mode Is Activated": "Действие при переходе в безопасный режим",
+                "Power Up Action": "Действие при подаче питания",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
                 "Curtain {{curtain_num}}": "Привод {{curtain_num}}",
@@ -1288,19 +488,17 @@
                 "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа",
 
 
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Baud Rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
                 "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\"",
 
-                "Serial": "Серийный номер",
-                "HW Batch Number": "Номер партии",
-                "FW Version": "Версия прошивки",
-                "Supply Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
-                "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Bus Power Supply": "Состояние питания на шине"
+                {{ service_translations_ru([
+                    "Serial Number", "Firmware Version", "Uptime",
+                    "HW Batch Number", "Supply Voltage",
+                    "Min Supply Voltage Since Startup",
+                    "MCU Temperature", "MCU Voltage",
+                    "Bus Power Supply"
+                ]) }}
             }
         }
     }

@@ -1,0 +1,208 @@
+{# Jinja-макросы для канонических каналов релейных выходов (СТП 001-2025 изд.03,
+   Приложение В.2). Канонический префикс id для одного выхода — `k<N>`,
+   отображаемое имя — "K N" (с пробелом, по этикетке устройства).
+
+   Подключается так:
+
+       {%- from "_macros/wb_outputs.j2" import
+           channel_k, channel_k_readonly, channel_k_real_state,
+           channel_k_off, channel_k_on, channel_k_toggle,
+           channel_k_startup_delay_countdown,
+           channel_k_restart_delay_countdown,
+           channel_k_timer_countdown,
+           output_translations_ru
+       -%}
+
+   Каждый макрос эмитит ОДИН JSON-объект без хвостовой запятой. Запятая между
+   объектами — ответственность вызывающего шаблона.
+
+   Канонические `id`:
+       k<N>                       — команда (запись + чтение через coil);
+       k<N>_real_state            — фактическое состояние (discrete input);
+       k<N>_off / k<N>_on /
+       k<N>_toggle                — pushbutton-команды;
+       k<N>_startup_delay         — обратный отсчёт задержки включения;
+       k<N>_restart_delay         — обратный отсчёт задержки повторного включения;
+       k<N>_timer                 — обратный отсчёт пользовательского таймера.
+-#}
+
+{#-
+   Командный канал реле (writable coil).
+-#}
+{%- macro channel_k(out_num, address, condition=None, group="gg_outputs_channels") -%}
+{
+                "name": "K {{ out_num }}",
+                "id": "k{{ out_num }}",
+                "reg_type": "coil",
+                "address": {{ address }},
+                "type": "switch",
+                "sporadic": true,
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Тот же командный регистр, но readonly (используется при curtain-режиме,
+   когда прямое управление выходом запрещено).
+-#}
+{%- macro channel_k_readonly(out_num, address, condition=None, group="gg_outputs_channels") -%}
+{
+                "name": "K {{ out_num }}",
+                "id": "k{{ out_num }}",
+                "reg_type": "coil",
+                "address": {{ address }},
+                "type": "switch",
+                "readonly": true,
+                "sporadic": true,
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Фактическое состояние реле (discrete input).
+-#}
+{%- macro channel_k_real_state(out_num, address, fw="1.24.0", condition=None, group="gg_outputs_channels") -%}
+{
+                "name": "K {{ out_num }} Real State",
+                "id": "k{{ out_num }}_real_state",
+                "reg_type": "discrete",
+                "address": {{ address }},
+                "type": "switch",
+                "sporadic": true,
+                "enabled": false,
+                "fw": "{{ fw }}",
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Pushbutton-команды Off / On / Toggle.
+-#}
+{%- macro channel_k_off(out_num, address, fw="1.26.0", group="gg_outputs_channels") -%}
+{
+                "name": "Off K {{ out_num }}",
+                "id": "k{{ out_num }}_off",
+                "reg_type": "coil",
+                "address": {{ address }},
+                "type": "pushbutton",
+                "enabled": false,
+                "fw": "{{ fw }}",
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_k_on(out_num, address, fw="1.26.0", group="gg_outputs_channels") -%}
+{
+                "name": "On K {{ out_num }}",
+                "id": "k{{ out_num }}_on",
+                "reg_type": "coil",
+                "address": {{ address }},
+                "type": "pushbutton",
+                "enabled": false,
+                "fw": "{{ fw }}",
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_k_toggle(out_num, address, fw="1.26.0", group="gg_outputs_channels") -%}
+{
+                "name": "Toggle K {{ out_num }}",
+                "id": "k{{ out_num }}_toggle",
+                "reg_type": "coil",
+                "address": {{ address }},
+                "type": "pushbutton",
+                "enabled": false,
+                "fw": "{{ fw }}",
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Обратные отсчёты (countdown) — pause-таймеры из прошивки.
+-#}
+{%- macro channel_k_startup_delay_countdown(out_num, address, fw="1.24.0", condition=None, group="gg_startup_delay_params") -%}
+{
+                "name": "K {{ out_num }} Startup Delay",
+                "id": "k{{ out_num }}_startup_delay",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "format": "u16",
+                "units": "s",
+                "scale": 0.1,
+                "enabled": false,
+                "fw": "{{ fw }}",
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{%- macro channel_k_restart_delay_countdown(out_num, address, fw="1.24.0", condition=None, group="gg_restart_delay_params") -%}
+{
+                "name": "K {{ out_num }} Restart Delay",
+                "id": "k{{ out_num }}_restart_delay",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "format": "u16",
+                "units": "s",
+                "scale": 0.1,
+                "enabled": false,
+                "fw": "{{ fw }}",
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Пользовательский таймер (timer-mode). scale выбирается извне (0.1 для
+   режимов 1..4 — на основе 0.1 с; 1 для cyclic-режима — в секундах).
+-#}
+{%- macro channel_k_timer_countdown(out_num, address, scale=0.1, fw="1.25.0", condition=None, group="gg_timer_channels") -%}
+{
+                "name": "K {{ out_num }} Timer",
+                "id": "k{{ out_num }}_timer",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "format": "u16",
+                "units": "s",
+                "scale": {{ scale }},
+                "enabled": false,
+                "fw": "{{ fw }}",
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ group }}"
+            }
+{%- endmacro %}
+
+{#- Translations -----------------------------------------------------------#}
+
+{#-
+   Эмитит пары "EN_name": "RU" для всех канонических каналов одного выхода.
+   Без хвостовой запятой; запятая после макроса — на стороне вызова.
+-#}
+{%- macro output_translations_ru(out_num) -%}
+"K {{ out_num }}": "K {{ out_num }}",
+                "K {{ out_num }} Real State": "K {{ out_num }}: фактическое состояние",
+                "Off K {{ out_num }}": "Выключить K {{ out_num }}",
+                "On K {{ out_num }}": "Включить K {{ out_num }}",
+                "Toggle K {{ out_num }}": "Переключить K {{ out_num }}",
+                "K {{ out_num }} Startup Delay": "K {{ out_num }}: задержка включения",
+                "K {{ out_num }} Restart Delay": "K {{ out_num }}: задержка повторного включения",
+                "K {{ out_num }} Timer": "K {{ out_num }}: таймер"
+{%- endmacro %}

@@ -1,0 +1,149 @@
+{# Jinja-макросы для канонических каналов цифровых входов и счётчиков нажатий
+   (СТП 001-2025 изд.03, Приложение В).
+
+   Подключается так:
+
+       {%- from "_macros/wb_inputs.j2" import
+           channel_input_state, channel_input_counter, channel_input_freq,
+           press_counters_for_input, input_translations_ru
+       -%}
+
+   Каждый channel_*-макрос эмитит ОДИН JSON-объект; press_counters_for_input —
+   четыре объекта, разделённые запятыми. Хвостовая запятая отсутствует —
+   запятая между объектами — ответственность вызывающего шаблона.
+
+   Канонические `id`:
+       input_<N>                          — состояние дискретного входа
+       input_<N>_counter                  — счётчик переключений
+       input_<N>_freq                     — измеренная частота (WB-specific)
+       input_<N>_single_press_counter     — одиночные нажатия
+       input_<N>_long_press_counter       — длинные
+       input_<N>_double_press_counter     — двойные
+       input_<N>_shortlong_press_counter  — короткое + длинное
+
+   В отображаемых именах `name` (EN) применяется Title Case; в переводах
+   `input_translations_ru(N)` — Sentence case с "е" вместо "ё" (СТП 003-2026).
+-#}
+
+{#-
+   Состояние дискретного входа.
+
+   Параметры:
+     input_num — номер входа;
+     address   — адрес discrete input;
+     sporadic  — JSON-литерал ("true" / "false");
+     condition — выражение `condition` (или None);
+     group     — id группы (по умолчанию gg_in<N>_channels).
+-#}
+{%- macro channel_input_state(input_num, address, sporadic="true", condition=None, group=None) -%}
+{%- set _group = group if group else 'gg_in' ~ input_num ~ '_channels' -%}
+{
+                "name": "Input {{ input_num }}",
+                "id": "input_{{ input_num }}",
+                "reg_type": "discrete",
+                "address": {{ address }},
+                "type": "switch",
+                "sporadic": {{ sporadic }},
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ _group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Счётчик переключений входа.
+-#}
+{%- macro channel_input_counter(input_num, address, sporadic="true", condition=None, group=None) -%}
+{%- set _group = group if group else 'gg_in' ~ input_num ~ '_channels' -%}
+{
+                "name": "Input {{ input_num }} Counter",
+                "id": "input_{{ input_num }}_counter",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "sporadic": {{ sporadic }},
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ _group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Измеренная частота на входе (WB-specific, не из Приложения В).
+   Использует канонический id input_<N>_freq.
+-#}
+{%- macro channel_input_freq(input_num, address, group=None) -%}
+{%- set _group = group if group else 'gg_in' ~ input_num ~ '_channels' -%}
+{
+                "name": "Input {{ input_num }} Frequency",
+                "id": "input_{{ input_num }}_freq",
+                "reg_type": "input",
+                "address": {{ address }},
+                "type": "value",
+                "format": "u32",
+                "units": "Hz",
+                "scale": 1.52588e-5,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "{{ _group }}"
+            }
+{%- endmacro %}
+
+{#-
+   Эмитит четыре канала-счётчика нажатий для одного входа
+   (single / long / double / shortlong), разделённые запятыми.
+
+   Параметры:
+     input_num         — номер входа;
+     single_address    — адрес регистра одиночных;
+     long_address      — длинных;
+     double_address    — двойных;
+     shortlong_address — коротких + длинных;
+     group             — id группы (по умолчанию gg_in<N>_channels);
+     condition         — выражение `condition` (опционально).
+-#}
+{%- macro press_counters_for_input(input_num, single_address, long_address, double_address, shortlong_address, group=None, condition=None) -%}
+{%- set _group = group if group else 'gg_in' ~ input_num ~ '_channels' -%}
+{%- set kinds = [
+        ('Single',    'single',    single_address),
+        ('Long',      'long',      long_address),
+        ('Double',    'double',    double_address),
+        ('Shortlong', 'shortlong', shortlong_address)
+    ] -%}
+{%- for kind_en, kind_id, address in kinds -%}
+{
+                "name": "Input {{ input_num }} {{ kind_en }} Press Counter",
+                "id": "input_{{ input_num }}_{{ kind_id }}_press_counter",
+                "reg_type": "press_counter",
+                "address": {{ address }},
+                "type": "value",
+                "sporadic": true,
+                "enabled": false,
+                {%- if condition is not none %}
+                "condition": "{{ condition }}",
+                {%- endif %}
+                "group": "{{ _group }}"
+            }
+{%- if not loop.last %},
+            {% endif -%}
+{%- endfor -%}
+{%- endmacro %}
+
+{#- Translations -----------------------------------------------------------#}
+
+{#-
+   Эмитит пары "EN_name": "RU_перевод" для канонических каналов входа с
+   номером input_num: state, counter, freq, четыре press counter.
+   Без хвостовой запятой; запятая после макроса — на стороне вызова.
+-#}
+{%- macro input_translations_ru(input_num) -%}
+"Input {{ input_num }}": "Вход {{ input_num }}",
+                "Input {{ input_num }} Counter": "Вход {{ input_num }}: счетчик переключений",
+                "Input {{ input_num }} Frequency": "Вход {{ input_num }}: частота",
+                "Input {{ input_num }} Single Press Counter": "Вход {{ input_num }}: счетчик одиночных нажатий",
+                "Input {{ input_num }} Long Press Counter": "Вход {{ input_num }}: счетчик длинных нажатий",
+                "Input {{ input_num }} Double Press Counter": "Вход {{ input_num }}: счетчик двойных нажатий",
+                "Input {{ input_num }} Shortlong Press Counter": "Вход {{ input_num }}: счетчик коротких, а затем длинных нажатий"
+{%- endmacro %}

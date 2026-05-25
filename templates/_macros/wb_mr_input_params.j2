@@ -1,0 +1,243 @@
+{# Jinja-макросы для параметров (`parameters`) одного входа в шаблонах
+   семейства WB-MR (MR6C, MR6CV3 и т. п.).
+
+   Не часть СТП — это семейство-специфичные параметры. Канонические имена
+   групп (g_in<N>, gg_in<N>_press_params и т. д.) — из СТП 001-2025 изд.03,
+   Приложение Б.
+
+   Подключается так:
+
+       {%- from "_macros/wb_mr_input_params.j2" import
+           params_input_basic, params_input_mapping_matrix,
+           params_input_button_actions, params_input_curtain_button_actions
+       -%}
+
+   Каждый макрос эмитит набор пар `"id": { ... }`, разделённых запятыми,
+   БЕЗ хвостовой запятой. Запятая между макросами — на стороне вызова.
+
+   Все параметры — для одного входа `in_num` (включая «нулевой» — служебный
+   запись «настроек для всех входов»). Адресация регистров различается между
+   in_num == 0 и in_num > 0 и заложена внутрь макросов.
+-#}
+
+{#-
+   Базовые параметры одного входа: режим работы, защита от дребезга,
+   параметры распознавания нажатий.
+
+   Параметры:
+     in_num — номер входа (0 — глобальный набор настроек).
+
+   Эмитит 4 параметра: in<N>_mode, in<N>_debounce_ms, in<N>_lp_hold_time,
+   in<N>_secp_waiting_time.
+-#}
+{%- macro params_input_basic(in_num) -%}
+{%- if in_num == 0 %}
+            "in{{ in_num }}_mode": {
+                "title": "Mode",
+                "address": 16,
+                "reg_type": "holding",
+                "enum": [2, 3, 4, 6],
+                "default": 2,
+                "enum_titles": [
+                    "Turn off all outputs",
+                    "Control disabled / Frequency measurement",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
+                ],
+                "group": "g_in{{ in_num }}",
+                "order": 1
+            }
+{%- else %}
+            "in{{ in_num }}_mode": {
+                "title": "Mode",
+                "address": {{ 9 + in_num - 1 }},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 6],
+                "default": 0,
+                "enum_titles": [
+                    "Push button",
+                    "Latching switch",
+                    "Turn off all outputs",
+                    "Control disabled / Frequency measurement",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
+                ],
+                "group": "g_in{{ in_num }}",
+                "order": 1
+            }
+{%- endif %},
+            "in{{ in_num }}_debounce_ms": {
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                "address": {{ 27 if in_num == 0 else 20 + in_num - 1 }},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "g_in{{ in_num }}",
+                "order": 2
+            },
+            "in{{ in_num }}_lp_hold_time": {
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "address": {{ 1107 if in_num == 0 else 1100 + in_num - 1 }},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "order": 1,
+                "group": "gg_in{{ in_num }}_press_params",
+                "condition": "in{{ in_num }}_mode==6"
+            },
+            "in{{ in_num }}_secp_waiting_time": {
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "address": {{ 1147 if in_num == 0 else 1140 + in_num - 1 }},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "order": 2,
+                "group": "gg_in{{ in_num }}_press_params",
+                "condition": "in{{ in_num }}_mode==6"
+            }
+{%- endmacro %}
+
+{#-
+   Mapping-matrix actions: для каждого выхода M один параметр
+   in<N>_out<M>_actions, выбирающий действие при замыкании/размыкании входа.
+
+   Параметры:
+     in_num                 — номер входа;
+     outputs_number         — количество выходов;
+     mmatrix_outputs_number — ширина шага между строками матрицы в адресах
+                              (для устройства, у которого матрица идёт с
+                              запасом, обычно 8).
+
+   Эмитит outputs_number параметров.
+-#}
+{%- macro params_input_mapping_matrix(in_num, outputs_number, mmatrix_outputs_number) -%}
+{%- set base = 440 if in_num == 0 else 384 + (in_num - 1) * mmatrix_outputs_number -%}
+{%- for out_num in range(1, outputs_number + 1) -%}
+{%- set curtain_num = (out_num + 1) // 2 %}
+            "in{{ in_num }}_out{{ out_num }}_actions": {
+                "title": "Output {{ out_num }}",
+                "address": {{ base + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "order": {{ out_num }},
+                "group": "gg_in{{ in_num }}_mapping_matrix_actions",
+                "condition": "in{{ in_num }}_mode==4&&(isDefined(curtain{{ curtain_num }}_mode)==0||curtain{{ curtain_num }}_mode==0)"
+            }
+{%- if not loop.last %},{%- endif %}
+{%- endfor -%}
+{%- endmacro %}
+
+{#-
+   Button-actions для одного входа (режим in<N>_mode==6): 4 параметра на
+   каждый выход (sp / lp / dp / slp).
+
+   Параметры:
+     in_num                 — номер входа;
+     outputs_number         — количество выходов;
+     mmatrix_outputs_number — шаг матрицы.
+
+   Эмитит 4 × outputs_number параметров.
+-#}
+{%- macro params_input_button_actions(in_num, outputs_number, mmatrix_outputs_number) -%}
+{%- set sp_base = 600 if in_num == 0 else 544 + (in_num - 1) * mmatrix_outputs_number -%}
+{%- set lp_base = 664 if in_num == 0 else 608 + (in_num - 1) * mmatrix_outputs_number -%}
+{%- set dp_base = 728 if in_num == 0 else 672 + (in_num - 1) * mmatrix_outputs_number -%}
+{%- set slp_base = 792 if in_num == 0 else 736 + (in_num - 1) * mmatrix_outputs_number -%}
+{%- set kinds = [
+        ('sp',  sp_base,  1),
+        ('lp',  lp_base,  2),
+        ('dp',  dp_base,  3),
+        ('slp', slp_base, 4)
+    ] -%}
+{%- for out_num in range(1, outputs_number + 1) -%}
+{%- set curtain_num = (out_num + 1) // 2 -%}
+{%- for kind, base, order in kinds %}
+            "in{{ in_num }}_out{{ out_num }}_{{ kind }}": {
+                "title": "{{ kind }}_title",
+                "address": {{ base + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "order": {{ order }},
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "condition": "in{{ in_num }}_mode==6&&(isDefined(curtain{{ curtain_num }}_mode)==0||curtain{{ curtain_num }}_mode==0)"
+            }
+{%- if not (loop.last and out_num == outputs_number) %},{%- endif %}
+{%- endfor -%}
+{%- endfor -%}
+{%- endmacro %}
+
+{#-
+   Button-actions для штор (curtain) на одном входе: 4 параметра на каждую
+   штору (sp / lp / dp / slp). Парные lp/slp имеют расширенный enum (с
+   режимами «opening while pressed» и т. п.); sp/dp — короткий enum.
+
+   Параметры:
+     in_num                          — номер входа;
+     curtains_number                 — количество штор;
+     curtains_mmatrix_outputs_number — шаг матрицы для штор (обычно 4);
+     fw                              — версия прошивки (None — не добавлять).
+
+   Эмитит 4 × curtains_number параметров.
+-#}
+{%- macro params_input_curtain_button_actions(in_num, curtains_number, curtains_mmatrix_outputs_number, fw=None) -%}
+{%- set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
+{%- set short_enum_titles = ['no action', 'open', 'close', 'open/close', 'stop'] -%}
+{%- set long_enum_titles = ['no action', 'open', 'close', 'open/close', 'stop',
+                            'opening while pressed', 'closing while pressed',
+                            'opening/closing while pressed'] -%}
+{%- set kinds = [
+        ('sp',  1, 1400, short_enum_titles, [0,1,2,3,4]),
+        ('lp',  2, 1432, long_enum_titles,  [0,1,2,3,4,5,6,7]),
+        ('dp',  3, 1464, short_enum_titles, [0,1,2,3,4]),
+        ('slp', 4, 1496, long_enum_titles,  [0,1,2,3,4,5,6,7])
+    ] -%}
+{%- for curtain_num in range(1, curtains_number + 1) -%}
+{%- for kind, order, base, titles, enum in kinds %}
+            "in{{ in_num }}_curtain{{ curtain_num }}_{{ kind }}": {
+                "title": "{{ kind }}_title",
+                "address": {{ base + curtain_num - 1 + mm_row_offset * curtains_mmatrix_outputs_number }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "default": 0,
+                "enum": {{ enum | tojson }},
+                "enum_titles": {{ titles | tojson }},
+                "order": {{ order }},
+                "group": "gg_in{{ in_num }}_curtain{{ curtain_num }}_button_actions",
+                "condition": "in{{ in_num }}_mode==6&&curtain{{ curtain_num }}_mode==1"
+            }
+{%- if not (loop.last and curtain_num == curtains_number) %},{%- endif %}
+{%- endfor -%}
+{%- endfor -%}
+{%- endmacro %}
