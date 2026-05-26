@@ -11,7 +11,10 @@
 {% set ENCODERS_NUMBER = 2 -%}
 {% set ENCODER_CHANGE_STEP_DEFAULT = 1 -%}
 {% set ENCODER_CHANGE_STEP_MAX = 100 -%}
-{% set PRESS_TYPES = ["single", "long", "double", "shortlong"] %}
+{% set PRESS_TYPES = ["single", "long", "double", "shortlong"] -%}
+{% set SHORT_PRESS_TYPES = ["single", "double"] -%}
+{% set SHORT_PRESS_CHANGE_STEP_DEFAULT = 1 -%}
+{% set SHORT_PRESS_CHANGE_STEP_MAX = 100 -%}
 
 {
     "title": "template_title",
@@ -21,7 +24,7 @@
     "hw": [
         {
             "signature": "WB-MAO4-20mA",
-            "fw": "2.9.0-rc3"
+            "fw": "2.9.0-rc4"
         }
     ],
 {% endif -%}
@@ -229,7 +232,7 @@
                 "order": 3
             },
             {% for press_type in PRESS_TYPES -%}
-            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_') -%}
             {
                 "id": "{{action_bind}}_number",
                 "title": "Output Number",
@@ -284,6 +287,23 @@
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
                 "condition": "{{ action_bind }}_number==100&&{{encoder_disabled_condition}}"
+            },
+            {% endfor -%}
+            {# Шаг диммирования для коротких нажатий -#}
+            {% for press_type in SHORT_PRESS_TYPES -%}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  -%}
+            {
+                "id": "input_{{ch_number+1}}_{{press_type}}_press_changing_step",
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "title": "Level Change Step (%)",
+                "order": 3,
+                "address": {{1200 + ch_number + loop.index0 * 20}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "default": {{SHORT_PRESS_CHANGE_STEP_DEFAULT}},
+                "min": 1,
+                "max": {{SHORT_PRESS_CHANGE_STEP_MAX}},
+                "condition": "(input_{{ch_number+1}}_mode!=1)&&((({{action_bind}}_number>=1)&&({{action_bind}}_number<=4))||({{action_bind}}_number==100))&&((({{action_bind}}_action_single>=3)&&({{action_bind}}_action_single<=4))||(({{action_bind}}_action_all>=3)&&({{action_bind}}_action_all<=4)))&&{{encoder_disabled_condition}}"
             },
             {% endfor -%}
             {% for sw_act in ["off", "on"] -%}

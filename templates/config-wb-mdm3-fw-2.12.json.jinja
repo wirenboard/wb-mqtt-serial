@@ -4,6 +4,9 @@
 {% set ENCODER_CHANGE_STEP_DEFAULT = 1 -%}
 {% set ENCODER_CHANGE_STEP_MAX = 100 -%}
 {% set PRESS_TYPES = ["single", "long", "double", "shortlong"] -%}
+{% set SHORT_PRESS_TYPES = ["single", "double"] -%}
+{% set SHORT_PRESS_CHANGE_STEP_DEFAULT = 1 -%}
+{% set SHORT_PRESS_CHANGE_STEP_MAX = 100 -%}
 
 {
     "title": "WB-MDM3_template_title",
@@ -12,7 +15,7 @@
     "hw": [
         {
             "signature": "WBMD3",
-            "fw": "2.12.0-rc3"
+            "fw": "2.12.0-rc4"
         }
     ],
     "device": {
@@ -246,6 +249,24 @@
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
                 "condition": "{{action_bind}}_number==100&&{{encoder_disabled_condition}}"
+            },
+            {% endfor -%}
+            {# Шаг диммирования для коротких нажатий -#}
+            {% for press_type in SHORT_PRESS_TYPES -%}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  -%}
+            {% set cond_enc_num = (ch_number // 2) + 1 -%}
+            {% set encoder_disabled_condition = "(encoder_" ~ cond_enc_num ~ "_mode==0)" if cond_enc_num <= ENCODERS_NUMBER else "(1==1)" -%}
+            {
+                "id": "input_{{ch_number+1}}_{{press_type}}_press_changing_step",
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "title": "Level Change Step (%)",
+                "order": 3,
+                "address": {{1200 + ch_number + loop.index0 * 20}},
+                "reg_type": "holding",
+                "default": {{SHORT_PRESS_CHANGE_STEP_DEFAULT}},
+                "min": 1,
+                "max": {{SHORT_PRESS_CHANGE_STEP_MAX}},
+                "condition": "(input_{{ch_number+1}}_mode!=1)&&((({{action_bind}}_number>=1)&&({{action_bind}}_number<=3))||({{action_bind}}_number==100))&&((({{action_bind}}_action_single>=3)&&({{action_bind}}_action_single<=4))||(({{action_bind}}_action_all>=3)&&({{action_bind}}_action_all<=4)))&&{{encoder_disabled_condition}}"
             },
             {% endfor -%}
             {% for sw_act in ["off", "on"] -%}
