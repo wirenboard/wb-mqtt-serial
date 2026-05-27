@@ -30,8 +30,7 @@
 | Номер партии | 30× `HW Batch Number` | `hw_batch_number` | HW Batch Number | Номер партии |
 | Температура МК | 51× `MCU Temperature` <br> 1× `MCU temperature` | `mcu_temperature` | MCU Temperature | Температура МК |
 | Напряжение МК | 51× `MCU Voltage` <br> 1× `MCU voltage` | `mcu_voltage` | MCU Voltage | Напряжение МК |
-| Напряжение питания | 36× `Supply Voltage` <br> 22× `Supply voltage` | `supply_voltage` | Supply Voltage | Напряжение питания |
-| Входное напряжение (для UPS) | 23× `Input Voltage` | `input_voltage` | Input Voltage | Входное напряжение |
+| Напряжение питания | 36× `Supply Voltage` <br> 22× `Supply voltage` <br> 23× `Input Voltage` | `supply_voltage` | Supply Voltage | Напряжение питания |
 | Мин. напряжение питания | 20× `Minimum Voltage Since Startup` <br> 1× `Minimum voltage since startup` | `min_supply_voltage_since_startup` | Min Supply Voltage Since Startup | Мин. напряжение питания с момента включения |
 | Мин. напряжение МК | 12× `Minimum MCU Voltage Since Startup` | `min_mcu_voltage_since_startup` | Min MCU Voltage Since Startup | Мин. напряжение МК с момента включения |
 
@@ -238,7 +237,7 @@
 
 1. **Унификация `Serial` / `Serial NO` → `sn`** (66+13 шаблонов).
 2. **`FW Version` → `fw`** (60 шаблонов).
-3. **`Supply Voltage` / `Supply voltage` → единая форма** (36+22 — устранить регистровое расхождение).
+3. **`Supply Voltage` / `Supply voltage` / `Input Voltage` → единая форма** (36+22+23 — устранить регистровое расхождение).
 4. **Перевод `Uptime`: убрать дубликаты, исправить пропуски в 16 шаблонах** (всего 88).
 5. **`Input N counter` / `Input N Counter` → одна форма** (19+12 шаблонов — устранить регистровое расхождение).
 6. **`Input N Single Press Counter` vs `Short Press` — одна форма** (23+2).
