@@ -21,9 +21,9 @@
        `translations.ru`.
 
    Физические величины (Supply Voltage, MCU Temperature и т. п.) описываются
-   как `type: value` + `units` — согласно Wiren Board MQTT Conventions §3.
-   Type-синонимы (`voltage`, `temperature`, …) помечены deprecated и в новых
-   шаблонах не используются.
+   как `value` + `units`: поле `type` опускается (value — значение по
+   умолчанию), см. СТП 001-2025 изд.03 §7.3 и Приложение А. Type-синонимы
+   (`voltage`, `temperature`, …) помечены deprecated и не используются.
 -#}
 
 {#- Service channels --------------------------------------------------------#}
@@ -89,7 +89,6 @@
                 "id": "supply_voltage",
                 "reg_type": "input",
                 "address": {{ address }},
-                "type": "value",
                 "units": "V",
                 "scale": 0.001,
                 "enabled": false,
@@ -103,7 +102,6 @@
                 "id": "min_supply_voltage_since_startup",
                 "reg_type": "input",
                 "address": {{ address }},
-                "type": "value",
                 "units": "V",
                 "scale": 0.001,
                 "enabled": false,
@@ -117,7 +115,6 @@
                 "id": "mcu_temperature",
                 "reg_type": "input",
                 "address": {{ address }},
-                "type": "value",
                 "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
@@ -132,7 +129,6 @@
                 "id": "mcu_voltage",
                 "reg_type": "input",
                 "address": {{ address }},
-                "type": "value",
                 "units": "V",
                 "scale": 0.001,
                 "enabled": false,
@@ -164,7 +160,7 @@
     "Uptime":                            "Время работы с момента включения",
     "HW Batch Number":                   "Номер партии",
     "Supply Voltage":                    "Напряжение питания",
-    "Min Supply Voltage Since Startup":  "Минимальное напряжение питания с момента включения",
+    "Min Supply Voltage Since Startup":  "Мин. напряжение питания с момента включения",
     "MCU Temperature":                   "Температура МК",
     "MCU Voltage":                       "Напряжение питания МК",
     "Bus Power Supply":                  "Состояние питания на шине",

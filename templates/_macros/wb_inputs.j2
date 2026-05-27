@@ -52,7 +52,7 @@
 {%- endmacro %}
 
 {#-
-   Счётчик переключений входа.
+   Счётчик замыканий входа.
 -#}
 {%- macro channel_input_counter(input_num, address, sporadic="true", condition=None, group=None) -%}
 {%- set _group = group if group else 'gg_in' ~ input_num ~ '_channels' -%}
@@ -61,7 +61,6 @@
                 "id": "input_{{ input_num }}_counter",
                 "reg_type": "input",
                 "address": {{ address }},
-                "type": "value",
                 "sporadic": {{ sporadic }},
                 {%- if condition is not none %}
                 "condition": "{{ condition }}",
@@ -81,7 +80,6 @@
                 "id": "input_{{ input_num }}_freq",
                 "reg_type": "input",
                 "address": {{ address }},
-                "type": "value",
                 "format": "u32",
                 "units": "Hz",
                 "scale": 1.52588e-5,
@@ -118,7 +116,6 @@
                 "id": "input_{{ input_num }}_{{ kind_id }}_press_counter",
                 "reg_type": "press_counter",
                 "address": {{ address }},
-                "type": "value",
                 "sporadic": true,
                 "enabled": false,
                 {%- if condition is not none %}
@@ -140,7 +137,7 @@
 -#}
 {%- macro input_translations_ru(input_num) -%}
 "Input {{ input_num }}": "Вход {{ input_num }}",
-                "Input {{ input_num }} Counter": "Вход {{ input_num }}: счетчик переключений",
+                "Input {{ input_num }} Counter": "Вход {{ input_num }}: счетчик замыканий",
                 "Input {{ input_num }} Frequency": "Вход {{ input_num }}: частота",
                 "Input {{ input_num }} Single Press Counter": "Вход {{ input_num }}: счетчик одиночных нажатий",
                 "Input {{ input_num }} Long Press Counter": "Вход {{ input_num }}: счетчик длинных нажатий",
