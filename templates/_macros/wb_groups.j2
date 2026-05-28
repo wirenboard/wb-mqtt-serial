@@ -51,7 +51,7 @@
 {#-
    Полный набор групп для одного входа N в MR6C-подобных шаблонах:
      g_in<N>                                  — корень входа (внутри g_inputs);
-     gg_in<N>_mapping_matrix_actions          — действия для выходов;
+     gg_in<N>_matrix_actions                  — действия для выходов;
      gg_in<N>_press_params                    — параметры распознавания нажатий;
      gg_in<N>_curtain<M>_button_actions × M   — действия кнопки для штор;
      gg_in<N>_out<M>_button_actions × OUT     — действия кнопки для выходов;
@@ -70,7 +70,7 @@
             },
             {
                 "title": "Actions for outputs when the input is closed / opened",
-                "id": "gg_in{{ input_num }}_mapping_matrix_actions",
+                "id": "gg_in{{ input_num }}_matrix_actions",
                 "group": "g_in{{ input_num }}"
             },
             {
