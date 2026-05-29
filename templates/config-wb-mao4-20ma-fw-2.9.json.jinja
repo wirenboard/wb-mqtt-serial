@@ -10,10 +10,12 @@
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set ENCODERS_NUMBER = 2 -%}
 {% set ENCODER_CHANGE_STEP_DEFAULT = 1 -%}
+{% set ENCODER_CHANGE_STEP_MIN = 0.1 -%}
 {% set ENCODER_CHANGE_STEP_MAX = 100 -%}
 {% set PRESS_TYPES = ["single", "long", "double", "shortlong"] -%}
 {% set SHORT_PRESS_TYPES = ["single", "double"] -%}
 {% set SHORT_PRESS_CHANGE_STEP_DEFAULT = 1 -%}
+{% set SHORT_PRESS_CHANGE_STEP_MIN = 0.1 -%}
 {% set SHORT_PRESS_CHANGE_STEP_MAX = 100 -%}
 
 {
@@ -301,7 +303,7 @@
                 "reg_type": "holding",
                 "scale": 0.1,
                 "default": {{SHORT_PRESS_CHANGE_STEP_DEFAULT}},
-                "min": 1,
+                "min": {{SHORT_PRESS_CHANGE_STEP_MIN}},
                 "max": {{SHORT_PRESS_CHANGE_STEP_MAX}},
                 "condition": "(input_{{ch_number+1}}_mode!=1)&&((({{action_bind}}_number>=1)&&({{action_bind}}_number<=4))||({{action_bind}}_number==100))&&((({{action_bind}}_action_single>=3)&&({{action_bind}}_action_single<=4))||(({{action_bind}}_action_all>=3)&&({{action_bind}}_action_all<=4)))&&{{encoder_disabled_condition}}"
             },
@@ -603,7 +605,7 @@
                 "title": "Level Change Step (%)",
                 "address": {{392 + encoder_number - 1}},
                 "reg_type": "holding",
-                "min": 1,
+                "min": {{ENCODER_CHANGE_STEP_MIN}},
                 "max": {{ENCODER_CHANGE_STEP_MAX}},
                 "default": {{ENCODER_CHANGE_STEP_DEFAULT}},
                 "scale": 0.1,
