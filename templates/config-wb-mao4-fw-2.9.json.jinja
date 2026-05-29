@@ -354,7 +354,7 @@
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 0,
+                "min": 2,
                 "max": 200,
                 "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
@@ -755,7 +755,7 @@
                 "address": {{384 + encoder_number - 1}},
                 "reg_type": "holding",
                 "min": 1,
-                "max": 100,
+                "max": 65535,
                 "default": 4,
                 "group": "gg_encoder_{{encoder_number}}",
                 "condition": "encoder_{{encoder_number}}_mode==1",
