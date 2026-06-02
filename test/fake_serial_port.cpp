@@ -357,7 +357,7 @@ void TSerialDeviceIntegrationTest::SetUp()
         rpcConfig,
         portsSchema,
         protocolSchemas,
-        [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(SerialPort, false); });
+        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(SerialPort, false); });
 
     std::filesystem::remove(DB_PATH);
     MqttBroker = NewFakeMqttBroker(*this);
