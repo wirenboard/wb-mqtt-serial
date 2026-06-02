@@ -1,0 +1,528 @@
+{
+    "title": "Carel IR33",
+    "device_type": "carel_ir33",
+    "group": "g-refrigeration",
+    "device": {
+        "name": "Carel IR33",
+        "id": "carel-ir33",
+        "max_read_registers": 0,
+        "response_timeout_ms": 150,
+        "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Control",
+                "id": "control"
+            },
+            {
+                "title": "Status",
+                "id": "status"
+            },
+            {
+                "title": "Temperature Sensors",
+                "id": "sensors"
+            },
+            {
+                "title": "Setpoint",
+                "id": "setpoint"
+            },
+            {
+                "title": "Compressor",
+                "id": "compressor"
+            },
+            {
+                "title": "Defrost",
+                "id": "defrost"
+            },
+            {
+                "title": "Fans",
+                "id": "fans"
+            },
+            {
+                "title": "Alarms",
+                "id": "alarms"
+            }
+        ],
+
+        "parameters": [
+            {
+                "id": "min_setpoint",
+                "title": "Minimum Set Point (r1)",
+                "group": "setpoint",
+                "address": 425,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 1
+            },
+            {
+                "id": "max_setpoint",
+                "title": "Maximum Set Point (r2)",
+                "group": "setpoint",
+                "address": 422,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 2
+            },
+            {
+                "id": "working_differential",
+                "title": "Working Temperature Differential (rd)",
+                "group": "setpoint",
+                "address": 421,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": 0,
+                "max": 20,
+                "order": 3
+            },
+            {
+                "id": "night_setpoint_offset",
+                "title": "Night Set Point Variation (r4)",
+                "group": "setpoint",
+                "address": 419,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -20,
+                "max": 20,
+                "order": 4
+            },
+            {
+                "id": "temperature_units",
+                "title": "Temperature Units (/5)",
+                "description": "set to °C for correct temperature display in Wiren Board",
+                "group": "setpoint",
+                "address": 41,
+                "reg_type": "coil",
+                "enum": [0, 1],
+                "enum_titles": ["°C", "°F"],
+                "order": 5
+            },
+            {
+                "id": "compressor_min_on_time",
+                "title": "Minimum Compressor On Time (c3)",
+                "description": "units: minutes",
+                "group": "compressor",
+                "address": 467,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 15,
+                "order": 1
+            },
+            {
+                "id": "compressor_min_off_time",
+                "title": "Minimum Compressor Off Time (c2)",
+                "description": "units: minutes",
+                "group": "compressor",
+                "address": 470,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 15,
+                "order": 2
+            },
+            {
+                "id": "compressor_min_interval_between_starts",
+                "title": "Minimum Interval Between Two Compressor Start-ups (c1)",
+                "description": "units: minutes",
+                "group": "compressor",
+                "address": 473,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 15,
+                "order": 3
+            },
+            {
+                "id": "compressor_fan_startup_delay",
+                "title": "Compressor and Fan Start-up Delay at Power On (c0)",
+                "description": "units: minutes",
+                "group": "compressor",
+                "address": 469,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 15,
+                "order": 4
+            },
+            {
+                "id": "defrost_type",
+                "title": "Defrost Type (d0)",
+                "group": "defrost",
+                "address": 477,
+                "reg_type": "holding",
+                "format": "s16",
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": [
+                    "heater, end by temperature",
+                    "hot gas, end by temperature",
+                    "heater, end by time",
+                    "hot gas, end by time",
+                    "heater with temperature control, end by time"
+                ],
+                "order": 1
+            },
+            {
+                "id": "defrost_interval",
+                "title": "Interval Between Defrosts (dI)",
+                "description": "units: hours",
+                "group": "defrost",
+                "address": 464,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 250,
+                "order": 2
+            },
+            {
+                "id": "max_defrost_duration",
+                "title": "Maximum Defrost Duration (dP1)",
+                "description": "units: minutes",
+                "group": "defrost",
+                "address": 472,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 1,
+                "max": 250,
+                "order": 3
+            },
+            {
+                "id": "defrost_end_temp",
+                "title": "Evaporator Defrost End Temperature (dt1)",
+                "group": "defrost",
+                "address": 430,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 4
+            },
+            {
+                "id": "dripping_time",
+                "title": "Dripping Time After Defrost (dd)",
+                "description": "units: minutes",
+                "group": "defrost",
+                "address": 489,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 15,
+                "order": 5
+            },
+            {
+                "id": "defrost_delay_at_poweron",
+                "title": "Defrost Delay at Power On (d5)",
+                "description": "units: minutes",
+                "group": "defrost",
+                "address": 468,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 250,
+                "order": 6
+            },
+            {
+                "id": "fan_start_temp",
+                "title": "Fan Start-up Temperature (F1)",
+                "group": "fans",
+                "address": 417,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 1
+            },
+            {
+                "id": "fan_stop_temp",
+                "title": "Fan Stop Temperature (F4)",
+                "group": "fans",
+                "address": 420,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 2
+            },
+            {
+                "id": "fan_off_time_after_defrost",
+                "title": "Fan Off Time After Defrost (Fd)",
+                "description": "units: minutes",
+                "group": "fans",
+                "address": 501,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 15,
+                "order": 3
+            },
+            {
+                "id": "high_temp_alarm_threshold",
+                "title": "High Temperature Alarm Threshold (AH)",
+                "group": "alarms",
+                "address": 416,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 1
+            },
+            {
+                "id": "low_temp_alarm_threshold",
+                "title": "Low Temperature Alarm Threshold (AL)",
+                "group": "alarms",
+                "address": 429,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 200,
+                "order": 2
+            },
+            {
+                "id": "alarm_differential",
+                "title": "Alarm and Fan Differential (A0)",
+                "group": "alarms",
+                "address": 427,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": 0,
+                "max": 20,
+                "order": 3
+            },
+            {
+                "id": "temp_alarm_delay",
+                "title": "Low and High Temperature Alarm Delay (Ad)",
+                "description": "units: minutes",
+                "group": "alarms",
+                "address": 495,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": 0,
+                "max": 250,
+                "order": 4
+            },
+            {
+                "id": "probe1_calibration",
+                "title": "Probe 1 Calibration (/c1)",
+                "group": "sensors",
+                "address": 413,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -20,
+                "max": 20,
+                "order": 1
+            },
+            {
+                "id": "probe2_calibration",
+                "title": "Probe 2 Calibration (/c2)",
+                "group": "sensors",
+                "address": 400,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -20,
+                "max": 20,
+                "order": 2
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "Temperature Set Point",
+                "group": "control",
+                "reg_type": "holding",
+                "address": 404,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "min": -50,
+                "max": 200
+            },
+            {
+                "name": "Unit On-Off",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 54,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1
+            },
+            {
+                "name": "Defrost Command",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 32,
+                "type": "switch"
+            },
+            {
+                "name": "Light On-Off",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 51,
+                "type": "switch"
+            },
+            {
+                "name": "Auxiliary On-Off",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 60,
+                "type": "switch"
+            },
+            {
+                "name": "Continuous Cycle",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 40,
+                "type": "switch"
+            },
+            {
+                "name": "Probe 1 Reading",
+                "group": "sensors",
+                "reg_type": "input",
+                "address": 403,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Probe 2 Reading",
+                "group": "sensors",
+                "reg_type": "input",
+                "address": 412,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Virtual Probe Reading",
+                "group": "sensors",
+                "reg_type": "input",
+                "address": 406,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Compressor Relay Status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 7,
+                "type": "switch"
+            },
+            {
+                "name": "Defrost Relay Status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch"
+            },
+            {
+                "name": "Fan Relay Status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 13,
+                "type": "switch"
+            },
+            {
+                "name": "Auxiliary Relay Status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 8,
+                "type": "switch"
+            },
+            {
+                "name": "Defrost Status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 18,
+                "type": "switch"
+            },
+            {
+                "name": "Door Status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 43,
+                "type": "switch"
+            },
+            {
+                "name": "High Temperature Alarm",
+                "group": "alarms",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Low Temperature Alarm",
+                "group": "alarms",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Condenser High Temperature Alarm",
+                "group": "alarms",
+                "reg_type": "coil",
+                "address": 25,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Probe 1 Fault Alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch"
+            },
+            {
+                "name": "Probe 2 Fault Alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 6,
+                "type": "switch"
+            },
+            {
+                "name": "Evaporator Defrost Timeout Alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 29,
+                "type": "switch"
+            },
+            {
+                "name": "Door Open Timeout Alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 28,
+                "type": "switch"
+            }
+        ]
+    }
+}

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.251.0) stable; urgency=medium
+
+  * Add Carel µC2SE and IR33 templates (via WB-REF-U)
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 02 Jun 2026 15:30:45 +0300
+
 wb-mqtt-serial (2.250.1) stable; urgency=medium
 
   * Fix WB-LED and WB-MRGBW-D fw3 templates: use 'sporadic' type for some output registers

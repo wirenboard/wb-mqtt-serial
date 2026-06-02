@@ -27392,6 +27392,29 @@ WinDeco
 XY-MD0X
 	humidity  =>  humidity
 	temperature  =>  temperature
+carel_ir33
+	Auxiliary On-Off  =>  Auxiliary On-Off
+	Auxiliary Relay Status  =>  Auxiliary Relay Status
+	Compressor Relay Status  =>  Compressor Relay Status
+	Condenser High Temperature Alarm  =>  Condenser High Temperature Alarm
+	Continuous Cycle  =>  Continuous Cycle
+	Defrost Command  =>  Defrost Command
+	Defrost Relay Status  =>  Defrost Relay Status
+	Defrost Status  =>  Defrost Status
+	Door Open Timeout Alarm  =>  Door Open Timeout Alarm
+	Door Status  =>  Door Status
+	Evaporator Defrost Timeout Alarm  =>  Evaporator Defrost Timeout Alarm
+	Fan Relay Status  =>  Fan Relay Status
+	High Temperature Alarm  =>  High Temperature Alarm
+	Light On-Off  =>  Light On-Off
+	Low Temperature Alarm  =>  Low Temperature Alarm
+	Probe 1 Fault Alarm  =>  Probe 1 Fault Alarm
+	Probe 1 Reading  =>  Probe 1 Reading
+	Probe 2 Fault Alarm  =>  Probe 2 Fault Alarm
+	Probe 2 Reading  =>  Probe 2 Reading
+	Temperature Set Point  =>  Temperature Set Point
+	Unit On-Off  =>  Unit On-Off
+	Virtual Probe Reading  =>  Virtual Probe Reading
 carel_mu_rack
 	Alarm 1 Compressor  =>  Alarm 1 Compressor
 	Alarm 2 Compressor  =>  Alarm 2 Compressor
@@ -27503,6 +27526,20 @@ carel_pj_easy
 	Probe 3 reading  =>  Probe 3 reading
 	Set Point  =>  Set Point
 	Timeout defrost alarm  =>  Timeout defrost alarm
+carel_uc2se
+	Carel Serial Address  =>  Carel Serial Address
+	Compressor Warning  =>  Compressor Warning
+	Cooling Set Point  =>  Cooling Set Point
+	Fan Warning  =>  Fan Warning
+	General Alarm  =>  General Alarm
+	General Warning  =>  General Warning
+	Heating-Cooling Status  =>  Heating-Cooling Status
+	Probe Alarm  =>  Probe Alarm
+	Probe B1 Reading  =>  Probe B1 Reading
+	Probe B2 Reading  =>  Probe B2 Reading
+	Probe B3 Reading  =>  Probe B3 Reading
+	Temperature Warning  =>  Temperature Warning
+	Unit On-Standby  =>  Unit On-Standby
 cityron_pu-3
 	Additional Temperature  =>  Additional Temperature
 	Alarm Code  =>  Alarm Code
