@@ -876,7 +876,7 @@
                 "group": "gg_general_channels"
             },
             {
-                "name": "Zero-Сross Offset (us)",
+                "name": "Zero-Cross Offset (us)",
                 "reg_type": "input",
                 "address": 98,
                 "enabled": false,
@@ -906,8 +906,8 @@
                 "encoder_{{encoder_number}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
                 {% endfor -%}
 
-                "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
-                "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time",
+                "increase_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time",
+                "decrease_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
@@ -915,7 +915,6 @@
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
 
                 "input_mode_description": "Button is the default mode. Switch mode is supported",
-                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
 
                 "level_after_actions_description": "It is possible to set the brightness level to 0% (channel off)",
@@ -935,7 +934,6 @@
                 "Encoders": "Энкодеры",
                 "Encoder Connection Type": "Тип подключения энкодера",
                 "Not used": "Не используется",
-                "Disabled": "Отключено",
                 "AB type": "Тип AB",
                 "Pulses per Step": "Количество импульсов на один шаг",
                 "encoder_steps_counter_desc": "С учетом параметра «Количество импульсов на один шаг»",
@@ -945,7 +943,6 @@
                 "Behavior When Level is Reduced Below the Minimum Value": "Поведение при уменьшении уровня ниже минимального значения",
                 "Turn Off the Channel": "Выключить канал",
                 "Keep Minimum Level": "Оставить минимальный уровень",
-                "Enabled": "Включено",
                 "Legacy Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
@@ -1072,7 +1069,7 @@
                 "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
                 "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
                 "Channel 3 Raw Duty (us)": "Сырое задание для канала 3 (мкс)",
-                "Zero-Сross Offset (us)": "Смещение от перехода напряжения через ноль (мкс)",
+                "Zero-Cross Offset (us)": "Смещение от перехода напряжения через ноль (мкс)",
                 "Last AC Voltage Period (us)": "Длительность последнего периода переменного напряжения (мкс)"
             }
         }

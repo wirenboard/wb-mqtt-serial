@@ -270,7 +270,7 @@
             {
                 "id": "output{{ ch_number }}_decrement_rate",
                 "title": "Dimming level decrement rate (ms/%)",
-                "description": "increase_rate_description",
+                "description": "decrease_rate_description",
                 "group": "output{{ch_number}}",
                 "address": {{944 + ch_number - 1}},
                 "reg_type": "holding",
@@ -280,9 +280,9 @@
                 "order": 3
             },
             {
-                "id": "channel{{ ch_number }}_increment_rate",
+                "id": "output{{ ch_number }}_increment_rate",
                 "title": "Dimming level increment rate (ms/%)",
-                "description": "decrease_rate_description",
+                "description": "increase_rate_description",
                 "group": "output{{ch_number}}",
                 "address": {{960 + ch_number - 1}},
                 "reg_type": "holding",
@@ -1034,7 +1034,7 @@
             "en": {
                 "template_title": "{{ title_en }}",
                 "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
-                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
+                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -1054,8 +1054,8 @@
 
                 "level_after_actions_description": "It is possible to set level to 0% (channel off)",
 
-                "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will increase instantly",
-                "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will decrease instantly",
+                "increase_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will increase instantly",
+                "decrease_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will decrease instantly",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",

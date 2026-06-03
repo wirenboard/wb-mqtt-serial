@@ -416,7 +416,7 @@
                 "group": "gg_output_{{ ch_number }}_rates"
             },
             {
-                "id": "channel{{ ch_number }}_increment_rate",
+                "id": "output{{ ch_number }}_increment_rate",
                 "title": "Increment Rate (ms/%)",
                 "description": "increment_rate_description",
                 "address": {{960 + ch_number - 1}},
@@ -880,7 +880,6 @@
             "en": {
                 "template_title": "{{ title_en }}",
                 "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
-                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 20 kHz / Factor",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -913,7 +912,6 @@
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "template_title": "{{ title_ru }}",
-                "Outputs": "Выходы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",

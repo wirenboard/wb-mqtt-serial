@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.242.1) stable; urgency=medium
 
-  * Add new templates for WB-MDM3 and WB-MAO4 with auto-on channel and remote swooth change support
+  * Add new templates for WB-MDM3 and WB-MAO4 with auto-on channel and remote smooth change support
     [ Maxim Toropov ]
   * Add encoders support to the new WB-MDM3 and WB-MAO4 templates
   * Add short presses dimming step support to the new WB-MDM3 and WB-MAO4 templates

@@ -24277,7 +24277,7 @@ WB-MDM3-since-fw-2.12
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Сross Offset (us)  =>  Zero-Сross Offset (us)
+	Zero-Cross Offset (us)  =>  Zero-Cross Offset (us)
 WB-MIR
 	External Temperature Sensor  =>  External Temperature Sensor
 	Input Voltage  =>  Input Voltage
