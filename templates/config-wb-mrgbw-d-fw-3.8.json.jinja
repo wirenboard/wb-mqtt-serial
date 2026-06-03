@@ -237,7 +237,7 @@
                     "CCT + W + W",
                     "W + W + 2*W",
                     "2*W + 2*W",
-                    "CCT + 2*W ",
+                    "CCT + 2*W",
                     "W + W + CCT",
                     "2*W + CCT",
                     "CCT + CCT",
@@ -3278,11 +3278,9 @@
                 "address": {{464 + in_num -1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels",
-                {% if cond_enc_num <= ENCODERS_NUMBER -%}
-                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
-                {%- else -%}
-                "condition": "(input_{{in_num}}_mode!=1)"
+                "group": "gg_in_{{in_num}}_channels"
+                {%- if cond_enc_num <= ENCODERS_NUMBER %},
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
                 {%- endif %}
             },
             {
@@ -3293,11 +3291,9 @@
                 "address": {{480 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels",
-                {% if cond_enc_num <= ENCODERS_NUMBER -%}
-                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
-                {%- else -%}
-                "condition": "(input_{{in_num}}_mode!=1)"
+                "group": "gg_in_{{in_num}}_channels"
+                {%- if cond_enc_num <= ENCODERS_NUMBER %},
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
                 {%- endif %}
             },
             {
@@ -3308,11 +3304,9 @@
                 "address": {{496 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels",
-                {% if cond_enc_num <= ENCODERS_NUMBER -%}
-                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
-                {%- else -%}
-                "condition": "(input_{{in_num}}_mode!=1)"
+                "group": "gg_in_{{in_num}}_channels"
+                {%- if cond_enc_num <= ENCODERS_NUMBER %},
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
                 {%- endif %}
             },
             {
@@ -3323,11 +3317,9 @@
                 "address": {{512 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels",
-                {% if cond_enc_num <= ENCODERS_NUMBER -%}
-                "condition": "(input_{{in_num}}_mode!=1)&&(encoder_{{cond_enc_num}}_mode==0)"
-                {%- else -%}
-                "condition": "(input_{{in_num}}_mode!=1)"
+                "group": "gg_in_{{in_num}}_channels"
+                {%- if cond_enc_num <= ENCODERS_NUMBER %},
+                "condition": "(encoder_{{cond_enc_num}}_mode==0)"
                 {%- endif %}
             },
             {% endfor -%}
