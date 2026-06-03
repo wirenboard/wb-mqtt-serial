@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1-wb101) stable; urgency=medium
+
+  * Support 230400 baud rate
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 03 Jun 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.248.1-wb100) stable; urgency=medium
 
   * Fix WB-LED and WB-MRGBW-D fw3 templates: use 'sporadic' type for some output registers
