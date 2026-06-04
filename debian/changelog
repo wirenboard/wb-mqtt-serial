@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.252.0) stable; urgency=medium
+
+  * Add Carel µC2SE and IR33 templates (via WB-REF-U)
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 03 Jun 2026 09:26:50 +0300
+
 wb-mqtt-serial (2.251.0) stable; urgency=medium
 
   * Port for Debian 13
