@@ -420,6 +420,18 @@
                 "group": "outputs",
                 "order": 2
             },
+            "outputs_buzzer_beep_duration": {
+                "title": "Buzzer Beep Duration When Leak Detected (s)",
+                "description": "buzzer_beep_duration_description",
+                "address": 954,
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "max": 60,
+                "group": "outputs",
+                "fw": "1.25.0",
+                "order": 3
+            },
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
                 "description": "poll_timeout_description",
@@ -936,6 +948,7 @@
                 "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10s",
                 "safety_buzzer_description": "\"Does not affect\" - buzzer behaves according to the input settings. \"On\" - the buzzer will be ON regardless of the input settings when the device is in safety mode and the leakage sensor is triggered",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately",
+                "buzzer_beep_duration_description": "0...60, default: 0 (without timeout)",
                 "relays_state_after_poweron_description": "Default - Switch To the Safety State",
 
                 "Cleaning Mode": "Wet Cleaning Mode",
@@ -1044,6 +1057,7 @@
                 "Off": "Выключен",
                 "On": "Включен",
                 "Restore Outputs State After Leakage Fix": "Восстанавливать состояние кранов после устранения протечки",
+                "Buzzer Beep Duration When Leak Detected (s)": "Длительность звукового сигнала при обнаружении протечки (с)",
                 "Does not affect": "Не менять поведение",
                 "Allow Antiseize In Safety Mode": "Разрешить запуск в безопасном режиме",
                 "Move Antiseize To Next Day": "Перенести запуск на следующий день",
@@ -1057,6 +1071,7 @@
                 "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с",
                 "safety_buzzer_description": "\"Не менять поведение\" - зуммер ведет себя в соответствии с настройками входов. \"Включен\" - зуммер будет включен независимо от настроек входов, когда устройство находится в безопасном режиме и срабатывает датчик протечки",
                 "restore_outputs_state_after_leakage_fix_description": "\"Включен\" - реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" - сразу анализируются настройки взаимодействия входов с реле",
+                "buzzer_beep_duration_description": "0...60, по умолчанию: 0 (без таймаута)",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\"",
                 "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\"",
                 "Don't Change State": "Ничего не делать",

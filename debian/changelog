@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.253.0) stable; urgency=medium
+
+  * MWAC templates: Add buzzer beep duration parameter
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 08 Jun 2026 17:35:00 +0300
+
 wb-mqtt-serial (2.252.0) stable; urgency=medium
 
   * Add Carel µC2SE and IR33 templates (via WB-REF-U)
