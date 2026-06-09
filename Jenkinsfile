@@ -4,5 +4,5 @@ buildDebSbuild defaultTargets: 'bullseye-armhf bullseye-arm64',
                defaultRunCoverage: true,
                defaultCoverageMin: '73',
                defaultDoCoverallsReporting: false,
-               defaultBuildNode: 'heavy-duty'
+               defaultBuildNode: 'heavy-duty',
                defaultWbdevImage: 'contactless/devenv:latest_bullseye’
