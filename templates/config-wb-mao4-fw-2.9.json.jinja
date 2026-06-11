@@ -435,7 +435,7 @@
                 "condition": "{{ action_bind }}_number>=32&&{{ action_bind }}_number<=39&&{{encoder_disabled_condition}}"
             },
             {% endfor -%}
-            {# Шаг диммирования для коротких нажатий -#}
+            {# Dimming step for short presses -#}
             {% for press_type in SHORT_PRESS_TYPES -%}
             {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  -%}
             {
