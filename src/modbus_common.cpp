@@ -790,9 +790,11 @@ namespace Modbus // modbus protocol common utilities
             if (range.HasHoles()) {
                 range.Device()->SetSupportsHoles(false);
             } else {
-                for (auto& reg: range.RegisterList()) {
-                    reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-                    LOG(Warn) << reg->ToString() << " is now marked as unavailable: " << e.what();
+                if (!range.Device()->DeviceConfig()->ContinuePollingOnIllegalModbusException) {
+                    for (auto& reg: range.RegisterList()) {
+                        reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
+                        LOG(Warn) << reg->ToString() << " is now marked as unavailable: " << e.what();
+                    }
                 }
             }
             ProcessRangeException(range, e.what());

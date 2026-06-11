@@ -1,0 +1,33 @@
+{
+    "device_type": "preserve setup order",
+    "device": {
+        "name": "preserve setup order",
+        "id": "preserve_setup_order",
+        "preserve_setup_order": true,
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "setup": [
+            {
+                "title": "s_third",
+                "address": 100,
+                "value": 3
+            },
+            {
+                "title": "s_first",
+                "address": 300,
+                "value": 1
+            },
+            {
+                "title": "s_second",
+                "address": 200,
+                "value": 2
+            }
+        ]
+    }
+}

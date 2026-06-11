@@ -1035,6 +1035,45 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
     }
 }
 
+class TModbusContinuePollingOnIllegalModbusExceptionIntegrationTest: public TSerialDeviceIntegrationTest,
+                                                                     public TModbusExpectations
+{
+protected:
+    void SetUp() override
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
+
+    void TearDown() override
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-continue-polling-on-illegal-modbus-exception.json";
+    }
+};
+
+TEST_F(TModbusContinuePollingOnIllegalModbusExceptionIntegrationTest, KeepsRegisterInPolling)
+{
+    // When "continue_polling_on_illegal_modbus_exception" is enabled, a register that returns
+    // ILLEGAL_DATA_VALUE must stay in the polling list and its control must be
+    // continuously reported with an error instead of being silently excluded.
+    EnqueueHoldingContinuePollingOnIllegalModbusExceptionReadResponse();
+    Note() << "LoopOnce() [one by one]";
+    for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
+    Note() << "LoopOnce() [pack + unsupported retry]";
+    for (auto i = 0; i < 2; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
 class TModbusContinuousRegisterReadTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:

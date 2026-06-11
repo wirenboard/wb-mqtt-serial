@@ -22,12 +22,15 @@
   "required": ["slave_id"],
   "translations": {
     "en": {
-      "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests"
+      "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests",
+      "continue_polling_on_illegal_modbus_exception_desc": "If enabled, registers that reply with a Modbus \"illegal\" exception (ILLEGAL_FUNCTION, ILLEGAL_DATA_ADDRESS, ILLEGAL_DATA_VALUE) stay in the polling list instead of being excluded from polling."
     },
     "ru": {
       "Custom Modbus device": "Устройство с протоколом Modbus",
       "Enable continuous read": "Включить режим непрерывного чтения регистров",
-      "continuous_read_desc": "Реализовано в устройствах Wiren Board. При активации сервис пытается запросить регистры одной командой, даже если они расположены с промежутками. Это позволяет уменьшить число запросов"
+      "continuous_read_desc": "Реализовано в устройствах Wiren Board. При активации сервис пытается запросить регистры одной командой, даже если они расположены с промежутками. Это позволяет уменьшить число запросов",
+      "Continue polling on illegal Modbus exception": "Продолжать опрос при незаконном исключении Modbus",
+      "continue_polling_on_illegal_modbus_exception_desc": "Если включено, регистры, на которые устройство отвечает Modbus-исключением \"illegal\" (ILLEGAL_FUNCTION, ILLEGAL_DATA_ADDRESS, ILLEGAL_DATA_VALUE), остаются в опросе вместо того, чтобы тихо исключаться из опроса."
     }
   }
 }

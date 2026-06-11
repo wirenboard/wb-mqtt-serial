@@ -315,6 +315,83 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableOnBorderReadResponse()
                        __func__);
 }
 
+// "continue_polling_on_illegal_modbus_exception" flag enabled:
+//   cycle 1: one-by-one reads 7..12, reg 12 returns ILLEGAL_DATA_VALUE
+//   cycle 2: batch [7-11] (regs 7..11 now AVAILABLE) + single read of reg 12 (still UNKNOWN)
+//   reg 12 returns ILLEGAL_DATA_VALUE again — the register must NOT be excluded from polling
+void TModbusExpectations::EnqueueHoldingContinuePollingOnIllegalModbusExceptionReadResponse()
+{
+    // Cycle 1: individual reads for registers 7..11 succeed
+    for (uint8_t i = 7; i < 12; ++i) {
+        Expector()->Expect(WrapPDU({
+                               0x03, // function code
+                               0x00, // starting address Hi
+                               i,    // starting address Lo
+                               0x00, // quantity Hi
+                               0x01, // quantity Lo
+                           }),
+                           WrapPDU({
+                               0x03, // function code
+                               0x02, // byte count
+                               0x00, // data Hi
+                               0x0a  // data Lo
+                           }),
+                           __func__);
+    }
+
+    // Cycle 1: register 12 returns ILLEGAL_DATA_VALUE
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           12,   // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x83, // function code + 80
+                           0x03  // ILLEGAL DATA VALUE
+                       }),
+                       __func__);
+
+    // Cycle 2: registers 7..11 are now AVAILABLE → batched
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x07, // starting address Lo
+                           0x00, // quantity Hi
+                           0x05, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x0A, // byte count
+                           0x00, // data Hi 7
+                           0x0a, // data Lo 7
+                           0x00, // data Hi 8
+                           0x14, // data Lo 8
+                           0x00, // data Hi 9
+                           0x1E, // data Lo 9
+                           0x00, // data Hi 10
+                           0x01, // data Lo 10
+                           0x00, // data Hi 11
+                           0x02  // data Lo 11
+                       }),
+                       __func__);
+
+    // Cycle 2: register 12 is still UNKNOWN → polled individually, fails again
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           12,   // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x83, // function code + 80
+                           0x03  // ILLEGAL DATA VALUE
+                       }),
+                       __func__);
+}
+
 // read holding registers [7 - 8], [9 - 12]
 void TModbusExpectations::EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
 {

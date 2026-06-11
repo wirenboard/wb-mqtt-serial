@@ -33,7 +33,7 @@ COMMON_SRCS := $(shell find $(SRC_DIR) $(GURUX_SRC) \( -name "*.cpp" -or -name "
 COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
 LDFLAGS = -lpthread -lwbmqtt1 -lstdc++fs -lcurl
-CXXFLAGS = -std=c++17 -Wall -Werror -I$(SRC_DIR) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
+CXXFLAGS = -std=c++20 -Wall -Werror -I$(SRC_DIR) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
 
 ifeq ($(DEBUG),)
 	CXXFLAGS += -O3 -DNDEBUG

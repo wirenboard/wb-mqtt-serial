@@ -336,7 +336,18 @@
             {% endfor -%}
             {% endfor -%}
             {% endfor -%}
-
+            "outputs_buzzer_beep_duration": {
+                "title": "Buzzer Beep Duration When Leak Detected (s)",
+                "description": "buzzer_beep_duration_description",
+                "address": 954,
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "max": 60,
+                "group": "outputs",
+                "fw": "1.25.0",
+                "order": 1
+            },
             "outputs_restore_state": {
                 "title": "Relays State After Power On",
                 "description": "relays_state_after_poweron_description",
@@ -346,7 +357,7 @@
                 "default": 0,
                 "enum_titles": ["Switch to safety state", "Restore last state"],
                 "group": "outputs",
-                "order": 1
+                "order": 2
             },
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
@@ -637,7 +648,7 @@
                 "mapping_matrix_actions_description": "Assignment of action for \"Wet cleaning\" mode is available starting from firmware version 1.21.0",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
                 "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
-
+                "buzzer_beep_duration_description": "0...60, default: 0 (without timeout)",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
                 "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
@@ -717,6 +728,7 @@
                 "on": "включить",
                 "toggle": "переключить",
 
+                "Buzzer Beep Duration When Leak Detected (s)": "Длительность звукового сигнала при обнаружении протечки (с)",
                 "Relays State After Power On": "Состояния реле при подаче питания",
                 "Restore last state": "Восстановить последнее состояние",
                 "Safe State": "Безопасное состояние",
@@ -740,6 +752,7 @@
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
                 "Relays State After Power On": "Состояния реле при подаче питания",
                 "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\"",
+                "buzzer_beep_duration_description": "0...60, по умолчанию: 0 (без таймаута)",
 
                 "Short Press": "Короткое нажатие",
                 "Long Press": "Длинное нажатие",
