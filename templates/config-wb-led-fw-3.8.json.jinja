@@ -76,13 +76,13 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
-            {# объявим группы входов -#}
+            {# declare input groups -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{in_num}}",
                 "id": "g_input_{{in_num}}"
             },
-            {# объявим группы типов нажатий и группы кнопок с фиксациями -#}
+            {# declare press-type groups and latching-button groups -#}
             {% for name_action in ["sp", "lp", "dp", "slp", "switch_on", "switch_off"] -%}
             {
                 "title": "Action_{{ name_action }}",
@@ -115,12 +115,12 @@
 
             },
 
-            {# объявим группы выходов -#}
+            {# declare output groups -#}
             {
                 "title": "Outputs",
                 "id": "g_outputs"
             },
-            {# объявим группу автоматического плавного изменения значений каналов -#}
+            {# declare the group for automatic smooth change of channel values -#}
             {
                 "title": "Auto-Change",
                 "id": "g_auto_change",
@@ -141,19 +141,19 @@
                     }
                 }
             },
-            {# объявим группу безопасных режимов -#}
+            {# declare the safe-modes group -#}
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
                 "description": "g_safety_description"
             },
-            {# объявим группу действий при включении питания -#}
+            {# declare the power-on actions group -#}
             {
                 "title": "Power Up Behaviour",
                 "id": "g_power_up_behaviour",
                 "description": "g_power_up_behaviour_description"
             },
-            {# объявим группу внутри группы безопасных режимов куда будут помещены действия по каналам, которые зависят от режима работы диммера -#}
+            {# declare a group inside the safe-modes group that will hold per-channel actions depending on the dimmer operating mode -#}
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
@@ -223,7 +223,7 @@
                 "title": "Debug",
                 "id": "g_debug"
             },
-            {# объявим группы каналов входов -#}
+            {# declare input channel groups -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "params",
@@ -235,7 +235,7 @@
                     }
                 }
             },
-            {# объявим группу внутри группы входа в которую войдут настройки опросов -#}
+            {# declare a group inside the input group that will hold polling settings -#}
             {
                 "title": "Input {{in_num}} Channels",
                 "id": "gg_in_{{in_num}}_channels",
@@ -246,7 +246,7 @@
                     }
                 }
             },
-            {# объявим группы входов с типом switch -#}
+            {# declare input groups of switch type -#}
             {% for sw_act in ["off", "on"] -%}
             {
                 "title": "Input {{in_num}} Switch {{sw_act}} Channels",
@@ -314,7 +314,7 @@
         ],
 
         "parameters": [
-            {# опишем режимы работы диммера -#}
+            {# describe the dimmer operating modes -#}
             {
                 "id": "dimmer_mode",
                 "title": "Dimmer Mode",
@@ -340,7 +340,7 @@
                 "order": 1,
                 "required": true
             },
-            {# опишем варианты режимы работы входа: кнопка, переключатель с фиксацией -#}
+            {# describe the input operating modes: button, latching switch -#}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((ch_number - 1) // 2) + 1 -%}
             {
@@ -361,7 +361,7 @@
                 {%- endif %}
             },
             {% endfor -%}
-            {# опишем все варианты входа в группах входов, зависящих от режима работы диммера и типа входа (кнопка, переключатель с фиксацией) -#}
+            {# describe all input variants in the input groups, depending on the dimmer operating mode and the input type (button, latching switch) -#}
             {% set dimmer_mode = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768] -%}
             {% set action_code =
                 [
@@ -388,7 +388,7 @@
                 ]
             -%}
             {% set name_actions = ["sp", "lp", "dp", "slp"] -%}
-            {# зависит от режима работы диммера от 0 до 12 и от типа нажатия, описаны строкой выше #}
+            {# depends on the dimmer operating mode (0 to 12) and the press type, described in the line above #}
             {% set enum = [
                 [
                     [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291, 36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963],
@@ -495,7 +495,7 @@
             {%- endfor %}
             {%- endfor %}
 
-            {#- Шаг диммирования для одиночных и двойных нажатий -#}
+            {#- Dimming step for single and double presses -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
@@ -515,7 +515,7 @@
             {% endfor %}
             {%- endfor -%}
 
-            {#- Настройка действий для переключателей -#}
+            {#- Action settings for switches -#}
             {% set modes_list = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768] -%}
             {% set switch_act_channels = [
                 {   "value": 0,     "title": "no_act_title",                    "modes": modes_list     },
@@ -596,8 +596,8 @@
             {% endfor -%}
             {%- endfor -%}
 
-            {# Энкодеры -#}
-            {# Все доступные для управления каналы -#}
+            {# Encoders -#}
+            {# All channels available for control -#}
             {% set enc_ctrl_ch_titles = [
                 "No Control",
                 "Channel 1 Brightness",
@@ -621,7 +621,7 @@
                 "CCT1, CCT2 Temperature",
                 "CCT1, CCT2 Brightness"
                 ] -%}
-            {# Конфигурация доступных каналов для каждого режима диммера -#}
+            {# Configuration of available channels for each dimmer mode -#}
             {% set enc_ctrl_ch_configs = [
                 {
                     'mode': 0,
@@ -701,7 +701,7 @@
                 "max": 65535,
                 "condition": "(encoder_{{enc_num}}_mode==1)"
             },
-            {# Создаём несколько блоков ctrl_ch для разных режимов диммера -#}
+            {# Create several ctrl_ch blocks for different dimmer modes -#}
             {% for config in enc_ctrl_ch_configs -%}
             {
                 "id": "encoder_{{enc_num}}_ctrl_ch",
@@ -760,7 +760,7 @@
             },
             {% endfor %}
 
-            {# опишем все W* варианты в группе выхода -#}
+            {# describe all W* variants in the output group -#}
             {% set conditions = [
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
@@ -771,9 +771,9 @@
                 "dimmer_mode==512"
                 ] -%}
             {% set type_name = ['w1', 'w2', 'w3', 'w4', 'w1_w2', 'w3_w4', 'w1_w2_w3_w4'] -%}
-            {% set order = [1, 2, 3, 4, 1, 3, 1] -%}    {# порядок отображения на странице -#}
-            {% for inc_dec in ['inc', 'dec'] -%}        {# два варианта: "увеличение", "уменьшение" -#}
-            {% set ptr = loop.index0 * 100 -%}          {# "уменьшение" смещено на 100 -#}
+            {% set order = [1, 2, 3, 4, 1, 3, 1] -%}    {# display order on the page -#}
+            {% for inc_dec in ['inc', 'dec'] -%}        {# two variants: "increase", "decrease" -#}
+            {% set ptr = loop.index0 * 100 -%}          {# "decrease" is offset by 100 -#}
             {% for type_action in [
                 'Channel 1 Brightness',
                 'Channel 2 Brightness',
@@ -796,7 +796,7 @@
                 "condition": "{{conditions[loop.index0]}}"
             },
             {% endfor -%}
-            {# опишем все CCT* варианты -#}
+            {# describe all CCT* variants -#}
             {% set conditions = [
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
@@ -818,7 +818,7 @@
                 "condition": "{{conditions[loop.index0]}}"
             },
             {% endfor -%}
-            {# опишем RGB варианты -#}
+            {# describe the RGB variants -#}
             {% set type_name = ['rgb_s', 'rgb_v'] -%}
             {% set order = [1, 2] -%}
             {% for title in ['Saturation', 'Brightness'] -%}
@@ -865,7 +865,7 @@
                 "max": 30000,
                 "condition": "dimmer_mode==256"
             },
-            {# режим работы CCT лент -#}
+            {# CCT strip operating mode -#}
             {% set order = [1, 2, 3] -%}
             {% set conditions = [
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
@@ -891,11 +891,11 @@
                 "condition": "{{conditions[loop.index0]}}"
             },
             {% endfor -%}
-            {# опишем в группе входов настройки входа (зависит от типа входа кнопка или переключатель с фиксацией):
-               время нажатия длится больше указанного времени - считаем его длинным
-               время повторного нажатия
-               время второго нажатия - если не было - считаем нажатие одиночным
-               время дебонса
+            {# describe the input settings in the input group (depends on the input type: button or latching switch):
+               if the press lasts longer than the specified time - treat it as a long press
+               repeat-press time
+               second-press time - if there was none - treat the press as single
+               debounce time
                  -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
@@ -952,7 +952,7 @@
                 "max": 200
             },
             {% endfor -%}
-            {# опишем в группе выхода настройки выходов, такие как минимальный ШИМ, максимальный ШИМ -#}
+            {# describe the output settings in the output group, such as minimum PWM, maximum PWM -#}
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "ch{{ch_number}}_min",
@@ -991,7 +991,7 @@
                 "min": 1,
                 "max": 240
             },
-            {# опишем в группе безопасные режимы настройки выходов, зависящих от выбранного режима работы диммера -#}
+            {# describe the output settings in the safe-modes group, depending on the selected dimmer operating mode -#}
             {
                 "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
@@ -1019,7 +1019,7 @@
             "4*W"               512
             #}
 
-            {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты W* -#}
+            {# fill in all W* variants on the safe-modes tab and the power-on actions tab -#}
             {% set conditions = [
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
                 "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
@@ -1029,7 +1029,7 @@
                 "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
                 "dimmer_mode==512",
                 ] -%}
-            {% set ptr = [1, 2, 3, 4,  1, 3,  1] -%}    {#- смещение регистров, специально разделено пробелами и соответствует строке ниже -#}
+            {% set ptr = [1, 2, 3, 4,  1, 3,  1] -%}    {#- register offset, intentionally spaced out to match the line below -#}
             {% for type_action in ['1', '2', '3', '4',  '1_2', '3_4',  '1_2_3_4'] -%}
             {
                 "id": "safety_mode_ch_{{type_action}}_action",
@@ -1088,7 +1088,7 @@
                 "condition": "(({{conditions[loop.index0]}})&&(powerup_mode_ch_{{type_action}}_action==3))"
             },
             {% endfor -%}
-            {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты CCT* -#}
+            {# fill in all CCT* variants on the safe-modes tab and the power-on actions tab -#}
             {% set conditions = [
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
@@ -1099,7 +1099,7 @@
                 ] -%}
             {% set groups = ['CCT1', 'CCT1', 'CCT2', 'CCT2', 'CCT1_CCT2', 'CCT1_CCT2'] -%}
             {% for type_action in ['CCT1_TEMP', 'CCT1_BR', 'CCT2_TEMP', 'CCT2_BR', 'CCT1_CCT2_TEMP', 'CCT1_CCT2_BR'] -%}
-            {% set ptr = [1, 2, 3, 4,  1, 2] -%}    {#- смещение регистров, соответствует строке выше -#}
+            {% set ptr = [1, 2, 3, 4,  1, 2] -%}    {#- register offset, matches the line above -#}
             {
                 "id": "safety_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
@@ -1183,7 +1183,7 @@
                 "condition": "({{conditions[loop.index0]}})&&(powerup_mode_ch_{{type_action}}_action==3)"
             },
             {% endfor -%}
-            {# заполним во вкладке безопасные режимы и во вкладке действий при включении RGB варианты -#}
+            {# fill in the RGB variants on the safe-modes tab and the power-on actions tab -#}
             {% set titles = ["Hue", "Saturation", "Brightness"]%}
             {% for type_action in ['RGB_H', 'RGB_S', 'RGB_V'] -%}
             {
@@ -1307,7 +1307,7 @@
                 "group": "gggg_power_up_behaviour_ch_RGB_V",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_V_action==3)"
             },
-            {# опишем в группе безопасные режимы, то как будут работать кнопки -#}
+            {# describe in the safe-modes group how the buttons will work -#}
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "id": "in_{{in_number}}_safety_input_control",

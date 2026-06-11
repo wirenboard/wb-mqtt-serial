@@ -350,8 +350,8 @@
             },
             {% endfor -%}
 
-            {# Энкодеры -#}
-            {# Все доступные для управления каналы -#}
+            {# Encoders -#}
+            {# All channels available for control -#}
             {% set enc_ctrl_ch_titles = [
                 "No Control",
                 "Channel 1 (B) Brightness",
@@ -375,7 +375,7 @@
                 "CCT1, CCT2 Temperature",
                 "CCT1, CCT2 Brightness"
                 ] -%}
-            {# Конфигурация доступных каналов для каждого режима диммера -#}
+            {# Configuration of available channels for each dimmer mode -#}
             {% set enc_ctrl_ch_configs = [
                 {
                     'mode': 0,
@@ -455,7 +455,7 @@
                 "max": 65535,
                 "condition": "(encoder_{{enc_num}}_mode==1)"
             },
-            {# Создаём несколько блоков ctrl_ch для разных режимов диммера -#}
+            {# Create several ctrl_ch blocks for different dimmer modes -#}
             {% for config in enc_ctrl_ch_configs -%}
             {
                 "id": "encoder_{{enc_num}}_ctrl_ch",
@@ -871,7 +871,7 @@
                 "condition": "dimmer_mode==768"
             },
             {% endfor -%}
-            {# режим работы CCT лент -#}
+            {# CCT strip operating mode -#}
             {% set order = [1, 2, 3] -%}
             {% set conditions = [
                 "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
@@ -2504,7 +2504,7 @@
 
             {% endfor -%}
 
-            {#- Шаг диммирования для одиночных и двойных нажатий -#}
+            {#- Dimming step for single and double presses -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
