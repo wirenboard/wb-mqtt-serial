@@ -31,7 +31,7 @@ template<class Dev> class TModbusDeviceFactory: public IDeviceFactory
 
 public:
     TModbusDeviceFactory(std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory)
-        : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(2),
+        : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(2, /*restrictWriteAddress=*/true),
                          "#/definitions/simple_device_with_setup",
                          "#/definitions/common_channel_modbus"),
           ModbusTraitsFactory(std::move(modbusTraitsFactory))
@@ -42,6 +42,9 @@ public:
         TModbusDeviceConfig config;
         config.CommonConfig = deviceConfig;
         WBMQTT::JSON::Get(data, "enable_wb_continuous_read", config.EnableWbContinuousRead);
+        WBMQTT::JSON::Get(data,
+                          "continue_polling_on_illegal_modbus_exception",
+                          deviceConfig->ContinuePollingOnIllegalModbusException);
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 

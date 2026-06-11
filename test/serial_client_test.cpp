@@ -1084,7 +1084,7 @@ void TSerialClientIntegrationTest::SetUp()
         rpcConfig,
         PortsSchema,
         *ProtocolSchemas,
-        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
+        [=, this](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
 
     FixFakeDevices(Config);
 }
@@ -1490,7 +1490,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     TTemplateMap t;
 
-    auto factory = [=](const Json::Value& port_data, PRPCConfig rpcConfig) -> PFeaturePort {
+    auto factory = [=, this](const Json::Value& port_data, PRPCConfig rpcConfig) -> PFeaturePort {
         auto path = port_data["path"].asString();
         return std::make_shared<TFeaturePort>(std::make_shared<TFakeSerialPort>(*this, path, false), false);
     };
@@ -1602,7 +1602,7 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
         rpcConfig,
         PortsSchema,
         *ProtocolSchemas,
-        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
+        [=, this](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     FilterConfig("RPCTest");
@@ -1672,7 +1672,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                    rpcConfig,
                    PortsSchema,
                    *ProtocolSchemas,
-                   [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+                   [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     if (pollIntervalTest) {
@@ -1775,7 +1775,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                    rpcConfig,
                    PortsSchema,
                    *ProtocolSchemas,
-                   [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+                   [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2006,7 +2006,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
                    rpcConfig,
                    PortsSchema,
                    *ProtocolSchemas,
-                   [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+                   [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2038,7 +2038,7 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
                    rpcConfig,
                    PortsSchema,
                    *ProtocolSchemas,
-                   [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+                   [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2068,7 +2068,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectAfterNetworkDisconnect)
                    rpcConfig,
                    PortsSchema,
                    *ProtocolSchemas,
-                   [=](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+                   [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);

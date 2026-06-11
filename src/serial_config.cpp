@@ -1060,6 +1060,7 @@ void LoadCommonDeviceParameters(TDeviceConfig& device_config, const Json::Value&
     Get(device_data, "shift", device_config.Shift);
     Get(device_data, "access_level", device_config.AccessLevel);
     Get(device_data, "min_request_interval", device_config.MinRequestInterval);
+    Get(device_data, "preserve_setup_order", device_config.PreserveSetupOrder);
 }
 
 PDeviceConfig LoadDeviceConfig(const Json::Value& dev,
@@ -1232,9 +1233,10 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
     return res;
 }
 
-TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister)
+TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister, bool restrictWriteAddress)
     : BaseRegisterAddress(0),
-      BytesPerRegister(bytesPerRegister)
+      BytesPerRegister(bytesPerRegister),
+      RestrictWriteAddress(restrictWriteAddress)
 {}
 
 TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Value& regCfg,
@@ -1254,6 +1256,15 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
     }
     if (HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
         auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
+        if (RestrictWriteAddress && writeAddress.BitWidth != 0) {
+            if (!res.Address) {
+                throw TConfigParserException(
+                    "\"write_address\" with bit offset/width requires \"address\" to read the other bits");
+            }
+            if (writeAddress.BitOffset != res.DataOffset || writeAddress.BitWidth != res.DataWidth) {
+                throw TConfigParserException("Bit offset/width in \"write_address\" must match \"address\"");
+            }
+        }
         res.WriteAddress = std::shared_ptr<IRegisterAddress>(
             deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
     }

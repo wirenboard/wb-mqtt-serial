@@ -1,9 +1,9 @@
-{% set title_en = title_en | default("WB-MCM8-HV (8 discrete 230V AC voltage presence detection inputs)") -%}
-{% set title_ru = title_ru | default("WB-MCM8-HV (8-канальный модуль-детектор наличия сетевого напряжения 230 В)") -%}
-{% set device_type = device_type | default("WB-MCM8-HV") -%}
+{% set title_en = title_en | default("WB-MCM8HV (8 discrete 220V AC voltage presence detection inputs)") -%}
+{% set title_ru = title_ru | default("WB-MCM8HV (8-канальный модуль-детектор наличия сетевого напряжения 220В)") -%}
+{% set device_type = device_type | default("WB-MCM8HV") -%}
 {% set group = group | default("g-wb") -%}
-{% set device_name = device_name | default("WB-MCM8-HV") -%}
-{% set device_id = device_id | default("wb-mcm8-hv") -%}
+{% set device_name = device_name | default("WB-MCM8HV") -%}
+{% set device_id = device_id | default("wb-mcm8hv") -%}
 {% set has_signature = has_signature | default(true) -%}
 
 {% set INPUTS_NUMBER = 8 -%}
@@ -15,7 +15,7 @@
 {% if has_signature %}
     "hw": [
         {
-            "signature": "WB-MCM8-HV"
+            "signature": "WB-MCM8HV"
         }
     ],
 {% endif %}

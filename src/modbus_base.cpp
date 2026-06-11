@@ -153,7 +153,7 @@ Modbus::TModbusRTUTraits::TModbusRTUTraits(bool forceFrameTimeout): IModbusTrait
 
 TPort::TFrameCompletePred Modbus::TModbusRTUTraits::ExpectNBytes(size_t n) const
 {
-    return [=](uint8_t* buf, size_t size) {
+    return [=, this](uint8_t* buf, size_t size) {
         if (size < 2)
             return false;
         if (IsException(buf[1])) // GetPDU

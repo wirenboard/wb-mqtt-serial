@@ -126,6 +126,16 @@ struct TDeviceConfig
     int Shift = 0;
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
 
+    //! If true, setup items are written to the device in the order they are
+    //! defined in the template instead of being sorted by register type/address.
+    bool PreserveSetupOrder = false;
+
+    //! If true, registers that reply with a Modbus "illegal" exception
+    //! (ILLEGAL_FUNCTION / ILLEGAL_DATA_ADDRESS / ILLEGAL_DATA_VALUE) stay
+    //! in the polling list and are continuously reported with ReadError
+    //! instead of being permanently excluded.
+    bool ContinuePollingOnIllegalModbusException = false;
+
     explicit TDeviceConfig(const std::string& name = "",
                            const std::string& slave_id = "",
                            const std::string& protocol = "");
@@ -144,6 +154,7 @@ public:
     std::string HumanReadableValue;
     PRegisterConfig RegisterConfig;
     PSerialDevice Device;
+    size_t Order;
 
     TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device);
     std::string ToString();

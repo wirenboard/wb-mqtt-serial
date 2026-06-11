@@ -37,7 +37,8 @@ TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice 
       RawValue(config->GetRawValue()),
       HumanReadableValue(config->GetValue()),
       RegisterConfig(config->GetRegisterConfig()),
-      Device(device)
+      Device(device),
+      Order(device ? device->GetSetupItems().size() : 0)
 {}
 
 std::string TDeviceSetupItem::ToString()
@@ -55,6 +56,9 @@ std::string TDeviceSetupItem::ToString()
 
 bool TDeviceSetupItemComparePredicate::operator()(const PDeviceSetupItem& a, const PDeviceSetupItem& b) const
 {
+    if (a->Device && a->Device->DeviceConfig()->PreserveSetupOrder) {
+        return a->Order < b->Order;
+    }
     if (a->RegisterConfig->Type != b->RegisterConfig->Type) {
         return a->RegisterConfig->Type < b->RegisterConfig->Type;
     }

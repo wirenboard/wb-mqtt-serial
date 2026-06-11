@@ -187,6 +187,14 @@
           "minimum": 0,
           "default": 600,
           "propertyOrder": 113
+        },
+        "preserve_setup_order": {
+          "type": "boolean",
+          "title": "Preserve setup items order",
+          "description": "preserve_setup_order_desc",
+          "default": false,
+          "format": "checkbox",
+          "propertyOrder": 115
         }
       }
     },
@@ -1169,6 +1177,13 @@
           "type": "boolean",
           "default": false,
           "propertyOrder": 9
+        },
+        "continue_polling_on_illegal_modbus_exception": {
+          "title": "Continue polling on illegal Modbus exception",
+          "description": "continue_polling_on_illegal_modbus_exception_desc",
+          "type": "boolean",
+          "default": false,
+          "propertyOrder": 10
         }
       }
     }
@@ -1191,7 +1206,8 @@
       "semi_sporadic_description": "If a protocol allows, the register change is sent by a special event. At the same time, periodic polling continues",
       "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped.",
       "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue",
-      "hidden_channel_description": "Hidden channels are not displayed in UI, but are published in MQTT. They are useful for channels that are needed for internal purposes, but should not be exposed to users directly"
+      "hidden_channel_description": "Hidden channels are not displayed in UI, but are published in MQTT. They are useful for channels that are needed for internal purposes, but should not be exposed to users directly",
+      "preserve_setup_order_desc": "If enabled, setup items are written to the device in the order they are defined in the template. Otherwise items are sorted by register type and address."
     },
     "ru": {
       "Response timeout (ms)": "Таймаут ответа (мс)",
@@ -1346,7 +1362,9 @@
       "Should be hex with prefix '0x'": "Задайте шестнадцатеричное значение с префиксом '0x'",
       "Register address": "Адрес регистра",
       "Hidden": "Скрытый",
-      "hidden_channel_description": "Канал не отображается в интерфейсе, но публикуется в MQTT. Это полезно для каналов, которые нужны для внутренних целей, но не должны быть доступны пользователям напрямую"
+      "hidden_channel_description": "Канал не отображается в интерфейсе, но публикуется в MQTT. Это полезно для каналов, которые нужны для внутренних целей, но не должны быть доступны пользователям напрямую",
+      "Preserve setup items order": "Сохранять порядок параметров настройки",
+      "preserve_setup_order_desc": "Если включено, параметры настройки записываются в устройство в том порядке, в котором они заданы в шаблоне. Иначе параметры сортируются по типу регистра и адресу."
     }
   }
 }

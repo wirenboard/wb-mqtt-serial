@@ -343,6 +343,36 @@ TEST_F(TConfigParserTest, DefaultParamsForSetupItems)
     }
 }
 
+TEST_F(TConfigParserTest, PreserveSetupOrder)
+{
+    auto portConfigs = GetConfig("configs/parse_test_preserve_setup_order.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    EXPECT_TRUE(devices[0]->Device->DeviceConfig()->PreserveSetupOrder);
+
+    auto setupItems = devices[0]->Device->GetSetupItems();
+    EXPECT_EQ(setupItems.size(), 3);
+
+    std::vector<std::string> names;
+    for (const auto& item: setupItems) {
+        names.push_back(item->Name);
+    }
+    EXPECT_EQ(names, (std::vector<std::string>{"s_third", "s_first", "s_second"}));
+}
+
+TEST_F(TConfigParserTest, ContinuePollingOnIllegalModbusException)
+{
+    auto portConfigs =
+        GetConfig("configs/config-modbus-continue-polling-on-illegal-modbus-exception.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    EXPECT_TRUE(devices[0]->Device->DeviceConfig()->ContinuePollingOnIllegalModbusException);
+}
+
 TEST_F(TConfigParserTest, BigIntegers)
 {
     auto portConfigs = GetConfig("configs/config-big-integers.json")->PortConfigs;

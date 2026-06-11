@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.242.1) stable; urgency=medium
+wb-mqtt-serial (2.254.0) stable; urgency=medium
 
   * Add new templates for WB-MDM3 (fw 2.12) and WB-MAO4 (fw 2.9):
     [ Maxim Toropov ]
@@ -9,6 +9,171 @@ wb-mqtt-serial (2.242.1) stable; urgency=medium
   * Add duplicate control channels with auto-on
 
  -- Egor Panchenko <egor.panchenko@wirenboard.com>  Thu, 11 Jun 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.253.0) stable; urgency=medium
+
+  * MWAC templates: Add buzzer beep duration parameter
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 08 Jun 2026 17:35:00 +0300
+
+wb-mqtt-serial (2.252.0) stable; urgency=medium
+
+  * Add Carel µC2SE and IR33 templates (via WB-REF-U)
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 03 Jun 2026 09:26:50 +0300
+
+wb-mqtt-serial (2.251.0) stable; urgency=medium
+
+  * Port for Debian 13
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 02 Jun 2026 16:20:00 +0400
+
+wb-mqtt-serial (2.250.1) stable; urgency=medium
+
+  * Fix WB-LED and WB-MRGBW-D fw3 templates: use 'sporadic' type for some output registers
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Wed, 27 May 2026 17:35:00 +0300
+
+wb-mqtt-serial (2.250.0) stable; urgency=medium
+
+  * Add continue_polling_on_illegal_modbus_exception device configuration option.
+    It keeps registers that return ILLEGAL_DATA_VALUE in polling instead of excluding them.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 19 May 2026 17:30:18 +0500
+
+wb-mqtt-serial (2.249.0) stable; urgency=medium
+
+  * config-wb-mrwm2.json.jinja: Add timer functions
+  * MR templates: Add condition for restart delay
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 18 May 2026 10:13:00 +0300
+
+wb-mqtt-serial (2.248.1) stable; urgency=medium
+
+  * Fix race condition on gethostbyname() when starting TCP ports
+  * Fix units typo in logs
+    Co-authored by: Claude Opus 4.7
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Thu, 14 May 2026 15:23:00 +0300
+
+wb-mqtt-serial (2.248.0) stable; urgency=medium
+
+  * Add WB-MAI6 new template with measurement registers in order
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 14 May 2026 16:18:00 +0700
+
+wb-mqtt-serial (2.247.1) stable; urgency=medium
+
+  * Add write_address bits validation
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 May 2026 16:23:12 +0500
+
+wb-mqtt-serial (2.247.0) stable; urgency=medium
+
+  * MS, MSW templates: Add RC filter time constant
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 12 May 2026 11:27:00 +0300
+
+wb-mqtt-serial (2.246.1) stable; urgency=medium
+
+  * Apply preserve_setup_order and max_write_registers=1 to WBIO
+    modbus_io templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 08 May 2026 09:55:28 +0300
+
+wb-mqtt-serial (2.246.0) stable; urgency=medium
+
+  * templates/config-wb-mwac2_ver2.json.jinja:
+    - Add "Cleaning Mode Remaining Time" channel
+    - Add support for antiseize protection function
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 07 May 2026 11:01:00 +0300
+
+wb-mqtt-serial (2.245.0) stable; urgency=medium
+
+  * MS, MSW templates: Add channels for absolute humidity and dew point
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 06 May 2026 13:07:00 +0300
+
+wb-mqtt-serial (2.244.0) stable; urgency=medium
+
+  * Add "preserve_setup_order" device template option
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 6 May 2026 10:57:01 +0300
+
+wb-mqtt-serial (2.243.0) stable; urgency=medium
+
+  * Add template for rielta-brshs-rk
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 4 May 2026 10:00:00 +0300
+
+wb-mqtt-serial (2.242.7) stable; urgency=medium
+
+  * Templates map3e-fw2, map3et, map3ev: fix uptime title translate
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Thu, 5 May 2026 14:00:00 +0300
+
+wb-mqtt-serial (2.242.6) stable; urgency=medium
+
+  * Fix unexpected channel publishes if a device has only sporadic channels
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 04 May 2026 19:48:06 +0500
+
+wb-mqtt-serial (2.242.5) stable; urgency=medium
+
+  * Rename WB-MCM8-HV to WB-MCM8HV
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 4 May 2026 18:02:30 +0700
+
+wb-mqtt-serial (2.242.4) stable; urgency=medium
+
+  * Template map6s-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 13:00:00 +0300
+
+wb-mqtt-serial (2.242.3) stable; urgency=medium
+
+  * Template map3et: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.242.2) stable; urgency=medium
+
+  * Template map3ev: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Fri, 1 May 2026 11:00:00 +0300
+
+wb-mqtt-serial (2.242.1) stable; urgency=medium
+
+  * Template map3e-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Thu, 30 Apr 2026 18:00:00 +0300
+
+wb-mqtt-serial (2.242.0) stable; urgency=medium
+
+  * Template map12e-fw2: change types to 'value' and add units
+
+ -- Vitalii Gaponov <vitalii.gaponov@wirenboard.com>  Thu, 30 Apr 2026 17:00:00 +0300
+
+wb-mqtt-serial (2.241.1) stable; urgency=medium
+
+  * Fix WB-MWAC v.2 time sync.
+    WB-MWAC does not have timezone information.
+    To reflect the actual local time in the device, the time is sent as UTC time with local time values.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 29 Apr 2026 21:06:12 +0500
+
+wb-mqtt-serial (2.241.0) stable; urgency=medium
+
+  * Add Milur 107S Template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 28 Apr 2026 17:28:00 +0300
+
+wb-mqtt-serial (2.240.1) stable; urgency=medium
+
+  * Remove WB-M1W2 multiple w1 template
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 28 Apr 2026 11:50:00 +0700
 
 wb-mqtt-serial (2.240.0) stable; urgency=medium
 
