@@ -271,8 +271,22 @@
                 "group": "general",
                 "order": 1
             },
+            "peak_detection_period_ms": {
+                "title": "Peak Detection Period (ms)",
+                "description": "peak_detection_period_ms_description",
+                "address": "0x10F4",
+                "reg_type": "holding",
+                "fw": "2.13.0",
+                "format": "u16",
+                "min": 1,
+                "max": 255,
+                "default": 20,
+                "group": "general",
+                "order": 2
+            },
             "peaks_measurement_period_s": {
                 "title": "Peaks Measurement Period (s)",
+                "description": "peaks_measurement_period_s_description",
                 "address": "0x10F0",
                 "reg_type": "holding",
                 "format": "u16",
@@ -280,7 +294,7 @@
                 "default": 60,
                 "group": "general",
                 "fw": "2.3.0",
-                "order": 2
+                "order": 3
             }
         },
 
@@ -308,6 +322,20 @@
                 "word_order": "little_endian",
                 "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_1"
+            },
+            {
+                "name": "Ipeak 1 inst",
+                "reg_type": "input",
+                "address": "0x180c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "channel_1",
+                "enabled": false
             },
             {
                 "name": "P 1",
@@ -474,6 +502,20 @@
                 "group": "channel_2"
             },
             {
+                "name": "Ipeak 2 inst",
+                "reg_type": "input",
+                "address": "0x180a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "channel_2",
+                "enabled": false
+            },
+            {
                 "name": "P 2",
                 "reg_type": "input",
                 "address": "0x1304",
@@ -636,6 +678,20 @@
                 "word_order": "little_endian",
                 "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_3"
+            },
+            {
+                "name": "Ipeak 3 inst",
+                "reg_type": "input",
+                "address": "0x1808",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "channel_3",
+                "enabled": false
             },
             {
                 "name": "P 3",
@@ -802,6 +858,20 @@
                 "group": "channel_4"
             },
             {
+                "name": "Ipeak 4 inst",
+                "reg_type": "input",
+                "address": "0x280c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "channel_4",
+                "enabled": false
+            },
+            {
                 "name": "P 4",
                 "reg_type": "input",
                 "address": "0x2306",
@@ -966,6 +1036,20 @@
                 "group": "channel_5"
             },
             {
+                "name": "Ipeak 5 inst",
+                "reg_type": "input",
+                "address": "0x280a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "channel_5",
+                "enabled": false
+            },
+            {
                 "name": "P 5",
                 "reg_type": "input",
                 "address": "0x2304",
@@ -1128,6 +1212,20 @@
                 "word_order": "little_endian",
                 "unsupported_value": "0xFFFEFFFE",
                 "group": "channel_6"
+            },
+            {
+                "name": "Ipeak 6 inst",
+                "reg_type": "input",
+                "address": "0x2808",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "channel_6",
+                "enabled": false
             },
             {
                 "name": "P 6",
@@ -1296,6 +1394,21 @@
                 "group": "general"
             },
             {
+                "name": "Upeak inst",
+                "reg_type": "input",
+                "address": "0x1800",
+                "type": "value",
+                "units": "V",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "general",
+                "enabled": false
+            },
+            {
                 "name": "Frequency",
                 "reg_type": "input",
                 "address": "0x10f8",
@@ -1380,12 +1493,29 @@
         ],
         "translations": {
             "en": {
+                "Ipeak 1": "Ipeak 1 aggr",
+                "Ipeak 2": "Ipeak 2 aggr",
+                "Ipeak 3": "Ipeak 3 aggr",
+                "Ipeak 4": "Ipeak 4 aggr",
+                "Ipeak 5": "Ipeak 5 aggr",
+                "Ipeak 6": "Ipeak 6 aggr",
+                "Upeak": "Upeak aggr",
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
-                "Uptime": "Uptime"
+                "Uptime": "Uptime",
+                "Peaks Measurement Period (s)": "Peaks Aggregation Period (s)",
+                "peak_detection_period_ms_description": "Hardware window over which the meter captures the peak (maximum) instantaneous voltage and current of each channel; voltage and current peaks are detected independently.",
+                "peaks_measurement_period_s_description": "Interval at which the accumulated peak (maximum) voltage and current values are updated, after which the running maximums are reset."
             },
             "ru": {
+                "Ipeak 1": "Ipeak 1 aggr",
+                "Ipeak 2": "Ipeak 2 aggr",
+                "Ipeak 3": "Ipeak 3 aggr",
+                "Ipeak 4": "Ipeak 4 aggr",
+                "Ipeak 5": "Ipeak 5 aggr",
+                "Ipeak 6": "Ipeak 6 aggr",
+                "Upeak": "Upeak aggr",
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (многоканальный счетчик электроэнергии)",
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",
@@ -1416,7 +1546,10 @@
                 "Current Transformer Reverse 6": "Инвертировать токовый трансформатор 6",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Peak Detection Period (ms)": "Период детектирования текущих пиковых значений (мс)",
+                "Peaks Measurement Period (s)": "Период агрегирования пиковых значений (с)",
+                "peak_detection_period_ms_description": "Аппаратное окно, в течение которого счётчик фиксирует пиковые (максимальные) мгновенные значения напряжения и тока по каждому каналу; пики напряжения и тока детектируются независимо.",
+                "peaks_measurement_period_s_description": "Интервал, с которым обновляются накопленные пиковые (максимальные) значения напряжения и тока, после чего текущие максимумы сбрасываются.",
                 "AP energy 1": "Энергия AP 1",
                 "RP energy 1": "Энергия RP 1",
                 "AN energy 1": "Энергия AN 1",

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.254.0) stable; urgency=medium
+
+  * MAP templates: Add peak detection period parameter and instant U/I values
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 15 Jun 2026 17:35:00 +0300
+
 wb-mqtt-serial (2.253.0) stable; urgency=medium
 
   * MWAC templates: Add buzzer beep duration parameter

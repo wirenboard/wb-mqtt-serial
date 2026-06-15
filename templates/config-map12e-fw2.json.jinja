@@ -206,8 +206,22 @@
                 "group": "general",
                 "order": 1
             },
+            "peak_detection_period_ms": {
+                "title": "Peak Detection Period (ms)",
+                "description": "peak_detection_period_ms_description",
+                "address": "0x10F4",
+                "reg_type": "holding",
+                "fw": "2.13.0",
+                "format": "u16",
+                "min": 1,
+                "max": 255,
+                "default": 20,
+                "group": "general",
+                "order": 2
+            },
             "peaks_measurement_period_s": {
                 "title": "Peaks Measurement Period (s)",
+                "description": "peaks_measurement_period_s_description",
                 "address": "0x10F0",
                 "reg_type": "holding",
                 "fw": "2.3.0",
@@ -215,7 +229,7 @@
                 "min": 1,
                 "default": 60,
                 "group": "general",
-                "order": 2
+                "order": 3
             },
             "phase_loss_detection": {
                 "title": "Phase loss detection",
@@ -230,7 +244,7 @@
                     "Enabled"
                 ],
                 "group": "general",
-                "order": 3
+                "order": 4
             }
         },
 
@@ -260,6 +274,20 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} Ipeak L1 inst",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(6152 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "units": "A",
+                "fw": "2.1",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l1",
+                "enabled": false
             },
             {
                 "name": "Ch {{ch_num}} P L1",
@@ -436,6 +464,20 @@
                 "group": "channel{{ch_num}}_l2"
             },
             {
+                "name": "Ch {{ch_num}} Ipeak L2 inst",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(6154 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "units": "A",
+                "fw": "2.1",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l2",
+                "enabled": false
+            },
+            {
                 "name": "Ch {{ch_num}} P L2",
                 "reg_type": "input",
                 "address": "0x{{"%x"|format(4868 + (ch_num - 1) * 4096)}}",
@@ -608,6 +650,20 @@
                 "round_to": 0.01,
                 "word_order": "little_endian",
                 "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} Ipeak L3 inst",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(6156 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "units": "A",
+                "fw": "2.1",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l3",
+                "enabled": false
             },
             {
                 "name": "Ch {{ch_num}} P L3",
@@ -938,6 +994,21 @@
                 "group": "l1"
             },
             {
+                "name": "Upeak L1 inst",
+                "reg_type": "input",
+                "address": "0x1800",
+                "type": "value",
+                "units": "V",
+                "fw": "2.1",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "group": "l1",
+                "enabled": false
+            },
+            {
                 "name": "Voltage angle L1",
                 "reg_type": "input",
                 "address": "0x10fd",
@@ -992,6 +1063,21 @@
                 "group": "l2"
             },
             {
+                "name": "Upeak L2 inst",
+                "reg_type": "input",
+                "address": "0x1802",
+                "type": "value",
+                "units": "V",
+                "fw": "2.1",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "group": "l2",
+                "enabled": false
+            },
+            {
                 "name": "Voltage angle L2",
                 "reg_type": "input",
                 "address": "0x10fe",
@@ -1044,6 +1130,21 @@
                 "word_order": "little_endian",
                 "error_value": "0x7FFFFFFF",
                 "group": "l3"
+            },
+            {
+                "name": "Upeak L3 inst",
+                "reg_type": "input",
+                "address": "0x1804",
+                "type": "value",
+                "units": "V",
+                "fw": "2.1",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "group": "l3",
+                "enabled": false
             },
             {
                 "name": "Voltage angle L3",
@@ -1144,11 +1245,22 @@
         ],
         "translations": {
             "en": {
+                "Upeak L1": "Upeak L1 aggr",
+                "Upeak L2": "Upeak L2 aggr",
+                "Upeak L3": "Upeak L3 aggr",
+                {% for ch_num in range(1, 5) -%}
+                "Ch {{ch_num}} Ipeak L1": "Ch {{ch_num}} Ipeak L1 aggr",
+                "Ch {{ch_num}} Ipeak L2": "Ch {{ch_num}} Ipeak L2 aggr",
+                "Ch {{ch_num}} Ipeak L3": "Ch {{ch_num}} Ipeak L3 aggr",
+                {% endfor -%}
                 "WB-MAP12E-fw2_template_title": "WB-MAP12E fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases",
                 "Supply voltage": "5V Supply",
-                "Uptime": "Uptime"
+                "Uptime": "Uptime",
+                "Peaks Measurement Period (s)": "Peaks Aggregation Period (s)",
+                "peak_detection_period_ms_description": "Hardware window over which the meter captures the peak (maximum) instantaneous voltage and current of each channel; voltage and current peaks are detected independently.",
+                "peaks_measurement_period_s_description": "Interval at which the accumulated peak (maximum) voltage and current values are updated, after which the running maximums are reset."
             },
             "ru": {
                 "WB-MAP12E-fw2_template_title": "WB-MAP12E fw2 (многоканальный счетчик электроэнергии)",
@@ -1180,9 +1292,9 @@
                 "Ch {{ch_num}} Irms L1": "Кан {{ch_num}} Irms L1",
                 "Ch {{ch_num}} Irms L2": "Кан {{ch_num}} Irms L2",
                 "Ch {{ch_num}} Irms L3": "Кан {{ch_num}} Irms L3",
-                "Ch {{ch_num}} Ipeak L1": "Кан {{ch_num}} Iпик L1",
-                "Ch {{ch_num}} Ipeak L2": "Кан {{ch_num}} Iпик L2",
-                "Ch {{ch_num}} Ipeak L3": "Кан {{ch_num}} Iпик L3",
+                "Ch {{ch_num}} Ipeak L1": "Ch {{ch_num}} Ipeak L1 aggr",
+                "Ch {{ch_num}} Ipeak L2": "Ch {{ch_num}} Ipeak L2 aggr",
+                "Ch {{ch_num}} Ipeak L3": "Ch {{ch_num}} Ipeak L3 aggr",
                 "Ch {{ch_num}} P L1": "Кан {{ch_num}} P L1",
                 "Ch {{ch_num}} Q L1": "Кан {{ch_num}} Q L1",
                 "Ch {{ch_num}} N L1": "Кан {{ch_num}} N L1",
@@ -1228,7 +1340,10 @@
                 "Ch {{ch_num}} Total NP energy": "Кан {{ch_num}} сумм. энергия NP",
                 "Ch {{ch_num}} Total NN energy": "Кан {{ch_num}} сумм. энергия NN",
                 {% endfor -%}
-                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Peak Detection Period (ms)": "Период детектирования текущих пиковых значений (мс)",
+                "Peaks Measurement Period (s)": "Период агрегирования пиковых значений (с)",
+                "peak_detection_period_ms_description": "Аппаратное окно, в течение которого счётчик фиксирует пиковые (максимальные) мгновенные значения напряжения и тока по каждому каналу; пики напряжения и тока детектируются независимо.",
+                "peaks_measurement_period_s_description": "Интервал, с которым обновляются накопленные пиковые (максимальные) значения напряжения и тока, после чего текущие максимумы сбрасываются.",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Phase loss detection": "Обнаруживать отключения фаз",
@@ -1237,9 +1352,9 @@
                 "Yes": "Да",
                 "No": "Нет",
                 "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз",
-                "Upeak L1": "Uпик L1",
-                "Upeak L2": "Uпик L2",
-                "Upeak L3": "Uпик L3",
+                "Upeak L1": "Upeak L1 aggr",
+                "Upeak L2": "Upeak L2 aggr",
+                "Upeak L3": "Upeak L3 aggr",
                 "Voltage angle L1": "Фазовый угол L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "Voltage angle L3": "Фазовый угол L3",
@@ -1249,9 +1364,7 @@
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
-                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }
