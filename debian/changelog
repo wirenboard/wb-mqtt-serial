@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.254.0) stable; urgency=medium
+
+  * Add buttons functionality to WB-MCM8HV template
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 15 Jun 2026 22:02:30 +0700
+
 wb-mqtt-serial (2.253.0) stable; urgency=medium
 
   * MWAC templates: Add buzzer beep duration parameter
