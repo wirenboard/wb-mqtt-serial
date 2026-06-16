@@ -8,7 +8,7 @@ wb-mqtt-serial (2.254.0) stable; urgency=medium
   * Add smooth dimming control from remote buttons
   * Add duplicate control channels with auto-on
 
- -- Egor Panchenko <egor.panchenko@wirenboard.com>  Thu, 11 Jun 2026 12:00:00 +0300
+ -- Egor Panchenko <egor.panchenko@wirenboard.com>  Tue, 16 Jun 2026 16:50:00 +0300
 
 wb-mqtt-serial (2.253.0) stable; urgency=medium
 
