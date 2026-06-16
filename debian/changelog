@@ -12,6 +12,18 @@ wb-mqtt-serial (2.255.0) stable; urgency=medium
 
  -- Maxim Toropov <maxim.toropov@wirenboard.com>  Tue, 16 Jun 2026 17:00:00 +0300
 
+wb-mqtt-serial (2.254.0) stable; urgency=medium
+
+  * Add new templates for WB-MDM3 (fw 2.12) and WB-MAO4 (fw 2.9):
+    [ Maxim Toropov ]
+  * Add encoder support
+  * Add configurable dimming step for short presses
+    [ Egor Panchenko ]
+  * Add smooth dimming control from remote buttons
+  * Add duplicate control channels with auto-on
+
+ -- Egor Panchenko <egor.panchenko@wirenboard.com>  Tue, 16 Jun 2026 16:50:00 +0300
+
 wb-mqtt-serial (2.253.0) stable; urgency=medium
 
   * MWAC templates: Add buzzer beep duration parameter
