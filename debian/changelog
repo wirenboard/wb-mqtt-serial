@@ -1,3 +1,17 @@
+wb-mqtt-serial (2.255.0) stable; urgency=medium
+
+  * Add new templates for WB-LED and WB-MRGBW-D (fw 3.8):
+    [ Maxim Toropov ]
+  * Add encoder support
+  * Add configurable dimming step for short presses
+  * Add 2CCT output mode (WB-LED)
+  * Change switch actions config order to channel -> action (WB-LED)
+    [ Egor Panchenko ]
+  * Add smooth dimming control from remote buttons
+  * Add duplicate control channels with auto-on
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Tue, 16 Jun 2026 17:00:00 +0300
+
 wb-mqtt-serial (2.254.0) stable; urgency=medium
 
   * Add new templates for WB-MDM3 (fw 2.12) and WB-MAO4 (fw 2.9):
