@@ -1493,13 +1493,6 @@
         ],
         "translations": {
             "en": {
-                "Ipeak 1": "Ipeak 1 aggr",
-                "Ipeak 2": "Ipeak 2 aggr",
-                "Ipeak 3": "Ipeak 3 aggr",
-                "Ipeak 4": "Ipeak 4 aggr",
-                "Ipeak 5": "Ipeak 5 aggr",
-                "Ipeak 6": "Ipeak 6 aggr",
-                "Upeak": "Upeak aggr",
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
@@ -1509,13 +1502,6 @@
                 "peaks_measurement_period_s_description": "Interval at which the accumulated peak (maximum) voltage and current values are updated, after which the running maximums are reset."
             },
             "ru": {
-                "Ipeak 1": "Ipeak 1 aggr",
-                "Ipeak 2": "Ipeak 2 aggr",
-                "Ipeak 3": "Ipeak 3 aggr",
-                "Ipeak 4": "Ipeak 4 aggr",
-                "Ipeak 5": "Ipeak 5 aggr",
-                "Ipeak 6": "Ipeak 6 aggr",
-                "Upeak": "Upeak aggr",
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (многоканальный счетчик электроэнергии)",
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",

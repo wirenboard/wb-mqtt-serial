@@ -347,9 +347,6 @@
         ],
         "translations": {
             "en": {
-                "Upeak L1": "Upeak L1 aggr",
-                "Upeak L2": "Upeak L2 aggr",
-                "Upeak L3": "Upeak L3 aggr",
                 "WB-MAP3EV_template_title": "WB-MAP3EV (3-phase voltmeter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply Voltage": "5V Supply",
@@ -359,9 +356,6 @@
                 "peaks_measurement_period_s_description": "Interval at which the accumulated peak (maximum) voltage and current values are updated, after which the running maximums are reset."
             },
             "ru": {
-                "Upeak L1": "Upeak L1 aggr",
-                "Upeak L2": "Upeak L2 aggr",
-                "Upeak L3": "Upeak L3 aggr",
                 "WB-MAP3EV_template_title": "WB-MAP3EV (3-фазный вольтметр)",
                 "Measured Values": "Измеряемые параметры",
                 "General": "Общее",
