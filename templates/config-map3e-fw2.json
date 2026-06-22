@@ -199,15 +199,29 @@
                 "group": "general",
                 "order": 1
             },
+            "peak_detection_period_ms": {
+                "title": "Peak Detection Period (ms)",
+                "description": "peak_detection_period_ms_description",
+                "address": "0x10F4",
+                "reg_type": "holding",
+                "fw": "2.13.0",
+                "format": "u16",
+                "min": 1,
+                "max": 255,
+                "default": 20,
+                "group": "general",
+                "order": 2
+            },
             "peaks_measurement_period_s": {
                 "title": "Peaks Measurement Period (s)",
+                "description": "peaks_measurement_period_s_description",
                 "address": "0x10F0",
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 1,
                 "default": 60,
                 "group": "general",
-                "order": 2
+                "order": 3
             },
             "phase_loss_detection": {
                 "title": "Phase loss detection",
@@ -221,7 +235,7 @@
                     "Enabled"
                 ],
                 "group": "general",
-                "order": 3
+                "order": 4
             }
         },
 
@@ -266,6 +280,21 @@
                 "group": "l1"
             },
             {
+                "name": "Upeak L1 inst",
+                "reg_type": "input",
+                "address": "0x1800",
+                "type": "value",
+                "units": "V",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "l1",
+                "enabled": false
+            },
+            {
                 "name": "Voltage angle L1",
                 "reg_type": "input",
                 "address": "0x10fd",
@@ -300,6 +329,20 @@
                 "word_order": "little_endian",
                 "unsupported_value": "0xFFFEFFFE",
                 "group": "l1"
+            },
+            {
+                "name": "Ipeak L1 inst",
+                "reg_type": "input",
+                "address": "0x1808",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "l1",
+                "enabled": false
             },
             {
                 "name": "P L1",
@@ -481,6 +524,21 @@
                 "group": "l2"
             },
             {
+                "name": "Upeak L2 inst",
+                "reg_type": "input",
+                "address": "0x1802",
+                "type": "value",
+                "units": "V",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "l2",
+                "enabled": false
+            },
+            {
                 "name": "Voltage angle L2",
                 "reg_type": "input",
                 "address": "0x10fe",
@@ -515,6 +573,20 @@
                 "word_order": "little_endian",
                 "unsupported_value": "0xFFFEFFFE",
                 "group": "l2"
+            },
+            {
+                "name": "Ipeak L2 inst",
+                "reg_type": "input",
+                "address": "0x180a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "l2",
+                "enabled": false
             },
             {
                 "name": "P L2",
@@ -696,6 +768,21 @@
                 "group": "l3"
             },
             {
+                "name": "Upeak L3 inst",
+                "reg_type": "input",
+                "address": "0x1804",
+                "type": "value",
+                "units": "V",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "l3",
+                "enabled": false
+            },
+            {
                 "name": "Voltage angle L3",
                 "reg_type": "input",
                 "address": "0x10ff",
@@ -730,6 +817,20 @@
                 "word_order": "little_endian",
                 "unsupported_value": "0xFFFEFFFE",
                 "group": "l3"
+            },
+            {
+                "name": "Ipeak L3 inst",
+                "reg_type": "input",
+                "address": "0x180c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "unsupported_value": "0xFFFEFFFE",
+                "group": "l3",
+                "enabled": false
             },
             {
                 "name": "P L3",
@@ -1089,7 +1190,10 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
-                "Uptime": "Uptime"
+                "Uptime": "Uptime",
+                "Peaks Measurement Period (s)": "Peaks Aggregation Period (s)",
+                "peak_detection_period_ms_description": "Hardware window over which the meter captures the peak (maximum) instantaneous voltage and current of each channel; voltage and current peaks are detected independently.",
+                "peaks_measurement_period_s_description": "Interval at which the accumulated peak (maximum) voltage and current values are updated, after which the running maximums are reset."
             },
             "ru": {
                 "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-фазный счетчик электроэнергии)",
@@ -1109,7 +1213,10 @@
                 "Phi L3": "Фазовая задержка L3",
                 "Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Actual Phase L3": "Фаза трансформатора L3",
-                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Peak Detection Period (ms)": "Период детектирования текущих пиковых значений (мс)",
+                "Peaks Measurement Period (s)": "Период агрегирования пиковых значений (с)",
+                "peak_detection_period_ms_description": "Аппаратное окно, в течение которого счётчик фиксирует пиковые (максимальные) мгновенные значения напряжения и тока по каждому каналу; пики напряжения и тока детектируются независимо.",
+                "peaks_measurement_period_s_description": "Интервал, с которым обновляются накопленные пиковые (максимальные) значения напряжения и тока, после чего текущие максимумы сбрасываются.",
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
                 "Disabled": "Выключено",

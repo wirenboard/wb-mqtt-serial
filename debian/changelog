@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.256.0) stable; urgency=medium
+
+  * MAP templates: Add peak detection period parameter and instant U/I values
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 18 Jun 2026 12:55:00 +0300
+
 wb-mqtt-serial (2.255.0) stable; urgency=medium
 
   * Add new templates for WB-LED and WB-MRGBW-D (fw 3.8):
