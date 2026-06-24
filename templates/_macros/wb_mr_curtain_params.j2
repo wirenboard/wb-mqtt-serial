@@ -1,0 +1,138 @@
+{# Jinja-макрос для параметров (`parameters`) одной шторы (curtain) в
+   шаблонах семейства WB-MR.
+
+   Подключается так:
+
+       {%- from "_macros/wb_mr_curtain_params.j2" import params_curtain -%}
+
+   Эмитит набор пар `"id": { ... }`, разделённых запятыми, БЕЗ хвостовой
+   запятой. Запятая между макросами — на стороне вызова.
+-#}
+
+{#-
+   Все параметры одной шторы (7 штук):
+     curtain<N>_mode                 — режим работы (regular outputs / curtain);
+     curtain<N>_open_time            — время открытия (с);
+     curtain<N>_close_time           — время закрытия (с);
+     curtain<N>_deadtime             — пауза при смене направления (мс);
+     curtain<N>_safety_action        — действие при переходе в safety;
+     curtain<N>_powerup_action       — действие при подаче питания;
+     curtain<N>_safety_input_control — управление с входов в safety.
+
+   Параметр макроса:
+     curtain_num — номер шторы;
+     fw          — версия прошивки (по умолчанию "1.21.0"; если None,
+                   поле fw не эмитируется).
+-#}
+{%- macro params_curtain(curtain_num, fw="1.21.0") -%}
+{%- set out1 = curtain_num * 2 - 1 -%}
+{%- set out2 = curtain_num * 2 -%}
+            "curtain{{ curtain_num }}_mode": {
+                "title": "Use outputs {{ out1 }} and {{ out2 }} for curtain {{ curtain_num }} control",
+                "address": {{ 1280 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "No, use outputs {{ out1 }} and {{ out2 }} as regular outputs",
+                    "Use output {{ out1 }} for open, output {{ out2 }} for close"
+                ],
+                "order": 1,
+                "group": "gg_curtain_{{ curtain_num }}"
+            },
+            "curtain{{ curtain_num }}_open_time": {
+                "title": "Open Time (s)",
+                "description": "curtain_zero_time_description",
+                "address": {{ 1328 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "scale": 0.1,
+                "default": 10.0,
+                "min": 0,
+                "max": 600.0,
+                "order": 2,
+                "group": "gg_curtain_{{ curtain_num }}",
+                "condition": "curtain{{ curtain_num }}_mode==1"
+            },
+            "curtain{{ curtain_num }}_close_time": {
+                "title": "Close Time (s)",
+                "description": "curtain_zero_time_description",
+                "address": {{ 1332 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "scale": 0.1,
+                "default": 10.0,
+                "min": 0,
+                "max": 600.0,
+                "order": 3,
+                "group": "gg_curtain_{{ curtain_num }}",
+                "condition": "curtain{{ curtain_num }}_mode==1"
+            },
+            "curtain{{ curtain_num }}_deadtime": {
+                "title": "Dead Time (ms)",
+                "address": {{ 1336 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "default": 500,
+                "min": 50,
+                "max": 10000,
+                "order": 4,
+                "group": "gg_curtain_{{ curtain_num }}",
+                "condition": "curtain{{ curtain_num }}_mode==1"
+            },
+            "curtain{{ curtain_num }}_safety_action": {
+                "title": "Action When Safety Mode Is Activated",
+                "address": {{ 1288 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": ["no action", "open", "close"],
+                "order": 5,
+                "group": "gg_curtain_{{ curtain_num }}",
+                "condition": "curtain{{ curtain_num }}_mode==1"
+            },
+            "curtain{{ curtain_num }}_powerup_action": {
+                "title": "Power Up Action",
+                "address": {{ 1284 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": ["no action", "open", "close"],
+                "order": 6,
+                "group": "gg_curtain_{{ curtain_num }}",
+                "condition": "curtain{{ curtain_num }}_mode==1"
+            },
+            "curtain{{ curtain_num }}_safety_input_control": {
+                "title": "Curtain {{ curtain_num }}",
+                "address": {{ 1292 + curtain_num - 1 }},
+                "reg_type": "holding",
+                {%- if fw is not none %}
+                "fw": "{{ fw }}",
+                {%- endif %}
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ],
+                "order": {{ curtain_num }},
+                "group": "gg_safety_input_control",
+                "condition": "curtain{{ curtain_num }}_mode==1"
+            }
+{%- endmacro %}
