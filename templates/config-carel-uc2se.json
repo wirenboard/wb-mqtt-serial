@@ -5,7 +5,6 @@
     "device": {
         "name": "Carel µC2SE",
         "id": "carel-uc2se",
-        "fw": "1.6.0",
         "max_read_registers": 0,
         "response_timeout_ms": 150,
         "frame_timeout_ms": 12,

@@ -1,8 +1,8 @@
 wb-mqtt-serial (2.256.2) stable; urgency=medium
 
   * Carel µC2SE template: move integer registers to the stable holding region
-    (base 1000, requires WB-REF-U firmware 1.6.0+); add Digital Output 1-5
-    status channels; require fw 1.6.0
+    (base 1000, available on WB-REF-U firmware 1.6.0+); add Digital Output 1-5
+    status channels
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 25 Jun 2026 12:00:00 +0300
 
