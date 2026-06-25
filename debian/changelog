@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.256.1) stable; urgency=medium
+
+  * Add ip address pattern to port schema
+
+ -- Victor Vedenin <victor.vedenin@wirenboard.com>  Wed, 24 Jun 2026 14:30:00 +0300
+
 wb-mqtt-serial (2.256.0) stable; urgency=medium
 
   * MAP templates: Add peak detection period parameter and instant U/I values
