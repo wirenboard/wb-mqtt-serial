@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.257.3) stable; urgency=medium
+
+  * Fix dimmer's min max params order
+
+ -- Victor Vedenin <victor.vedenin@wirenboard.com>  Fri, 26 Jun 2026 14:10:00 +0300
+
 wb-mqtt-serial (2.257.2) stable; urgency=medium
 
   * Carel µC2SE template: move integer registers to the stable holding region
