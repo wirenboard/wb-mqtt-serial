@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.257.2) stable; urgency=medium
+
+  * Carel µC2SE template: move integer registers to the stable holding region
+    (base 1000, available on WB-REF-U firmware 1.6.0+); add Digital Output 1-5
+    status channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 26 Jun 2026 14:00:00 +0300
+
 wb-mqtt-serial (2.257.1) stable; urgency=medium
 
   * config-wb-ups-v3.json.jinja: remove trailing comma after the last debug

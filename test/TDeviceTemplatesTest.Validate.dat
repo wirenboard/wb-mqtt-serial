@@ -27970,6 +27970,11 @@ carel_uc2se
 	Carel Serial Address  =>  Carel Serial Address
 	Compressor Warning  =>  Compressor Warning
 	Cooling Set Point  =>  Cooling Set Point
+	Digital Output 1  =>  Digital Output 1
+	Digital Output 2  =>  Digital Output 2
+	Digital Output 3  =>  Digital Output 3
+	Digital Output 4  =>  Digital Output 4
+	Digital Output 5  =>  Digital Output 5
 	Fan Warning  =>  Fan Warning
 	General Alarm  =>  General Alarm
 	General Warning  =>  General Warning
