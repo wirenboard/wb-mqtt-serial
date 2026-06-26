@@ -2,12 +2,6 @@
     "title": "Carel µC2SE",
     "device_type": "carel_uc2se",
     "group": "g-refrigeration",
-    "hw": [
-        {
-            "signature": "WBREFC",
-            "fw": "1.6.0"
-        }
-    ],
     "device": {
         "name": "Carel µC2SE",
         "id": "carel-uc2se",
