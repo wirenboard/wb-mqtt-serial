@@ -2,6 +2,11 @@
     "title": "Carel PJ EASY (Code: PJEZ*)",
     "device_type": "carel_pj_easy",
     "group": "g-refrigeration",
+    "hw": [
+        {
+            "signature": "WBREFC"
+        }
+    ],
     "device": {
         "name": "Carel PJ EASY",
         "id": "carel-pj-easy",

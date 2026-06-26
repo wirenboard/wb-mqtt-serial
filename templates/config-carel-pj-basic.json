@@ -2,6 +2,11 @@
     "title": "Carel PJ BASIC (PYEZ1R05J5)",
     "device_type": "tpl1_carel_pj_basic",
     "group": "g-refrigeration",
+    "hw": [
+        {
+            "signature": "WBREFC"
+        }
+    ],
     "device": {
         "name": "Carel PJ BASIC",
         "id": "carel-pj-basic",

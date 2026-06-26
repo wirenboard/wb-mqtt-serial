@@ -2,6 +2,12 @@
     "title": "Carel IR33",
     "device_type": "carel_ir33",
     "group": "g-refrigeration",
+    "hw": [
+        {
+            "signature": "WBREFC",
+            "fw": "1.5.1"
+        }
+    ],
     "device": {
         "name": "Carel IR33",
         "id": "carel-ir33",

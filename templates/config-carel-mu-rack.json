@@ -2,6 +2,11 @@
     "title": "Carel µRack (MRK0000000)",
     "device_type": "carel_mu_rack",
     "group": "g-refrigeration",
+    "hw": [
+        {
+            "signature": "WBREFC"
+        }
+    ],
     "device": {
         "name": "Carel muRack",
         "id": "carel-mu-rack",
