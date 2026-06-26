@@ -79,6 +79,11 @@
                 "title": "Chip ADC Values",
                 "id": "gg_debug_chip_adc",
                 "group": "debug"
+            },
+            {
+                "title": "Battery",
+                "id": "gg_debug_battery",
+                "group": "debug"
             }
         ],
         "parameters": [
@@ -422,7 +427,18 @@
                 "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
-
+            {
+                "id": "battery_charge_level_raw",
+                "name": "Battery Charge Level Raw",
+                "units": "%",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "reg_type": "input",
+                "address": 23,
+                "enabled": false,
+                "fw": "1.4.0",
+                "group": "gg_debug_battery"
+            },
 
 
             {% set chips = ["charger", "discharger"] -%}
@@ -558,6 +574,7 @@
                 "Output Voltage (V)": "Выходное напряжение (В)",
                 "Charging Current (mA)": "Ток заряда (мА)",
 
+                "Battery": "Батарея",
                 "Battery Status": "Статус батареи",
                 "Temperature Status": "Статус температуры",
                 "Input Voltage": "Входное напряжение",
@@ -568,6 +585,7 @@
                 "Load Current (Battery Powered)": "Ток нагрузки при питании от батареи",
                 "Battery Temperature": "Температура батареи",
                 "Battery Charge Level": "Уровень заряда батареи",
+                "Battery Charge Level Raw": "Уровень заряда батареи (сырое)",
                 "Temperature": "Температура",
                 "Charge Counter": "Счетчик заряда",
 
