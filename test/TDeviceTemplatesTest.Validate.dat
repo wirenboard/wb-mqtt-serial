@@ -31618,6 +31618,7 @@ wb_mio
 	Uptime  =>  uptime
 wb_ups_v3
 	Battery Charge Level  =>  battery_charge_level
+	Battery Charge Level Raw => battery_charge_level_raw
 	Battery Current  =>  battery_current
 	Battery Status  =>  battery_status
 	Battery Temperature  =>  battery_temperature
