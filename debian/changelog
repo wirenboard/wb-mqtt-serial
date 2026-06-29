@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.257.4) stable; urgency=medium
+
+  * Clarify timeouts and register reading documentation
+
+ -- Alexander Kilpio <alexander.kilpio@wirenboard.com>  Mon, 29 Jun 2026 17:05:50 +0300
+
 wb-mqtt-serial (2.257.3) stable; urgency=medium
 
   * Fix dimmer's min max params order
