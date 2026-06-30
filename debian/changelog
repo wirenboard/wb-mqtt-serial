@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.257.4) stable; urgency=medium
+
+  * Take the released bootloader version from boot/by-signature/release-versions.yaml by the
+    controller's release suite (testing/stable), mirroring firmwares, instead of the
+    suite-agnostic bootloader/by-signature/<signature>/main/latest.txt
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Jun 2026 17:52:18 +0300
+
 wb-mqtt-serial (2.257.3) stable; urgency=medium
 
   * Fix dimmer's min max params order

@@ -76,7 +76,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
 
     // Look up bootloader
     try {
-        auto bootloader = downloader.GetLatestBootloader(deviceInfo.FwSignature);
+        auto bootloader = downloader.GetReleasedBootloader(deviceInfo.FwSignature, releaseSuite);
         result["available_bootloader"] = bootloader.Version;
         result["bootloader_has_update"] = FirmwareIsNewer(deviceInfo.BootloaderVersion, bootloader.Version);
     } catch (const std::exception& e) {

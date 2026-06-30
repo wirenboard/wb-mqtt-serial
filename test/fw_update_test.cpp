@@ -577,14 +577,26 @@ TEST_F(FwDownloaderTest, GetReleasedFirmwareSuiteNotFound)
     EXPECT_THROW(Downloader.GetReleasedFirmware("wbled", "nonexistent"), std::runtime_error);
 }
 
-TEST_F(FwDownloaderTest, GetLatestBootloader)
+TEST_F(FwDownloaderTest, GetReleasedBootloader)
 {
-    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/latest.txt",
-                              "2.1.0");
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbled:\n"
+                              "    wb-2307: boot/by-signature/wbled/main/2.1.0.wbfw\n");
 
-    auto result = Downloader.GetLatestBootloader("wbled");
+    auto result = Downloader.GetReleasedBootloader("wbled", "wb-2307");
     EXPECT_EQ(result.Version, "2.1.0");
-    EXPECT_EQ(result.Endpoint, "https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/2.1.0.wbfw");
+    EXPECT_EQ(result.Endpoint, "https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.1.0.wbfw");
+}
+
+TEST_F(FwDownloaderTest, GetReleasedBootloaderSuiteNotFound)
+{
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbled:\n"
+                              "    stable: boot/by-signature/wbled/main/2.1.0.wbfw\n");
+
+    EXPECT_THROW(Downloader.GetReleasedBootloader("wbled", "testing"), std::runtime_error);
 }
 
 TEST_F(FwDownloaderTest, DownloadAndParseWBFW)
@@ -1581,8 +1593,10 @@ TEST_F(FwHandlerTest, BuildResponseFirmwareAvailableNewer)
                       "  wbled:\n"
                       "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n");
 
-    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/latest.txt",
-                              "2.0.0");
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbled:\n"
+                              "    bullseye: boot/by-signature/wbled/main/2.0.0.wbfw\n");
 
     TFwDeviceInfo info;
     info.FwSignature = "wbled";
@@ -1605,8 +1619,10 @@ TEST_F(FwHandlerTest, BuildResponseFirmwareSameVersion)
                       "  wbled:\n"
                       "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n");
 
-    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/latest.txt",
-                              "1.5.0");
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbled:\n"
+                              "    bullseye: boot/by-signature/wbled/main/1.5.0.wbfw\n");
 
     TFwDeviceInfo info;
     info.FwSignature = "wbled";
@@ -1630,8 +1646,10 @@ TEST_F(FwHandlerTest, BuildResponseWithComponents)
                       "  wbmwac_oc:\n"
                       "    bullseye: fw/by-signature/wbmwac_oc/bullseye/1.5.0.compfw\n");
 
-    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/wbmwac/main/latest.txt",
-                              "1.0.0");
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbmwac:\n"
+                              "    bullseye: boot/by-signature/wbmwac/main/1.0.0.wbfw\n");
 
     TFwDeviceInfo info;
     info.FwSignature = "wbmwac";
@@ -2088,9 +2106,9 @@ protected:
 
     void SetupBootloaderInfo(const std::string& signature = "wbled", const std::string& version = "2.0.0")
     {
-        FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/" + signature +
-                                      "/main/latest.txt",
-                                  version);
+        FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                                  "releases:\n  " + signature + ":\n    bullseye: boot/by-signature/" + signature +
+                                      "/main/" + version + ".wbfw\n");
     }
 
     void SetupFirmwareDownload(const std::string& signature, const std::string& suite, const std::string& version)
@@ -2232,7 +2250,7 @@ TEST_F(FwHandlerIntegrationTest, UpdateBootloader)
     SetupReleasesYaml();
     SetupBootloaderInfo("wbled", "2.0.0");
     std::vector<uint8_t> wbfwData(168, 0xBB);
-    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/bootloader/by-signature/wbled/main/2.0.0.wbfw",
+    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.0.0.wbfw",
                                 wbfwData);
 
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
