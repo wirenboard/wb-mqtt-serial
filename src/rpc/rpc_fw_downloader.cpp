@@ -312,6 +312,10 @@ TReleasedBinary TFwDownloader::GetReleasedFirmware(const std::string& fwSignatur
 // Cf. fw_downloader.py:135 get_latest_bootloader()
 TReleasedBinary TFwDownloader::GetLatestBootloader(const std::string& fwSignature)
 {
+    if (fwSignature.empty()) {
+        throw std::runtime_error("Cannot get bootloader: empty firmware signature");
+    }
+
     auto now = std::chrono::steady_clock::now();
     {
         std::lock_guard<std::mutex> lock(CacheMutex);

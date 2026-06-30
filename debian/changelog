@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.257.3) stable; urgency=medium
+wb-mqtt-serial (2.257.4) stable; urgency=medium
 
-  * Fix dimmer's min max params order
+  * fw-update GetFirmwareInfo: stop reporting garbage for third-party devices.
+    Sanitize the firmware and bootloader version strings read from the device
+    (printable ASCII only) so raw bytes no longer leak into fw/bootloader; treat
+    an empty or non-printable firmware signature as "no signature" and skip the
+    release-server lookup (no more bogus by-signature// requests); report
+    can_update only when the release server actually offers a firmware or
+    bootloader for the device
 
- -- Victor Vedenin <victor.vedenin@wirenboard.com>  Fri, 26 Jun 2026 14:10:00 +0300
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 Jun 2026 13:05:00 +0500
 
 wb-mqtt-serial (2.257.2) stable; urgency=medium
 
