@@ -599,6 +599,20 @@ TEST_F(FwDownloaderTest, GetReleasedBootloaderSuiteNotFound)
     EXPECT_THROW(Downloader.GetReleasedBootloader("wbled", "testing"), std::runtime_error);
 }
 
+TEST_F(FwDownloaderTest, GetReleasedBootloaderEmptySignatureThrowsWithoutHttp)
+{
+    // An empty signature has no released bootloader; the downloader must reject it
+    // before making any request to the release-versions index.
+    auto indexUrl = "https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml";
+    FakeHttp->SetTextResponse(indexUrl,
+                              "releases:\n"
+                              "  wbled:\n"
+                              "    wb-2307: boot/by-signature/wbled/main/2.1.0.wbfw\n");
+
+    EXPECT_THROW(Downloader.GetReleasedBootloader("", "wb-2307"), std::runtime_error);
+    EXPECT_EQ(FakeHttp->GetRequestCount(indexUrl), 0);
+}
+
 TEST_F(FwDownloaderTest, DownloadAndParseWBFW)
 {
     std::vector<uint8_t> wbfwData(168, 0xDD);
@@ -1028,6 +1042,87 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
     ASSERT_TRUE(gotResult);
     // \x02 should be stripped - Cf. firmware_update.py:560 get_human_readable_device_model()
     EXPECT_EQ(resultInfo.DeviceModel, "WB-LED");
+}
+
+// Third-party devices may answer the FW/bootloader-version register reads with
+// arbitrary non-ASCII bytes. ReadFwDeviceInfo must sanitize the version strings at
+// the source so no consumer (RPC response, update-progress state, logs) sees garbage.
+TEST_F(TFwTaskTest, GetInfoGarbageVersionsSanitized)
+{
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("engo", FwRegisters::FW_SIGNATURE_COUNT));
+    // FW version: control char + high byte -> not a printable version
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs(std::string("\x0F\x80"
+                                                      "F"),
+                                          FwRegisters::FW_VERSION_COUNT));
+    // Bootloader version: control chars only
+    EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                       FwRegisters::BOOTLOADER_VERSION_COUNT,
+                       EncodeStringAsRegs(std::string("\x01\x02"), FwRegisters::BOOTLOADER_VERSION_COUNT));
+    EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("EFAN", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
+
+    TFwDeviceInfo resultInfo;
+    bool gotResult = false;
+
+    auto task = std::make_shared<TFwGetInfoTask>(
+        SLAVE_ID,
+        "modbus",
+        [&](const TFwDeviceInfo& info) {
+            resultInfo = info;
+            gotResult = true;
+        },
+        [&](const std::string&) {});
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+
+    ASSERT_TRUE(gotResult);
+    EXPECT_EQ(resultInfo.FwVersion, "");        // garbage dropped at source
+    EXPECT_EQ(resultInfo.BootloaderVersion, ""); // garbage dropped at source
+    EXPECT_EQ(resultInfo.DeviceModel, "EFAN");
+}
+
+// A garbage (non-ASCII-code) signature must be dropped at the source so no consumer
+// looks it up or fires a pointless release-server request for an unknown device.
+TEST_F(TFwTaskTest, GetInfoGarbageSignatureCleared)
+{
+    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
+                       FwRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs(std::string("\x0F\x80"
+                                                      "F"),
+                                          FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
+                       FwRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
+    EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
+    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
+                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("EFAN", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
+
+    TFwDeviceInfo resultInfo;
+    bool gotResult = false;
+
+    auto task = std::make_shared<TFwGetInfoTask>(
+        SLAVE_ID,
+        "modbus",
+        [&](const TFwDeviceInfo& info) {
+            resultInfo = info;
+            gotResult = true;
+        },
+        [&](const std::string&) {});
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+
+    ASSERT_TRUE(gotResult);
+    EXPECT_EQ(resultInfo.FwSignature, ""); // garbage signature cleared at source
 }
 
 TEST_F(TFwTaskTest, GetInfoDeviceNotResponding)
@@ -1567,6 +1662,58 @@ TEST_F(FwHandlerTest, IsNonUpdatableNormalSignature)
     EXPECT_FALSE(IsNonUpdatableSignature("wbled"));
 }
 
+// ---- IsPrintableAscii / IsValidFwSignature / SanitizeVersionString tests ----
+
+TEST_F(FwHandlerTest, IsPrintableAsciiPlain)
+{
+    EXPECT_TRUE(IsPrintableAscii("3.7.0"));
+    EXPECT_TRUE(IsPrintableAscii("WB-MSW v.3")); // spaces and dots are printable
+    EXPECT_TRUE(IsPrintableAscii("")); // empty is trivially printable
+}
+
+TEST_F(FwHandlerTest, IsPrintableAsciiControlChar)
+{
+    EXPECT_FALSE(IsPrintableAscii(std::string("\x0F"
+                                              "F")));      // control char
+    EXPECT_FALSE(IsPrintableAscii(std::string("\x01\x02"))); // control chars
+    EXPECT_FALSE(IsPrintableAscii(std::string("ab\x7F")));   // DEL is not printable
+}
+
+TEST_F(FwHandlerTest, IsPrintableAsciiHighByte)
+{
+    EXPECT_FALSE(IsPrintableAscii(std::string("\xC0\xA0"))); // bytes > 0x7F
+}
+
+TEST_F(FwHandlerTest, IsValidFwSignatureValid)
+{
+    EXPECT_TRUE(IsValidFwSignature("wbled"));
+    EXPECT_TRUE(IsValidFwSignature("wb-2307"));
+    EXPECT_TRUE(IsValidFwSignature("wbmwac_oc"));
+    EXPECT_TRUE(IsValidFwSignature("msw5Ge")); // mixed case, as documented for reg 290
+}
+
+TEST_F(FwHandlerTest, IsValidFwSignatureEmpty)
+{
+    EXPECT_FALSE(IsValidFwSignature(""));
+}
+
+TEST_F(FwHandlerTest, IsValidFwSignatureGarbage)
+{
+    EXPECT_FALSE(IsValidFwSignature(std::string("\x0F"
+                                                "F")));      // control char
+    EXPECT_FALSE(IsValidFwSignature(std::string("\xC0sig"))); // high byte
+    EXPECT_FALSE(IsValidFwSignature(std::string("ab\x01"))); // control char in the middle
+}
+
+TEST_F(FwHandlerTest, SanitizeVersionString)
+{
+    EXPECT_EQ(SanitizeVersionString("3.7.0"), "3.7.0");
+    EXPECT_EQ(SanitizeVersionString(std::string("\x0F"
+                                                "F")),
+              "");
+    EXPECT_EQ(SanitizeVersionString(std::string("\xC0")), "");
+}
+
 // ---- BuildFirmwareInfoResponse tests ----
 
 TEST_F(FwHandlerTest, BuildResponseNonUpdatableSignature)
@@ -1682,9 +1829,81 @@ TEST_F(FwHandlerTest, BuildResponseHttpError)
     // Should not throw - errors are caught gracefully
     auto result = CallBuildFirmwareInfoResponse(info);
 
-    EXPECT_TRUE(result["can_update"].asBool());
+    // Release server unreachable: nothing available, so there is nothing to flash.
+    EXPECT_FALSE(result["can_update"].asBool());
     EXPECT_EQ(result["available_fw"].asString(), "");
+    EXPECT_EQ(result["available_bootloader"].asString(), "");
     EXPECT_FALSE(result["fw_has_update"].asBool());
+}
+
+// ---- Third-party / garbage device scenarios (SOFT-6985) ----
+
+// A third-party device (e.g. ENGO EFAN) whose signature is not in the release
+// manifest must not be reported as updatable, and must not leak raw bytes.
+// Cf. ticket: can_update=true for garbage provokes a doomed flash attempt.
+TEST_F(FwHandlerTest, BuildResponseUnknownSignatureNotUpdatable)
+{
+    SetupReleasesYaml("releases:\n"
+                      "  wbled:\n"
+                      "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n");
+    // No bootloader latest.txt configured for "engo" -> downloader throws -> empty.
+
+    TFwDeviceInfo info;
+    info.FwSignature = "engo"; // valid-looking but unknown signature
+    info.FwVersion = "1.0";
+    info.DeviceModel = "EFAN";
+
+    auto result = CallBuildFirmwareInfoResponse(info);
+
+    EXPECT_FALSE(result["can_update"].asBool());
+    EXPECT_EQ(result["available_fw"].asString(), "");
+    EXPECT_EQ(result["available_bootloader"].asString(), "");
+    EXPECT_FALSE(result["fw_has_update"].asBool());
+    EXPECT_FALSE(result["bootloader_has_update"].asBool());
+}
+
+// Empty signature: must short-circuit and never query the release server.
+TEST_F(FwHandlerTest, BuildResponseEmptySignatureNoS3)
+{
+    SetupReleasesYaml();
+    auto indexUrl = "https://fw-releases.wirenboard.com/fw/by-signature/release-versions.yaml";
+
+    TFwDeviceInfo info;
+    info.FwSignature = ""; // could not read signature
+    info.FwVersion = "1.0";
+    info.DeviceModel = "Unknown";
+
+    auto result = CallBuildFirmwareInfoResponse(info);
+
+    EXPECT_FALSE(result["can_update"].asBool());
+    EXPECT_EQ(result["available_bootloader"].asString(), "");
+    EXPECT_EQ(FakeHttp->GetRequestCount(indexUrl), 0); // never queried the release server
+}
+
+// A device on the latest firmware is still updatable (available_fw present),
+// even though there is no newer version.
+TEST_F(FwHandlerTest, BuildResponseUpdatableWhenBootloaderOnly)
+{
+    // No firmware in the manifest for this signature, but a bootloader exists.
+    SetupReleasesYaml("releases:\n"
+                      "  wbled:\n"
+                      "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n");
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbother:\n"
+                              "    bullseye: boot/by-signature/wbother/main/2.0.0.wbfw\n");
+
+    TFwDeviceInfo info;
+    info.FwSignature = "wbother";
+    info.FwVersion = "1.0";
+    info.BootloaderVersion = "1.0.0";
+    info.DeviceModel = "WB-OTHER";
+
+    auto result = CallBuildFirmwareInfoResponse(info);
+
+    EXPECT_EQ(result["available_fw"].asString(), "");
+    EXPECT_EQ(result["available_bootloader"].asString(), "2.0.0");
+    EXPECT_TRUE(result["can_update"].asBool()); // bootloader available -> updatable
 }
 
 // ---- ClearError logic test ----

@@ -4,6 +4,8 @@
 #include "rpc_fw_update_helpers.h"
 #include "rpc_fw_update_task.h"
 
+#include <algorithm>
+
 #ifndef __EMSCRIPTEN__
 #include "rpc_fw_get_firmware_info_task.h"
 #include "rpc_fw_restore_task.h"
@@ -27,6 +29,21 @@ namespace
 bool IsNonUpdatableSignature(const std::string& sig)
 {
     return std::find(NonUpdatableSignatures.begin(), NonUpdatableSignatures.end(), sig) != NonUpdatableSignatures.end();
+}
+
+bool IsPrintableAscii(const std::string& s)
+{
+    return std::all_of(s.begin(), s.end(), [](unsigned char c) { return c >= 0x20 && c <= 0x7E; });
+}
+
+bool IsValidFwSignature(const std::string& sig)
+{
+    return !sig.empty() && IsPrintableAscii(sig);
+}
+
+std::string SanitizeVersionString(const std::string& s)
+{
+    return IsPrintableAscii(s) ? s : std::string();
 }
 
 // Cf. version_comparison.py:8 firmware_is_newer()
@@ -61,7 +78,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
     result["model"] = deviceInfo.DeviceModel;
 
     // Skip non-updatable signatures
-    if (IsNonUpdatableSignature(deviceInfo.FwSignature)) {
+    if (deviceInfo.FwSignature.empty() || IsNonUpdatableSignature(deviceInfo.FwSignature)) {
         return result;
     }
 
@@ -85,7 +102,8 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
 
     // Serial devices are always updatable. TCP devices would need additional checks
     // (port settings preservation, protocol type, baud rate), but wb-mqtt-serial only handles serial.
-    result["can_update"] = true;
+    result["can_update"] =
+        !result["available_fw"].asString().empty() || !result["available_bootloader"].asString().empty();
 
     // Component info
     for (const auto& comp: deviceInfo.Components) {

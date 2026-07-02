@@ -321,6 +321,9 @@ TReleasedBinary TFwDownloader::GetReleasedFirmware(const std::string& fwSignatur
 // suite-agnostic bootloader/by-signature/<sig>/main/latest.txt.
 TReleasedBinary TFwDownloader::GetReleasedBootloader(const std::string& fwSignature, const std::string& releaseSuite)
 {
+    if (fwSignature.empty()) {
+        throw std::runtime_error("Cannot get bootloader: empty firmware signature");
+    }
     return GetReleasedBinary(FW_RELEASES_BASE_URL + "/boot/by-signature/release-versions.yaml",
                              BootloaderReleaseCache,
                              BOOTLOADER_CACHE_TTL,
