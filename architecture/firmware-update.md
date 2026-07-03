@@ -201,7 +201,7 @@ src/rpc/
 
 #### TFwDownloader
 - `GetReleasedFirmware(signature, suite)` → version + download URL
-- `GetLatestBootloader(signature)` → version + download URL
+- `GetReleasedBootloader(signature, suite)` → version + download URL (suite-aware, from `boot/by-signature/release-versions.yaml`)
 - `DownloadAndParseWBFW(url)` → info block + data block
 - TTL caching for all HTTP responses
 
@@ -401,7 +401,7 @@ Python function in [wb-device-manager](https://github.com/wirenboard/wb-device-m
 | `ParseWBFW()` | `firmware_update.py:185 parse_wbfw()` |
 | `ParseFwVersionFromUrl()` | `releases.py:30 parse_fw_version()` |
 | `GetReleasedFirmware()` | `fw_downloader.py:89 get_released_fw()` |
-| `GetLatestBootloader()` | `fw_downloader.py:135 get_latest_bootloader()` |
+| `GetReleasedBootloader()` | `fw_downloader.py get_released_bootloader()` |
 | `TFwUpdateState` | `firmware_update.py:82 UpdateState` |
 | `TUpdateNotifier` | `firmware_update.py:209 UpdateNotifier` |
 | `TDeviceUpdateInfo::Matches()` | `firmware_update.py:73 DeviceUpdateInfo.__eq__()` |
