@@ -1,15 +1,15 @@
 {
     "title": "template_title",
-    "device_type": "ONOKOM-AIR-MH-2-MB-B",
+    "device_type": "ONOKOM-AIR-PN-1-MB-B",
     "group": "g-air-conditioning",
     "hw": [
         {
-            "signature": "MH-2-MB-B"
+            "signature": "PN-1-MB-B"
         }
     ],
     "device": {
-        "name": "ONOKOM-AIR-MH-2-MB-B",
-        "id": "ONOKOM-AIR-MH-2-MB-B",
+        "name": "ONOKOM-AIR-PN-1-MB-B",
+        "id": "ONOKOM-AIR-PN-1-MB-B",
         "groups": [
             {
                 "title": "General",
@@ -27,9 +27,19 @@
                 "order": 3
             },
             {
+                "title": "Additional",
+                "id": "additional",
+                "order": 4
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
                 "order": 6
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 9
             }
         ],
         "parameters": [
@@ -249,7 +259,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 4,
+                "max": 5,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -267,14 +277,16 @@
                     1,
                     2,
                     3,
-                    4
+                    4,
+                    5
                 ],
                 "enum_titles": [
                     "Auto",
                     "1 Speed",
                     "2 Speed",
                     "3 Speed",
-                    "4 Speed"
+                    "4 Speed",
+                    "5 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -285,7 +297,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 4,
+                "max": 7,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -297,22 +309,28 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 7,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
                     0,
+                    1,
                     2,
                     3,
                     4,
-                    5
+                    5,
+                    6,
+                    7
                 ],
                 "enum_titles": [
                     "Auto",
+                    "Quiet mode",
                     "1 Speed",
                     "2 Speed",
                     "3 Speed",
-                    "4 Speed"
+                    "4 Speed",
+                    "5 Speed",
+                    "Turbo mode"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -356,6 +374,19 @@
                 "readonly": true,
                 "units": "deg C",
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
+                "name": "Outdoor air temperature",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 4,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C"
             },
             {
                 "name": "Target temperature",
@@ -478,13 +509,111 @@
                 "group": "vanes",
                 "enum": [
                     0,
-                    2
+                    1,
+                    2,
+                    3
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Horizontal vanes swing"
+                    "Horizontal and vertical vanes swing",
+                    "Horizontal vanes swing",
+                    "Vertical vanes swing"
                 ],
                 "condition": "Show_vanes_as_range!=1"
+            },
+            {
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
+            },
+            {
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Far Left",
+                    "Left",
+                    "Middle",
+                    "Right",
+                    "Far Right"
+                ],
+                "condition": "Show_vanes_as_range!=1"
+            },
+            {
+                "name": "Defrosting",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 12,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Eco mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Gentle wind",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 14,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Quiet mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Self cleaning",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 10,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Turbo mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "FW Version",
@@ -509,16 +638,6 @@
                 "group": "hw_info",
                 "readonly": true,
                 "string_data_size": 20
-            },
-            {
-                "name": "MCU Temperature",
-                "enabled": false,
-                "reg_type": "input",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "group": "hw_info"
             },
             {
                 "name": "PROTO Version",
@@ -570,17 +689,28 @@
                 "type": "text",
                 "format": "u32",
                 "group": "hw_info"
+            },
+            {
+                "name": "AC connected",
+                "reg_type": "coil",
+                "address": 20,
+                "type": "switch",
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
             }
         ],
         "translations": {
             "en": {
-                "template_title": "ONOKOM AIR MH-2-MB-B (Adapter for household and semi-industrial Mitsubishi Heavy systems)"
+                "template_title": "ONOKOM AIR PN-1-MB-B (Adapter for household Panasonic systems)"
             },
             "ru": {
                 "General": "Основные режимы и функции",
                 "Temperature control": "Контроль температуры",
                 "Vanes": "Жалюзи",
+                "Additional": "Дополнительные режимы и функции",
                 "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
                 "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
                 "No": "Нет",
                 "Yes": "Да",
@@ -606,9 +736,13 @@
                 "2 Speed": "2 Скорость",
                 "3 Speed": "3 Скорость",
                 "4 Speed": "4 Скорость",
+                "5 Speed": "5 Скорость",
                 "Smart fan speed": "Скорость вентилятора расширенная",
+                "Quiet mode": "Режим тихий",
+                "Turbo mode": "Режим турбо",
                 "External air temperature": "Температура с внешнего датчика",
                 "Indoor air temperature": "Температура воздуха в помещении",
+                "Outdoor air temperature": "Температура воздуха на улице",
                 "Target temperature": "Целевая температура",
                 "Temperature correction": "Коррекция температуры",
                 "Thermostat state": "Состояние термостата",
@@ -624,25 +758,33 @@
                 "High": "Высокое",
                 "Highest": "Самое высокое",
                 "Vanes swing": "Качание жалюзи",
+                "Horizontal and vertical vanes swing": "Качание горизонтальных и вертикальных жалюзи",
                 "Horizontal vanes swing": "Качание горизонтальных жалюзи",
+                "Vertical vanes swing": "Качание вертикальных жалюзи",
+                "Vertical vanes": "Вертикальные жалюзи",
+                "Far Left": "Самое левое",
+                "Left": "Левое",
+                "Right": "Правое",
+                "Far Right": "Самое правое",
+                "Defrosting": "Разморозка",
+                "Eco mode": "Режим эко",
+                "Gentle wind": "Мягкий поток",
+                "Self cleaning": "Самоочистка",
                 "FW Version": "Версия прошивки",
                 "HW Version": "Версия устройства",
-                "MCU Temperature": "Температура МК",
                 "PROTO Version": "Версия протокола",
                 "Reboot Device": "Перезагрузить устройство",
                 "Serial": "Серийный номер",
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
-                "LISTEN_ONLY": "Слушатель",
-                "EMULATE_M_WRC": "Главный",
-                "EMULATE_S_WRC": "Ведомый",
+                "AC connected": "Кондиционер подключен",
                 "Normal mode": "Обычный режим",
                 "Disabled if no errors": "Отключен если нет ошибок",
                 "Disabled untill reboot": "Отключен до перезагрузки",
                 "Always disabled": "Всегда отключен",
                 "Green untill reboot": "Зеленый до перезагрузки",
                 "Red untill reboot": "Красный до перезагрузки",
-                "template_title": "ONOKOM AIR MH-2-MB-B (Адаптер для бытовых и полупромышленных систем Mitsubishi Heavy)"
+                "template_title": "ONOKOM AIR PN-1-MB-B (Адаптер для бытовых систем Panasonic)"
             }
         }
     }
