@@ -37,6 +37,11 @@
                 "order": 6
             },
             {
+                "title": "Errors",
+                "id": "errors",
+                "order": 8
+            },
+            {
                 "title": "Debug",
                 "id": "debug",
                 "order": 9
@@ -121,6 +126,23 @@
                     "Yes"
                 ],
                 "group": "temperatureControl",
+                "order": 1
+            },
+            {
+                "title": "Show error switches",
+                "id": "Show_error_switches",
+                "address": 100,
+                "reg_type": "coil",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "errors",
                 "order": 1
             },
             {
@@ -329,6 +351,19 @@
                 "condition": "Show_fan_as_range!=1"
             },
             {
+                "name": "External air temperature",
+                "reg_type": "holding",
+                "address": 30,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Indoor air temperature",
                 "reg_type": "holding",
                 "address": 3,
@@ -352,6 +387,7 @@
                 "scale": 0.01,
                 "sporadic": true,
                 "group": "temperatureControl",
+                "readonly": true,
                 "units": "deg C",
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
@@ -623,6 +659,288 @@
                 "group": "hw_info"
             },
             {
+                "name": "Error code",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 1,
+                "type": "value",
+                "group": "errors",
+                "readonly": true,
+                "order": 0
+            },
+            {
+                "name": "Error 1",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 1
+            },
+            {
+                "name": "Error 2",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 2
+            },
+            {
+                "name": "Error 3",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 3
+            },
+            {
+                "name": "Error 4",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 4
+            },
+            {
+                "name": "Error 5",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 5
+            },
+            {
+                "name": "Error 6",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 6,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 6
+            },
+            {
+                "name": "Error 7",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 7,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 7
+            },
+            {
+                "name": "Error 8",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 8,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 8
+            },
+            {
+                "name": "Error 9",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 9,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 9
+            },
+            {
+                "name": "Error 10",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 10,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 10
+            },
+            {
+                "name": "Error 11",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 11,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 11
+            },
+            {
+                "name": "Error 12",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 12,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 12
+            },
+            {
+                "name": "Error 13",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 13,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 13
+            },
+            {
+                "name": "Error 14",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 14,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 14
+            },
+            {
+                "name": "Error 15",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 15,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 15
+            },
+            {
+                "name": "Error 16",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 16,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 16
+            },
+            {
+                "name": "Error 17",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 17,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 17
+            },
+            {
+                "name": "Error 18",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 18,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 18
+            },
+            {
+                "name": "Error 19",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 19,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 19
+            },
+            {
+                "name": "Error 20",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 20,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 20
+            },
+            {
+                "name": "Error 21",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 21,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 21
+            },
+            {
+                "name": "Error 22",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 22,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 22
+            },
+            {
+                "name": "Error 23",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 23,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 23
+            },
+            {
+                "name": "Error 24",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 24,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true,
+                "order": 24
+            },
+            {
+                "name": "Errors",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "group": "errors",
+                "readonly": true
+            },
+            {
                 "name": "AC connected",
                 "reg_type": "coil",
                 "address": 20,
@@ -634,7 +952,31 @@
         ],
         "translations": {
             "en": {
-                "template_title": "ONOKOM-AIR-ME-1-MB-B (Adapter for household and semi-industrial Mitsubishi Electric systems)"
+                "template_title": "ONOKOM-AIR-ME-1-MB-B (Adapter for household and semi-industrial Mitsubishi Electric systems)",
+                "Error 1": "Error 1",
+                "Error 2": "Error 2",
+                "Error 3": "Error 3",
+                "Error 4": "Error 4",
+                "Error 5": "Error 5",
+                "Error 6": "Error 6",
+                "Error 7": "Error 7",
+                "Error 8": "Error 8",
+                "Error 9": "Error 9",
+                "Error 10": "Error 10",
+                "Error 11": "Error 11",
+                "Error 12": "Error 12",
+                "Error 13": "Error 13",
+                "Error 14": "Error 14",
+                "Error 15": "Error 15",
+                "Error 16": "Error 16",
+                "Error 17": "Error 17",
+                "Error 18": "Error 18",
+                "Error 19": "Error 19",
+                "Error 20": "Error 20",
+                "Error 21": "Error 21",
+                "Error 22": "Error 22",
+                "Error 23": "Error 23",
+                "Error 24": "Error 24"
             },
             "ru": {
                 "General": "Основные режимы и функции",
@@ -642,6 +984,7 @@
                 "Vanes": "Жалюзи",
                 "Additional": "Дополнительные режимы и функции",
                 "HW Info": "Данные модуля",
+                "Errors": "Ошибки",
                 "Debug": "Диагностика",
                 "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
                 "No": "Нет",
@@ -650,6 +993,7 @@
                 "Show fan as range": "Отображать вентилятор как ползунок",
                 "Show vanes as range": "Отображать жалюзи как ползунок",
                 "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Show error switches": "Показать переключатели ошибок",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Parity bit": "Бит чётности",
@@ -670,6 +1014,7 @@
                 "4 Speed": "4 Скорость",
                 "Smart fan speed": "Скорость вентилятора расширенная",
                 "Quiet mode": "Режим тихий",
+                "External air temperature": "Температура с внешнего датчика",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Target temperature": "Целевая температура",
                 "Temperature correction": "Коррекция температуры",
@@ -702,6 +1047,31 @@
                 "Serial": "Серийный номер",
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
+                "Error code": "Код ошибки",
+                "Error 1": "Ошибка 1",
+                "Error 2": "Ошибка 2",
+                "Error 3": "Ошибка 3",
+                "Error 4": "Ошибка 4",
+                "Error 5": "Ошибка 5",
+                "Error 6": "Ошибка 6",
+                "Error 7": "Ошибка 7",
+                "Error 8": "Ошибка 8",
+                "Error 9": "Ошибка 9",
+                "Error 10": "Ошибка 10",
+                "Error 11": "Ошибка 11",
+                "Error 12": "Ошибка 12",
+                "Error 13": "Ошибка 13",
+                "Error 14": "Ошибка 14",
+                "Error 15": "Ошибка 15",
+                "Error 16": "Ошибка 16",
+                "Error 17": "Ошибка 17",
+                "Error 18": "Ошибка 18",
+                "Error 19": "Ошибка 19",
+                "Error 20": "Ошибка 20",
+                "Error 21": "Ошибка 21",
+                "Error 22": "Ошибка 22",
+                "Error 23": "Ошибка 23",
+                "Error 24": "Ошибка 24",
                 "AC connected": "Кондиционер подключен",
                 "Normal mode": "Обычный режим",
                 "Disabled if no errors": "Отключен если нет ошибок",
