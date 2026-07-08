@@ -1,3 +1,15 @@
+wb-mqtt-serial (2.259.0) stable; urgency=medium
+
+  * ONOKOM templates update (external contribution):
+    - add GR-5-MB-B and PN-1-MB-B device templates
+    - add "External air temperature" channel to all devices (gated by the
+      "Allow the use of an external temperature sensor" setting, off by default)
+    - add "Idu count" channel translation for VRF devices
+    - add error-data channels to the ME-1-MB-B template
+    - refresh the remaining non-deprecated ONOKOM templates
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Wed, 08 Jul 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.258.0) stable; urgency=medium
 
   * Take the released bootloader version from boot/by-signature/release-versions.yaml by the
