@@ -19,15 +19,8 @@ namespace
 
     void FixChannel(Json::Value& channel)
     {
-        if (channel.isMember("enum") && channel["enum"].isArray()) {
-            for (Json::Value& value: channel["enum"]) {
-                if (value.isNumeric()) {
-                    value = value.asString();
-                }
-            }
-        }
-
         ConvertPollIntervalToReadRateLimit(channel);
+        FixChannelEnum(channel);
     }
 
     void FixChannels(Json::Value& device, TTemplateMap& templates)
