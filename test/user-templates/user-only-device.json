@@ -1,0 +1,15 @@
+{
+    "device_type": "UserOnlyDevice",
+    "title": "User only device",
+    "device": {
+        "name": "User only device",
+        "id": "user-only-device",
+        "channels": [
+            {
+                "name": "Input 1",
+                "reg_type": "input",
+                "address": 0
+            }
+        ]
+    }
+}

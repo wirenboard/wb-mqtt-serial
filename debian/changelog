@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.260.0) stable; urgency=medium
+
+  * config/Load RPC: device types with the active template loaded from
+    the user templates directory are marked with "user-defined" flag
+  * New templates/Upload and templates/Delete RPC methods to manage
+    user defined device templates
+  * Files watcher handles file moves (mv) in templates directories
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Jul 2026 07:46:58 +0000
+
 wb-mqtt-serial (2.259.1) stable; urgency=medium
 
   * Fix possible crash on live reload of a device template file

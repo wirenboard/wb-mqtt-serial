@@ -26,7 +26,7 @@ TFilesWatcher::TFilesWatcher(const std::vector<std::string>& paths, TFilesWatche
         std::unordered_map<int, std::string> wdToPath;
 
         for (const auto& path: paths) {
-            int wd = inotify_add_watch(fd, path.c_str(), IN_CLOSE_WRITE | IN_DELETE);
+            int wd = inotify_add_watch(fd, path.c_str(), IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_TO | IN_MOVED_FROM);
             if (wd == -1) {
                 LOG(Error) << "inotify_add_watch failed: " << strerror(errno);
                 close(fd);
@@ -68,19 +68,13 @@ TFilesWatcher::TFilesWatcher(const std::vector<std::string>& paths, TFilesWatche
                     auto it = wdToPath.find(event->wd);
                     if (it != wdToPath.end()) {
                         auto fullPath = it->second + "/" + event->name;
-                        switch (event->mask) {
-                            case IN_CLOSE_WRITE: {
-                                {
-                                    LOG(Debug) << "file modified: " << fullPath;
-                                    Callback(fullPath, TFilesWatcher::TEvent::CloseWrite);
-                                    break;
-                                }
-                                case IN_DELETE: {
-                                    LOG(Debug) << "file deleted: " << fullPath;
-                                    Callback(fullPath, TFilesWatcher::TEvent::Delete);
-                                    break;
-                                }
-                            }
+                        if (event->mask & (IN_CLOSE_WRITE | IN_MOVED_TO)) {
+                            LOG(Debug) << "file modified: " << fullPath;
+                            Callback(fullPath, TFilesWatcher::TEvent::CloseWrite);
+                        }
+                        if (event->mask & (IN_DELETE | IN_MOVED_FROM)) {
+                            LOG(Debug) << "file deleted: " << fullPath;
+                            Callback(fullPath, TFilesWatcher::TEvent::Delete);
                         }
                     }
                     ptr += sizeof(struct inotify_event) + event->len;
