@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.259.1) stable; urgency=medium
+
+  * Fix possible crash on live reload of a device template file
+    with a unique device type
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Jul 2026 10:44:18 +0500
+
 wb-mqtt-serial (2.259.0) stable; urgency=medium
 
   * ONOKOM templates update (external contribution):
