@@ -301,6 +301,31 @@ TEST_F(TConfigParserTest, ParseEnum)
     EXPECT_EQ(titles3["4"].size(), 0);
 }
 
+TEST(TFixChannelEnumTest, ConvertsNumbersToStrings)
+{
+    Json::Value channel;
+    channel["enum"][0] = 0;
+    channel["enum"][1] = 1;
+    channel["enum"][2] = "2";
+    channel["enum"][3] = "0x10";
+    FixChannelEnum(channel);
+    ASSERT_TRUE(channel["enum"][0].isString());
+    ASSERT_TRUE(channel["enum"][1].isString());
+    EXPECT_EQ(channel["enum"][0].asString(), "0");
+    EXPECT_EQ(channel["enum"][1].asString(), "1");
+    EXPECT_EQ(channel["enum"][2].asString(), "2");
+    EXPECT_EQ(channel["enum"][3].asString(), "0x10");
+}
+
+TEST(TFixChannelEnumTest, LeavesChannelWithoutEnumUntouched)
+{
+    Json::Value channel;
+    channel["name"] = "test";
+    FixChannelEnum(channel);
+    EXPECT_FALSE(channel.isMember("enum"));
+    EXPECT_EQ(channel["name"].asString(), "test");
+}
+
 TEST_F(TConfigParserTest, DefaultParamsForChannels)
 {
     auto portConfigs = GetConfig("configs/config-default-params.json")->PortConfigs;

@@ -251,6 +251,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
+void FixChannelEnum(Json::Value& channel);
 
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
 std::string DecorateIfNotEmpty(const std::string& prefix,
