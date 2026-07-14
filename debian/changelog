@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1-wb102) stable; urgency=medium
+
+  * Convert numeric channel enum values to strings
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 14 Jul 2026 10:37:12 +0300
+
 wb-mqtt-serial (2.248.1-wb101) stable; urgency=medium
 
   * config-wb-mrwm2.json.jinja: Add timer functions
