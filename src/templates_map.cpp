@@ -319,7 +319,9 @@ std::vector<std::string> TTemplateMap::UpdateTemplate(const std::string& path)
     auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
     auto& typeArray = Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{}).first->second;
     if (!PreferredTemplatesDir.empty() && WBMQTT::StringStartsWith(path, PreferredTemplatesDir)) {
-        TemplateUpdatedWarning(typeArray.back(), path);
+        if (!typeArray.empty()) {
+            TemplateUpdatedWarning(typeArray.back(), path);
+        }
         typeArray.push_back(deviceTemplate);
     } else {
         typeArray.insert(typeArray.begin(), deviceTemplate);

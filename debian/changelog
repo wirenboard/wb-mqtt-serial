@@ -1,8 +1,15 @@
-wb-mqtt-serial (2.259.1) stable; urgency=medium
+wb-mqtt-serial (2.259.2) stable; urgency=medium
 
   * Convert numeric channel enum values to strings
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 14 Jul 2026 10:37:12 +0300
+
+wb-mqtt-serial (2.259.1) stable; urgency=medium
+
+  * Fix possible crash on live reload of a device template file
+    with a unique device type
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Jul 2026 10:44:18 +0500
 
 wb-mqtt-serial (2.259.0) stable; urgency=medium
 
