@@ -20,6 +20,24 @@ namespace
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
+    void FixChannelsEnum(Json::Value& node)
+    {
+        if (node.isObject()) {
+            if (node.isMember("channels") && node["channels"].isArray()) {
+                for (Json::Value& channel: node["channels"]) {
+                    FixChannelEnum(channel);
+                }
+            }
+            for (const auto& member: node.getMemberNames()) {
+                FixChannelsEnum(node[member]);
+            }
+        } else if (node.isArray()) {
+            for (Json::Value& item: node) {
+                FixChannelsEnum(item);
+            }
+        }
+    }
+
     void CheckNesting(const Json::Value& root, size_t nestingLevel, TSubDevicesTemplateMap& templates)
     {
         if (nestingLevel > 5) {
@@ -416,6 +434,7 @@ const Json::Value& TDeviceTemplate::GetTemplate()
 {
     if (Template.isNull()) {
         Json::Value root(WBMQTT::JSON::Parse(GetFilePath()));
+        FixChannelsEnum(root);
         // Skip deprecated template validation, it may be broken according to latest schema
         if (!IsDeprecated()) {
             try {
