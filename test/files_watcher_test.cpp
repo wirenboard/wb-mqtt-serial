@@ -45,7 +45,7 @@ protected:
 
         Watcher = std::make_unique<TFilesWatcher>(
             std::vector<std::string>{WatchedDir.string()},
-            [this](std::string fileName, TFilesWatcher::TEvent event) { HandleEvent(fileName, event); });
+            [this](const std::string& fileName, TFilesWatcher::TEvent event) { HandleEvent(fileName, event); });
         WaitWatcherReady();
     }
 

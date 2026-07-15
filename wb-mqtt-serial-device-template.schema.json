@@ -299,7 +299,6 @@
     }
   },
 
-  "type": "object",
   "properties": {
     "device_type": { "$ref": "#/definitions/device_type" },
     "title": { "$ref": "#/definitions/device_type" },
