@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.260.0) stable; urgency=medium
+
+  * config/Load RPC: device types with the active template loaded from
+    the user templates directory are marked with "user-defined" flag
+  * New templates/Upload and templates/Delete RPC methods to manage
+    user defined device templates
+  * Files watcher handles file moves (mv) in templates directories
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 17 Jul 2026 16:10:43 +0500
+
 wb-mqtt-serial (2.259.2) stable; urgency=medium
 
   * Convert numeric channel enum values to strings
