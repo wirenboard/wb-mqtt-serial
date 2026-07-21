@@ -13,6 +13,12 @@ namespace
 {
     const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
 
+    // A device with a high event rate must not be able to monopolize the bus.
+    // After this many events read in a row from the same device it is excluded from
+    // arbitration (by raising the request's minimal slave id) to let other devices
+    // report their events.
+    const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 3;
+
     std::string EventTypeToString(uint8_t eventType)
     {
         switch (eventType) {
@@ -211,8 +217,7 @@ public:
 };
 
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
-    : LastAccessedSlaveId(0),
-      ReadErrors(0),
+    : ReadErrors(0),
       MaxReadErrors(maxReadErrors),
       ClearErrorsOnSuccessfulRead(false)
 {}
@@ -242,23 +247,58 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
     } else {
         traits = std::make_unique<ModbusExt::TModbusRTUWithArbitrationTraits>();
     }
+    // Start each reading session from the lowest slave id. The minimal slave id is
+    // deliberately not persisted between sessions: otherwise a "flooding" device that
+    // keeps the session busy until the timeout would carry its monopoly over to the
+    // next session and starve devices with lower addresses.
+    uint8_t minSlaveId = 0;
+    // Number of events read in a row from streakSlaveId. When it reaches
+    // MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE the device is skipped. 0 is a safe
+    // sentinel: it is never a responder's slave id.
+    uint8_t streakSlaveId = 0;
+    size_t streakReads = 0;
+
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
                                        *traits,
                                        floor<milliseconds>(maxReadingTime - spentTime),
-                                       LastAccessedSlaveId,
+                                       minSlaveId,
                                        EventState,
                                        visitor))
             {
-                LastAccessedSlaveId = 0;
-                EventState.Reset();
-                ClearReadErrors(registerCallback);
-                break;
+                // No device with slave id >= minSlaveId has events.
+                if (minSlaveId == 0) {
+                    // The whole bus is quiet, nothing more to read in this session.
+                    EventState.Reset();
+                    ClearReadErrors(registerCallback);
+                    break;
+                }
+                // Some lower-addressed devices were skipped by the fairness cap.
+                // Wrap around to give them a chance to report their events.
+                minSlaveId = 0;
+                streakSlaveId = 0;
+                streakReads = 0;
+                continue;
             }
-            // TODO: Limit reads from same slaveId
-            LastAccessedSlaveId = visitor.GetSlaveId();
             ClearReadErrors(registerCallback);
+            uint8_t slaveId = visitor.GetSlaveId();
+            if (slaveId == streakSlaveId) {
+                ++streakReads;
+            } else {
+                streakSlaveId = slaveId;
+                streakReads = 1;
+            }
+            if (streakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
+                // The device has monopolized the bus for too long. Exclude it from
+                // arbitration so devices with a higher slave id can report events.
+                // If it is already the highest possible address, wrap around.
+                minSlaveId = (slaveId == 0xFF) ? 0 : static_cast<uint8_t>(slaveId + 1);
+                streakSlaveId = 0;
+                streakReads = 0;
+            } else {
+                minSlaveId = slaveId;
+            }
         } catch (const TSerialDeviceException& ex) {
             ReadEventsFailed(ex.what(), registerCallback);
         } catch (const Modbus::TErrorBase& ex) {
