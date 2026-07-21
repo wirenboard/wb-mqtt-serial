@@ -24,6 +24,11 @@ public:
      */
     void Flush(TPort& port);
 
+    /**
+     * @brief Returns false when MaxWriteFailTime has elapsed and the pending write is dropped.
+     */
+    bool NeedRetryAfterWriteFail();
+
     void SetTextValue(const std::string& v);
 
 private:
