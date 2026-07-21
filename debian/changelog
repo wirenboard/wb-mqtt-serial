@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.260.1) stable; urgency=medium
+
+  * Fix write retry on a disconnected device
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 21 Jul 2026 11:11:31 +0300
+
 wb-mqtt-serial (2.260.0) stable; urgency=medium
 
   * config/Load RPC: device types with the active template loaded from
