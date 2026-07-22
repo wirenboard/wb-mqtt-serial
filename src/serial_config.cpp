@@ -876,6 +876,17 @@ bool IsSubdeviceChannel(const Json::Value& channelSchema)
     return (channelSchema.isMember("oneOf") || channelSchema.isMember("device_type"));
 }
 
+void FixChannelEnum(Json::Value& channel)
+{
+    if (channel.isMember("enum") && channel["enum"].isArray()) {
+        for (Json::Value& value: channel["enum"]) {
+            if (value.isNumeric()) {
+                value = value.asString();
+            }
+        }
+    }
+}
+
 std::string GetProtocolName(const Json::Value& deviceDescription)
 {
     std::string p;

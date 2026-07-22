@@ -20,6 +20,7 @@ namespace
     void FixChannel(Json::Value& channel)
     {
         ConvertPollIntervalToReadRateLimit(channel);
+        FixChannelEnum(channel);
     }
 
     void FixChannels(Json::Value& device, TTemplateMap& templates)

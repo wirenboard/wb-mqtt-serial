@@ -49,7 +49,7 @@ public:
     TFwDownloader(PHttpClient httpClient);
 
     TReleasedBinary GetReleasedFirmware(const std::string& fwSignature, const std::string& releaseSuite);
-    TReleasedBinary GetLatestBootloader(const std::string& fwSignature);
+    TReleasedBinary GetReleasedBootloader(const std::string& fwSignature, const std::string& releaseSuite);
     TParsedWBFW DownloadAndParseWBFW(const std::string& url);
 
 private:
@@ -65,11 +65,6 @@ private:
         std::map<std::string, std::map<std::string, std::string>> Releases;
     };
 
-    struct TBootloaderCacheEntry: TCacheEntry
-    {
-        TReleasedBinary Binary;
-    };
-
     struct TWBFWCacheEntry: TCacheEntry
     {
         TParsedWBFW Firmware;
@@ -77,7 +72,7 @@ private:
 
     std::mutex CacheMutex;
     TReleaseCacheEntry ReleaseCache;
-    std::map<std::string, TBootloaderCacheEntry> BootloaderCache;
+    TReleaseCacheEntry BootloaderReleaseCache;
     std::map<std::string, TWBFWCacheEntry> WBFWCache;
 
     static const std::string FW_RELEASES_BASE_URL;
@@ -85,5 +80,12 @@ private:
     static const std::chrono::minutes BOOTLOADER_CACHE_TTL;
     static const std::chrono::hours WBFW_CACHE_TTL;
 
-    std::map<std::string, std::map<std::string, std::string>> GetReleases();
+    // Cf. fw_downloader.py _get_released_binary() + the @ttl_lru_cache wrappers.
+    // Fetches and caches a release-versions.yaml index (keyed by signature, then suite)
+    // and returns the released binary for the given signature/suite.
+    TReleasedBinary GetReleasedBinary(const std::string& indexUrl,
+                                      TReleaseCacheEntry& cache,
+                                      std::chrono::minutes ttl,
+                                      const std::string& fwSignature,
+                                      const std::string& releaseSuite);
 };

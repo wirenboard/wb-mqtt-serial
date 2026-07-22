@@ -1,14 +1,69 @@
-wb-mqtt-serial (2.257.4) stable; urgency=medium
+wb-mqtt-serial (2.260.2) stable; urgency=medium
 
   * Clarify timeouts and register reading documentation
 
- -- Alexander Kilpio <alexander.kilpio@wirenboard.com>  Mon, 29 Jun 2026 17:05:50 +0300
+ -- Alexander Kilpio <alexander.kilpio@wirenboard.com>  Wed, 22 Jul 2026 13:00:43 +0300
 
-wb-mqtt-serial (2.257.3) stable; urgency=medium
+wb-mqtt-serial (2.260.1) stable; urgency=medium
 
-  * Fix dimmer's min max params order
+  * Fix write retry on a disconnected device
 
- -- Victor Vedenin <victor.vedenin@wirenboard.com>  Fri, 26 Jun 2026 14:10:00 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 21 Jul 2026 11:11:31 +0300
+
+wb-mqtt-serial (2.260.0) stable; urgency=medium
+
+  * config/Load RPC: device types with the active template loaded from
+    the user templates directory are marked with "user-defined" flag
+  * New templates/Upload and templates/Delete RPC methods to manage
+    user defined device templates
+  * Files watcher handles file moves (mv) in templates directories
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 17 Jul 2026 16:10:43 +0500
+
+wb-mqtt-serial (2.259.2) stable; urgency=medium
+
+  * Convert numeric channel enum values to strings
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 14 Jul 2026 10:37:12 +0300
+
+wb-mqtt-serial (2.259.1) stable; urgency=medium
+
+  * Fix possible crash on live reload of a device template file
+    with a unique device type
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Jul 2026 10:44:18 +0500
+
+wb-mqtt-serial (2.259.0) stable; urgency=medium
+
+  * ONOKOM templates update (external contribution):
+    - add GR-5-MB-B and PN-1-MB-B device templates
+    - add "External air temperature" channel to all devices (gated by the
+      "Allow the use of an external temperature sensor" setting, off by default)
+    - add "Idu count" channel translation for VRF devices
+    - add error-data channels to the ME-1-MB-B template
+    - refresh the remaining non-deprecated ONOKOM templates
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Wed, 08 Jul 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.258.0) stable; urgency=medium
+
+  * Take the released bootloader version from boot/by-signature/release-versions.yaml by the
+    controller's release suite (testing/stable), mirroring firmwares, instead of the
+    suite-agnostic bootloader/by-signature/<signature>/main/latest.txt
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 03 Jul 2026 09:52:51 +0300
+
+wb-mqtt-serial (2.257.4) stable; urgency=medium
+
+  * fw-update GetFirmwareInfo: stop reporting garbage for third-party devices.
+    Sanitize the firmware and bootloader version strings read from the device
+    (printable ASCII only) so raw bytes no longer leak into fw/bootloader; treat
+    an empty or non-printable firmware signature as "no signature" and skip the
+    release-server lookup (no more bogus by-signature// requests); report
+    can_update only when the release server actually offers a firmware or
+    bootloader for the device
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 Jun 2026 13:05:00 +0500
 
 wb-mqtt-serial (2.257.2) stable; urgency=medium
 

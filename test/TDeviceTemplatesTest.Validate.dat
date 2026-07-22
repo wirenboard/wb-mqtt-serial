@@ -868,6 +868,16 @@ ONOKOM-AIR-AUX-1-MB-B
 	Error 48  =>  Error 48
 	Error 49  =>  Error 49
 	Error 5  =>  Error 5
+	Error 50  =>  Error 50
+	Error 51  =>  Error 51
+	Error 52  =>  Error 52
+	Error 53  =>  Error 53
+	Error 54  =>  Error 54
+	Error 55  =>  Error 55
+	Error 56  =>  Error 56
+	Error 57  =>  Error 57
+	Error 58  =>  Error 58
+	Error 59  =>  Error 59
 	Error 6  =>  Error 6
 	Error 60  =>  Error 60
 	Error 61  =>  Error 61
@@ -883,9 +893,32 @@ ONOKOM-AIR-AUX-1-MB-B
 	Error 70  =>  Error 70
 	Error 71  =>  Error 71
 	Error 72  =>  Error 72
+	Error 73  =>  Error 73
+	Error 74  =>  Error 74
+	Error 75  =>  Error 75
+	Error 76  =>  Error 76
+	Error 77  =>  Error 77
+	Error 78  =>  Error 78
+	Error 79  =>  Error 79
 	Error 8  =>  Error 8
+	Error 80  =>  Error 80
+	Error 81  =>  Error 81
+	Error 82  =>  Error 82
+	Error 83  =>  Error 83
+	Error 84  =>  Error 84
+	Error 85  =>  Error 85
+	Error 86  =>  Error 86
+	Error 87  =>  Error 87
+	Error 88  =>  Error 88
+	Error 89  =>  Error 89
 	Error 9  =>  Error 9
+	Error 90  =>  Error 90
+	Error 91  =>  Error 91
+	Error 92  =>  Error 92
+	Error 93  =>  Error 93
+	Error 94  =>  Error 94
 	Error code  =>  Error code
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -916,6 +949,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	0 - AC connected  =>  0 - AC connected
 	0 - Active  =>  0 - Active
 	0 - Active mode  =>  0 - Active mode
+	0 - External air temperature  =>  0 - External air temperature
 	0 - Fan speed  =>  0 - Fan speed
 	0 - Indoor air temperature  =>  0 - Indoor air temperature
 	0 - Mode  =>  0 - Mode
@@ -925,6 +959,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	1 - AC connected  =>  1 - AC connected
 	1 - Active  =>  1 - Active
 	1 - Active mode  =>  1 - Active mode
+	1 - External air temperature  =>  1 - External air temperature
 	1 - Fan speed  =>  1 - Fan speed
 	1 - Indoor air temperature  =>  1 - Indoor air temperature
 	1 - Mode  =>  1 - Mode
@@ -934,6 +969,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	10 - AC connected  =>  10 - AC connected
 	10 - Active  =>  10 - Active
 	10 - Active mode  =>  10 - Active mode
+	10 - External air temperature  =>  10 - External air temperature
 	10 - Fan speed  =>  10 - Fan speed
 	10 - Indoor air temperature  =>  10 - Indoor air temperature
 	10 - Mode  =>  10 - Mode
@@ -943,6 +979,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	11 - AC connected  =>  11 - AC connected
 	11 - Active  =>  11 - Active
 	11 - Active mode  =>  11 - Active mode
+	11 - External air temperature  =>  11 - External air temperature
 	11 - Fan speed  =>  11 - Fan speed
 	11 - Indoor air temperature  =>  11 - Indoor air temperature
 	11 - Mode  =>  11 - Mode
@@ -952,6 +989,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	12 - AC connected  =>  12 - AC connected
 	12 - Active  =>  12 - Active
 	12 - Active mode  =>  12 - Active mode
+	12 - External air temperature  =>  12 - External air temperature
 	12 - Fan speed  =>  12 - Fan speed
 	12 - Indoor air temperature  =>  12 - Indoor air temperature
 	12 - Mode  =>  12 - Mode
@@ -961,6 +999,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	13 - AC connected  =>  13 - AC connected
 	13 - Active  =>  13 - Active
 	13 - Active mode  =>  13 - Active mode
+	13 - External air temperature  =>  13 - External air temperature
 	13 - Fan speed  =>  13 - Fan speed
 	13 - Indoor air temperature  =>  13 - Indoor air temperature
 	13 - Mode  =>  13 - Mode
@@ -970,6 +1009,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	14 - AC connected  =>  14 - AC connected
 	14 - Active  =>  14 - Active
 	14 - Active mode  =>  14 - Active mode
+	14 - External air temperature  =>  14 - External air temperature
 	14 - Fan speed  =>  14 - Fan speed
 	14 - Indoor air temperature  =>  14 - Indoor air temperature
 	14 - Mode  =>  14 - Mode
@@ -979,6 +1019,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	15 - AC connected  =>  15 - AC connected
 	15 - Active  =>  15 - Active
 	15 - Active mode  =>  15 - Active mode
+	15 - External air temperature  =>  15 - External air temperature
 	15 - Fan speed  =>  15 - Fan speed
 	15 - Indoor air temperature  =>  15 - Indoor air temperature
 	15 - Mode  =>  15 - Mode
@@ -988,6 +1029,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	16 - AC connected  =>  16 - AC connected
 	16 - Active  =>  16 - Active
 	16 - Active mode  =>  16 - Active mode
+	16 - External air temperature  =>  16 - External air temperature
 	16 - Fan speed  =>  16 - Fan speed
 	16 - Indoor air temperature  =>  16 - Indoor air temperature
 	16 - Mode  =>  16 - Mode
@@ -997,6 +1039,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	17 - AC connected  =>  17 - AC connected
 	17 - Active  =>  17 - Active
 	17 - Active mode  =>  17 - Active mode
+	17 - External air temperature  =>  17 - External air temperature
 	17 - Fan speed  =>  17 - Fan speed
 	17 - Indoor air temperature  =>  17 - Indoor air temperature
 	17 - Mode  =>  17 - Mode
@@ -1006,6 +1049,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	18 - AC connected  =>  18 - AC connected
 	18 - Active  =>  18 - Active
 	18 - Active mode  =>  18 - Active mode
+	18 - External air temperature  =>  18 - External air temperature
 	18 - Fan speed  =>  18 - Fan speed
 	18 - Indoor air temperature  =>  18 - Indoor air temperature
 	18 - Mode  =>  18 - Mode
@@ -1015,6 +1059,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	19 - AC connected  =>  19 - AC connected
 	19 - Active  =>  19 - Active
 	19 - Active mode  =>  19 - Active mode
+	19 - External air temperature  =>  19 - External air temperature
 	19 - Fan speed  =>  19 - Fan speed
 	19 - Indoor air temperature  =>  19 - Indoor air temperature
 	19 - Mode  =>  19 - Mode
@@ -1024,6 +1069,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	2 - AC connected  =>  2 - AC connected
 	2 - Active  =>  2 - Active
 	2 - Active mode  =>  2 - Active mode
+	2 - External air temperature  =>  2 - External air temperature
 	2 - Fan speed  =>  2 - Fan speed
 	2 - Indoor air temperature  =>  2 - Indoor air temperature
 	2 - Mode  =>  2 - Mode
@@ -1033,6 +1079,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	20 - AC connected  =>  20 - AC connected
 	20 - Active  =>  20 - Active
 	20 - Active mode  =>  20 - Active mode
+	20 - External air temperature  =>  20 - External air temperature
 	20 - Fan speed  =>  20 - Fan speed
 	20 - Indoor air temperature  =>  20 - Indoor air temperature
 	20 - Mode  =>  20 - Mode
@@ -1042,6 +1089,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	21 - AC connected  =>  21 - AC connected
 	21 - Active  =>  21 - Active
 	21 - Active mode  =>  21 - Active mode
+	21 - External air temperature  =>  21 - External air temperature
 	21 - Fan speed  =>  21 - Fan speed
 	21 - Indoor air temperature  =>  21 - Indoor air temperature
 	21 - Mode  =>  21 - Mode
@@ -1051,6 +1099,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	22 - AC connected  =>  22 - AC connected
 	22 - Active  =>  22 - Active
 	22 - Active mode  =>  22 - Active mode
+	22 - External air temperature  =>  22 - External air temperature
 	22 - Fan speed  =>  22 - Fan speed
 	22 - Indoor air temperature  =>  22 - Indoor air temperature
 	22 - Mode  =>  22 - Mode
@@ -1060,6 +1109,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	23 - AC connected  =>  23 - AC connected
 	23 - Active  =>  23 - Active
 	23 - Active mode  =>  23 - Active mode
+	23 - External air temperature  =>  23 - External air temperature
 	23 - Fan speed  =>  23 - Fan speed
 	23 - Indoor air temperature  =>  23 - Indoor air temperature
 	23 - Mode  =>  23 - Mode
@@ -1069,6 +1119,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	24 - AC connected  =>  24 - AC connected
 	24 - Active  =>  24 - Active
 	24 - Active mode  =>  24 - Active mode
+	24 - External air temperature  =>  24 - External air temperature
 	24 - Fan speed  =>  24 - Fan speed
 	24 - Indoor air temperature  =>  24 - Indoor air temperature
 	24 - Mode  =>  24 - Mode
@@ -1078,6 +1129,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	25 - AC connected  =>  25 - AC connected
 	25 - Active  =>  25 - Active
 	25 - Active mode  =>  25 - Active mode
+	25 - External air temperature  =>  25 - External air temperature
 	25 - Fan speed  =>  25 - Fan speed
 	25 - Indoor air temperature  =>  25 - Indoor air temperature
 	25 - Mode  =>  25 - Mode
@@ -1087,6 +1139,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	26 - AC connected  =>  26 - AC connected
 	26 - Active  =>  26 - Active
 	26 - Active mode  =>  26 - Active mode
+	26 - External air temperature  =>  26 - External air temperature
 	26 - Fan speed  =>  26 - Fan speed
 	26 - Indoor air temperature  =>  26 - Indoor air temperature
 	26 - Mode  =>  26 - Mode
@@ -1096,6 +1149,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	27 - AC connected  =>  27 - AC connected
 	27 - Active  =>  27 - Active
 	27 - Active mode  =>  27 - Active mode
+	27 - External air temperature  =>  27 - External air temperature
 	27 - Fan speed  =>  27 - Fan speed
 	27 - Indoor air temperature  =>  27 - Indoor air temperature
 	27 - Mode  =>  27 - Mode
@@ -1105,6 +1159,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	28 - AC connected  =>  28 - AC connected
 	28 - Active  =>  28 - Active
 	28 - Active mode  =>  28 - Active mode
+	28 - External air temperature  =>  28 - External air temperature
 	28 - Fan speed  =>  28 - Fan speed
 	28 - Indoor air temperature  =>  28 - Indoor air temperature
 	28 - Mode  =>  28 - Mode
@@ -1114,6 +1169,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	29 - AC connected  =>  29 - AC connected
 	29 - Active  =>  29 - Active
 	29 - Active mode  =>  29 - Active mode
+	29 - External air temperature  =>  29 - External air temperature
 	29 - Fan speed  =>  29 - Fan speed
 	29 - Indoor air temperature  =>  29 - Indoor air temperature
 	29 - Mode  =>  29 - Mode
@@ -1123,6 +1179,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	3 - AC connected  =>  3 - AC connected
 	3 - Active  =>  3 - Active
 	3 - Active mode  =>  3 - Active mode
+	3 - External air temperature  =>  3 - External air temperature
 	3 - Fan speed  =>  3 - Fan speed
 	3 - Indoor air temperature  =>  3 - Indoor air temperature
 	3 - Mode  =>  3 - Mode
@@ -1132,6 +1189,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	30 - AC connected  =>  30 - AC connected
 	30 - Active  =>  30 - Active
 	30 - Active mode  =>  30 - Active mode
+	30 - External air temperature  =>  30 - External air temperature
 	30 - Fan speed  =>  30 - Fan speed
 	30 - Indoor air temperature  =>  30 - Indoor air temperature
 	30 - Mode  =>  30 - Mode
@@ -1141,6 +1199,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	31 - AC connected  =>  31 - AC connected
 	31 - Active  =>  31 - Active
 	31 - Active mode  =>  31 - Active mode
+	31 - External air temperature  =>  31 - External air temperature
 	31 - Fan speed  =>  31 - Fan speed
 	31 - Indoor air temperature  =>  31 - Indoor air temperature
 	31 - Mode  =>  31 - Mode
@@ -1150,6 +1209,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	32 - AC connected  =>  32 - AC connected
 	32 - Active  =>  32 - Active
 	32 - Active mode  =>  32 - Active mode
+	32 - External air temperature  =>  32 - External air temperature
 	32 - Fan speed  =>  32 - Fan speed
 	32 - Indoor air temperature  =>  32 - Indoor air temperature
 	32 - Mode  =>  32 - Mode
@@ -1159,6 +1219,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	33 - AC connected  =>  33 - AC connected
 	33 - Active  =>  33 - Active
 	33 - Active mode  =>  33 - Active mode
+	33 - External air temperature  =>  33 - External air temperature
 	33 - Fan speed  =>  33 - Fan speed
 	33 - Indoor air temperature  =>  33 - Indoor air temperature
 	33 - Mode  =>  33 - Mode
@@ -1168,6 +1229,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	34 - AC connected  =>  34 - AC connected
 	34 - Active  =>  34 - Active
 	34 - Active mode  =>  34 - Active mode
+	34 - External air temperature  =>  34 - External air temperature
 	34 - Fan speed  =>  34 - Fan speed
 	34 - Indoor air temperature  =>  34 - Indoor air temperature
 	34 - Mode  =>  34 - Mode
@@ -1177,6 +1239,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	35 - AC connected  =>  35 - AC connected
 	35 - Active  =>  35 - Active
 	35 - Active mode  =>  35 - Active mode
+	35 - External air temperature  =>  35 - External air temperature
 	35 - Fan speed  =>  35 - Fan speed
 	35 - Indoor air temperature  =>  35 - Indoor air temperature
 	35 - Mode  =>  35 - Mode
@@ -1186,6 +1249,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	36 - AC connected  =>  36 - AC connected
 	36 - Active  =>  36 - Active
 	36 - Active mode  =>  36 - Active mode
+	36 - External air temperature  =>  36 - External air temperature
 	36 - Fan speed  =>  36 - Fan speed
 	36 - Indoor air temperature  =>  36 - Indoor air temperature
 	36 - Mode  =>  36 - Mode
@@ -1195,6 +1259,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	37 - AC connected  =>  37 - AC connected
 	37 - Active  =>  37 - Active
 	37 - Active mode  =>  37 - Active mode
+	37 - External air temperature  =>  37 - External air temperature
 	37 - Fan speed  =>  37 - Fan speed
 	37 - Indoor air temperature  =>  37 - Indoor air temperature
 	37 - Mode  =>  37 - Mode
@@ -1204,6 +1269,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	38 - AC connected  =>  38 - AC connected
 	38 - Active  =>  38 - Active
 	38 - Active mode  =>  38 - Active mode
+	38 - External air temperature  =>  38 - External air temperature
 	38 - Fan speed  =>  38 - Fan speed
 	38 - Indoor air temperature  =>  38 - Indoor air temperature
 	38 - Mode  =>  38 - Mode
@@ -1213,6 +1279,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	39 - AC connected  =>  39 - AC connected
 	39 - Active  =>  39 - Active
 	39 - Active mode  =>  39 - Active mode
+	39 - External air temperature  =>  39 - External air temperature
 	39 - Fan speed  =>  39 - Fan speed
 	39 - Indoor air temperature  =>  39 - Indoor air temperature
 	39 - Mode  =>  39 - Mode
@@ -1222,6 +1289,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	4 - AC connected  =>  4 - AC connected
 	4 - Active  =>  4 - Active
 	4 - Active mode  =>  4 - Active mode
+	4 - External air temperature  =>  4 - External air temperature
 	4 - Fan speed  =>  4 - Fan speed
 	4 - Indoor air temperature  =>  4 - Indoor air temperature
 	4 - Mode  =>  4 - Mode
@@ -1231,6 +1299,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	40 - AC connected  =>  40 - AC connected
 	40 - Active  =>  40 - Active
 	40 - Active mode  =>  40 - Active mode
+	40 - External air temperature  =>  40 - External air temperature
 	40 - Fan speed  =>  40 - Fan speed
 	40 - Indoor air temperature  =>  40 - Indoor air temperature
 	40 - Mode  =>  40 - Mode
@@ -1240,6 +1309,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	41 - AC connected  =>  41 - AC connected
 	41 - Active  =>  41 - Active
 	41 - Active mode  =>  41 - Active mode
+	41 - External air temperature  =>  41 - External air temperature
 	41 - Fan speed  =>  41 - Fan speed
 	41 - Indoor air temperature  =>  41 - Indoor air temperature
 	41 - Mode  =>  41 - Mode
@@ -1249,6 +1319,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	42 - AC connected  =>  42 - AC connected
 	42 - Active  =>  42 - Active
 	42 - Active mode  =>  42 - Active mode
+	42 - External air temperature  =>  42 - External air temperature
 	42 - Fan speed  =>  42 - Fan speed
 	42 - Indoor air temperature  =>  42 - Indoor air temperature
 	42 - Mode  =>  42 - Mode
@@ -1258,6 +1329,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	43 - AC connected  =>  43 - AC connected
 	43 - Active  =>  43 - Active
 	43 - Active mode  =>  43 - Active mode
+	43 - External air temperature  =>  43 - External air temperature
 	43 - Fan speed  =>  43 - Fan speed
 	43 - Indoor air temperature  =>  43 - Indoor air temperature
 	43 - Mode  =>  43 - Mode
@@ -1267,6 +1339,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	44 - AC connected  =>  44 - AC connected
 	44 - Active  =>  44 - Active
 	44 - Active mode  =>  44 - Active mode
+	44 - External air temperature  =>  44 - External air temperature
 	44 - Fan speed  =>  44 - Fan speed
 	44 - Indoor air temperature  =>  44 - Indoor air temperature
 	44 - Mode  =>  44 - Mode
@@ -1276,6 +1349,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	45 - AC connected  =>  45 - AC connected
 	45 - Active  =>  45 - Active
 	45 - Active mode  =>  45 - Active mode
+	45 - External air temperature  =>  45 - External air temperature
 	45 - Fan speed  =>  45 - Fan speed
 	45 - Indoor air temperature  =>  45 - Indoor air temperature
 	45 - Mode  =>  45 - Mode
@@ -1285,6 +1359,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	46 - AC connected  =>  46 - AC connected
 	46 - Active  =>  46 - Active
 	46 - Active mode  =>  46 - Active mode
+	46 - External air temperature  =>  46 - External air temperature
 	46 - Fan speed  =>  46 - Fan speed
 	46 - Indoor air temperature  =>  46 - Indoor air temperature
 	46 - Mode  =>  46 - Mode
@@ -1294,6 +1369,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	47 - AC connected  =>  47 - AC connected
 	47 - Active  =>  47 - Active
 	47 - Active mode  =>  47 - Active mode
+	47 - External air temperature  =>  47 - External air temperature
 	47 - Fan speed  =>  47 - Fan speed
 	47 - Indoor air temperature  =>  47 - Indoor air temperature
 	47 - Mode  =>  47 - Mode
@@ -1303,6 +1379,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	48 - AC connected  =>  48 - AC connected
 	48 - Active  =>  48 - Active
 	48 - Active mode  =>  48 - Active mode
+	48 - External air temperature  =>  48 - External air temperature
 	48 - Fan speed  =>  48 - Fan speed
 	48 - Indoor air temperature  =>  48 - Indoor air temperature
 	48 - Mode  =>  48 - Mode
@@ -1312,6 +1389,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	49 - AC connected  =>  49 - AC connected
 	49 - Active  =>  49 - Active
 	49 - Active mode  =>  49 - Active mode
+	49 - External air temperature  =>  49 - External air temperature
 	49 - Fan speed  =>  49 - Fan speed
 	49 - Indoor air temperature  =>  49 - Indoor air temperature
 	49 - Mode  =>  49 - Mode
@@ -1321,6 +1399,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	5 - AC connected  =>  5 - AC connected
 	5 - Active  =>  5 - Active
 	5 - Active mode  =>  5 - Active mode
+	5 - External air temperature  =>  5 - External air temperature
 	5 - Fan speed  =>  5 - Fan speed
 	5 - Indoor air temperature  =>  5 - Indoor air temperature
 	5 - Mode  =>  5 - Mode
@@ -1330,6 +1409,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	50 - AC connected  =>  50 - AC connected
 	50 - Active  =>  50 - Active
 	50 - Active mode  =>  50 - Active mode
+	50 - External air temperature  =>  50 - External air temperature
 	50 - Fan speed  =>  50 - Fan speed
 	50 - Indoor air temperature  =>  50 - Indoor air temperature
 	50 - Mode  =>  50 - Mode
@@ -1339,6 +1419,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	51 - AC connected  =>  51 - AC connected
 	51 - Active  =>  51 - Active
 	51 - Active mode  =>  51 - Active mode
+	51 - External air temperature  =>  51 - External air temperature
 	51 - Fan speed  =>  51 - Fan speed
 	51 - Indoor air temperature  =>  51 - Indoor air temperature
 	51 - Mode  =>  51 - Mode
@@ -1348,6 +1429,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	52 - AC connected  =>  52 - AC connected
 	52 - Active  =>  52 - Active
 	52 - Active mode  =>  52 - Active mode
+	52 - External air temperature  =>  52 - External air temperature
 	52 - Fan speed  =>  52 - Fan speed
 	52 - Indoor air temperature  =>  52 - Indoor air temperature
 	52 - Mode  =>  52 - Mode
@@ -1357,6 +1439,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	53 - AC connected  =>  53 - AC connected
 	53 - Active  =>  53 - Active
 	53 - Active mode  =>  53 - Active mode
+	53 - External air temperature  =>  53 - External air temperature
 	53 - Fan speed  =>  53 - Fan speed
 	53 - Indoor air temperature  =>  53 - Indoor air temperature
 	53 - Mode  =>  53 - Mode
@@ -1366,6 +1449,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	54 - AC connected  =>  54 - AC connected
 	54 - Active  =>  54 - Active
 	54 - Active mode  =>  54 - Active mode
+	54 - External air temperature  =>  54 - External air temperature
 	54 - Fan speed  =>  54 - Fan speed
 	54 - Indoor air temperature  =>  54 - Indoor air temperature
 	54 - Mode  =>  54 - Mode
@@ -1375,6 +1459,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	55 - AC connected  =>  55 - AC connected
 	55 - Active  =>  55 - Active
 	55 - Active mode  =>  55 - Active mode
+	55 - External air temperature  =>  55 - External air temperature
 	55 - Fan speed  =>  55 - Fan speed
 	55 - Indoor air temperature  =>  55 - Indoor air temperature
 	55 - Mode  =>  55 - Mode
@@ -1384,6 +1469,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	56 - AC connected  =>  56 - AC connected
 	56 - Active  =>  56 - Active
 	56 - Active mode  =>  56 - Active mode
+	56 - External air temperature  =>  56 - External air temperature
 	56 - Fan speed  =>  56 - Fan speed
 	56 - Indoor air temperature  =>  56 - Indoor air temperature
 	56 - Mode  =>  56 - Mode
@@ -1393,6 +1479,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	57 - AC connected  =>  57 - AC connected
 	57 - Active  =>  57 - Active
 	57 - Active mode  =>  57 - Active mode
+	57 - External air temperature  =>  57 - External air temperature
 	57 - Fan speed  =>  57 - Fan speed
 	57 - Indoor air temperature  =>  57 - Indoor air temperature
 	57 - Mode  =>  57 - Mode
@@ -1402,6 +1489,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	58 - AC connected  =>  58 - AC connected
 	58 - Active  =>  58 - Active
 	58 - Active mode  =>  58 - Active mode
+	58 - External air temperature  =>  58 - External air temperature
 	58 - Fan speed  =>  58 - Fan speed
 	58 - Indoor air temperature  =>  58 - Indoor air temperature
 	58 - Mode  =>  58 - Mode
@@ -1411,6 +1499,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	59 - AC connected  =>  59 - AC connected
 	59 - Active  =>  59 - Active
 	59 - Active mode  =>  59 - Active mode
+	59 - External air temperature  =>  59 - External air temperature
 	59 - Fan speed  =>  59 - Fan speed
 	59 - Indoor air temperature  =>  59 - Indoor air temperature
 	59 - Mode  =>  59 - Mode
@@ -1420,6 +1509,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	6 - AC connected  =>  6 - AC connected
 	6 - Active  =>  6 - Active
 	6 - Active mode  =>  6 - Active mode
+	6 - External air temperature  =>  6 - External air temperature
 	6 - Fan speed  =>  6 - Fan speed
 	6 - Indoor air temperature  =>  6 - Indoor air temperature
 	6 - Mode  =>  6 - Mode
@@ -1429,6 +1519,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	60 - AC connected  =>  60 - AC connected
 	60 - Active  =>  60 - Active
 	60 - Active mode  =>  60 - Active mode
+	60 - External air temperature  =>  60 - External air temperature
 	60 - Fan speed  =>  60 - Fan speed
 	60 - Indoor air temperature  =>  60 - Indoor air temperature
 	60 - Mode  =>  60 - Mode
@@ -1438,6 +1529,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	61 - AC connected  =>  61 - AC connected
 	61 - Active  =>  61 - Active
 	61 - Active mode  =>  61 - Active mode
+	61 - External air temperature  =>  61 - External air temperature
 	61 - Fan speed  =>  61 - Fan speed
 	61 - Indoor air temperature  =>  61 - Indoor air temperature
 	61 - Mode  =>  61 - Mode
@@ -1447,6 +1539,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	62 - AC connected  =>  62 - AC connected
 	62 - Active  =>  62 - Active
 	62 - Active mode  =>  62 - Active mode
+	62 - External air temperature  =>  62 - External air temperature
 	62 - Fan speed  =>  62 - Fan speed
 	62 - Indoor air temperature  =>  62 - Indoor air temperature
 	62 - Mode  =>  62 - Mode
@@ -1456,6 +1549,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	63 - AC connected  =>  63 - AC connected
 	63 - Active  =>  63 - Active
 	63 - Active mode  =>  63 - Active mode
+	63 - External air temperature  =>  63 - External air temperature
 	63 - Fan speed  =>  63 - Fan speed
 	63 - Indoor air temperature  =>  63 - Indoor air temperature
 	63 - Mode  =>  63 - Mode
@@ -1465,6 +1559,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	7 - AC connected  =>  7 - AC connected
 	7 - Active  =>  7 - Active
 	7 - Active mode  =>  7 - Active mode
+	7 - External air temperature  =>  7 - External air temperature
 	7 - Fan speed  =>  7 - Fan speed
 	7 - Indoor air temperature  =>  7 - Indoor air temperature
 	7 - Mode  =>  7 - Mode
@@ -1474,6 +1569,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	8 - AC connected  =>  8 - AC connected
 	8 - Active  =>  8 - Active
 	8 - Active mode  =>  8 - Active mode
+	8 - External air temperature  =>  8 - External air temperature
 	8 - Fan speed  =>  8 - Fan speed
 	8 - Indoor air temperature  =>  8 - Indoor air temperature
 	8 - Mode  =>  8 - Mode
@@ -1483,6 +1579,7 @@ ONOKOM-AIR-AUX-VRF-MB-B
 	9 - AC connected  =>  9 - AC connected
 	9 - Active  =>  9 - Active
 	9 - Active mode  =>  9 - Active mode
+	9 - External air temperature  =>  9 - External air temperature
 	9 - Fan speed  =>  9 - Fan speed
 	9 - Indoor air temperature  =>  9 - Indoor air temperature
 	9 - Mode  =>  9 - Mode
@@ -1503,7 +1600,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	0 - Active  =>  0 - Active
 	0 - Active mode  =>  0 - Active mode
 	0 - Current fan speed  =>  0 - Current fan speed
+	0 - Errors  =>  0 - Errors
+	0 - External air temperature  =>  0 - External air temperature
 	0 - Fan speed  =>  0 - Fan speed
+	0 - First error code  =>  0 - First error code
 	0 - Indoor air temperature  =>  0 - Indoor air temperature
 	0 - Indoor heat exchanger temperature  =>  0 - Indoor heat exchanger temperature
 	0 - Mode  =>  0 - Mode
@@ -1517,7 +1617,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	1 - Active  =>  1 - Active
 	1 - Active mode  =>  1 - Active mode
 	1 - Current fan speed  =>  1 - Current fan speed
+	1 - Errors  =>  1 - Errors
+	1 - External air temperature  =>  1 - External air temperature
 	1 - Fan speed  =>  1 - Fan speed
+	1 - First error code  =>  1 - First error code
 	1 - Indoor air temperature  =>  1 - Indoor air temperature
 	1 - Indoor heat exchanger temperature  =>  1 - Indoor heat exchanger temperature
 	1 - Mode  =>  1 - Mode
@@ -1531,7 +1634,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	10 - Active  =>  10 - Active
 	10 - Active mode  =>  10 - Active mode
 	10 - Current fan speed  =>  10 - Current fan speed
+	10 - Errors  =>  10 - Errors
+	10 - External air temperature  =>  10 - External air temperature
 	10 - Fan speed  =>  10 - Fan speed
+	10 - First error code  =>  10 - First error code
 	10 - Indoor air temperature  =>  10 - Indoor air temperature
 	10 - Indoor heat exchanger temperature  =>  10 - Indoor heat exchanger temperature
 	10 - Mode  =>  10 - Mode
@@ -1545,7 +1651,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	11 - Active  =>  11 - Active
 	11 - Active mode  =>  11 - Active mode
 	11 - Current fan speed  =>  11 - Current fan speed
+	11 - Errors  =>  11 - Errors
+	11 - External air temperature  =>  11 - External air temperature
 	11 - Fan speed  =>  11 - Fan speed
+	11 - First error code  =>  11 - First error code
 	11 - Indoor air temperature  =>  11 - Indoor air temperature
 	11 - Indoor heat exchanger temperature  =>  11 - Indoor heat exchanger temperature
 	11 - Mode  =>  11 - Mode
@@ -1559,7 +1668,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	12 - Active  =>  12 - Active
 	12 - Active mode  =>  12 - Active mode
 	12 - Current fan speed  =>  12 - Current fan speed
+	12 - Errors  =>  12 - Errors
+	12 - External air temperature  =>  12 - External air temperature
 	12 - Fan speed  =>  12 - Fan speed
+	12 - First error code  =>  12 - First error code
 	12 - Indoor air temperature  =>  12 - Indoor air temperature
 	12 - Indoor heat exchanger temperature  =>  12 - Indoor heat exchanger temperature
 	12 - Mode  =>  12 - Mode
@@ -1573,7 +1685,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	13 - Active  =>  13 - Active
 	13 - Active mode  =>  13 - Active mode
 	13 - Current fan speed  =>  13 - Current fan speed
+	13 - Errors  =>  13 - Errors
+	13 - External air temperature  =>  13 - External air temperature
 	13 - Fan speed  =>  13 - Fan speed
+	13 - First error code  =>  13 - First error code
 	13 - Indoor air temperature  =>  13 - Indoor air temperature
 	13 - Indoor heat exchanger temperature  =>  13 - Indoor heat exchanger temperature
 	13 - Mode  =>  13 - Mode
@@ -1587,7 +1702,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	14 - Active  =>  14 - Active
 	14 - Active mode  =>  14 - Active mode
 	14 - Current fan speed  =>  14 - Current fan speed
+	14 - Errors  =>  14 - Errors
+	14 - External air temperature  =>  14 - External air temperature
 	14 - Fan speed  =>  14 - Fan speed
+	14 - First error code  =>  14 - First error code
 	14 - Indoor air temperature  =>  14 - Indoor air temperature
 	14 - Indoor heat exchanger temperature  =>  14 - Indoor heat exchanger temperature
 	14 - Mode  =>  14 - Mode
@@ -1601,7 +1719,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	15 - Active  =>  15 - Active
 	15 - Active mode  =>  15 - Active mode
 	15 - Current fan speed  =>  15 - Current fan speed
+	15 - Errors  =>  15 - Errors
+	15 - External air temperature  =>  15 - External air temperature
 	15 - Fan speed  =>  15 - Fan speed
+	15 - First error code  =>  15 - First error code
 	15 - Indoor air temperature  =>  15 - Indoor air temperature
 	15 - Indoor heat exchanger temperature  =>  15 - Indoor heat exchanger temperature
 	15 - Mode  =>  15 - Mode
@@ -1615,7 +1736,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	16 - Active  =>  16 - Active
 	16 - Active mode  =>  16 - Active mode
 	16 - Current fan speed  =>  16 - Current fan speed
+	16 - Errors  =>  16 - Errors
+	16 - External air temperature  =>  16 - External air temperature
 	16 - Fan speed  =>  16 - Fan speed
+	16 - First error code  =>  16 - First error code
 	16 - Indoor air temperature  =>  16 - Indoor air temperature
 	16 - Indoor heat exchanger temperature  =>  16 - Indoor heat exchanger temperature
 	16 - Mode  =>  16 - Mode
@@ -1629,7 +1753,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	17 - Active  =>  17 - Active
 	17 - Active mode  =>  17 - Active mode
 	17 - Current fan speed  =>  17 - Current fan speed
+	17 - Errors  =>  17 - Errors
+	17 - External air temperature  =>  17 - External air temperature
 	17 - Fan speed  =>  17 - Fan speed
+	17 - First error code  =>  17 - First error code
 	17 - Indoor air temperature  =>  17 - Indoor air temperature
 	17 - Indoor heat exchanger temperature  =>  17 - Indoor heat exchanger temperature
 	17 - Mode  =>  17 - Mode
@@ -1643,7 +1770,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	18 - Active  =>  18 - Active
 	18 - Active mode  =>  18 - Active mode
 	18 - Current fan speed  =>  18 - Current fan speed
+	18 - Errors  =>  18 - Errors
+	18 - External air temperature  =>  18 - External air temperature
 	18 - Fan speed  =>  18 - Fan speed
+	18 - First error code  =>  18 - First error code
 	18 - Indoor air temperature  =>  18 - Indoor air temperature
 	18 - Indoor heat exchanger temperature  =>  18 - Indoor heat exchanger temperature
 	18 - Mode  =>  18 - Mode
@@ -1657,7 +1787,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	19 - Active  =>  19 - Active
 	19 - Active mode  =>  19 - Active mode
 	19 - Current fan speed  =>  19 - Current fan speed
+	19 - Errors  =>  19 - Errors
+	19 - External air temperature  =>  19 - External air temperature
 	19 - Fan speed  =>  19 - Fan speed
+	19 - First error code  =>  19 - First error code
 	19 - Indoor air temperature  =>  19 - Indoor air temperature
 	19 - Indoor heat exchanger temperature  =>  19 - Indoor heat exchanger temperature
 	19 - Mode  =>  19 - Mode
@@ -1671,7 +1804,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	2 - Active  =>  2 - Active
 	2 - Active mode  =>  2 - Active mode
 	2 - Current fan speed  =>  2 - Current fan speed
+	2 - Errors  =>  2 - Errors
+	2 - External air temperature  =>  2 - External air temperature
 	2 - Fan speed  =>  2 - Fan speed
+	2 - First error code  =>  2 - First error code
 	2 - Indoor air temperature  =>  2 - Indoor air temperature
 	2 - Indoor heat exchanger temperature  =>  2 - Indoor heat exchanger temperature
 	2 - Mode  =>  2 - Mode
@@ -1685,7 +1821,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	20 - Active  =>  20 - Active
 	20 - Active mode  =>  20 - Active mode
 	20 - Current fan speed  =>  20 - Current fan speed
+	20 - Errors  =>  20 - Errors
+	20 - External air temperature  =>  20 - External air temperature
 	20 - Fan speed  =>  20 - Fan speed
+	20 - First error code  =>  20 - First error code
 	20 - Indoor air temperature  =>  20 - Indoor air temperature
 	20 - Indoor heat exchanger temperature  =>  20 - Indoor heat exchanger temperature
 	20 - Mode  =>  20 - Mode
@@ -1699,7 +1838,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	21 - Active  =>  21 - Active
 	21 - Active mode  =>  21 - Active mode
 	21 - Current fan speed  =>  21 - Current fan speed
+	21 - Errors  =>  21 - Errors
+	21 - External air temperature  =>  21 - External air temperature
 	21 - Fan speed  =>  21 - Fan speed
+	21 - First error code  =>  21 - First error code
 	21 - Indoor air temperature  =>  21 - Indoor air temperature
 	21 - Indoor heat exchanger temperature  =>  21 - Indoor heat exchanger temperature
 	21 - Mode  =>  21 - Mode
@@ -1713,7 +1855,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	22 - Active  =>  22 - Active
 	22 - Active mode  =>  22 - Active mode
 	22 - Current fan speed  =>  22 - Current fan speed
+	22 - Errors  =>  22 - Errors
+	22 - External air temperature  =>  22 - External air temperature
 	22 - Fan speed  =>  22 - Fan speed
+	22 - First error code  =>  22 - First error code
 	22 - Indoor air temperature  =>  22 - Indoor air temperature
 	22 - Indoor heat exchanger temperature  =>  22 - Indoor heat exchanger temperature
 	22 - Mode  =>  22 - Mode
@@ -1727,7 +1872,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	23 - Active  =>  23 - Active
 	23 - Active mode  =>  23 - Active mode
 	23 - Current fan speed  =>  23 - Current fan speed
+	23 - Errors  =>  23 - Errors
+	23 - External air temperature  =>  23 - External air temperature
 	23 - Fan speed  =>  23 - Fan speed
+	23 - First error code  =>  23 - First error code
 	23 - Indoor air temperature  =>  23 - Indoor air temperature
 	23 - Indoor heat exchanger temperature  =>  23 - Indoor heat exchanger temperature
 	23 - Mode  =>  23 - Mode
@@ -1741,7 +1889,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	24 - Active  =>  24 - Active
 	24 - Active mode  =>  24 - Active mode
 	24 - Current fan speed  =>  24 - Current fan speed
+	24 - Errors  =>  24 - Errors
+	24 - External air temperature  =>  24 - External air temperature
 	24 - Fan speed  =>  24 - Fan speed
+	24 - First error code  =>  24 - First error code
 	24 - Indoor air temperature  =>  24 - Indoor air temperature
 	24 - Indoor heat exchanger temperature  =>  24 - Indoor heat exchanger temperature
 	24 - Mode  =>  24 - Mode
@@ -1755,7 +1906,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	25 - Active  =>  25 - Active
 	25 - Active mode  =>  25 - Active mode
 	25 - Current fan speed  =>  25 - Current fan speed
+	25 - Errors  =>  25 - Errors
+	25 - External air temperature  =>  25 - External air temperature
 	25 - Fan speed  =>  25 - Fan speed
+	25 - First error code  =>  25 - First error code
 	25 - Indoor air temperature  =>  25 - Indoor air temperature
 	25 - Indoor heat exchanger temperature  =>  25 - Indoor heat exchanger temperature
 	25 - Mode  =>  25 - Mode
@@ -1769,7 +1923,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	26 - Active  =>  26 - Active
 	26 - Active mode  =>  26 - Active mode
 	26 - Current fan speed  =>  26 - Current fan speed
+	26 - Errors  =>  26 - Errors
+	26 - External air temperature  =>  26 - External air temperature
 	26 - Fan speed  =>  26 - Fan speed
+	26 - First error code  =>  26 - First error code
 	26 - Indoor air temperature  =>  26 - Indoor air temperature
 	26 - Indoor heat exchanger temperature  =>  26 - Indoor heat exchanger temperature
 	26 - Mode  =>  26 - Mode
@@ -1783,7 +1940,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	27 - Active  =>  27 - Active
 	27 - Active mode  =>  27 - Active mode
 	27 - Current fan speed  =>  27 - Current fan speed
+	27 - Errors  =>  27 - Errors
+	27 - External air temperature  =>  27 - External air temperature
 	27 - Fan speed  =>  27 - Fan speed
+	27 - First error code  =>  27 - First error code
 	27 - Indoor air temperature  =>  27 - Indoor air temperature
 	27 - Indoor heat exchanger temperature  =>  27 - Indoor heat exchanger temperature
 	27 - Mode  =>  27 - Mode
@@ -1797,7 +1957,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	28 - Active  =>  28 - Active
 	28 - Active mode  =>  28 - Active mode
 	28 - Current fan speed  =>  28 - Current fan speed
+	28 - Errors  =>  28 - Errors
+	28 - External air temperature  =>  28 - External air temperature
 	28 - Fan speed  =>  28 - Fan speed
+	28 - First error code  =>  28 - First error code
 	28 - Indoor air temperature  =>  28 - Indoor air temperature
 	28 - Indoor heat exchanger temperature  =>  28 - Indoor heat exchanger temperature
 	28 - Mode  =>  28 - Mode
@@ -1811,7 +1974,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	29 - Active  =>  29 - Active
 	29 - Active mode  =>  29 - Active mode
 	29 - Current fan speed  =>  29 - Current fan speed
+	29 - Errors  =>  29 - Errors
+	29 - External air temperature  =>  29 - External air temperature
 	29 - Fan speed  =>  29 - Fan speed
+	29 - First error code  =>  29 - First error code
 	29 - Indoor air temperature  =>  29 - Indoor air temperature
 	29 - Indoor heat exchanger temperature  =>  29 - Indoor heat exchanger temperature
 	29 - Mode  =>  29 - Mode
@@ -1825,7 +1991,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	3 - Active  =>  3 - Active
 	3 - Active mode  =>  3 - Active mode
 	3 - Current fan speed  =>  3 - Current fan speed
+	3 - Errors  =>  3 - Errors
+	3 - External air temperature  =>  3 - External air temperature
 	3 - Fan speed  =>  3 - Fan speed
+	3 - First error code  =>  3 - First error code
 	3 - Indoor air temperature  =>  3 - Indoor air temperature
 	3 - Indoor heat exchanger temperature  =>  3 - Indoor heat exchanger temperature
 	3 - Mode  =>  3 - Mode
@@ -1839,7 +2008,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	30 - Active  =>  30 - Active
 	30 - Active mode  =>  30 - Active mode
 	30 - Current fan speed  =>  30 - Current fan speed
+	30 - Errors  =>  30 - Errors
+	30 - External air temperature  =>  30 - External air temperature
 	30 - Fan speed  =>  30 - Fan speed
+	30 - First error code  =>  30 - First error code
 	30 - Indoor air temperature  =>  30 - Indoor air temperature
 	30 - Indoor heat exchanger temperature  =>  30 - Indoor heat exchanger temperature
 	30 - Mode  =>  30 - Mode
@@ -1853,7 +2025,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	31 - Active  =>  31 - Active
 	31 - Active mode  =>  31 - Active mode
 	31 - Current fan speed  =>  31 - Current fan speed
+	31 - Errors  =>  31 - Errors
+	31 - External air temperature  =>  31 - External air temperature
 	31 - Fan speed  =>  31 - Fan speed
+	31 - First error code  =>  31 - First error code
 	31 - Indoor air temperature  =>  31 - Indoor air temperature
 	31 - Indoor heat exchanger temperature  =>  31 - Indoor heat exchanger temperature
 	31 - Mode  =>  31 - Mode
@@ -1867,7 +2042,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	32 - Active  =>  32 - Active
 	32 - Active mode  =>  32 - Active mode
 	32 - Current fan speed  =>  32 - Current fan speed
+	32 - Errors  =>  32 - Errors
+	32 - External air temperature  =>  32 - External air temperature
 	32 - Fan speed  =>  32 - Fan speed
+	32 - First error code  =>  32 - First error code
 	32 - Indoor air temperature  =>  32 - Indoor air temperature
 	32 - Indoor heat exchanger temperature  =>  32 - Indoor heat exchanger temperature
 	32 - Mode  =>  32 - Mode
@@ -1881,7 +2059,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	33 - Active  =>  33 - Active
 	33 - Active mode  =>  33 - Active mode
 	33 - Current fan speed  =>  33 - Current fan speed
+	33 - Errors  =>  33 - Errors
+	33 - External air temperature  =>  33 - External air temperature
 	33 - Fan speed  =>  33 - Fan speed
+	33 - First error code  =>  33 - First error code
 	33 - Indoor air temperature  =>  33 - Indoor air temperature
 	33 - Indoor heat exchanger temperature  =>  33 - Indoor heat exchanger temperature
 	33 - Mode  =>  33 - Mode
@@ -1895,7 +2076,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	34 - Active  =>  34 - Active
 	34 - Active mode  =>  34 - Active mode
 	34 - Current fan speed  =>  34 - Current fan speed
+	34 - Errors  =>  34 - Errors
+	34 - External air temperature  =>  34 - External air temperature
 	34 - Fan speed  =>  34 - Fan speed
+	34 - First error code  =>  34 - First error code
 	34 - Indoor air temperature  =>  34 - Indoor air temperature
 	34 - Indoor heat exchanger temperature  =>  34 - Indoor heat exchanger temperature
 	34 - Mode  =>  34 - Mode
@@ -1909,7 +2093,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	35 - Active  =>  35 - Active
 	35 - Active mode  =>  35 - Active mode
 	35 - Current fan speed  =>  35 - Current fan speed
+	35 - Errors  =>  35 - Errors
+	35 - External air temperature  =>  35 - External air temperature
 	35 - Fan speed  =>  35 - Fan speed
+	35 - First error code  =>  35 - First error code
 	35 - Indoor air temperature  =>  35 - Indoor air temperature
 	35 - Indoor heat exchanger temperature  =>  35 - Indoor heat exchanger temperature
 	35 - Mode  =>  35 - Mode
@@ -1923,7 +2110,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	36 - Active  =>  36 - Active
 	36 - Active mode  =>  36 - Active mode
 	36 - Current fan speed  =>  36 - Current fan speed
+	36 - Errors  =>  36 - Errors
+	36 - External air temperature  =>  36 - External air temperature
 	36 - Fan speed  =>  36 - Fan speed
+	36 - First error code  =>  36 - First error code
 	36 - Indoor air temperature  =>  36 - Indoor air temperature
 	36 - Indoor heat exchanger temperature  =>  36 - Indoor heat exchanger temperature
 	36 - Mode  =>  36 - Mode
@@ -1937,7 +2127,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	37 - Active  =>  37 - Active
 	37 - Active mode  =>  37 - Active mode
 	37 - Current fan speed  =>  37 - Current fan speed
+	37 - Errors  =>  37 - Errors
+	37 - External air temperature  =>  37 - External air temperature
 	37 - Fan speed  =>  37 - Fan speed
+	37 - First error code  =>  37 - First error code
 	37 - Indoor air temperature  =>  37 - Indoor air temperature
 	37 - Indoor heat exchanger temperature  =>  37 - Indoor heat exchanger temperature
 	37 - Mode  =>  37 - Mode
@@ -1951,7 +2144,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	38 - Active  =>  38 - Active
 	38 - Active mode  =>  38 - Active mode
 	38 - Current fan speed  =>  38 - Current fan speed
+	38 - Errors  =>  38 - Errors
+	38 - External air temperature  =>  38 - External air temperature
 	38 - Fan speed  =>  38 - Fan speed
+	38 - First error code  =>  38 - First error code
 	38 - Indoor air temperature  =>  38 - Indoor air temperature
 	38 - Indoor heat exchanger temperature  =>  38 - Indoor heat exchanger temperature
 	38 - Mode  =>  38 - Mode
@@ -1965,7 +2161,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	39 - Active  =>  39 - Active
 	39 - Active mode  =>  39 - Active mode
 	39 - Current fan speed  =>  39 - Current fan speed
+	39 - Errors  =>  39 - Errors
+	39 - External air temperature  =>  39 - External air temperature
 	39 - Fan speed  =>  39 - Fan speed
+	39 - First error code  =>  39 - First error code
 	39 - Indoor air temperature  =>  39 - Indoor air temperature
 	39 - Indoor heat exchanger temperature  =>  39 - Indoor heat exchanger temperature
 	39 - Mode  =>  39 - Mode
@@ -1979,7 +2178,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	4 - Active  =>  4 - Active
 	4 - Active mode  =>  4 - Active mode
 	4 - Current fan speed  =>  4 - Current fan speed
+	4 - Errors  =>  4 - Errors
+	4 - External air temperature  =>  4 - External air temperature
 	4 - Fan speed  =>  4 - Fan speed
+	4 - First error code  =>  4 - First error code
 	4 - Indoor air temperature  =>  4 - Indoor air temperature
 	4 - Indoor heat exchanger temperature  =>  4 - Indoor heat exchanger temperature
 	4 - Mode  =>  4 - Mode
@@ -1993,7 +2195,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	40 - Active  =>  40 - Active
 	40 - Active mode  =>  40 - Active mode
 	40 - Current fan speed  =>  40 - Current fan speed
+	40 - Errors  =>  40 - Errors
+	40 - External air temperature  =>  40 - External air temperature
 	40 - Fan speed  =>  40 - Fan speed
+	40 - First error code  =>  40 - First error code
 	40 - Indoor air temperature  =>  40 - Indoor air temperature
 	40 - Indoor heat exchanger temperature  =>  40 - Indoor heat exchanger temperature
 	40 - Mode  =>  40 - Mode
@@ -2007,7 +2212,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	41 - Active  =>  41 - Active
 	41 - Active mode  =>  41 - Active mode
 	41 - Current fan speed  =>  41 - Current fan speed
+	41 - Errors  =>  41 - Errors
+	41 - External air temperature  =>  41 - External air temperature
 	41 - Fan speed  =>  41 - Fan speed
+	41 - First error code  =>  41 - First error code
 	41 - Indoor air temperature  =>  41 - Indoor air temperature
 	41 - Indoor heat exchanger temperature  =>  41 - Indoor heat exchanger temperature
 	41 - Mode  =>  41 - Mode
@@ -2021,7 +2229,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	42 - Active  =>  42 - Active
 	42 - Active mode  =>  42 - Active mode
 	42 - Current fan speed  =>  42 - Current fan speed
+	42 - Errors  =>  42 - Errors
+	42 - External air temperature  =>  42 - External air temperature
 	42 - Fan speed  =>  42 - Fan speed
+	42 - First error code  =>  42 - First error code
 	42 - Indoor air temperature  =>  42 - Indoor air temperature
 	42 - Indoor heat exchanger temperature  =>  42 - Indoor heat exchanger temperature
 	42 - Mode  =>  42 - Mode
@@ -2035,7 +2246,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	43 - Active  =>  43 - Active
 	43 - Active mode  =>  43 - Active mode
 	43 - Current fan speed  =>  43 - Current fan speed
+	43 - Errors  =>  43 - Errors
+	43 - External air temperature  =>  43 - External air temperature
 	43 - Fan speed  =>  43 - Fan speed
+	43 - First error code  =>  43 - First error code
 	43 - Indoor air temperature  =>  43 - Indoor air temperature
 	43 - Indoor heat exchanger temperature  =>  43 - Indoor heat exchanger temperature
 	43 - Mode  =>  43 - Mode
@@ -2049,7 +2263,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	44 - Active  =>  44 - Active
 	44 - Active mode  =>  44 - Active mode
 	44 - Current fan speed  =>  44 - Current fan speed
+	44 - Errors  =>  44 - Errors
+	44 - External air temperature  =>  44 - External air temperature
 	44 - Fan speed  =>  44 - Fan speed
+	44 - First error code  =>  44 - First error code
 	44 - Indoor air temperature  =>  44 - Indoor air temperature
 	44 - Indoor heat exchanger temperature  =>  44 - Indoor heat exchanger temperature
 	44 - Mode  =>  44 - Mode
@@ -2063,7 +2280,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	45 - Active  =>  45 - Active
 	45 - Active mode  =>  45 - Active mode
 	45 - Current fan speed  =>  45 - Current fan speed
+	45 - Errors  =>  45 - Errors
+	45 - External air temperature  =>  45 - External air temperature
 	45 - Fan speed  =>  45 - Fan speed
+	45 - First error code  =>  45 - First error code
 	45 - Indoor air temperature  =>  45 - Indoor air temperature
 	45 - Indoor heat exchanger temperature  =>  45 - Indoor heat exchanger temperature
 	45 - Mode  =>  45 - Mode
@@ -2077,7 +2297,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	46 - Active  =>  46 - Active
 	46 - Active mode  =>  46 - Active mode
 	46 - Current fan speed  =>  46 - Current fan speed
+	46 - Errors  =>  46 - Errors
+	46 - External air temperature  =>  46 - External air temperature
 	46 - Fan speed  =>  46 - Fan speed
+	46 - First error code  =>  46 - First error code
 	46 - Indoor air temperature  =>  46 - Indoor air temperature
 	46 - Indoor heat exchanger temperature  =>  46 - Indoor heat exchanger temperature
 	46 - Mode  =>  46 - Mode
@@ -2091,7 +2314,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	47 - Active  =>  47 - Active
 	47 - Active mode  =>  47 - Active mode
 	47 - Current fan speed  =>  47 - Current fan speed
+	47 - Errors  =>  47 - Errors
+	47 - External air temperature  =>  47 - External air temperature
 	47 - Fan speed  =>  47 - Fan speed
+	47 - First error code  =>  47 - First error code
 	47 - Indoor air temperature  =>  47 - Indoor air temperature
 	47 - Indoor heat exchanger temperature  =>  47 - Indoor heat exchanger temperature
 	47 - Mode  =>  47 - Mode
@@ -2105,7 +2331,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	48 - Active  =>  48 - Active
 	48 - Active mode  =>  48 - Active mode
 	48 - Current fan speed  =>  48 - Current fan speed
+	48 - Errors  =>  48 - Errors
+	48 - External air temperature  =>  48 - External air temperature
 	48 - Fan speed  =>  48 - Fan speed
+	48 - First error code  =>  48 - First error code
 	48 - Indoor air temperature  =>  48 - Indoor air temperature
 	48 - Indoor heat exchanger temperature  =>  48 - Indoor heat exchanger temperature
 	48 - Mode  =>  48 - Mode
@@ -2119,7 +2348,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	49 - Active  =>  49 - Active
 	49 - Active mode  =>  49 - Active mode
 	49 - Current fan speed  =>  49 - Current fan speed
+	49 - Errors  =>  49 - Errors
+	49 - External air temperature  =>  49 - External air temperature
 	49 - Fan speed  =>  49 - Fan speed
+	49 - First error code  =>  49 - First error code
 	49 - Indoor air temperature  =>  49 - Indoor air temperature
 	49 - Indoor heat exchanger temperature  =>  49 - Indoor heat exchanger temperature
 	49 - Mode  =>  49 - Mode
@@ -2133,7 +2365,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	5 - Active  =>  5 - Active
 	5 - Active mode  =>  5 - Active mode
 	5 - Current fan speed  =>  5 - Current fan speed
+	5 - Errors  =>  5 - Errors
+	5 - External air temperature  =>  5 - External air temperature
 	5 - Fan speed  =>  5 - Fan speed
+	5 - First error code  =>  5 - First error code
 	5 - Indoor air temperature  =>  5 - Indoor air temperature
 	5 - Indoor heat exchanger temperature  =>  5 - Indoor heat exchanger temperature
 	5 - Mode  =>  5 - Mode
@@ -2147,7 +2382,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	50 - Active  =>  50 - Active
 	50 - Active mode  =>  50 - Active mode
 	50 - Current fan speed  =>  50 - Current fan speed
+	50 - Errors  =>  50 - Errors
+	50 - External air temperature  =>  50 - External air temperature
 	50 - Fan speed  =>  50 - Fan speed
+	50 - First error code  =>  50 - First error code
 	50 - Indoor air temperature  =>  50 - Indoor air temperature
 	50 - Indoor heat exchanger temperature  =>  50 - Indoor heat exchanger temperature
 	50 - Mode  =>  50 - Mode
@@ -2161,7 +2399,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	51 - Active  =>  51 - Active
 	51 - Active mode  =>  51 - Active mode
 	51 - Current fan speed  =>  51 - Current fan speed
+	51 - Errors  =>  51 - Errors
+	51 - External air temperature  =>  51 - External air temperature
 	51 - Fan speed  =>  51 - Fan speed
+	51 - First error code  =>  51 - First error code
 	51 - Indoor air temperature  =>  51 - Indoor air temperature
 	51 - Indoor heat exchanger temperature  =>  51 - Indoor heat exchanger temperature
 	51 - Mode  =>  51 - Mode
@@ -2175,7 +2416,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	52 - Active  =>  52 - Active
 	52 - Active mode  =>  52 - Active mode
 	52 - Current fan speed  =>  52 - Current fan speed
+	52 - Errors  =>  52 - Errors
+	52 - External air temperature  =>  52 - External air temperature
 	52 - Fan speed  =>  52 - Fan speed
+	52 - First error code  =>  52 - First error code
 	52 - Indoor air temperature  =>  52 - Indoor air temperature
 	52 - Indoor heat exchanger temperature  =>  52 - Indoor heat exchanger temperature
 	52 - Mode  =>  52 - Mode
@@ -2189,7 +2433,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	53 - Active  =>  53 - Active
 	53 - Active mode  =>  53 - Active mode
 	53 - Current fan speed  =>  53 - Current fan speed
+	53 - Errors  =>  53 - Errors
+	53 - External air temperature  =>  53 - External air temperature
 	53 - Fan speed  =>  53 - Fan speed
+	53 - First error code  =>  53 - First error code
 	53 - Indoor air temperature  =>  53 - Indoor air temperature
 	53 - Indoor heat exchanger temperature  =>  53 - Indoor heat exchanger temperature
 	53 - Mode  =>  53 - Mode
@@ -2203,7 +2450,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	54 - Active  =>  54 - Active
 	54 - Active mode  =>  54 - Active mode
 	54 - Current fan speed  =>  54 - Current fan speed
+	54 - Errors  =>  54 - Errors
+	54 - External air temperature  =>  54 - External air temperature
 	54 - Fan speed  =>  54 - Fan speed
+	54 - First error code  =>  54 - First error code
 	54 - Indoor air temperature  =>  54 - Indoor air temperature
 	54 - Indoor heat exchanger temperature  =>  54 - Indoor heat exchanger temperature
 	54 - Mode  =>  54 - Mode
@@ -2217,7 +2467,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	55 - Active  =>  55 - Active
 	55 - Active mode  =>  55 - Active mode
 	55 - Current fan speed  =>  55 - Current fan speed
+	55 - Errors  =>  55 - Errors
+	55 - External air temperature  =>  55 - External air temperature
 	55 - Fan speed  =>  55 - Fan speed
+	55 - First error code  =>  55 - First error code
 	55 - Indoor air temperature  =>  55 - Indoor air temperature
 	55 - Indoor heat exchanger temperature  =>  55 - Indoor heat exchanger temperature
 	55 - Mode  =>  55 - Mode
@@ -2231,7 +2484,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	56 - Active  =>  56 - Active
 	56 - Active mode  =>  56 - Active mode
 	56 - Current fan speed  =>  56 - Current fan speed
+	56 - Errors  =>  56 - Errors
+	56 - External air temperature  =>  56 - External air temperature
 	56 - Fan speed  =>  56 - Fan speed
+	56 - First error code  =>  56 - First error code
 	56 - Indoor air temperature  =>  56 - Indoor air temperature
 	56 - Indoor heat exchanger temperature  =>  56 - Indoor heat exchanger temperature
 	56 - Mode  =>  56 - Mode
@@ -2245,7 +2501,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	57 - Active  =>  57 - Active
 	57 - Active mode  =>  57 - Active mode
 	57 - Current fan speed  =>  57 - Current fan speed
+	57 - Errors  =>  57 - Errors
+	57 - External air temperature  =>  57 - External air temperature
 	57 - Fan speed  =>  57 - Fan speed
+	57 - First error code  =>  57 - First error code
 	57 - Indoor air temperature  =>  57 - Indoor air temperature
 	57 - Indoor heat exchanger temperature  =>  57 - Indoor heat exchanger temperature
 	57 - Mode  =>  57 - Mode
@@ -2259,7 +2518,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	58 - Active  =>  58 - Active
 	58 - Active mode  =>  58 - Active mode
 	58 - Current fan speed  =>  58 - Current fan speed
+	58 - Errors  =>  58 - Errors
+	58 - External air temperature  =>  58 - External air temperature
 	58 - Fan speed  =>  58 - Fan speed
+	58 - First error code  =>  58 - First error code
 	58 - Indoor air temperature  =>  58 - Indoor air temperature
 	58 - Indoor heat exchanger temperature  =>  58 - Indoor heat exchanger temperature
 	58 - Mode  =>  58 - Mode
@@ -2273,7 +2535,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	59 - Active  =>  59 - Active
 	59 - Active mode  =>  59 - Active mode
 	59 - Current fan speed  =>  59 - Current fan speed
+	59 - Errors  =>  59 - Errors
+	59 - External air temperature  =>  59 - External air temperature
 	59 - Fan speed  =>  59 - Fan speed
+	59 - First error code  =>  59 - First error code
 	59 - Indoor air temperature  =>  59 - Indoor air temperature
 	59 - Indoor heat exchanger temperature  =>  59 - Indoor heat exchanger temperature
 	59 - Mode  =>  59 - Mode
@@ -2287,7 +2552,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	6 - Active  =>  6 - Active
 	6 - Active mode  =>  6 - Active mode
 	6 - Current fan speed  =>  6 - Current fan speed
+	6 - Errors  =>  6 - Errors
+	6 - External air temperature  =>  6 - External air temperature
 	6 - Fan speed  =>  6 - Fan speed
+	6 - First error code  =>  6 - First error code
 	6 - Indoor air temperature  =>  6 - Indoor air temperature
 	6 - Indoor heat exchanger temperature  =>  6 - Indoor heat exchanger temperature
 	6 - Mode  =>  6 - Mode
@@ -2301,7 +2569,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	60 - Active  =>  60 - Active
 	60 - Active mode  =>  60 - Active mode
 	60 - Current fan speed  =>  60 - Current fan speed
+	60 - Errors  =>  60 - Errors
+	60 - External air temperature  =>  60 - External air temperature
 	60 - Fan speed  =>  60 - Fan speed
+	60 - First error code  =>  60 - First error code
 	60 - Indoor air temperature  =>  60 - Indoor air temperature
 	60 - Indoor heat exchanger temperature  =>  60 - Indoor heat exchanger temperature
 	60 - Mode  =>  60 - Mode
@@ -2315,7 +2586,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	61 - Active  =>  61 - Active
 	61 - Active mode  =>  61 - Active mode
 	61 - Current fan speed  =>  61 - Current fan speed
+	61 - Errors  =>  61 - Errors
+	61 - External air temperature  =>  61 - External air temperature
 	61 - Fan speed  =>  61 - Fan speed
+	61 - First error code  =>  61 - First error code
 	61 - Indoor air temperature  =>  61 - Indoor air temperature
 	61 - Indoor heat exchanger temperature  =>  61 - Indoor heat exchanger temperature
 	61 - Mode  =>  61 - Mode
@@ -2329,7 +2603,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	62 - Active  =>  62 - Active
 	62 - Active mode  =>  62 - Active mode
 	62 - Current fan speed  =>  62 - Current fan speed
+	62 - Errors  =>  62 - Errors
+	62 - External air temperature  =>  62 - External air temperature
 	62 - Fan speed  =>  62 - Fan speed
+	62 - First error code  =>  62 - First error code
 	62 - Indoor air temperature  =>  62 - Indoor air temperature
 	62 - Indoor heat exchanger temperature  =>  62 - Indoor heat exchanger temperature
 	62 - Mode  =>  62 - Mode
@@ -2343,7 +2620,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	63 - Active  =>  63 - Active
 	63 - Active mode  =>  63 - Active mode
 	63 - Current fan speed  =>  63 - Current fan speed
+	63 - Errors  =>  63 - Errors
+	63 - External air temperature  =>  63 - External air temperature
 	63 - Fan speed  =>  63 - Fan speed
+	63 - First error code  =>  63 - First error code
 	63 - Indoor air temperature  =>  63 - Indoor air temperature
 	63 - Indoor heat exchanger temperature  =>  63 - Indoor heat exchanger temperature
 	63 - Mode  =>  63 - Mode
@@ -2357,7 +2637,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	7 - Active  =>  7 - Active
 	7 - Active mode  =>  7 - Active mode
 	7 - Current fan speed  =>  7 - Current fan speed
+	7 - Errors  =>  7 - Errors
+	7 - External air temperature  =>  7 - External air temperature
 	7 - Fan speed  =>  7 - Fan speed
+	7 - First error code  =>  7 - First error code
 	7 - Indoor air temperature  =>  7 - Indoor air temperature
 	7 - Indoor heat exchanger temperature  =>  7 - Indoor heat exchanger temperature
 	7 - Mode  =>  7 - Mode
@@ -2371,7 +2654,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	8 - Active  =>  8 - Active
 	8 - Active mode  =>  8 - Active mode
 	8 - Current fan speed  =>  8 - Current fan speed
+	8 - Errors  =>  8 - Errors
+	8 - External air temperature  =>  8 - External air temperature
 	8 - Fan speed  =>  8 - Fan speed
+	8 - First error code  =>  8 - First error code
 	8 - Indoor air temperature  =>  8 - Indoor air temperature
 	8 - Indoor heat exchanger temperature  =>  8 - Indoor heat exchanger temperature
 	8 - Mode  =>  8 - Mode
@@ -2385,7 +2671,10 @@ ONOKOM-AIR-CG-VRF-MB-B
 	9 - Active  =>  9 - Active
 	9 - Active mode  =>  9 - Active mode
 	9 - Current fan speed  =>  9 - Current fan speed
+	9 - Errors  =>  9 - Errors
+	9 - External air temperature  =>  9 - External air temperature
 	9 - Fan speed  =>  9 - Fan speed
+	9 - First error code  =>  9 - First error code
 	9 - Indoor air temperature  =>  9 - Indoor air temperature
 	9 - Indoor heat exchanger temperature  =>  9 - Indoor heat exchanger temperature
 	9 - Mode  =>  9 - Mode
@@ -2410,6 +2699,7 @@ ONOKOM-AIR-DK-1-MB-B
 	Active mode  =>  Active mode
 	Current fan speed  =>  Current fan speed
 	Eco mode  =>  Eco mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -2442,6 +2732,7 @@ ONOKOM-AIR-DK-5-MB-B
 	Active mode  =>  Active mode
 	Error code  =>  Error code
 	Errors  =>  Errors
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	Gateway mode  =>  Gateway mode
@@ -2467,6 +2758,7 @@ ONOKOM-AIR-GR-1-MB-B
 	Active mode  =>  Active mode
 	Disable screen when power off  =>  Disable screen when power off
 	Eco mode  =>  Eco mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -2550,6 +2842,7 @@ ONOKOM-AIR-GR-3-MB-B
 	Error 8  =>  Error 8
 	Error 9  =>  Error 9
 	Error code  =>  Error code
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -2564,6 +2857,37 @@ ONOKOM-AIR-GR-3-MB-B
 	Quiet mode  =>  Quiet mode
 	Reboot Device  =>  Reboot Device
 	Self cleaning  =>  Self cleaning
+	Serial  =>  Serial
+	Signature  =>  Signature
+	Sleep mode  =>  Sleep mode
+	Smart fan speed  =>  Smart fan speed
+	Target temperature  =>  Target temperature
+	Temperature correction  =>  Temperature correction
+	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
+	Uptime  =>  Uptime
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-GR-5-MB-B
+	AC connected  =>  AC connected
+	Active  =>  Active
+	Active mode  =>  Active mode
+	External air temperature  =>  External air temperature
+	FW Version  =>  FW Version
+	Fan speed  =>  Fan speed
+	Gateway mode  =>  Gateway mode
+	HW Version  =>  HW Version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Ionization  =>  Ionization
+	MCU Temperature  =>  MCU Temperature
+	Mode  =>  Mode
+	Outdoor air supply  =>  Outdoor air supply
+	Outdoor air temperature  =>  Outdoor air temperature
+	PROTO Version  =>  PROTO Version
+	Quiet mode  =>  Quiet mode
+	Reboot Device  =>  Reboot Device
+	Screen light  =>  Screen light
 	Serial  =>  Serial
 	Signature  =>  Signature
 	Sleep mode  =>  Sleep mode
@@ -2657,8 +2981,10 @@ ONOKOM-AIR-GR-P3-MB-B
 	Error 77  =>  Error 77
 	Error 8  =>  Error 8
 	Error 9  =>  Error 9
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
+	Gateway mode  =>  Gateway mode
 	HW Version  =>  HW Version
 	Horizontal vanes  =>  Horizontal vanes
 	Indoor air temperature  =>  Indoor air temperature
@@ -2685,6 +3011,7 @@ ONOKOM-AIR-HR-1-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
 	Beeper  =>  Beeper
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -2734,12 +3061,14 @@ ONOKOM-AIR-HS-3-MB-B
 	Error 8  =>  Error 8
 	Error 9  =>  Error 9
 	Error code  =>  Error code
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
 	Horizontal vanes  =>  Horizontal vanes
 	Indoor air temperature  =>  Indoor air temperature
 	Indoor heat exchanger temperature  =>  Indoor heat exchanger temperature
+	Indoor humidity  =>  Indoor humidity
 	Ionization  =>  Ionization
 	MCU Temperature  =>  MCU Temperature
 	Mode  =>  Mode
@@ -2767,6 +3096,7 @@ ONOKOM-AIR-HS-5-MB-B
 	AC connected  =>  AC connected
 	Active  =>  Active
 	Active mode  =>  Active mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	Gateway mode  =>  Gateway mode
@@ -2794,14 +3124,17 @@ ONOKOM-AIR-HS-6-MB-B
 	Active mode  =>  Active mode
 	Current compressor power  =>  Current compressor power
 	Current fan speed  =>  Current fan speed
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
+	Horizontal vanes  =>  Horizontal vanes
 	Indoor air temperature  =>  Indoor air temperature
 	Indoor heat exchanger temperature  =>  Indoor heat exchanger temperature
 	MCU Temperature  =>  MCU Temperature
 	Mode  =>  Mode
 	PROTO Version  =>  PROTO Version
+	Quiet mode  =>  Quiet mode
 	Reboot Device  =>  Reboot Device
 	Serial  =>  Serial
 	Signature  =>  Signature
@@ -2809,11 +3142,15 @@ ONOKOM-AIR-HS-6-MB-B
 	Smart fan speed  =>  Smart fan speed
 	Target temperature  =>  Target temperature
 	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
 	Uptime  =>  Uptime
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 ONOKOM-AIR-HS-VRF-MB-B
 	0 - AC connected  =>  0 - AC connected
 	0 - Active  =>  0 - Active
 	0 - Active mode  =>  0 - Active mode
+	0 - External air temperature  =>  0 - External air temperature
 	0 - Fan speed  =>  0 - Fan speed
 	0 - First error code  =>  0 - First error code
 	0 - Horizontal vanes  =>  0 - Horizontal vanes
@@ -2826,6 +3163,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	1 - AC connected  =>  1 - AC connected
 	1 - Active  =>  1 - Active
 	1 - Active mode  =>  1 - Active mode
+	1 - External air temperature  =>  1 - External air temperature
 	1 - Fan speed  =>  1 - Fan speed
 	1 - First error code  =>  1 - First error code
 	1 - Horizontal vanes  =>  1 - Horizontal vanes
@@ -2838,6 +3176,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	10 - AC connected  =>  10 - AC connected
 	10 - Active  =>  10 - Active
 	10 - Active mode  =>  10 - Active mode
+	10 - External air temperature  =>  10 - External air temperature
 	10 - Fan speed  =>  10 - Fan speed
 	10 - First error code  =>  10 - First error code
 	10 - Horizontal vanes  =>  10 - Horizontal vanes
@@ -2850,6 +3189,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	11 - AC connected  =>  11 - AC connected
 	11 - Active  =>  11 - Active
 	11 - Active mode  =>  11 - Active mode
+	11 - External air temperature  =>  11 - External air temperature
 	11 - Fan speed  =>  11 - Fan speed
 	11 - First error code  =>  11 - First error code
 	11 - Horizontal vanes  =>  11 - Horizontal vanes
@@ -2862,6 +3202,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	12 - AC connected  =>  12 - AC connected
 	12 - Active  =>  12 - Active
 	12 - Active mode  =>  12 - Active mode
+	12 - External air temperature  =>  12 - External air temperature
 	12 - Fan speed  =>  12 - Fan speed
 	12 - First error code  =>  12 - First error code
 	12 - Horizontal vanes  =>  12 - Horizontal vanes
@@ -2874,6 +3215,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	13 - AC connected  =>  13 - AC connected
 	13 - Active  =>  13 - Active
 	13 - Active mode  =>  13 - Active mode
+	13 - External air temperature  =>  13 - External air temperature
 	13 - Fan speed  =>  13 - Fan speed
 	13 - First error code  =>  13 - First error code
 	13 - Horizontal vanes  =>  13 - Horizontal vanes
@@ -2886,6 +3228,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	14 - AC connected  =>  14 - AC connected
 	14 - Active  =>  14 - Active
 	14 - Active mode  =>  14 - Active mode
+	14 - External air temperature  =>  14 - External air temperature
 	14 - Fan speed  =>  14 - Fan speed
 	14 - First error code  =>  14 - First error code
 	14 - Horizontal vanes  =>  14 - Horizontal vanes
@@ -2898,6 +3241,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	15 - AC connected  =>  15 - AC connected
 	15 - Active  =>  15 - Active
 	15 - Active mode  =>  15 - Active mode
+	15 - External air temperature  =>  15 - External air temperature
 	15 - Fan speed  =>  15 - Fan speed
 	15 - First error code  =>  15 - First error code
 	15 - Horizontal vanes  =>  15 - Horizontal vanes
@@ -2910,6 +3254,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	16 - AC connected  =>  16 - AC connected
 	16 - Active  =>  16 - Active
 	16 - Active mode  =>  16 - Active mode
+	16 - External air temperature  =>  16 - External air temperature
 	16 - Fan speed  =>  16 - Fan speed
 	16 - First error code  =>  16 - First error code
 	16 - Horizontal vanes  =>  16 - Horizontal vanes
@@ -2922,6 +3267,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	17 - AC connected  =>  17 - AC connected
 	17 - Active  =>  17 - Active
 	17 - Active mode  =>  17 - Active mode
+	17 - External air temperature  =>  17 - External air temperature
 	17 - Fan speed  =>  17 - Fan speed
 	17 - First error code  =>  17 - First error code
 	17 - Horizontal vanes  =>  17 - Horizontal vanes
@@ -2934,6 +3280,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	18 - AC connected  =>  18 - AC connected
 	18 - Active  =>  18 - Active
 	18 - Active mode  =>  18 - Active mode
+	18 - External air temperature  =>  18 - External air temperature
 	18 - Fan speed  =>  18 - Fan speed
 	18 - First error code  =>  18 - First error code
 	18 - Horizontal vanes  =>  18 - Horizontal vanes
@@ -2946,6 +3293,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	19 - AC connected  =>  19 - AC connected
 	19 - Active  =>  19 - Active
 	19 - Active mode  =>  19 - Active mode
+	19 - External air temperature  =>  19 - External air temperature
 	19 - Fan speed  =>  19 - Fan speed
 	19 - First error code  =>  19 - First error code
 	19 - Horizontal vanes  =>  19 - Horizontal vanes
@@ -2958,6 +3306,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	2 - AC connected  =>  2 - AC connected
 	2 - Active  =>  2 - Active
 	2 - Active mode  =>  2 - Active mode
+	2 - External air temperature  =>  2 - External air temperature
 	2 - Fan speed  =>  2 - Fan speed
 	2 - First error code  =>  2 - First error code
 	2 - Horizontal vanes  =>  2 - Horizontal vanes
@@ -2970,6 +3319,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	20 - AC connected  =>  20 - AC connected
 	20 - Active  =>  20 - Active
 	20 - Active mode  =>  20 - Active mode
+	20 - External air temperature  =>  20 - External air temperature
 	20 - Fan speed  =>  20 - Fan speed
 	20 - First error code  =>  20 - First error code
 	20 - Horizontal vanes  =>  20 - Horizontal vanes
@@ -2982,6 +3332,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	21 - AC connected  =>  21 - AC connected
 	21 - Active  =>  21 - Active
 	21 - Active mode  =>  21 - Active mode
+	21 - External air temperature  =>  21 - External air temperature
 	21 - Fan speed  =>  21 - Fan speed
 	21 - First error code  =>  21 - First error code
 	21 - Horizontal vanes  =>  21 - Horizontal vanes
@@ -2994,6 +3345,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	22 - AC connected  =>  22 - AC connected
 	22 - Active  =>  22 - Active
 	22 - Active mode  =>  22 - Active mode
+	22 - External air temperature  =>  22 - External air temperature
 	22 - Fan speed  =>  22 - Fan speed
 	22 - First error code  =>  22 - First error code
 	22 - Horizontal vanes  =>  22 - Horizontal vanes
@@ -3006,6 +3358,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	23 - AC connected  =>  23 - AC connected
 	23 - Active  =>  23 - Active
 	23 - Active mode  =>  23 - Active mode
+	23 - External air temperature  =>  23 - External air temperature
 	23 - Fan speed  =>  23 - Fan speed
 	23 - First error code  =>  23 - First error code
 	23 - Horizontal vanes  =>  23 - Horizontal vanes
@@ -3018,6 +3371,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	24 - AC connected  =>  24 - AC connected
 	24 - Active  =>  24 - Active
 	24 - Active mode  =>  24 - Active mode
+	24 - External air temperature  =>  24 - External air temperature
 	24 - Fan speed  =>  24 - Fan speed
 	24 - First error code  =>  24 - First error code
 	24 - Horizontal vanes  =>  24 - Horizontal vanes
@@ -3030,6 +3384,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	25 - AC connected  =>  25 - AC connected
 	25 - Active  =>  25 - Active
 	25 - Active mode  =>  25 - Active mode
+	25 - External air temperature  =>  25 - External air temperature
 	25 - Fan speed  =>  25 - Fan speed
 	25 - First error code  =>  25 - First error code
 	25 - Horizontal vanes  =>  25 - Horizontal vanes
@@ -3042,6 +3397,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	26 - AC connected  =>  26 - AC connected
 	26 - Active  =>  26 - Active
 	26 - Active mode  =>  26 - Active mode
+	26 - External air temperature  =>  26 - External air temperature
 	26 - Fan speed  =>  26 - Fan speed
 	26 - First error code  =>  26 - First error code
 	26 - Horizontal vanes  =>  26 - Horizontal vanes
@@ -3054,6 +3410,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	27 - AC connected  =>  27 - AC connected
 	27 - Active  =>  27 - Active
 	27 - Active mode  =>  27 - Active mode
+	27 - External air temperature  =>  27 - External air temperature
 	27 - Fan speed  =>  27 - Fan speed
 	27 - First error code  =>  27 - First error code
 	27 - Horizontal vanes  =>  27 - Horizontal vanes
@@ -3066,6 +3423,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	28 - AC connected  =>  28 - AC connected
 	28 - Active  =>  28 - Active
 	28 - Active mode  =>  28 - Active mode
+	28 - External air temperature  =>  28 - External air temperature
 	28 - Fan speed  =>  28 - Fan speed
 	28 - First error code  =>  28 - First error code
 	28 - Horizontal vanes  =>  28 - Horizontal vanes
@@ -3078,6 +3436,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	29 - AC connected  =>  29 - AC connected
 	29 - Active  =>  29 - Active
 	29 - Active mode  =>  29 - Active mode
+	29 - External air temperature  =>  29 - External air temperature
 	29 - Fan speed  =>  29 - Fan speed
 	29 - First error code  =>  29 - First error code
 	29 - Horizontal vanes  =>  29 - Horizontal vanes
@@ -3090,6 +3449,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	3 - AC connected  =>  3 - AC connected
 	3 - Active  =>  3 - Active
 	3 - Active mode  =>  3 - Active mode
+	3 - External air temperature  =>  3 - External air temperature
 	3 - Fan speed  =>  3 - Fan speed
 	3 - First error code  =>  3 - First error code
 	3 - Horizontal vanes  =>  3 - Horizontal vanes
@@ -3102,6 +3462,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	30 - AC connected  =>  30 - AC connected
 	30 - Active  =>  30 - Active
 	30 - Active mode  =>  30 - Active mode
+	30 - External air temperature  =>  30 - External air temperature
 	30 - Fan speed  =>  30 - Fan speed
 	30 - First error code  =>  30 - First error code
 	30 - Horizontal vanes  =>  30 - Horizontal vanes
@@ -3114,6 +3475,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	31 - AC connected  =>  31 - AC connected
 	31 - Active  =>  31 - Active
 	31 - Active mode  =>  31 - Active mode
+	31 - External air temperature  =>  31 - External air temperature
 	31 - Fan speed  =>  31 - Fan speed
 	31 - First error code  =>  31 - First error code
 	31 - Horizontal vanes  =>  31 - Horizontal vanes
@@ -3126,6 +3488,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	32 - AC connected  =>  32 - AC connected
 	32 - Active  =>  32 - Active
 	32 - Active mode  =>  32 - Active mode
+	32 - External air temperature  =>  32 - External air temperature
 	32 - Fan speed  =>  32 - Fan speed
 	32 - First error code  =>  32 - First error code
 	32 - Horizontal vanes  =>  32 - Horizontal vanes
@@ -3138,6 +3501,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	33 - AC connected  =>  33 - AC connected
 	33 - Active  =>  33 - Active
 	33 - Active mode  =>  33 - Active mode
+	33 - External air temperature  =>  33 - External air temperature
 	33 - Fan speed  =>  33 - Fan speed
 	33 - First error code  =>  33 - First error code
 	33 - Horizontal vanes  =>  33 - Horizontal vanes
@@ -3150,6 +3514,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	34 - AC connected  =>  34 - AC connected
 	34 - Active  =>  34 - Active
 	34 - Active mode  =>  34 - Active mode
+	34 - External air temperature  =>  34 - External air temperature
 	34 - Fan speed  =>  34 - Fan speed
 	34 - First error code  =>  34 - First error code
 	34 - Horizontal vanes  =>  34 - Horizontal vanes
@@ -3162,6 +3527,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	35 - AC connected  =>  35 - AC connected
 	35 - Active  =>  35 - Active
 	35 - Active mode  =>  35 - Active mode
+	35 - External air temperature  =>  35 - External air temperature
 	35 - Fan speed  =>  35 - Fan speed
 	35 - First error code  =>  35 - First error code
 	35 - Horizontal vanes  =>  35 - Horizontal vanes
@@ -3174,6 +3540,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	36 - AC connected  =>  36 - AC connected
 	36 - Active  =>  36 - Active
 	36 - Active mode  =>  36 - Active mode
+	36 - External air temperature  =>  36 - External air temperature
 	36 - Fan speed  =>  36 - Fan speed
 	36 - First error code  =>  36 - First error code
 	36 - Horizontal vanes  =>  36 - Horizontal vanes
@@ -3186,6 +3553,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	37 - AC connected  =>  37 - AC connected
 	37 - Active  =>  37 - Active
 	37 - Active mode  =>  37 - Active mode
+	37 - External air temperature  =>  37 - External air temperature
 	37 - Fan speed  =>  37 - Fan speed
 	37 - First error code  =>  37 - First error code
 	37 - Horizontal vanes  =>  37 - Horizontal vanes
@@ -3198,6 +3566,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	38 - AC connected  =>  38 - AC connected
 	38 - Active  =>  38 - Active
 	38 - Active mode  =>  38 - Active mode
+	38 - External air temperature  =>  38 - External air temperature
 	38 - Fan speed  =>  38 - Fan speed
 	38 - First error code  =>  38 - First error code
 	38 - Horizontal vanes  =>  38 - Horizontal vanes
@@ -3210,6 +3579,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	39 - AC connected  =>  39 - AC connected
 	39 - Active  =>  39 - Active
 	39 - Active mode  =>  39 - Active mode
+	39 - External air temperature  =>  39 - External air temperature
 	39 - Fan speed  =>  39 - Fan speed
 	39 - First error code  =>  39 - First error code
 	39 - Horizontal vanes  =>  39 - Horizontal vanes
@@ -3222,6 +3592,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	4 - AC connected  =>  4 - AC connected
 	4 - Active  =>  4 - Active
 	4 - Active mode  =>  4 - Active mode
+	4 - External air temperature  =>  4 - External air temperature
 	4 - Fan speed  =>  4 - Fan speed
 	4 - First error code  =>  4 - First error code
 	4 - Horizontal vanes  =>  4 - Horizontal vanes
@@ -3234,6 +3605,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	40 - AC connected  =>  40 - AC connected
 	40 - Active  =>  40 - Active
 	40 - Active mode  =>  40 - Active mode
+	40 - External air temperature  =>  40 - External air temperature
 	40 - Fan speed  =>  40 - Fan speed
 	40 - First error code  =>  40 - First error code
 	40 - Horizontal vanes  =>  40 - Horizontal vanes
@@ -3246,6 +3618,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	41 - AC connected  =>  41 - AC connected
 	41 - Active  =>  41 - Active
 	41 - Active mode  =>  41 - Active mode
+	41 - External air temperature  =>  41 - External air temperature
 	41 - Fan speed  =>  41 - Fan speed
 	41 - First error code  =>  41 - First error code
 	41 - Horizontal vanes  =>  41 - Horizontal vanes
@@ -3258,6 +3631,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	42 - AC connected  =>  42 - AC connected
 	42 - Active  =>  42 - Active
 	42 - Active mode  =>  42 - Active mode
+	42 - External air temperature  =>  42 - External air temperature
 	42 - Fan speed  =>  42 - Fan speed
 	42 - First error code  =>  42 - First error code
 	42 - Horizontal vanes  =>  42 - Horizontal vanes
@@ -3270,6 +3644,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	43 - AC connected  =>  43 - AC connected
 	43 - Active  =>  43 - Active
 	43 - Active mode  =>  43 - Active mode
+	43 - External air temperature  =>  43 - External air temperature
 	43 - Fan speed  =>  43 - Fan speed
 	43 - First error code  =>  43 - First error code
 	43 - Horizontal vanes  =>  43 - Horizontal vanes
@@ -3282,6 +3657,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	44 - AC connected  =>  44 - AC connected
 	44 - Active  =>  44 - Active
 	44 - Active mode  =>  44 - Active mode
+	44 - External air temperature  =>  44 - External air temperature
 	44 - Fan speed  =>  44 - Fan speed
 	44 - First error code  =>  44 - First error code
 	44 - Horizontal vanes  =>  44 - Horizontal vanes
@@ -3294,6 +3670,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	45 - AC connected  =>  45 - AC connected
 	45 - Active  =>  45 - Active
 	45 - Active mode  =>  45 - Active mode
+	45 - External air temperature  =>  45 - External air temperature
 	45 - Fan speed  =>  45 - Fan speed
 	45 - First error code  =>  45 - First error code
 	45 - Horizontal vanes  =>  45 - Horizontal vanes
@@ -3306,6 +3683,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	46 - AC connected  =>  46 - AC connected
 	46 - Active  =>  46 - Active
 	46 - Active mode  =>  46 - Active mode
+	46 - External air temperature  =>  46 - External air temperature
 	46 - Fan speed  =>  46 - Fan speed
 	46 - First error code  =>  46 - First error code
 	46 - Horizontal vanes  =>  46 - Horizontal vanes
@@ -3318,6 +3696,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	47 - AC connected  =>  47 - AC connected
 	47 - Active  =>  47 - Active
 	47 - Active mode  =>  47 - Active mode
+	47 - External air temperature  =>  47 - External air temperature
 	47 - Fan speed  =>  47 - Fan speed
 	47 - First error code  =>  47 - First error code
 	47 - Horizontal vanes  =>  47 - Horizontal vanes
@@ -3330,6 +3709,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	48 - AC connected  =>  48 - AC connected
 	48 - Active  =>  48 - Active
 	48 - Active mode  =>  48 - Active mode
+	48 - External air temperature  =>  48 - External air temperature
 	48 - Fan speed  =>  48 - Fan speed
 	48 - First error code  =>  48 - First error code
 	48 - Horizontal vanes  =>  48 - Horizontal vanes
@@ -3342,6 +3722,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	49 - AC connected  =>  49 - AC connected
 	49 - Active  =>  49 - Active
 	49 - Active mode  =>  49 - Active mode
+	49 - External air temperature  =>  49 - External air temperature
 	49 - Fan speed  =>  49 - Fan speed
 	49 - First error code  =>  49 - First error code
 	49 - Horizontal vanes  =>  49 - Horizontal vanes
@@ -3354,6 +3735,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	5 - AC connected  =>  5 - AC connected
 	5 - Active  =>  5 - Active
 	5 - Active mode  =>  5 - Active mode
+	5 - External air temperature  =>  5 - External air temperature
 	5 - Fan speed  =>  5 - Fan speed
 	5 - First error code  =>  5 - First error code
 	5 - Horizontal vanes  =>  5 - Horizontal vanes
@@ -3366,6 +3748,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	50 - AC connected  =>  50 - AC connected
 	50 - Active  =>  50 - Active
 	50 - Active mode  =>  50 - Active mode
+	50 - External air temperature  =>  50 - External air temperature
 	50 - Fan speed  =>  50 - Fan speed
 	50 - First error code  =>  50 - First error code
 	50 - Horizontal vanes  =>  50 - Horizontal vanes
@@ -3378,6 +3761,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	51 - AC connected  =>  51 - AC connected
 	51 - Active  =>  51 - Active
 	51 - Active mode  =>  51 - Active mode
+	51 - External air temperature  =>  51 - External air temperature
 	51 - Fan speed  =>  51 - Fan speed
 	51 - First error code  =>  51 - First error code
 	51 - Horizontal vanes  =>  51 - Horizontal vanes
@@ -3390,6 +3774,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	52 - AC connected  =>  52 - AC connected
 	52 - Active  =>  52 - Active
 	52 - Active mode  =>  52 - Active mode
+	52 - External air temperature  =>  52 - External air temperature
 	52 - Fan speed  =>  52 - Fan speed
 	52 - First error code  =>  52 - First error code
 	52 - Horizontal vanes  =>  52 - Horizontal vanes
@@ -3402,6 +3787,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	53 - AC connected  =>  53 - AC connected
 	53 - Active  =>  53 - Active
 	53 - Active mode  =>  53 - Active mode
+	53 - External air temperature  =>  53 - External air temperature
 	53 - Fan speed  =>  53 - Fan speed
 	53 - First error code  =>  53 - First error code
 	53 - Horizontal vanes  =>  53 - Horizontal vanes
@@ -3414,6 +3800,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	54 - AC connected  =>  54 - AC connected
 	54 - Active  =>  54 - Active
 	54 - Active mode  =>  54 - Active mode
+	54 - External air temperature  =>  54 - External air temperature
 	54 - Fan speed  =>  54 - Fan speed
 	54 - First error code  =>  54 - First error code
 	54 - Horizontal vanes  =>  54 - Horizontal vanes
@@ -3426,6 +3813,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	55 - AC connected  =>  55 - AC connected
 	55 - Active  =>  55 - Active
 	55 - Active mode  =>  55 - Active mode
+	55 - External air temperature  =>  55 - External air temperature
 	55 - Fan speed  =>  55 - Fan speed
 	55 - First error code  =>  55 - First error code
 	55 - Horizontal vanes  =>  55 - Horizontal vanes
@@ -3438,6 +3826,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	56 - AC connected  =>  56 - AC connected
 	56 - Active  =>  56 - Active
 	56 - Active mode  =>  56 - Active mode
+	56 - External air temperature  =>  56 - External air temperature
 	56 - Fan speed  =>  56 - Fan speed
 	56 - First error code  =>  56 - First error code
 	56 - Horizontal vanes  =>  56 - Horizontal vanes
@@ -3450,6 +3839,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	57 - AC connected  =>  57 - AC connected
 	57 - Active  =>  57 - Active
 	57 - Active mode  =>  57 - Active mode
+	57 - External air temperature  =>  57 - External air temperature
 	57 - Fan speed  =>  57 - Fan speed
 	57 - First error code  =>  57 - First error code
 	57 - Horizontal vanes  =>  57 - Horizontal vanes
@@ -3462,6 +3852,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	58 - AC connected  =>  58 - AC connected
 	58 - Active  =>  58 - Active
 	58 - Active mode  =>  58 - Active mode
+	58 - External air temperature  =>  58 - External air temperature
 	58 - Fan speed  =>  58 - Fan speed
 	58 - First error code  =>  58 - First error code
 	58 - Horizontal vanes  =>  58 - Horizontal vanes
@@ -3474,6 +3865,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	59 - AC connected  =>  59 - AC connected
 	59 - Active  =>  59 - Active
 	59 - Active mode  =>  59 - Active mode
+	59 - External air temperature  =>  59 - External air temperature
 	59 - Fan speed  =>  59 - Fan speed
 	59 - First error code  =>  59 - First error code
 	59 - Horizontal vanes  =>  59 - Horizontal vanes
@@ -3486,6 +3878,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	6 - AC connected  =>  6 - AC connected
 	6 - Active  =>  6 - Active
 	6 - Active mode  =>  6 - Active mode
+	6 - External air temperature  =>  6 - External air temperature
 	6 - Fan speed  =>  6 - Fan speed
 	6 - First error code  =>  6 - First error code
 	6 - Horizontal vanes  =>  6 - Horizontal vanes
@@ -3498,6 +3891,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	60 - AC connected  =>  60 - AC connected
 	60 - Active  =>  60 - Active
 	60 - Active mode  =>  60 - Active mode
+	60 - External air temperature  =>  60 - External air temperature
 	60 - Fan speed  =>  60 - Fan speed
 	60 - First error code  =>  60 - First error code
 	60 - Horizontal vanes  =>  60 - Horizontal vanes
@@ -3510,6 +3904,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	61 - AC connected  =>  61 - AC connected
 	61 - Active  =>  61 - Active
 	61 - Active mode  =>  61 - Active mode
+	61 - External air temperature  =>  61 - External air temperature
 	61 - Fan speed  =>  61 - Fan speed
 	61 - First error code  =>  61 - First error code
 	61 - Horizontal vanes  =>  61 - Horizontal vanes
@@ -3522,6 +3917,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	62 - AC connected  =>  62 - AC connected
 	62 - Active  =>  62 - Active
 	62 - Active mode  =>  62 - Active mode
+	62 - External air temperature  =>  62 - External air temperature
 	62 - Fan speed  =>  62 - Fan speed
 	62 - First error code  =>  62 - First error code
 	62 - Horizontal vanes  =>  62 - Horizontal vanes
@@ -3534,6 +3930,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	63 - AC connected  =>  63 - AC connected
 	63 - Active  =>  63 - Active
 	63 - Active mode  =>  63 - Active mode
+	63 - External air temperature  =>  63 - External air temperature
 	63 - Fan speed  =>  63 - Fan speed
 	63 - First error code  =>  63 - First error code
 	63 - Horizontal vanes  =>  63 - Horizontal vanes
@@ -3546,6 +3943,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	7 - AC connected  =>  7 - AC connected
 	7 - Active  =>  7 - Active
 	7 - Active mode  =>  7 - Active mode
+	7 - External air temperature  =>  7 - External air temperature
 	7 - Fan speed  =>  7 - Fan speed
 	7 - First error code  =>  7 - First error code
 	7 - Horizontal vanes  =>  7 - Horizontal vanes
@@ -3558,6 +3956,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	8 - AC connected  =>  8 - AC connected
 	8 - Active  =>  8 - Active
 	8 - Active mode  =>  8 - Active mode
+	8 - External air temperature  =>  8 - External air temperature
 	8 - Fan speed  =>  8 - Fan speed
 	8 - First error code  =>  8 - First error code
 	8 - Horizontal vanes  =>  8 - Horizontal vanes
@@ -3570,6 +3969,7 @@ ONOKOM-AIR-HS-VRF-MB-B
 	9 - AC connected  =>  9 - AC connected
 	9 - Active  =>  9 - Active
 	9 - Active mode  =>  9 - Active mode
+	9 - External air temperature  =>  9 - External air temperature
 	9 - Fan speed  =>  9 - Fan speed
 	9 - First error code  =>  9 - First error code
 	9 - Horizontal vanes  =>  9 - Horizontal vanes
@@ -3592,6 +3992,7 @@ ONOKOM-AIR-HT-1-MB-B
 	AC connected  =>  AC connected
 	Active  =>  Active
 	Active mode  =>  Active mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -3678,6 +4079,7 @@ ONOKOM-AIR-MD-1-MB-B
 	Error 8  =>  Error 8
 	Error 9  =>  Error 9
 	Error code  =>  Error code
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	Gentle wind  =>  Gentle wind
@@ -3708,6 +4110,7 @@ ONOKOM-AIR-MD-3-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
 	Eco mode  =>  Eco mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -3734,6 +4137,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	0 - Current fan speed  =>  0 - Current fan speed
 	0 - Eco mode  =>  0 - Eco mode
 	0 - Errors  =>  0 - Errors
+	0 - External air temperature  =>  0 - External air temperature
 	0 - Fan speed  =>  0 - Fan speed
 	0 - First error code  =>  0 - First error code
 	0 - Horizontal vanes  =>  0 - Horizontal vanes
@@ -3754,6 +4158,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	1 - Current fan speed  =>  1 - Current fan speed
 	1 - Eco mode  =>  1 - Eco mode
 	1 - Errors  =>  1 - Errors
+	1 - External air temperature  =>  1 - External air temperature
 	1 - Fan speed  =>  1 - Fan speed
 	1 - First error code  =>  1 - First error code
 	1 - Horizontal vanes  =>  1 - Horizontal vanes
@@ -3774,6 +4179,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	10 - Current fan speed  =>  10 - Current fan speed
 	10 - Eco mode  =>  10 - Eco mode
 	10 - Errors  =>  10 - Errors
+	10 - External air temperature  =>  10 - External air temperature
 	10 - Fan speed  =>  10 - Fan speed
 	10 - First error code  =>  10 - First error code
 	10 - Horizontal vanes  =>  10 - Horizontal vanes
@@ -3794,6 +4200,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	11 - Current fan speed  =>  11 - Current fan speed
 	11 - Eco mode  =>  11 - Eco mode
 	11 - Errors  =>  11 - Errors
+	11 - External air temperature  =>  11 - External air temperature
 	11 - Fan speed  =>  11 - Fan speed
 	11 - First error code  =>  11 - First error code
 	11 - Horizontal vanes  =>  11 - Horizontal vanes
@@ -3814,6 +4221,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	12 - Current fan speed  =>  12 - Current fan speed
 	12 - Eco mode  =>  12 - Eco mode
 	12 - Errors  =>  12 - Errors
+	12 - External air temperature  =>  12 - External air temperature
 	12 - Fan speed  =>  12 - Fan speed
 	12 - First error code  =>  12 - First error code
 	12 - Horizontal vanes  =>  12 - Horizontal vanes
@@ -3834,6 +4242,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	13 - Current fan speed  =>  13 - Current fan speed
 	13 - Eco mode  =>  13 - Eco mode
 	13 - Errors  =>  13 - Errors
+	13 - External air temperature  =>  13 - External air temperature
 	13 - Fan speed  =>  13 - Fan speed
 	13 - First error code  =>  13 - First error code
 	13 - Horizontal vanes  =>  13 - Horizontal vanes
@@ -3854,6 +4263,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	14 - Current fan speed  =>  14 - Current fan speed
 	14 - Eco mode  =>  14 - Eco mode
 	14 - Errors  =>  14 - Errors
+	14 - External air temperature  =>  14 - External air temperature
 	14 - Fan speed  =>  14 - Fan speed
 	14 - First error code  =>  14 - First error code
 	14 - Horizontal vanes  =>  14 - Horizontal vanes
@@ -3874,6 +4284,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	15 - Current fan speed  =>  15 - Current fan speed
 	15 - Eco mode  =>  15 - Eco mode
 	15 - Errors  =>  15 - Errors
+	15 - External air temperature  =>  15 - External air temperature
 	15 - Fan speed  =>  15 - Fan speed
 	15 - First error code  =>  15 - First error code
 	15 - Horizontal vanes  =>  15 - Horizontal vanes
@@ -3894,6 +4305,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	16 - Current fan speed  =>  16 - Current fan speed
 	16 - Eco mode  =>  16 - Eco mode
 	16 - Errors  =>  16 - Errors
+	16 - External air temperature  =>  16 - External air temperature
 	16 - Fan speed  =>  16 - Fan speed
 	16 - First error code  =>  16 - First error code
 	16 - Horizontal vanes  =>  16 - Horizontal vanes
@@ -3914,6 +4326,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	17 - Current fan speed  =>  17 - Current fan speed
 	17 - Eco mode  =>  17 - Eco mode
 	17 - Errors  =>  17 - Errors
+	17 - External air temperature  =>  17 - External air temperature
 	17 - Fan speed  =>  17 - Fan speed
 	17 - First error code  =>  17 - First error code
 	17 - Horizontal vanes  =>  17 - Horizontal vanes
@@ -3934,6 +4347,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	18 - Current fan speed  =>  18 - Current fan speed
 	18 - Eco mode  =>  18 - Eco mode
 	18 - Errors  =>  18 - Errors
+	18 - External air temperature  =>  18 - External air temperature
 	18 - Fan speed  =>  18 - Fan speed
 	18 - First error code  =>  18 - First error code
 	18 - Horizontal vanes  =>  18 - Horizontal vanes
@@ -3954,6 +4368,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	19 - Current fan speed  =>  19 - Current fan speed
 	19 - Eco mode  =>  19 - Eco mode
 	19 - Errors  =>  19 - Errors
+	19 - External air temperature  =>  19 - External air temperature
 	19 - Fan speed  =>  19 - Fan speed
 	19 - First error code  =>  19 - First error code
 	19 - Horizontal vanes  =>  19 - Horizontal vanes
@@ -3974,6 +4389,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	2 - Current fan speed  =>  2 - Current fan speed
 	2 - Eco mode  =>  2 - Eco mode
 	2 - Errors  =>  2 - Errors
+	2 - External air temperature  =>  2 - External air temperature
 	2 - Fan speed  =>  2 - Fan speed
 	2 - First error code  =>  2 - First error code
 	2 - Horizontal vanes  =>  2 - Horizontal vanes
@@ -3994,6 +4410,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	20 - Current fan speed  =>  20 - Current fan speed
 	20 - Eco mode  =>  20 - Eco mode
 	20 - Errors  =>  20 - Errors
+	20 - External air temperature  =>  20 - External air temperature
 	20 - Fan speed  =>  20 - Fan speed
 	20 - First error code  =>  20 - First error code
 	20 - Horizontal vanes  =>  20 - Horizontal vanes
@@ -4014,6 +4431,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	21 - Current fan speed  =>  21 - Current fan speed
 	21 - Eco mode  =>  21 - Eco mode
 	21 - Errors  =>  21 - Errors
+	21 - External air temperature  =>  21 - External air temperature
 	21 - Fan speed  =>  21 - Fan speed
 	21 - First error code  =>  21 - First error code
 	21 - Horizontal vanes  =>  21 - Horizontal vanes
@@ -4034,6 +4452,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	22 - Current fan speed  =>  22 - Current fan speed
 	22 - Eco mode  =>  22 - Eco mode
 	22 - Errors  =>  22 - Errors
+	22 - External air temperature  =>  22 - External air temperature
 	22 - Fan speed  =>  22 - Fan speed
 	22 - First error code  =>  22 - First error code
 	22 - Horizontal vanes  =>  22 - Horizontal vanes
@@ -4054,6 +4473,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	23 - Current fan speed  =>  23 - Current fan speed
 	23 - Eco mode  =>  23 - Eco mode
 	23 - Errors  =>  23 - Errors
+	23 - External air temperature  =>  23 - External air temperature
 	23 - Fan speed  =>  23 - Fan speed
 	23 - First error code  =>  23 - First error code
 	23 - Horizontal vanes  =>  23 - Horizontal vanes
@@ -4074,6 +4494,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	24 - Current fan speed  =>  24 - Current fan speed
 	24 - Eco mode  =>  24 - Eco mode
 	24 - Errors  =>  24 - Errors
+	24 - External air temperature  =>  24 - External air temperature
 	24 - Fan speed  =>  24 - Fan speed
 	24 - First error code  =>  24 - First error code
 	24 - Horizontal vanes  =>  24 - Horizontal vanes
@@ -4094,6 +4515,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	25 - Current fan speed  =>  25 - Current fan speed
 	25 - Eco mode  =>  25 - Eco mode
 	25 - Errors  =>  25 - Errors
+	25 - External air temperature  =>  25 - External air temperature
 	25 - Fan speed  =>  25 - Fan speed
 	25 - First error code  =>  25 - First error code
 	25 - Horizontal vanes  =>  25 - Horizontal vanes
@@ -4114,6 +4536,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	26 - Current fan speed  =>  26 - Current fan speed
 	26 - Eco mode  =>  26 - Eco mode
 	26 - Errors  =>  26 - Errors
+	26 - External air temperature  =>  26 - External air temperature
 	26 - Fan speed  =>  26 - Fan speed
 	26 - First error code  =>  26 - First error code
 	26 - Horizontal vanes  =>  26 - Horizontal vanes
@@ -4134,6 +4557,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	27 - Current fan speed  =>  27 - Current fan speed
 	27 - Eco mode  =>  27 - Eco mode
 	27 - Errors  =>  27 - Errors
+	27 - External air temperature  =>  27 - External air temperature
 	27 - Fan speed  =>  27 - Fan speed
 	27 - First error code  =>  27 - First error code
 	27 - Horizontal vanes  =>  27 - Horizontal vanes
@@ -4154,6 +4578,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	28 - Current fan speed  =>  28 - Current fan speed
 	28 - Eco mode  =>  28 - Eco mode
 	28 - Errors  =>  28 - Errors
+	28 - External air temperature  =>  28 - External air temperature
 	28 - Fan speed  =>  28 - Fan speed
 	28 - First error code  =>  28 - First error code
 	28 - Horizontal vanes  =>  28 - Horizontal vanes
@@ -4174,6 +4599,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	29 - Current fan speed  =>  29 - Current fan speed
 	29 - Eco mode  =>  29 - Eco mode
 	29 - Errors  =>  29 - Errors
+	29 - External air temperature  =>  29 - External air temperature
 	29 - Fan speed  =>  29 - Fan speed
 	29 - First error code  =>  29 - First error code
 	29 - Horizontal vanes  =>  29 - Horizontal vanes
@@ -4194,6 +4620,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	3 - Current fan speed  =>  3 - Current fan speed
 	3 - Eco mode  =>  3 - Eco mode
 	3 - Errors  =>  3 - Errors
+	3 - External air temperature  =>  3 - External air temperature
 	3 - Fan speed  =>  3 - Fan speed
 	3 - First error code  =>  3 - First error code
 	3 - Horizontal vanes  =>  3 - Horizontal vanes
@@ -4214,6 +4641,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	30 - Current fan speed  =>  30 - Current fan speed
 	30 - Eco mode  =>  30 - Eco mode
 	30 - Errors  =>  30 - Errors
+	30 - External air temperature  =>  30 - External air temperature
 	30 - Fan speed  =>  30 - Fan speed
 	30 - First error code  =>  30 - First error code
 	30 - Horizontal vanes  =>  30 - Horizontal vanes
@@ -4234,6 +4662,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	31 - Current fan speed  =>  31 - Current fan speed
 	31 - Eco mode  =>  31 - Eco mode
 	31 - Errors  =>  31 - Errors
+	31 - External air temperature  =>  31 - External air temperature
 	31 - Fan speed  =>  31 - Fan speed
 	31 - First error code  =>  31 - First error code
 	31 - Horizontal vanes  =>  31 - Horizontal vanes
@@ -4254,6 +4683,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	32 - Current fan speed  =>  32 - Current fan speed
 	32 - Eco mode  =>  32 - Eco mode
 	32 - Errors  =>  32 - Errors
+	32 - External air temperature  =>  32 - External air temperature
 	32 - Fan speed  =>  32 - Fan speed
 	32 - First error code  =>  32 - First error code
 	32 - Horizontal vanes  =>  32 - Horizontal vanes
@@ -4274,6 +4704,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	33 - Current fan speed  =>  33 - Current fan speed
 	33 - Eco mode  =>  33 - Eco mode
 	33 - Errors  =>  33 - Errors
+	33 - External air temperature  =>  33 - External air temperature
 	33 - Fan speed  =>  33 - Fan speed
 	33 - First error code  =>  33 - First error code
 	33 - Horizontal vanes  =>  33 - Horizontal vanes
@@ -4294,6 +4725,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	34 - Current fan speed  =>  34 - Current fan speed
 	34 - Eco mode  =>  34 - Eco mode
 	34 - Errors  =>  34 - Errors
+	34 - External air temperature  =>  34 - External air temperature
 	34 - Fan speed  =>  34 - Fan speed
 	34 - First error code  =>  34 - First error code
 	34 - Horizontal vanes  =>  34 - Horizontal vanes
@@ -4314,6 +4746,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	35 - Current fan speed  =>  35 - Current fan speed
 	35 - Eco mode  =>  35 - Eco mode
 	35 - Errors  =>  35 - Errors
+	35 - External air temperature  =>  35 - External air temperature
 	35 - Fan speed  =>  35 - Fan speed
 	35 - First error code  =>  35 - First error code
 	35 - Horizontal vanes  =>  35 - Horizontal vanes
@@ -4334,6 +4767,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	36 - Current fan speed  =>  36 - Current fan speed
 	36 - Eco mode  =>  36 - Eco mode
 	36 - Errors  =>  36 - Errors
+	36 - External air temperature  =>  36 - External air temperature
 	36 - Fan speed  =>  36 - Fan speed
 	36 - First error code  =>  36 - First error code
 	36 - Horizontal vanes  =>  36 - Horizontal vanes
@@ -4354,6 +4788,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	37 - Current fan speed  =>  37 - Current fan speed
 	37 - Eco mode  =>  37 - Eco mode
 	37 - Errors  =>  37 - Errors
+	37 - External air temperature  =>  37 - External air temperature
 	37 - Fan speed  =>  37 - Fan speed
 	37 - First error code  =>  37 - First error code
 	37 - Horizontal vanes  =>  37 - Horizontal vanes
@@ -4374,6 +4809,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	38 - Current fan speed  =>  38 - Current fan speed
 	38 - Eco mode  =>  38 - Eco mode
 	38 - Errors  =>  38 - Errors
+	38 - External air temperature  =>  38 - External air temperature
 	38 - Fan speed  =>  38 - Fan speed
 	38 - First error code  =>  38 - First error code
 	38 - Horizontal vanes  =>  38 - Horizontal vanes
@@ -4394,6 +4830,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	39 - Current fan speed  =>  39 - Current fan speed
 	39 - Eco mode  =>  39 - Eco mode
 	39 - Errors  =>  39 - Errors
+	39 - External air temperature  =>  39 - External air temperature
 	39 - Fan speed  =>  39 - Fan speed
 	39 - First error code  =>  39 - First error code
 	39 - Horizontal vanes  =>  39 - Horizontal vanes
@@ -4414,6 +4851,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	4 - Current fan speed  =>  4 - Current fan speed
 	4 - Eco mode  =>  4 - Eco mode
 	4 - Errors  =>  4 - Errors
+	4 - External air temperature  =>  4 - External air temperature
 	4 - Fan speed  =>  4 - Fan speed
 	4 - First error code  =>  4 - First error code
 	4 - Horizontal vanes  =>  4 - Horizontal vanes
@@ -4434,6 +4872,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	40 - Current fan speed  =>  40 - Current fan speed
 	40 - Eco mode  =>  40 - Eco mode
 	40 - Errors  =>  40 - Errors
+	40 - External air temperature  =>  40 - External air temperature
 	40 - Fan speed  =>  40 - Fan speed
 	40 - First error code  =>  40 - First error code
 	40 - Horizontal vanes  =>  40 - Horizontal vanes
@@ -4454,6 +4893,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	41 - Current fan speed  =>  41 - Current fan speed
 	41 - Eco mode  =>  41 - Eco mode
 	41 - Errors  =>  41 - Errors
+	41 - External air temperature  =>  41 - External air temperature
 	41 - Fan speed  =>  41 - Fan speed
 	41 - First error code  =>  41 - First error code
 	41 - Horizontal vanes  =>  41 - Horizontal vanes
@@ -4474,6 +4914,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	42 - Current fan speed  =>  42 - Current fan speed
 	42 - Eco mode  =>  42 - Eco mode
 	42 - Errors  =>  42 - Errors
+	42 - External air temperature  =>  42 - External air temperature
 	42 - Fan speed  =>  42 - Fan speed
 	42 - First error code  =>  42 - First error code
 	42 - Horizontal vanes  =>  42 - Horizontal vanes
@@ -4494,6 +4935,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	43 - Current fan speed  =>  43 - Current fan speed
 	43 - Eco mode  =>  43 - Eco mode
 	43 - Errors  =>  43 - Errors
+	43 - External air temperature  =>  43 - External air temperature
 	43 - Fan speed  =>  43 - Fan speed
 	43 - First error code  =>  43 - First error code
 	43 - Horizontal vanes  =>  43 - Horizontal vanes
@@ -4514,6 +4956,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	44 - Current fan speed  =>  44 - Current fan speed
 	44 - Eco mode  =>  44 - Eco mode
 	44 - Errors  =>  44 - Errors
+	44 - External air temperature  =>  44 - External air temperature
 	44 - Fan speed  =>  44 - Fan speed
 	44 - First error code  =>  44 - First error code
 	44 - Horizontal vanes  =>  44 - Horizontal vanes
@@ -4534,6 +4977,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	45 - Current fan speed  =>  45 - Current fan speed
 	45 - Eco mode  =>  45 - Eco mode
 	45 - Errors  =>  45 - Errors
+	45 - External air temperature  =>  45 - External air temperature
 	45 - Fan speed  =>  45 - Fan speed
 	45 - First error code  =>  45 - First error code
 	45 - Horizontal vanes  =>  45 - Horizontal vanes
@@ -4554,6 +4998,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	46 - Current fan speed  =>  46 - Current fan speed
 	46 - Eco mode  =>  46 - Eco mode
 	46 - Errors  =>  46 - Errors
+	46 - External air temperature  =>  46 - External air temperature
 	46 - Fan speed  =>  46 - Fan speed
 	46 - First error code  =>  46 - First error code
 	46 - Horizontal vanes  =>  46 - Horizontal vanes
@@ -4574,6 +5019,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	47 - Current fan speed  =>  47 - Current fan speed
 	47 - Eco mode  =>  47 - Eco mode
 	47 - Errors  =>  47 - Errors
+	47 - External air temperature  =>  47 - External air temperature
 	47 - Fan speed  =>  47 - Fan speed
 	47 - First error code  =>  47 - First error code
 	47 - Horizontal vanes  =>  47 - Horizontal vanes
@@ -4594,6 +5040,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	48 - Current fan speed  =>  48 - Current fan speed
 	48 - Eco mode  =>  48 - Eco mode
 	48 - Errors  =>  48 - Errors
+	48 - External air temperature  =>  48 - External air temperature
 	48 - Fan speed  =>  48 - Fan speed
 	48 - First error code  =>  48 - First error code
 	48 - Horizontal vanes  =>  48 - Horizontal vanes
@@ -4614,6 +5061,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	49 - Current fan speed  =>  49 - Current fan speed
 	49 - Eco mode  =>  49 - Eco mode
 	49 - Errors  =>  49 - Errors
+	49 - External air temperature  =>  49 - External air temperature
 	49 - Fan speed  =>  49 - Fan speed
 	49 - First error code  =>  49 - First error code
 	49 - Horizontal vanes  =>  49 - Horizontal vanes
@@ -4634,6 +5082,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	5 - Current fan speed  =>  5 - Current fan speed
 	5 - Eco mode  =>  5 - Eco mode
 	5 - Errors  =>  5 - Errors
+	5 - External air temperature  =>  5 - External air temperature
 	5 - Fan speed  =>  5 - Fan speed
 	5 - First error code  =>  5 - First error code
 	5 - Horizontal vanes  =>  5 - Horizontal vanes
@@ -4654,6 +5103,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	50 - Current fan speed  =>  50 - Current fan speed
 	50 - Eco mode  =>  50 - Eco mode
 	50 - Errors  =>  50 - Errors
+	50 - External air temperature  =>  50 - External air temperature
 	50 - Fan speed  =>  50 - Fan speed
 	50 - First error code  =>  50 - First error code
 	50 - Horizontal vanes  =>  50 - Horizontal vanes
@@ -4674,6 +5124,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	51 - Current fan speed  =>  51 - Current fan speed
 	51 - Eco mode  =>  51 - Eco mode
 	51 - Errors  =>  51 - Errors
+	51 - External air temperature  =>  51 - External air temperature
 	51 - Fan speed  =>  51 - Fan speed
 	51 - First error code  =>  51 - First error code
 	51 - Horizontal vanes  =>  51 - Horizontal vanes
@@ -4694,6 +5145,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	52 - Current fan speed  =>  52 - Current fan speed
 	52 - Eco mode  =>  52 - Eco mode
 	52 - Errors  =>  52 - Errors
+	52 - External air temperature  =>  52 - External air temperature
 	52 - Fan speed  =>  52 - Fan speed
 	52 - First error code  =>  52 - First error code
 	52 - Horizontal vanes  =>  52 - Horizontal vanes
@@ -4714,6 +5166,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	53 - Current fan speed  =>  53 - Current fan speed
 	53 - Eco mode  =>  53 - Eco mode
 	53 - Errors  =>  53 - Errors
+	53 - External air temperature  =>  53 - External air temperature
 	53 - Fan speed  =>  53 - Fan speed
 	53 - First error code  =>  53 - First error code
 	53 - Horizontal vanes  =>  53 - Horizontal vanes
@@ -4734,6 +5187,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	54 - Current fan speed  =>  54 - Current fan speed
 	54 - Eco mode  =>  54 - Eco mode
 	54 - Errors  =>  54 - Errors
+	54 - External air temperature  =>  54 - External air temperature
 	54 - Fan speed  =>  54 - Fan speed
 	54 - First error code  =>  54 - First error code
 	54 - Horizontal vanes  =>  54 - Horizontal vanes
@@ -4754,6 +5208,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	55 - Current fan speed  =>  55 - Current fan speed
 	55 - Eco mode  =>  55 - Eco mode
 	55 - Errors  =>  55 - Errors
+	55 - External air temperature  =>  55 - External air temperature
 	55 - Fan speed  =>  55 - Fan speed
 	55 - First error code  =>  55 - First error code
 	55 - Horizontal vanes  =>  55 - Horizontal vanes
@@ -4774,6 +5229,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	56 - Current fan speed  =>  56 - Current fan speed
 	56 - Eco mode  =>  56 - Eco mode
 	56 - Errors  =>  56 - Errors
+	56 - External air temperature  =>  56 - External air temperature
 	56 - Fan speed  =>  56 - Fan speed
 	56 - First error code  =>  56 - First error code
 	56 - Horizontal vanes  =>  56 - Horizontal vanes
@@ -4794,6 +5250,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	57 - Current fan speed  =>  57 - Current fan speed
 	57 - Eco mode  =>  57 - Eco mode
 	57 - Errors  =>  57 - Errors
+	57 - External air temperature  =>  57 - External air temperature
 	57 - Fan speed  =>  57 - Fan speed
 	57 - First error code  =>  57 - First error code
 	57 - Horizontal vanes  =>  57 - Horizontal vanes
@@ -4814,6 +5271,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	58 - Current fan speed  =>  58 - Current fan speed
 	58 - Eco mode  =>  58 - Eco mode
 	58 - Errors  =>  58 - Errors
+	58 - External air temperature  =>  58 - External air temperature
 	58 - Fan speed  =>  58 - Fan speed
 	58 - First error code  =>  58 - First error code
 	58 - Horizontal vanes  =>  58 - Horizontal vanes
@@ -4834,6 +5292,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	59 - Current fan speed  =>  59 - Current fan speed
 	59 - Eco mode  =>  59 - Eco mode
 	59 - Errors  =>  59 - Errors
+	59 - External air temperature  =>  59 - External air temperature
 	59 - Fan speed  =>  59 - Fan speed
 	59 - First error code  =>  59 - First error code
 	59 - Horizontal vanes  =>  59 - Horizontal vanes
@@ -4854,6 +5313,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	6 - Current fan speed  =>  6 - Current fan speed
 	6 - Eco mode  =>  6 - Eco mode
 	6 - Errors  =>  6 - Errors
+	6 - External air temperature  =>  6 - External air temperature
 	6 - Fan speed  =>  6 - Fan speed
 	6 - First error code  =>  6 - First error code
 	6 - Horizontal vanes  =>  6 - Horizontal vanes
@@ -4874,6 +5334,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	60 - Current fan speed  =>  60 - Current fan speed
 	60 - Eco mode  =>  60 - Eco mode
 	60 - Errors  =>  60 - Errors
+	60 - External air temperature  =>  60 - External air temperature
 	60 - Fan speed  =>  60 - Fan speed
 	60 - First error code  =>  60 - First error code
 	60 - Horizontal vanes  =>  60 - Horizontal vanes
@@ -4894,6 +5355,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	61 - Current fan speed  =>  61 - Current fan speed
 	61 - Eco mode  =>  61 - Eco mode
 	61 - Errors  =>  61 - Errors
+	61 - External air temperature  =>  61 - External air temperature
 	61 - Fan speed  =>  61 - Fan speed
 	61 - First error code  =>  61 - First error code
 	61 - Horizontal vanes  =>  61 - Horizontal vanes
@@ -4914,6 +5376,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	62 - Current fan speed  =>  62 - Current fan speed
 	62 - Eco mode  =>  62 - Eco mode
 	62 - Errors  =>  62 - Errors
+	62 - External air temperature  =>  62 - External air temperature
 	62 - Fan speed  =>  62 - Fan speed
 	62 - First error code  =>  62 - First error code
 	62 - Horizontal vanes  =>  62 - Horizontal vanes
@@ -4934,6 +5397,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	63 - Current fan speed  =>  63 - Current fan speed
 	63 - Eco mode  =>  63 - Eco mode
 	63 - Errors  =>  63 - Errors
+	63 - External air temperature  =>  63 - External air temperature
 	63 - Fan speed  =>  63 - Fan speed
 	63 - First error code  =>  63 - First error code
 	63 - Horizontal vanes  =>  63 - Horizontal vanes
@@ -4954,6 +5418,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	7 - Current fan speed  =>  7 - Current fan speed
 	7 - Eco mode  =>  7 - Eco mode
 	7 - Errors  =>  7 - Errors
+	7 - External air temperature  =>  7 - External air temperature
 	7 - Fan speed  =>  7 - Fan speed
 	7 - First error code  =>  7 - First error code
 	7 - Horizontal vanes  =>  7 - Horizontal vanes
@@ -4974,6 +5439,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	8 - Current fan speed  =>  8 - Current fan speed
 	8 - Eco mode  =>  8 - Eco mode
 	8 - Errors  =>  8 - Errors
+	8 - External air temperature  =>  8 - External air temperature
 	8 - Fan speed  =>  8 - Fan speed
 	8 - First error code  =>  8 - First error code
 	8 - Horizontal vanes  =>  8 - Horizontal vanes
@@ -4994,6 +5460,7 @@ ONOKOM-AIR-MD-VRF-MB-B
 	9 - Current fan speed  =>  9 - Current fan speed
 	9 - Eco mode  =>  9 - Eco mode
 	9 - Errors  =>  9 - Errors
+	9 - External air temperature  =>  9 - External air temperature
 	9 - Fan speed  =>  9 - Fan speed
 	9 - First error code  =>  9 - First error code
 	9 - Horizontal vanes  =>  9 - Horizontal vanes
@@ -5021,6 +5488,33 @@ ONOKOM-AIR-ME-1-MB-B
 	AC connected  =>  AC connected
 	Active  =>  Active
 	Active mode  =>  Active mode
+	Error 1  =>  Error 1
+	Error 10  =>  Error 10
+	Error 11  =>  Error 11
+	Error 12  =>  Error 12
+	Error 13  =>  Error 13
+	Error 14  =>  Error 14
+	Error 15  =>  Error 15
+	Error 16  =>  Error 16
+	Error 17  =>  Error 17
+	Error 18  =>  Error 18
+	Error 19  =>  Error 19
+	Error 2  =>  Error 2
+	Error 20  =>  Error 20
+	Error 21  =>  Error 21
+	Error 22  =>  Error 22
+	Error 23  =>  Error 23
+	Error 24  =>  Error 24
+	Error 3  =>  Error 3
+	Error 4  =>  Error 4
+	Error 5  =>  Error 5
+	Error 6  =>  Error 6
+	Error 7  =>  Error 7
+	Error 8  =>  Error 8
+	Error 9  =>  Error 9
+	Error code  =>  Error code
+	Errors  =>  Errors
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -5043,6 +5537,7 @@ ONOKOM-AIR-ME-1-MB-B
 ONOKOM-AIR-MH-2-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -5060,11 +5555,41 @@ ONOKOM-AIR-MH-2-MB-B
 	Thermostat state  =>  Thermostat state
 	Uptime  =>  Uptime
 	Vanes swing  =>  Vanes swing
+ONOKOM-AIR-PN-1-MB-B
+	AC connected  =>  AC connected
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Defrosting  =>  Defrosting
+	Eco mode  =>  Eco mode
+	External air temperature  =>  External air temperature
+	FW Version  =>  FW Version
+	Fan speed  =>  Fan speed
+	Gentle wind  =>  Gentle wind
+	HW Version  =>  HW Version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	PROTO Version  =>  PROTO Version
+	Quiet mode  =>  Quiet mode
+	Reboot Device  =>  Reboot Device
+	Self cleaning  =>  Self cleaning
+	Serial  =>  Serial
+	Signature  =>  Signature
+	Smart fan speed  =>  Smart fan speed
+	Target temperature  =>  Target temperature
+	Temperature correction  =>  Temperature correction
+	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
+	Uptime  =>  Uptime
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 ONOKOM-AIR-TB-1-MB-B
 	AC connected  =>  AC connected
 	Active  =>  Active
 	Active mode  =>  Active mode
 	Eco mode  =>  Eco mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -5110,6 +5635,7 @@ ONOKOM-AIR-TCL-1-MB-B
 	Error 8  =>  Error 8
 	Error 9  =>  Error 9
 	Error code  =>  Error code
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	Gentle wind  =>  Gentle wind
@@ -5143,6 +5669,7 @@ ONOKOM-AIR-TCL-3-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
 	Eco mode  =>  Eco mode
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	HW Version  =>  HW Version
@@ -5208,6 +5735,7 @@ ONOKOM-AIR-TCL-6-MB-B
 	Error 8  =>  Error 8
 	Error 9  =>  Error 9
 	Error code  =>  Error code
+	External air temperature  =>  External air temperature
 	FW Version  =>  FW Version
 	Fan speed  =>  Fan speed
 	Gateway mode  =>  Gateway mode
