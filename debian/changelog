@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.260.2) stable; urgency=medium
+
+  * Clarify timeouts and register reading documentation
+
+ -- Alexander Kilpio <alexander.kilpio@wirenboard.com>  Wed, 22 Jul 2026 13:00:43 +0300
+
 wb-mqtt-serial (2.260.1) stable; urgency=medium
 
   * Fix write retry on a disconnected device
