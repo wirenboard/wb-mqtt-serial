@@ -53,6 +53,15 @@ public:
 
 private:
     ModbusExt::TEventConfirmationState EventState;
+    // Event-reading fairness state. It is persisted BETWEEN ReadEvents() sessions on
+    // purpose: a single session is bounded by the poll time and at low baud rates only
+    // fits a couple of reads - too few to reach the per-device cap on its own. Keeping
+    // the position and the streak across sessions lets the cap accumulate and the
+    // round-robin advance regardless of baud rate.
+    uint8_t MinSlaveId;    // startingSlaveId for the next EVENTS_REQUEST
+    uint8_t StreakSlaveId; // device the current consecutive-read streak belongs to (0 = none)
+    size_t StreakReads;    // length of the current streak
+    bool SkippedDevice;    // a device was excluded by the cap and may still have events
     size_t ReadErrors;
     size_t MaxReadErrors;
     bool ClearErrorsOnSuccessfulRead;
@@ -60,6 +69,8 @@ private:
     TRegsMap Regs;
     std::unordered_set<uint8_t> DevicesWithEnabledEvents;
 
+    // Restart event reading from the lowest slave id with an empty streak.
+    void ResetEventReadingPosition();
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
     void ClearReadErrors(TRegisterCallback callback);
     void ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback);

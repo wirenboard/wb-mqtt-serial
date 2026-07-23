@@ -217,10 +217,22 @@ public:
 };
 
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
-    : ReadErrors(0),
+    : MinSlaveId(0),
+      StreakSlaveId(0),
+      StreakReads(0),
+      SkippedDevice(false),
+      ReadErrors(0),
       MaxReadErrors(maxReadErrors),
       ClearErrorsOnSuccessfulRead(false)
 {}
+
+void TSerialClientEventsReader::ResetEventReadingPosition()
+{
+    MinSlaveId = 0;
+    StreakSlaveId = 0;
+    StreakReads = 0;
+    SkippedDevice = false;
+}
 
 void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback)
 {
@@ -247,64 +259,50 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
     } else {
         traits = std::make_unique<ModbusExt::TModbusRTUWithArbitrationTraits>();
     }
-    // Start each reading session from the lowest slave id. The minimal slave id is
-    // deliberately not persisted between sessions: otherwise a "flooding" device that
-    // keeps the session busy until the timeout would carry its monopoly over to the
-    // next session and starve devices with lower addresses.
-    uint8_t minSlaveId = 0;
-    // Number of events read in a row from streakSlaveId. When it reaches
-    // MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE the device is skipped. 0 is a safe
-    // sentinel: it is never a responder's slave id.
-    uint8_t streakSlaveId = 0;
-    size_t streakReads = 0;
-    // Set when a device was excluded from arbitration by the fairness cap. Such a
-    // device may still have pending events, so a NO_EVENTS response must not end the
-    // session: we have to wrap around and poll the skipped lower addresses again.
-    bool skippedDevice = false;
-
+    // MinSlaveId / StreakSlaveId / StreakReads / SkippedDevice are members and are
+    // carried over from the previous session - see the header for why.
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
                                        *traits,
                                        floor<milliseconds>(maxReadingTime - spentTime),
-                                       minSlaveId,
+                                       MinSlaveId,
                                        EventState,
                                        visitor))
             {
-                // No device with slave id >= minSlaveId has events.
-                if (!skippedDevice) {
-                    // minSlaveId was only ever advanced to responding devices, so every
-                    // device has already been given a chance. Nothing more to read.
+                // No device with slave id >= MinSlaveId has events.
+                if (!SkippedDevice) {
+                    // MinSlaveId was only ever advanced to responding devices, so every
+                    // device has already been given a chance and the bus is drained.
+                    // Restart from the lowest address next time.
+                    ResetEventReadingPosition();
                     EventState.Reset();
                     ClearReadErrors(registerCallback);
                     break;
                 }
                 // A device was skipped by the fairness cap and may still have events.
                 // Wrap around to give the lower addresses a chance to report them.
-                minSlaveId = 0;
-                streakSlaveId = 0;
-                streakReads = 0;
-                skippedDevice = false;
+                ResetEventReadingPosition();
                 continue;
             }
             ClearReadErrors(registerCallback);
             uint8_t slaveId = visitor.GetSlaveId();
-            if (slaveId == streakSlaveId) {
-                ++streakReads;
+            if (slaveId == StreakSlaveId) {
+                ++StreakReads;
             } else {
-                streakSlaveId = slaveId;
-                streakReads = 1;
+                StreakSlaveId = slaveId;
+                StreakReads = 1;
             }
-            if (streakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
-                // The device has monopolized the bus for too long. Exclude it from
+            if (StreakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
+                // The device has held the bus for the whole cap. Exclude it from
                 // arbitration so devices with a higher slave id can report events.
                 // If it is already the highest possible address, wrap around.
-                minSlaveId = (slaveId == 0xFF) ? 0 : static_cast<uint8_t>(slaveId + 1);
-                streakSlaveId = 0;
-                streakReads = 0;
-                skippedDevice = true;
+                MinSlaveId = (slaveId == 0xFF) ? 0 : static_cast<uint8_t>(slaveId + 1);
+                StreakSlaveId = 0;
+                StreakReads = 0;
+                SkippedDevice = true;
             } else {
-                minSlaveId = slaveId;
+                MinSlaveId = slaveId;
             }
         } catch (const TSerialDeviceException& ex) {
             ReadEventsFailed(ex.what(), registerCallback);
