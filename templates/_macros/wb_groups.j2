@@ -1,0 +1,120 @@
+{# Jinja-макросы для канонических групп шаблонов wb-mqtt-serial
+   (СТП 001-2025 изд.03, Приложение Б).
+
+   Подключается так:
+
+       {%- from "_macros/wb_groups.j2" import
+           group_general, group_hw_info, group_safety, group_outputs, group_inputs,
+           groups_for_input, group_translations_ru
+       -%}
+
+   Каждый макрос эмитит ОДИН JSON-объект (один элемент массива `groups`) без
+   хвостовой запятой; groups_for_input — несколько объектов, разделённых
+   запятыми. Запятая между объектами — ответственность вызывающего шаблона.
+-#}
+
+{%- macro group_general() -%}
+{
+                "title": "General",
+                "id": "g_general"
+            }
+{%- endmacro %}
+
+{%- macro group_hw_info() -%}
+{
+                "title": "HW Info",
+                "id": "g_hw_info"
+            }
+{%- endmacro %}
+
+{%- macro group_safety() -%}
+{
+                "title": "Safety Mode",
+                "id": "g_safety"
+            }
+{%- endmacro %}
+
+{%- macro group_outputs() -%}
+{
+                "title": "Outputs",
+                "id": "g_outputs"
+            }
+{%- endmacro %}
+
+{%- macro group_inputs() -%}
+{
+                "title": "Inputs",
+                "id": "g_inputs"
+            }
+{%- endmacro %}
+
+{#-
+   Полный набор групп для одного входа N в MR6C-подобных шаблонах:
+     g_in<N>                                  — корень входа (внутри g_inputs);
+     gg_in<N>_matrix_actions                  — действия для выходов;
+     gg_in<N>_press_params                    — параметры распознавания нажатий;
+     gg_in<N>_curtain<M>_button_actions × M   — действия кнопки для штор;
+     gg_in<N>_out<M>_button_actions × OUT     — действия кнопки для выходов;
+     gg_in<N>_channels                        — каналы входа (state, freq и пр.).
+
+   Параметры:
+     input_num       — номер входа (включая «нулевой» для глобальных настроек);
+     outputs_number  — количество выходов (для гнезд out_button_actions);
+     curtains_number — количество штор (для curtain_button_actions; 0 — пропустить).
+-#}
+{%- macro groups_for_input(input_num, outputs_number, curtains_number=0) -%}
+{
+                "title": "Input {{ input_num }}",
+                "id": "g_in{{ input_num }}",
+                "group": "g_inputs"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in{{ input_num }}_matrix_actions",
+                "group": "g_in{{ input_num }}"
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{ input_num }}_press_params",
+                "group": "g_in{{ input_num }}"
+            },
+            {%- for curtain_num in range(1, curtains_number + 1) %}
+            {
+                "title": "Curtain {{ curtain_num }} Actions",
+                "id": "gg_in{{ input_num }}_curtain{{ curtain_num }}_button_actions",
+                "group": "g_in{{ input_num }}"
+            },
+            {%- endfor %}
+            {%- for out_num in range(1, outputs_number + 1) %}
+            {
+                "title": "Output {{ out_num }} Actions",
+                "id": "gg_in{{ input_num }}_out{{ out_num }}_button_actions",
+                "group": "g_in{{ input_num }}"
+            },
+            {%- endfor %}
+            {
+                "title": "input{{ input_num }}_channels",
+                "id": "gg_in{{ input_num }}_channels",
+                "group": "g_in{{ input_num }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            }
+{%- endmacro %}
+
+{#- Translations -----------------------------------------------------------#}
+
+{#-
+   Эмитит пары "EN_title": "RU" для канонических корневых групп.
+   Без хвостовой запятой; запятая после макроса — на стороне вызова.
+-#}
+{%- macro group_translations_ru() -%}
+"General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Inputs": "Входы",
+                "Outputs": "Выходы",
+                "Safety Mode": "Безопасный режим"
+{%- endmacro %}

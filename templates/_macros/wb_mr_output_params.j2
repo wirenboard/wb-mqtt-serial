@@ -1,0 +1,234 @@
+{# Jinja-макросы для параметров (`parameters`) одного релейного выхода в
+   шаблонах семейства WB-MR.
+
+   Подключается так:
+
+       {%- from "_macros/wb_mr_output_params.j2" import
+           params_output_safety, params_output_delays, params_output_timer
+       -%}
+
+   Каждый макрос эмитит набор пар `"id": { ... }`, разделённых запятыми,
+   БЕЗ хвостовой запятой. Запятая между макросами — на стороне вызова.
+
+   Параметры адресов одинаковы в MR6C v2 и v3; отличаются только id и
+   группы параметра «безопасное состояние» (`safe_state` vs `safe_position`)
+   и его контейнер (`gg_outputs_safe_state` vs `g_outputs_safe_position`),
+   плюс id группы поведения в safety-режиме (`gg_safety_behaviour` vs
+   `g_safety_behaviour`). Это вынесено в параметры макроса.
+-#}
+
+{#-
+   Параметры безопасного режима для одного выхода:
+     safe_state/position    — состояние выхода в безопасном режиме (Off/On);
+     safety_behaviour       — выполнять ли переход в безопасное состояние;
+     safety_input_control   — блокировать ли управление с входов в SM.
+
+   Параметры макроса:
+     out_num                          — номер выхода;
+     safe_state_id                    — id параметра (v2: "out<N>_safe_state",
+                                        v3: "out<N>_safe_position");
+     safe_state_group                 — id группы для safe_state
+                                        (v2: "gg_outputs_safe_state",
+                                         v3: "g_outputs_safe_position");
+     safety_behaviour_group           — id группы для safety_behaviour
+                                        (v2: "gg_safety_behaviour",
+                                         v3: "g_safety_behaviour").
+-#}
+{%- macro params_output_safety(out_num, safe_state_id, safe_state_group, safety_behaviour_group) -%}
+{%- set curtain_num = (out_num + 1) // 2 -%}
+{%- set not_curtain = "isDefined(curtain" ~ curtain_num ~ "_mode)==0||curtain" ~ curtain_num ~ "_mode==0" %}
+            "out{{ out_num }}_{{ safe_state_id }}": {
+                "title": "Output {{ out_num }}",
+                "address": {{ 930 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["Off", "On"],
+                "order": {{ out_num }},
+                "group": "{{ safe_state_group }}",
+                "condition": "{{ not_curtain }}"
+            },
+            "out{{ out_num }}_safety_behaviour": {
+                "title": "Output {{ out_num }}",
+                "address": {{ 938 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't change output state",
+                    "Switch output to safety state"
+                ],
+                "order": {{ out_num }},
+                "group": "{{ safety_behaviour_group }}",
+                "condition": "{{ not_curtain }}"
+            },
+            "out{{ out_num }}_safety_input_control": {
+                "title": "Output {{ out_num }}",
+                "address": {{ 946 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ],
+                "order": {{ out_num }},
+                "group": "gg_safety_input_control",
+                "condition": "{{ not_curtain }}"
+            }
+{%- endmacro %}
+
+{#-
+   Защитные задержки одного выхода: startup_delay и restart_delay
+   (обе с fw 1.24.0). Restart дополнительно скрывается, если включен
+   режим timer-mode-selection.
+-#}
+{%- macro params_output_delays(out_num) -%}
+{%- set curtain_num = (out_num + 1) // 2 -%}
+{%- set not_curtain = "isDefined(curtain" ~ curtain_num ~ "_mode)==0||curtain" ~ curtain_num ~ "_mode==0" %}
+            "out{{ out_num }}_startup_delay_params": {
+                "title": "Output {{ out_num }}",
+                "address": {{ 1728 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "order": {{ out_num }},
+                "fw": "1.24.0",
+                "group": "gg_startup_delay_params",
+                "condition": "{{ not_curtain }}"
+            },
+            "out{{ out_num }}_restart_delay_params": {
+                "title": "Output {{ out_num }}",
+                "address": {{ 1736 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "order": {{ out_num }},
+                "fw": "1.24.0",
+                "group": "gg_restart_delay_params",
+                "condition": "({{ not_curtain }})&&(isDefined(out{{ out_num }}_timer_mode_selection)==0||out{{ out_num }}_timer_mode_selection==0)"
+            }
+{%- endmacro %}
+
+{#-
+   Параметры пользовательского таймера одного выхода (fw 1.25.0):
+     timer_mode_selection — выбор функции (Not Used / On Delay / Off Delay /
+                            On Pulse / Off Pulse / On/Off Cycle);
+     on_delay_params, off_delay_params, on_pulse_params, off_pulse_params,
+     cyclic_on_time_params, cyclic_off_time_params — настройки выбранной
+     функции; видны/активны по `condition` соответствующего режима.
+
+   Эмитит 7 параметров.
+-#}
+{%- macro params_output_timer(out_num) -%}
+{%- set curtain_num = (out_num + 1) // 2 -%}
+{%- set not_curtain = "isDefined(curtain" ~ curtain_num ~ "_mode)==0||curtain" ~ curtain_num ~ "_mode==0" %}
+            "out{{ out_num }}_timer_mode_selection": {
+                "title": "Function",
+                "address": {{ 1760 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5],
+                "enum_titles": [
+                    "Not Used",
+                    "On Delay",
+                    "Off Delay",
+                    "On Pulse",
+                    "Off Pulse",
+                    "On/Off Cycle"
+                ],
+                "order": {{ out_num }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "{{ not_curtain }}"
+            },
+            "out{{ out_num }}_on_delay_params": {
+                "title": "Timeout (s)",
+                "description": "on_delay_description",
+                "address": {{ 1768 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "order": {{ out_num + 1 }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "({{ not_curtain }})&&out{{ out_num }}_timer_mode_selection==1"
+            },
+            "out{{ out_num }}_off_delay_params": {
+                "title": "Timeout (s)",
+                "description": "off_delay_description",
+                "address": {{ 1776 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "order": {{ out_num + 1 }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "({{ not_curtain }})&&out{{ out_num }}_timer_mode_selection==2"
+            },
+            "out{{ out_num }}_on_pulse_params": {
+                "title": "Time (s)",
+                "description": "on_pulse_description",
+                "address": {{ 1784 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "order": {{ out_num + 1 }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "({{ not_curtain }})&&out{{ out_num }}_timer_mode_selection==3"
+            },
+            "out{{ out_num }}_off_pulse_params": {
+                "title": "Time (s)",
+                "description": "off_pulse_description",
+                "address": {{ 1792 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 6500,
+                "default": 3,
+                "order": {{ out_num + 1 }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "({{ not_curtain }})&&out{{ out_num }}_timer_mode_selection==4"
+            },
+            "out{{ out_num }}_cyclic_on_time_params": {
+                "title": "On Time (s)",
+                "description": "cyclic_on_time_description",
+                "address": {{ 1800 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 1,
+                "min": 1,
+                "max": 65000,
+                "default": 3,
+                "order": {{ out_num + 1 }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "({{ not_curtain }})&&out{{ out_num }}_timer_mode_selection==5"
+            },
+            "out{{ out_num }}_cyclic_off_time_params": {
+                "title": "Off Time (s)",
+                "description": "cyclic_off_time_description",
+                "address": {{ 1808 + out_num - 1 }},
+                "reg_type": "holding",
+                "scale": 1,
+                "min": 1,
+                "max": 65000,
+                "default": 3,
+                "order": {{ out_num + 2 }},
+                "fw": "1.25.0",
+                "group": "gg_timer_{{ out_num }}",
+                "condition": "({{ not_curtain }})&&out{{ out_num }}_timer_mode_selection==5"
+            }
+{%- endmacro %}
