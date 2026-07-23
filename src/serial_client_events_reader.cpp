@@ -257,6 +257,10 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
     // sentinel: it is never a responder's slave id.
     uint8_t streakSlaveId = 0;
     size_t streakReads = 0;
+    // Set when a device was excluded from arbitration by the fairness cap. Such a
+    // device may still have pending events, so a NO_EVENTS response must not end the
+    // session: we have to wrap around and poll the skipped lower addresses again.
+    bool skippedDevice = false;
 
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
@@ -268,17 +272,19 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                                        visitor))
             {
                 // No device with slave id >= minSlaveId has events.
-                if (minSlaveId == 0) {
-                    // The whole bus is quiet, nothing more to read in this session.
+                if (!skippedDevice) {
+                    // minSlaveId was only ever advanced to responding devices, so every
+                    // device has already been given a chance. Nothing more to read.
                     EventState.Reset();
                     ClearReadErrors(registerCallback);
                     break;
                 }
-                // Some lower-addressed devices were skipped by the fairness cap.
-                // Wrap around to give them a chance to report their events.
+                // A device was skipped by the fairness cap and may still have events.
+                // Wrap around to give the lower addresses a chance to report them.
                 minSlaveId = 0;
                 streakSlaveId = 0;
                 streakReads = 0;
+                skippedDevice = false;
                 continue;
             }
             ClearReadErrors(registerCallback);
@@ -296,6 +302,7 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                 minSlaveId = (slaveId == 0xFF) ? 0 : static_cast<uint8_t>(slaveId + 1);
                 streakSlaveId = 0;
                 streakReads = 0;
+                skippedDevice = true;
             } else {
                 minSlaveId = slaveId;
             }
