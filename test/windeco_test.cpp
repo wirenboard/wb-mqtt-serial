@@ -15,47 +15,25 @@ TEST(TWinDecoTest, ParsePositionResponse)
 {
     ASSERT_EQ(ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 2, 22}), 2);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 2, 21});
-                     },
-                     "Bad CRC"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 2, 21}); }, "Bad CRC"),
                  TSerialDeviceTransientErrorException);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, {2, 0, 0, 1, 1, 2, 22});
-                     },
-                     "Bad header"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, {2, 0, 0, 1, 1, 2, 22}); }, "Bad header"),
                  TSerialDeviceTransientErrorException);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, {1, 0, 0, 1, 2, 2, 27});
-                     },
-                     "Bad address"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, {1, 0, 0, 1, 2, 2, 27}); }, "Bad address"),
                  TSerialDeviceTransientErrorException);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 0xAA, 6});
-                     },
-                     "No limit setting"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 0xAA, 6}); }, "No limit setting"),
                  TSerialDeviceTransientErrorException);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 0xBB, 0x6C});
-                     },
-                     "Curtain obstacle somewhere"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 0xBB, 0x6C}); },
+                                   "Curtain obstacle somewhere"),
                  TSerialDeviceTransientErrorException);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 0xAB, 0x0C});
-                     },
-                     "Unknown position"),
-                 TSerialDeviceTransientErrorException);
+    ASSERT_THROW(
+        CheckExceptionMsg([]() { ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 0xAB, 0x0C}); }, "Unknown position"),
+        TSerialDeviceTransientErrorException);
 }
 
 TEST(TWinDecoTest, ParseStateResponse)
@@ -64,22 +42,10 @@ TEST(TWinDecoTest, ParseStateResponse)
     ASSERT_EQ(ParseStateResponse(1, 1, {1, 0, 0, 1, 1, 3, 28}), 3);
     ASSERT_EQ(ParseStateResponse(1, 1, {1, 0, 0, 1, 1, 4, 34}), 4);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParseStateResponse(1, 1, {1, 0, 0, 1, 1, 2, 21});
-                     },
-                     "Bad CRC"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParseStateResponse(1, 1, {1, 0, 0, 1, 1, 2, 21}); }, "Bad CRC"),
                  TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParseStateResponse(1, 1, {2, 0, 0, 1, 1, 2, 22});
-                     },
-                     "Bad header"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParseStateResponse(1, 1, {2, 0, 0, 1, 1, 2, 22}); }, "Bad header"),
                  TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParseStateResponse(1, 1, {1, 0, 0, 1, 2, 2, 27});
-                     },
-                     "Bad address"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParseStateResponse(1, 1, {1, 0, 0, 1, 2, 2, 27}); }, "Bad address"),
                  TSerialDeviceTransientErrorException);
 }

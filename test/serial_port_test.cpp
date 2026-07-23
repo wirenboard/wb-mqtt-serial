@@ -89,7 +89,7 @@ public:
         : TSerialPort(settings),
           Fixture(fixture),
           OtherEndPort(other_port),
-          FloodThread(OtherEndPort, std::chrono::milliseconds(3000)){};
+          FloodThread(OtherEndPort, std::chrono::milliseconds(3000)) {};
 
     void SkipNoise() override
     {
