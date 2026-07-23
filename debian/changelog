@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.260.3) stable; urgency=medium
+
+  * Fix clang-format, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 23 Jul 2026 14:20:00 +0400
+
 wb-mqtt-serial (2.260.2) stable; urgency=medium
 
   * Clarify timeouts and register reading documentation

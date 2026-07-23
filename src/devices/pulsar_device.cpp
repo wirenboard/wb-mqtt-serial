@@ -37,7 +37,7 @@ uint16_t TPulsarDevice::CalculateCRC16(const uint8_t* buffer, size_t size)
     for (; byte_cnt > 0; byte_cnt--) {
         w = (uint16_t)(w ^ (uint16_t)(*ptrByte++));
         for (shift_cnt = 0; shift_cnt < 8; shift_cnt++) {
-            f = (uint8_t)((w)&0x01);
+            f = (uint8_t)((w) & 0x01);
             w >>= 1;
             if (f)
                 w = (uint16_t)(w ^ 0xa001);
