@@ -13,10 +13,6 @@ namespace
 {
     const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
 
-    // A device with a high event rate must not be able to monopolize the bus.
-    // After this many events read in a row from the same device it is excluded from
-    // arbitration (by raising the request's minimal slave id) to let other devices
-    // report their events.
     const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 5;
 
     std::string EventTypeToString(uint8_t eventType)
@@ -259,8 +255,6 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
     } else {
         traits = std::make_unique<ModbusExt::TModbusRTUWithArbitrationTraits>();
     }
-    // MinSlaveId / StreakSlaveId / StreakReads / SkippedDevice are members and are
-    // carried over from the previous session - see the header for why.
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
@@ -270,18 +264,13 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                                        EventState,
                                        visitor))
             {
-                // No device with slave id >= MinSlaveId has events.
+                // Stop if nothing was skipped, otherwise wrap around to re-poll the skipped devices.
                 if (!SkippedDevice) {
-                    // MinSlaveId was only ever advanced to responding devices, so every
-                    // device has already been given a chance and the bus is drained.
-                    // Restart from the lowest address next time.
                     ResetEventReadingPosition();
                     EventState.Reset();
                     ClearReadErrors(registerCallback);
                     break;
                 }
-                // A device was skipped by the fairness cap and may still have events.
-                // Wrap around to give the lower addresses a chance to report them.
                 ResetEventReadingPosition();
                 continue;
             }
@@ -294,9 +283,6 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                 StreakReads = 1;
             }
             if (StreakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
-                // The device has held the bus for the whole cap. Exclude it from
-                // arbitration so devices with a higher slave id can report events.
-                // If it is already the highest possible address, wrap around.
                 MinSlaveId = (slaveId == 0xFF) ? 0 : static_cast<uint8_t>(slaveId + 1);
                 StreakSlaveId = 0;
                 StreakReads = 0;
