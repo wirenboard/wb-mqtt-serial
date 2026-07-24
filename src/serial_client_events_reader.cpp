@@ -17,7 +17,7 @@ namespace
     // After this many events read in a row from the same device it is excluded from
     // arbitration (by raising the request's minimal slave id) to let other devices
     // report their events.
-    const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 3;
+    const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 5;
 
     std::string EventTypeToString(uint8_t eventType)
     {
