@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.260.4) stable; urgency=medium
+
+  * Regenerate config if the existing one is empty
+
+ -- Vladimir Zuevskiy <vladimir.zuevskiy@wirenboard.com>  Fri, 24 Jul 2026 11:45:31 +0300
+
 wb-mqtt-serial (2.260.3) stable; urgency=medium
 
   * Fix clang-format, no functional changes
