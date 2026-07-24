@@ -287,15 +287,15 @@ public:
     std::vector<int> HoldingEventResponse(uint8_t flag, uint16_t addr, uint16_t value)
     {
         return {
-            0x46,               // function code
-            0x11,               // subcommand: has events
-            flag,               // confirmation flag
-            0x01,               // event count
-            0x06,               // events data length
-            0x02,               // event data size
-            0x03,               // event type: holding
-            (addr >> 8) & 0xFF, // event id (register address) Hi
-            addr & 0xFF,        // event id Lo
+            0x46,                // function code
+            0x11,                // subcommand: has events
+            flag,                // confirmation flag
+            0x01,                // event count
+            0x06,                // events data length
+            0x02,                // event data size
+            0x03,                // event type: holding
+            (addr >> 8) & 0xFF,  // event id (register address) Hi
+            addr & 0xFF,         // event id Lo
             (value >> 8) & 0xFF, // value Hi
             value & 0xFF         // value Lo
         };
