@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.260.4) stable; urgency=medium
+wb-mqtt-serial (2.260.5) stable; urgency=medium
 
   * Fix endless fast modbus events reading from the flooding device
 
- -- Maxim Toropov <maxim.toropov@wirenboard.com>  Fri, 24 Jul 2026 15:45:00 +0300
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Mon, 27 Jul 2026 12:35:00 +0300
+
+wb-mqtt-serial (2.260.4) stable; urgency=medium
+
+  * Fix clang-tidy, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 27 Jul 2026 10:20:00 +0400
 
 wb-mqtt-serial (2.260.3) stable; urgency=medium
 
