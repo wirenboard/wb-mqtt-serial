@@ -58,7 +58,7 @@ Sleep(335)
 414020: Cycle
 Sleep(335)
 EnqueueEventsExchange()
->> FD 46 10 00 F8 01 00 78 CB
+>> FD 46 10 00 F8 00 00 79 5B
 << FD 46 12 52 5D
 Sleep(335)
 474690: Cycle end

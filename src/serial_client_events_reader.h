@@ -52,10 +52,9 @@ public:
     bool HasDevicesWithEnabledEvents() const;
 
 private:
+    uint8_t StartSlaveId;
+    size_t ConsecutiveReadsFromSameSlave;
     ModbusExt::TEventConfirmationState EventState;
-    uint8_t MinSlaveId;
-    size_t StreakReads;
-    bool SkippedDevice;
     size_t ReadErrors;
     size_t MaxReadErrors;
     bool ClearErrorsOnSuccessfulRead;
@@ -63,7 +62,6 @@ private:
     TRegsMap Regs;
     std::unordered_set<uint8_t> DevicesWithEnabledEvents;
 
-    void ResetEventReadingPosition();
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
     void ClearReadErrors(TRegisterCallback callback);
     void ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback);

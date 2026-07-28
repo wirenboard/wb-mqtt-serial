@@ -212,20 +212,12 @@ public:
 };
 
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
-    : MinSlaveId(0),
-      StreakReads(0),
-      SkippedDevice(false),
+    : StartSlaveId(0),
+      ConsecutiveReadsFromSameSlave(0),
       ReadErrors(0),
       MaxReadErrors(maxReadErrors),
       ClearErrorsOnSuccessfulRead(false)
 {}
-
-void TSerialClientEventsReader::ResetEventReadingPosition()
-{
-    MinSlaveId = 0;
-    StreakReads = 0;
-    SkippedDevice = false;
-}
 
 void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback)
 {
@@ -257,33 +249,30 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
             if (!ModbusExt::ReadEvents(port,
                                        *traits,
                                        floor<milliseconds>(maxReadingTime - spentTime),
-                                       MinSlaveId,
+                                       StartSlaveId,
                                        EventState,
                                        visitor))
             {
-                // Stop if nothing was skipped, otherwise wrap around to re-poll the skipped devices.
-                const bool skipped = SkippedDevice;
-                ResetEventReadingPosition();
-                if (!skipped) {
-                    EventState.Reset();
-                    ClearReadErrors(registerCallback);
-                    break;
-                }
-                continue;
+                StartSlaveId = 0;
+                ConsecutiveReadsFromSameSlave = 0;
+                EventState.Reset();
+                ClearReadErrors(registerCallback);
+                break;
             }
             ClearReadErrors(registerCallback);
             auto slaveId = visitor.GetSlaveId();
-            if (slaveId == MinSlaveId) {
-                ++StreakReads;
+            if (slaveId == StartSlaveId) {
+                ++ConsecutiveReadsFromSameSlave;
             } else {
-                StreakReads = 1;
+                ConsecutiveReadsFromSameSlave = 1;
             }
-            if (StreakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
-                MinSlaveId = static_cast<uint8_t>(slaveId + 1);
-                StreakReads = 0;
-                SkippedDevice = true;
+            if (ConsecutiveReadsFromSameSlave >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
+                // The device keeps flooding events; exclude it from arbitration so the rest
+                // of the bus gets served. It is polled again on the next reading session.
+                StartSlaveId = static_cast<uint8_t>(slaveId + 1);
+                ConsecutiveReadsFromSameSlave = 0;
             } else {
-                MinSlaveId = slaveId;
+                StartSlaveId = slaveId;
             }
         } catch (const TSerialDeviceException& ex) {
             ReadEventsFailed(ex.what(), registerCallback);

@@ -260,8 +260,8 @@ public:
     }
 
     // Full control over an EVENTS_REQUEST (0x46/0x10): explicit min_slave and confirmation
-    // state in the request plus an arbitrary response. Used to drive the fairness / read-cap
-    // logic that the simpler EnqueueReadEvents helpers cannot express.
+    // state in the request plus an arbitrary response. Used to drive the read-cap logic that
+    // the simpler EnqueueReadEvents helpers cannot express.
     void EnqueueEventsExchange(microseconds readTime,
                                uint8_t minSlave,
                                uint8_t confirmSlave,
@@ -1041,8 +1041,8 @@ TEST_F(TPollTest, EventsCapLimitsConsecutiveReadsFromSameDevice)
 {
     // A device that always has events must not monopolize the event bus.
     // After MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE (5) reads in a row from the same
-    // device the master must exclude it from arbitration by raising min_slave to
-    // slaveId + 1, then wrap back to 0 on NO_EVENTS.
+    // device the master excludes it from arbitration by raising min_slave to
+    // slaveId + 1. The device is polled again from the next reading session.
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
@@ -1064,10 +1064,9 @@ TEST_F(TPollTest, EventsCapLimitsConsecutiveReadsFromSameDevice)
     EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
     EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
     EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
-    // Cap reached: device 1 is excluded, min_slave becomes 2
+    // Cap reached: device 1 is excluded, min_slave becomes 2 (device 1 is still confirmed).
+    // NO_EVENTS ends the session; the next session starts again from min_slave 0.
     EnqueueEventsExchange(4ms, 2, 1, 0, NoEventsResponse(), 0xFD);
-    // The skipped device may still have events, so NO_EVENTS wraps back to min_slave 0
-    EnqueueEventsExchange(4ms, 0, 1, 0, NoEventsResponse(), 0xFD);
     Cycle(serialClient, lastAccessedDevice);
 }
 
@@ -1103,12 +1102,12 @@ TEST_F(TPollTest, EventsCapPersistsBetweenReadingSessions)
     EnqueueEventsExchange(60ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
     Cycle(serialClient, lastAccessedDevice);
 
-    // Session 3: the fifth read reaches the cap -> skip to min_slave 2 -> NO_EVENTS wraps to 0
+    // Session 3: the fifth read reaches the cap -> skip to min_slave 2 -> NO_EVENTS ends the session
     EnqueueEventsExchange(60ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
     EnqueueEventsExchange(60ms, 2, 1, 0, NoEventsResponse(), 0xFD);
     Cycle(serialClient, lastAccessedDevice);
 
     // Session 4: back to min_slave 0, the bus is now quiet
-    EnqueueEventsExchange(60ms, 0, 1, 0, NoEventsResponse(), 0xFD);
+    EnqueueEventsExchange(60ms, 0, 0, 0, NoEventsResponse(), 0xFD);
     Cycle(serialClient, lastAccessedDevice);
 }
