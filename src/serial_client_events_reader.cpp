@@ -12,6 +12,7 @@ using namespace std::chrono;
 namespace
 {
     const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
+    const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 5;
 
     std::string EventTypeToString(uint8_t eventType)
     {
@@ -211,7 +212,8 @@ public:
 };
 
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
-    : LastAccessedSlaveId(0),
+    : StartSlaveId(0),
+      ConsecutiveReadsFromSameSlave(0),
       ReadErrors(0),
       MaxReadErrors(maxReadErrors),
       ClearErrorsOnSuccessfulRead(false)
@@ -247,18 +249,31 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
             if (!ModbusExt::ReadEvents(port,
                                        *traits,
                                        floor<milliseconds>(maxReadingTime - spentTime),
-                                       LastAccessedSlaveId,
+                                       StartSlaveId,
                                        EventState,
                                        visitor))
             {
-                LastAccessedSlaveId = 0;
+                StartSlaveId = 0;
+                ConsecutiveReadsFromSameSlave = 0;
                 EventState.Reset();
                 ClearReadErrors(registerCallback);
                 break;
             }
-            // TODO: Limit reads from same slaveId
-            LastAccessedSlaveId = visitor.GetSlaveId();
             ClearReadErrors(registerCallback);
+            auto slaveId = visitor.GetSlaveId();
+            if (slaveId == StartSlaveId) {
+                ++ConsecutiveReadsFromSameSlave;
+            } else {
+                ConsecutiveReadsFromSameSlave = 1;
+            }
+            if (ConsecutiveReadsFromSameSlave >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
+                // The device keeps flooding events; exclude it from arbitration so the rest
+                // of the bus gets served. It is polled again on the next reading session.
+                StartSlaveId = static_cast<uint8_t>(slaveId + 1);
+                ConsecutiveReadsFromSameSlave = 0;
+            } else {
+                StartSlaveId = slaveId;
+            }
         } catch (const TSerialDeviceException& ex) {
             ReadEventsFailed(ex.what(), registerCallback);
         } catch (const Modbus::TErrorBase& ex) {
