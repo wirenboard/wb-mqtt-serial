@@ -12,7 +12,6 @@ using namespace std::chrono;
 namespace
 {
     const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
-
     const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 5;
 
     std::string EventTypeToString(uint8_t eventType)
@@ -265,17 +264,17 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                                        visitor))
             {
                 // Stop if nothing was skipped, otherwise wrap around to re-poll the skipped devices.
-                if (!SkippedDevice) {
-                    ResetEventReadingPosition();
+                const bool skipped = SkippedDevice;
+                ResetEventReadingPosition();
+                if (!skipped) {
                     EventState.Reset();
                     ClearReadErrors(registerCallback);
                     break;
                 }
-                ResetEventReadingPosition();
                 continue;
             }
             ClearReadErrors(registerCallback);
-            uint8_t slaveId = visitor.GetSlaveId();
+            auto slaveId = visitor.GetSlaveId();
             if (slaveId == StreakSlaveId) {
                 ++StreakReads;
             } else {
@@ -283,7 +282,7 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                 StreakReads = 1;
             }
             if (StreakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
-                MinSlaveId = (slaveId == 0xFF) ? 0 : static_cast<uint8_t>(slaveId + 1);
+                MinSlaveId = static_cast<uint8_t>(slaveId + 1);
                 StreakSlaveId = 0;
                 StreakReads = 0;
                 SkippedDevice = true;
