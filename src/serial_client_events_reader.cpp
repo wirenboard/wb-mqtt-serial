@@ -213,7 +213,6 @@ public:
 
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
     : MinSlaveId(0),
-      StreakSlaveId(0),
       StreakReads(0),
       SkippedDevice(false),
       ReadErrors(0),
@@ -224,7 +223,6 @@ TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
 void TSerialClientEventsReader::ResetEventReadingPosition()
 {
     MinSlaveId = 0;
-    StreakSlaveId = 0;
     StreakReads = 0;
     SkippedDevice = false;
 }
@@ -275,15 +273,13 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
             }
             ClearReadErrors(registerCallback);
             auto slaveId = visitor.GetSlaveId();
-            if (slaveId == StreakSlaveId) {
+            if (slaveId == MinSlaveId) {
                 ++StreakReads;
             } else {
-                StreakSlaveId = slaveId;
                 StreakReads = 1;
             }
             if (StreakReads >= MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE) {
                 MinSlaveId = static_cast<uint8_t>(slaveId + 1);
-                StreakSlaveId = 0;
                 StreakReads = 0;
                 SkippedDevice = true;
             } else {

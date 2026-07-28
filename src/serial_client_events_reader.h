@@ -54,7 +54,6 @@ public:
 private:
     ModbusExt::TEventConfirmationState EventState;
     uint8_t MinSlaveId;
-    uint8_t StreakSlaveId;
     size_t StreakReads;
     bool SkippedDevice;
     size_t ReadErrors;
