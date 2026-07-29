@@ -3,7 +3,7 @@
 {% set device_type = device_type | default("WB-MCM8HV") -%}
 {% set group = group | default("g-wb") -%}
 {% set device_name = device_name | default("WB-MCM8HV") -%}
-{% set device_id = device_id | default("wb_mcm8hv") -%}
+{% set device_id = device_id | default("wb-mcm8hv") -%}
 {% set has_signature = has_signature | default(true) -%}
 
 {% set INPUTS_NUMBER = 8 -%}
@@ -29,16 +29,16 @@
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Input {{in_num}}",
+                "title": "g_in{{in_num}}",
                 "id": "g_in{{in_num}}"
             },
             {
-                "title": "Press Parameters",
+                "title": "gg_press_params",
                 "id": "gg_in{{in_num}}_press_params",
                 "group": "g_in{{in_num}}"
             },
             {
-                "title": "input{{in_num}}_channels",
+                "title": "gg_channels",
                 "id": "gg_in{{in_num}}_channels",
                 "group": "g_in{{in_num}}",
                 "ui_options": {
@@ -49,11 +49,11 @@
             },
             {% endfor -%}
             {
-                "title": "General",
+                "title": "g_general",
                 "id": "g_general"
             },
             {
-                "title": "HW Info",
+                "title": "g_hw_info",
                 "id": "g_hw_info"
             }
         ],
@@ -95,7 +95,7 @@
             },
             {% endfor -%}
             "baud_rate": {
-                "title": "Baud Rate",
+                "title": "baud_rate_title",
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
@@ -116,8 +116,7 @@
         "channels": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "name": "Input {{in_num}}",
-                "id": "di_{{in_num}}",
+                "name": "di_{{in_num}}",
                 "reg_type": "discrete",
                 "address": {{in_num - 1}},
                 "type": "switch",
@@ -125,8 +124,7 @@
                 "group": "gg_in{{in_num}}_channels"
             },
             {
-                "name": "Input {{in_num}} Counter",
-                "id": "count_in{{in_num}}",
+                "name": "count_{{in_num}}",
                 "reg_type": "input",
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
@@ -134,32 +132,28 @@
                 "group": "gg_in{{in_num}}_channels"
             },
             {
-                "name": "Input {{in_num}} Single Press Counter",
-                "id": "count_single_in{{in_num}}",
+                "name": "count_single_{{in_num}}",
                 "reg_type": "press_counter",
                 "address": {{464 + in_num - 1}},
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
-                "name": "Input {{in_num}} Long Press Counter",
-                "id": "count_long_in{{in_num}}",
+                "name": "count_long_{{in_num}}",
                 "reg_type": "press_counter",
                 "address": {{480 + in_num - 1}},
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
-                "name": "Input {{in_num}} Double Press Counter",
-                "id": "count_double_in{{in_num}}",
+                "name": "count_double_{{in_num}}",
                 "reg_type": "press_counter",
                 "address": {{496 + in_num - 1}},
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
-                "name": "Input {{in_num}} Shortlong Press Counter",
-                "id": "count_shortlong_in{{in_num}}",
+                "name": "count_shortlong_{{in_num}}",
                 "reg_type": "press_counter",
                 "address": {{512 + in_num - 1}},
                 "sporadic": true,
@@ -167,8 +161,7 @@
             },
             {% endfor -%}
             {
-                "name": "Bit mask of input states",
-                "id": "input_states_mask",
+                "name": "state_inputs_mask",
                 "reg_type": "input",
                 "address": 8,
                 "sporadic": true,
@@ -176,16 +169,14 @@
                 "group": "g_general"
             },
             {
-                "name": "Reset All Counters",
-                "id": "cmd_reset_counts",
+                "name": "cmd_reset_counters",
                 "reg_type": "holding",
                 "address": 100,
                 "type": "pushbutton",
                 "group": "g_general"
             },
             {
-                "name": "Serial Number",
-                "id": "sn",
+                "name": "sn",
                 "reg_type": "input",
                 "address": 270,
                 "type": "text",
@@ -193,19 +184,18 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "HW Batch Number",
-                "id": "hw_batch",
+                "name": "hw_batch",
                 "type": "text",
                 "reg_type": "input",
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
+                "fw": "1.8.0",
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "FW Version",
-                "id": "fw",
+                "name": "fw",
                 "reg_type": "input",
                 "address": 250,
                 "type": "text",
@@ -215,8 +205,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Supply Voltage",
-                "id": "v_vin",
+                "name": "v_vin",
                 "reg_type": "input",
                 "address": 121,
                 "units": "V",
@@ -225,8 +214,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Uptime",
-                "id": "uptime",
+                "name": "uptime",
                 "reg_type": "input",
                 "address": 104,
                 "format": "u32",
@@ -235,8 +223,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Min Supply Voltage Since Startup",
-                "id": "v_min_vin",
+                "name": "v_min_vin",
                 "reg_type": "input",
                 "address": 122,
                 "scale": 0.001,
@@ -245,8 +232,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "MCU Temperature",
-                "id": "t_mcu",
+                "name": "t_mcu",
                 "reg_type": "input",
                 "address": 124,
                 "format": "s16",
@@ -256,8 +242,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "MCU Voltage",
-                "id": "v_mcu",
+                "name": "v_mcu",
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
@@ -269,6 +254,16 @@
         "translations": {
             "en": {
                 "template_title": "{{ title_en }}",
+
+                "g_general": "General",
+                "g_hw_info": "HW Info",
+                "gg_press_params": "Press Parameters",
+                "gg_channels": "Channels",
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "g_in{{in_num}}": "Input {{in_num}}",
+                {% endfor -%}
+
+                "baud_rate_title": "Baud Rate",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
@@ -277,23 +272,40 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "di_{{in_num}}": "Input {{in_num}}",
+                "count_{{in_num}}": "Input {{in_num}} Counter",
+                "count_single_{{in_num}}": "Input {{in_num}} Single Press Counter",
+                "count_long_{{in_num}}": "Input {{in_num}} Long Press Counter",
+                "count_double_{{in_num}}": "Input {{in_num}} Double Press Counter",
+                "count_shortlong_{{in_num}}": "Input {{in_num}} Shortlong Press Counter",
+                {% endfor -%}
+
+                "state_inputs_mask": "Bit Mask of Input States",
+                "cmd_reset_counters": "Reset All Counters",
+                "sn": "Serial Number",
+                "hw_batch": "HW Batch Number",
+                "fw": "Firmware Version",
+                "v_vin": "Supply Voltage",
+                "uptime": "Uptime",
+                "v_min_vin": "Min Supply Voltage Since Startup",
+                "t_mcu": "MCU Temperature",
+                "v_mcu": "MCU Voltage"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
+
+                "g_general": "Общее",
+                "g_hw_info": "Данные модуля",
+                "gg_press_params": "Параметры нажатий",
+                "gg_channels": "Каналы",
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
-                "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} Counter": "Вход {{in_num}}: счетчик замыканий",
-                "Input {{in_num}} Single Press Counter": "Вход {{in_num}}: счетчик одиночных нажатий",
-                "Input {{in_num}} Long Press Counter": "Вход {{in_num}}: счетчик длинных нажатий",
-                "Input {{in_num}} Double Press Counter": "Вход {{in_num}}: счетчик двойных нажатий",
-                "Input {{in_num}} Shortlong Press Counter": "Вход {{in_num}}: счетчик коротких, а затем длинных нажатий",
+                "g_in{{in_num}}": "Вход {{in_num}}",
                 {% endfor -%}
 
-                "General": "Общее",
-                "HW Info": "Данные модуля",
-                "Press Parameters": "Параметры нажатий",
-                "Baud Rate": "Скорость обмена",
+                "baud_rate_title": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
@@ -303,16 +315,26 @@
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
-                "Bit mask of input states": "Битовая маска состояний входов",
-                "Reset All Counters": "Сбросить все счетчики",
-                "Serial Number": "Серийный номер",
-                "HW Batch Number": "Номер партии",
-                "FW Version": "Версия прошивки",
-                "Supply Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения",
-                "Min Supply Voltage Since Startup": "Мин. напряжение питания с момента включения",
-                "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "di_{{in_num}}": "Вход {{in_num}}",
+                "count_{{in_num}}": "Вход {{in_num}}: счетчик замыканий",
+                "count_single_{{in_num}}": "Вход {{in_num}}: счетчик одиночных нажатий",
+                "count_long_{{in_num}}": "Вход {{in_num}}: счетчик длинных нажатий",
+                "count_double_{{in_num}}": "Вход {{in_num}}: счетчик двойных нажатий",
+                "count_shortlong_{{in_num}}": "Вход {{in_num}}: счетчик коротких, а затем длинных нажатий",
+                {% endfor -%}
+
+                "state_inputs_mask": "Битовая маска состояний входов",
+                "cmd_reset_counters": "Сбросить все счетчики",
+                "sn": "Серийный номер",
+                "hw_batch": "Номер партии",
+                "fw": "Версия прошивки",
+                "v_vin": "Напряжение питания",
+                "uptime": "Время работы с момента включения",
+                "v_min_vin": "Мин. напряжение питания с момента включения",
+                "t_mcu": "Температура МК",
+                "v_mcu": "Напряжение питания МК"
             }
         }
     }
