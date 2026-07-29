@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.261.1) stable; urgency=medium
+
+  * Regenerate config if the existing one is empty
+
+ -- Vladimir Zuevskiy <vladimir.zuevskiy@wirenboard.com>  Fri, 24 Jul 2026 11:45:31 +0300
+
 wb-mqtt-serial (2.261.0) stable; urgency=medium
 
   * Fix endless fast modbus events reading from the flooding device

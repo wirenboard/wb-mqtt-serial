@@ -2,7 +2,7 @@
 
 CONFFILE=/etc/wb-mqtt-serial.conf
 
-[ -f "$CONFFILE" ] && exit 0
+[ -s "$CONFFILE" ] && exit 0
 
 . /usr/lib/wb-utils/wb_env.sh
 
