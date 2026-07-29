@@ -176,3 +176,16 @@ TEST_F(TDeviceTemplatesTest, AlarmControlType)
     templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
     EXPECT_NO_THROW(templateMap.GetTemplate("alarm_type_test")->GetTemplate());
 }
+
+// Reloading a file whose device type is defined only in that file must not access
+// the emptied type array before the reloaded template is inserted
+TEST_F(TDeviceTemplatesTest, UpdateTemplateWithUniqueDeviceType)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    auto path = TLoggedFixture::GetDataFilePath("device-templates/config-msu34.json");
+    std::vector<std::string> updatedTypes;
+    ASSERT_NO_THROW(updatedTypes = templateMap.UpdateTemplate(path));
+    EXPECT_EQ(std::vector<std::string>{"MSU34"}, updatedTypes);
+    EXPECT_EQ(path, templateMap.GetTemplate("MSU34")->GetFilePath());
+}

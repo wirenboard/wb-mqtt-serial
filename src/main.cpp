@@ -24,6 +24,7 @@
 #include "rpc/rpc_device_handler.h"
 #include "rpc/rpc_fw_update_handler.h"
 #include "rpc/rpc_port_handler.h"
+#include "rpc/rpc_templates_handler.h"
 
 #define STR(x) #x
 #define XSTR(x) STR(x)
@@ -59,6 +60,10 @@ const auto RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-probe-request.schema.json";
 const auto RPC_DEVICE_SET_POLL_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-set-poll-request.schema.json";
+const auto RPC_TEMPLATES_UPLOAD_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-templates-upload-request.schema.json";
+const auto RPC_TEMPLATES_DELETE_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-templates-delete-request.schema.json";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
@@ -119,7 +124,8 @@ namespace
         auto commonDeviceSchema =
             make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH));
         auto templates = make_shared<TTemplateMap>(
-            LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *commonDeviceSchema));
+            LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *commonDeviceSchema),
+            USER_TEMPLATES_DIR);
         templates->AddTemplatesDir(TEMPLATES_DIR);
         templates->AddTemplatesDir(USER_TEMPLATES_DIR);
         return {commonDeviceSchema, templates};
@@ -289,13 +295,22 @@ int main(int argc, char* argv[])
 
         auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
 
+        auto groupTranslations = WBMQTT::JSON::Parse(DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH);
         TRPCConfigHandler rpcConfigHandler(configFilename,
                                            portsSchema,
                                            templates,
                                            confedSchemasMap,
                                            protocolSchemasMap,
-                                           WBMQTT::JSON::Parse(DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH),
+                                           groupTranslations,
                                            rpcServer);
+        TRPCTemplatesHandler rpcTemplatesHandler(USER_TEMPLATES_DIR,
+                                                 configFilename,
+                                                 templates,
+                                                 confedSchemasMap,
+                                                 groupTranslations,
+                                                 RPC_TEMPLATES_UPLOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                 RPC_TEMPLATES_DELETE_REQUEST_SCHEMA_FULL_FILE_PATH);
+        RegisterTemplatesRpcHandlers(rpcTemplatesHandler, rpcServer);
 
         PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
         PHandlerConfig handlerConfig;

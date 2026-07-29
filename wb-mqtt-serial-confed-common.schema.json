@@ -552,12 +552,7 @@
         "enum": {
           "title": "List of values",
           "type": "array",
-          "items": {
-            "oneOf": [
-              { "type": "string" },
-              { "type": "number" }
-            ]
-          },
+          "items": { "type": "string" },
           "propertyOrder": 27
         },
         "enum_titles": {

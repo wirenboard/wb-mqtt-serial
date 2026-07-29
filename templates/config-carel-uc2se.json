@@ -86,7 +86,7 @@
                 "title": "Compressor Minimum On Time (c01)",
                 "description": "units: seconds",
                 "group": "compressor",
-                "address": 546,
+                "address": 1024,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -98,7 +98,7 @@
                 "title": "Compressor Minimum Off Time (c02)",
                 "description": "units: seconds",
                 "group": "compressor",
-                "address": 545,
+                "address": 1025,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -110,7 +110,7 @@
                 "title": "Delay Between Two Starts of the Same Compressor (c03)",
                 "description": "units: seconds",
                 "group": "compressor",
-                "address": 548,
+                "address": 1026,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -122,7 +122,7 @@
                 "title": "Compressor Delay at Start-up (c06)",
                 "description": "units: seconds",
                 "group": "compressor",
-                "address": 566,
+                "address": 1029,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -173,7 +173,7 @@
                 "title": "High Temperature Alarm Delay at Start-up (P17)",
                 "description": "units: seconds",
                 "group": "alarms",
-                "address": 617,
+                "address": 1076,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -227,7 +227,7 @@
                 "name": "Carel Serial Address",
                 "group": "status",
                 "reg_type": "holding",
-                "address": 577,
+                "address": 1057,
                 "type": "value",
                 "format": "u16",
                 "readonly": true
@@ -300,6 +300,46 @@
                 "reg_type": "discrete",
                 "address": 61,
                 "type": "switch"
+            },
+            {
+                "name": "Digital Output 1",
+                "group": "status",
+                "reg_type": "coil",
+                "address": 54,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Digital Output 2",
+                "group": "status",
+                "reg_type": "coil",
+                "address": 63,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Digital Output 3",
+                "group": "status",
+                "reg_type": "coil",
+                "address": 58,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Digital Output 4",
+                "group": "status",
+                "reg_type": "coil",
+                "address": 62,
+                "type": "switch",
+                "readonly": true
+            },
+            {
+                "name": "Digital Output 5",
+                "group": "status",
+                "reg_type": "coil",
+                "address": 50,
+                "type": "switch",
+                "readonly": true
             }
         ]
     }

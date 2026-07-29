@@ -19,6 +19,7 @@ struct TDeviceTemplate
                     const std::string& filePath);
 
     void SetDeprecated();
+    void SetUserDefined();
     void SetWithSubdevices();
     void SetGroup(const std::string& group);
     void SetTitle(const std::unordered_map<std::string, std::string>& translations);
@@ -31,6 +32,7 @@ struct TDeviceTemplate
     const std::vector<TDeviceTemplateHardware>& GetHardware() const;
     const std::string& GetFilePath() const;
     bool IsDeprecated() const;
+    bool IsUserDefined() const;
     bool WithSubdevices() const;
     const std::string& GetProtocol() const;
     const std::string& GetMqttId() const;
@@ -39,6 +41,7 @@ private:
     std::unordered_map<std::string, std::string> Title;
     std::string Group;
     bool Deprecated;
+    bool UserDefined;
     std::vector<TDeviceTemplateHardware> Hardware;
     std::shared_ptr<WBMQTT::JSON::TValidator> Validator;
     std::string FilePath;
@@ -64,6 +67,8 @@ class TTemplateMap
 
     std::string PreferredTemplatesDir;
 
+    std::string UserTemplatesDir;
+
     PDeviceTemplate MakeTemplateFromJson(const Json::Value& data, const std::string& filePath);
     std::string DeleteTemplateUnsafe(const std::string& path);
 
@@ -74,8 +79,10 @@ public:
      * @brief Construct a new TTemplateMap object.
      *
      * @param templateSchema JSON Schema for template file validation
+     * @param userTemplatesDir directory with user defined templates,
+     *                         templates loaded from it are marked as user defined
      */
-    TTemplateMap(const Json::Value& templateSchema);
+    TTemplateMap(const Json::Value& templateSchema, const std::string& userTemplatesDir = std::string());
 
     /**
      * @brief Add templates from templatesDir to map.
@@ -114,6 +121,23 @@ public:
     PDeviceTemplate GetTemplate(const std::string& deviceType);
 
     std::vector<PDeviceTemplate> GetTemplates();
+
+    /**
+     * @brief Validate device template JSON the same way as its first use does:
+     *        templates schema, condition expressions, parameter address consistency,
+     *        subdevices nesting. Doesn't modify the template
+     *
+     * @param templateRoot device template file contents
+     * @throws std::runtime_error on validation error or if the schema is not loaded
+     */
+    void ValidateTemplate(const Json::Value& templateRoot);
+
+    /**
+     * @brief Get the user defined template for requested device type
+     *
+     * @return template loaded from user templates directory or nullptr if there is no such template
+     */
+    PDeviceTemplate FindUserDefinedTemplate(const std::string& deviceType);
 };
 
 typedef std::shared_ptr<TTemplateMap> PTemplateMap;

@@ -20,46 +20,25 @@ TEST(TDooyaTest, ParsePositionResponse)
 {
     ASSERT_EQ(ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 30, 225, 134}), 30);
 
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 30, 226, 134});
-                     },
-                     "Bad CRC"),
+    ASSERT_THROW(
+        CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 30, 226, 134}); }, "Bad CRC"),
+        TSerialDeviceTransientErrorException);
+    ASSERT_THROW(
+        CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x56, 1, 0, 1, 1, 30, 225, 134}); }, "Bad header"),
+        TSerialDeviceTransientErrorException);
+    ASSERT_THROW(
+        CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x55, 2, 0, 1, 1, 30, 165, 134}); }, "Bad address"),
+        TSerialDeviceTransientErrorException);
+    ASSERT_THROW(
+        CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 2, 1, 30, 17, 134}); }, "Bad response"),
+        TSerialDeviceTransientErrorException);
+    ASSERT_THROW(
+        CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 2, 30, 225, 118}); }, "Bad response"),
+        TSerialDeviceTransientErrorException);
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 0xFF, 33, 206}); },
+                                   "No limit setting"),
                  TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x56, 1, 0, 1, 1, 30, 225, 134});
-                     },
-                     "Bad header"),
-                 TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x55, 2, 0, 1, 1, 30, 165, 134});
-                     },
-                     "Bad address"),
-                 TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 2, 1, 30, 17, 134});
-                     },
-                     "Bad response"),
-                 TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 2, 30, 225, 118});
-                     },
-                     "Bad response"),
-                 TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 0xFF, 33, 206});
-                     },
-                     "No limit setting"),
-                 TSerialDeviceTransientErrorException);
-    ASSERT_THROW(CheckExceptionMsg(
-                     []() {
-                         ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 101, 161, 165});
-                     },
-                     "Unknown position"),
+    ASSERT_THROW(CheckExceptionMsg([]() { ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 101, 161, 165}); },
+                                   "Unknown position"),
                  TSerialDeviceTransientErrorException);
 }

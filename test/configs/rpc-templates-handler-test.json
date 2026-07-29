@@ -1,0 +1,13 @@
+{
+    "ports": [
+        {
+            "path": "/dev/ttyRS485-1",
+            "devices": [
+                {
+                    "device_type": "MSU34",
+                    "slave_id": "1"
+                }
+            ]
+        }
+    ]
+}

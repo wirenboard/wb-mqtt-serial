@@ -187,10 +187,8 @@ void TSerialClient::OpenPortCycle()
     waitUntil = std::min(waitUntil, currentTime + MAX_POLL_TIME);
     WaitForPollAndFlush(currentTime, waitUntil);
 
-    auto device = RegReader->OpenPortCycle(
-        *Port,
-        [this](PRegister reg) { ProcessPolledRegister(reg); },
-        *LastAccessedDevice);
+    auto device =
+        RegReader->OpenPortCycle(*Port, [this](PRegister reg) { ProcessPolledRegister(reg); }, *LastAccessedDevice);
 
     if (device) {
         OpenCloseLogic.CloseIfNeeded(Port, device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED);

@@ -26,13 +26,19 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
         if (ErrorCallback) {
             ErrorCallback(Handler->Register());
         }
+        auto retry = true;
         std::string error;
         if (!port->IsOpen()) {
             error = "port is not open";
         } else if (!Handler->Register()->IsSupported()) {
+            retry = false;
             error = "register is not supported by device firmware";
         } else {
             error = "device is disconnected";
+        }
+        if (retry && Handler->NeedRetryAfterWriteFail()) {
+            LOG(Debug) << Handler->Register()->ToString() << " register write deferred: " << error;
+            return ISerialClientTask::TRunResult::RETRY;
         }
         LOG(Warn) << Handler->Register()->ToString() << " register write cancelled: " << error;
         return ISerialClientTask::TRunResult::OK;

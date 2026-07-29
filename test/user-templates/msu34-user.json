@@ -1,0 +1,18 @@
+{
+    "device_type": "MSU34",
+    "title": "MSU34 user",
+    "group": "g-climate-sensor",
+    "device": {
+        "name": "MSU34 user",
+        "id": "msu34tlp",
+        "channels": [
+            {
+                "name": "Temp 1",
+                "reg_type": "input",
+                "address": 0,
+                "type": "temperature",
+                "format": "s8"
+            }
+        ]
+    }
+}

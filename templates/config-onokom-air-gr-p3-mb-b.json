@@ -37,6 +37,11 @@
                 "order": 6
             },
             {
+                "title": "Setup",
+                "id": "setup",
+                "order": 7
+            },
+            {
                 "title": "Errors",
                 "id": "errors",
                 "order": 8
@@ -330,6 +335,19 @@
                 "condition": "Show_fan_as_range!=1"
             },
             {
+                "name": "External air temperature",
+                "reg_type": "holding",
+                "address": 30,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Indoor air temperature",
                 "reg_type": "holding",
                 "address": 3,
@@ -353,6 +371,7 @@
                 "scale": 0.01,
                 "sporadic": true,
                 "group": "temperatureControl",
+                "readonly": true,
                 "units": "deg C",
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
@@ -671,6 +690,23 @@
                 "type": "text",
                 "format": "u32",
                 "group": "hw_info"
+            },
+            {
+                "name": "Gateway mode",
+                "reg_type": "holding",
+                "address": 656,
+                "type": "value",
+                "group": "setup",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "LISTEN_ONLY",
+                    "EMULATE_M_WRC",
+                    "EMULATE_S_WRC"
+                ]
             },
             {
                 "name": "Error 1",
@@ -1563,6 +1599,7 @@
                 "Vanes": "Жалюзи",
                 "Additional": "Дополнительные режимы и функции",
                 "HW Info": "Данные модуля",
+                "Setup": "Настройки",
                 "Errors": "Ошибки",
                 "Debug": "Диагностика",
                 "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
@@ -1591,6 +1628,7 @@
                 "3 Speed": "3 Скорость",
                 "Smart fan speed": "Скорость вентилятора расширенная",
                 "Quiet mode": "Режим тихий",
+                "External air temperature": "Температура с внешнего датчика",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Outdoor air temperature": "Температура воздуха на улице",
                 "Target temperature": "Целевая температура",
@@ -1628,7 +1666,9 @@
                 "Serial": "Серийный номер",
                 "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
+                "Gateway mode": "Режим шлюза",
                 "LISTEN_ONLY": "Слушатель",
+                "EMULATE_M_WRC": "Главный",
                 "EMULATE_S_WRC": "Ведомый",
                 "Error 1": "Режим извлечения хладагента",
                 "Error 2": "Ошибка датчика температуры пульта",

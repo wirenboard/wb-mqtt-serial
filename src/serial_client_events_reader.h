@@ -52,7 +52,8 @@ public:
     bool HasDevicesWithEnabledEvents() const;
 
 private:
-    uint8_t LastAccessedSlaveId;
+    uint8_t StartSlaveId;
+    size_t ConsecutiveReadsFromSameSlave;
     ModbusExt::TEventConfirmationState EventState;
     size_t ReadErrors;
     size_t MaxReadErrors;

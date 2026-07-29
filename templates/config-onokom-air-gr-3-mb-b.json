@@ -357,6 +357,19 @@
                 "condition": "Show_fan_as_range!=1"
             },
             {
+                "name": "External air temperature",
+                "reg_type": "holding",
+                "address": 30,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Indoor air temperature",
                 "reg_type": "holding",
                 "address": 3,
@@ -380,6 +393,7 @@
                 "scale": 0.01,
                 "sporadic": true,
                 "group": "temperatureControl",
+                "readonly": true,
                 "units": "deg C",
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
@@ -1531,6 +1545,7 @@
                 "Smart fan speed": "Скорость вентилятора расширенная",
                 "Quiet mode": "Режим тихий",
                 "Turbo mode": "Режим турбо",
+                "External air temperature": "Температура с внешнего датчика",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Indoor heat exchanger temperature": "Температура внутреннего теплообменника",
                 "Outdoor air temperature": "Температура воздуха на улице",

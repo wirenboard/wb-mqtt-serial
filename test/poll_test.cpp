@@ -259,6 +259,54 @@ public:
                      readTime);
     }
 
+    // Full control over an EVENTS_REQUEST (0x46/0x10): explicit min_slave and confirmation
+    // state in the request plus an arbitrary response. Used to drive the read-cap logic that
+    // the simpler EnqueueReadEvents helpers cannot express.
+    void EnqueueEventsExchange(microseconds readTime,
+                               uint8_t minSlave,
+                               uint8_t confirmSlave,
+                               uint8_t confirmFlag,
+                               const std::vector<int>& responsePdu,
+                               uint8_t responderSlaveId)
+    {
+        SetModbusRTUSlaveId(0xFD);
+        Port->Expect(WrapPDU({
+                         0x46,                    // function code
+                         0x10,                    // subcommand
+                         minSlave,                // starting slaveId
+                         MAX_EVENT_RESPONSE_SIZE, // max response size
+                         confirmSlave,            // confirmed slaveId
+                         confirmFlag              // confirmed flag
+                     }),
+                     WrapPDU(responsePdu, responderSlaveId),
+                     __func__,
+                     readTime);
+    }
+
+    // HAS_EVENTS response PDU carrying one holding-register change event.
+    std::vector<int> HoldingEventResponse(uint8_t flag, uint16_t addr, uint16_t value)
+    {
+        return {
+            0x46,                // function code
+            0x11,                // subcommand: has events
+            flag,                // confirmation flag
+            0x01,                // event count
+            0x06,                // events data length
+            0x02,                // event data size
+            0x03,                // event type: holding
+            (addr >> 8) & 0xFF,  // event id (register address) Hi
+            addr & 0xFF,         // event id Lo
+            (value >> 8) & 0xFF, // value Hi
+            value & 0xFF         // value Lo
+        };
+    }
+
+    // NO_EVENTS response PDU (sent by a device with the broadcast address 0xFD).
+    std::vector<int> NoEventsResponse()
+    {
+        return {0x46, 0x12};
+    }
+
     PExpector Expector() const override
     {
         return Port;
@@ -987,4 +1035,79 @@ TEST_F(TPollTest, SuspendAndResumeWithEvents)
         EnqueueReadEvents(4ms);
         Cycle(serialClient, lastAccessedDevice);
     }
+}
+
+TEST_F(TPollTest, EventsCapLimitsConsecutiveReadsFromSameDevice)
+{
+    // A device that always has events must not monopolize the event bus.
+    // After MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE (5) reads in a row from the same
+    // device the master excludes it from arbitration by raising min_slave to
+    // slaveId + 1. The device is polled again from the next reading session.
+
+    Port->SetBaudRate(115200);
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    // Enable events and read the register once
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // A single event-reading session. Device 1 answers five times in a row.
+    EnqueueEventsExchange(4ms, 0, 0, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(4ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    // Cap reached: device 1 is excluded, min_slave becomes 2 (device 1 is still confirmed).
+    // NO_EVENTS ends the session; the next session starts again from min_slave 0.
+    EnqueueEventsExchange(4ms, 2, 1, 0, NoEventsResponse(), 0xFD);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, EventsCapPersistsBetweenReadingSessions)
+{
+    // The read-cap must accumulate ACROSS reading sessions: at low baud rates a single
+    // session (bounded by poll time) fits only a couple of reads, so a per-session counter
+    // would never reach the cap. Here each session fits exactly two reads (60ms each vs
+    // 100ms poll time); the cap (5) is reached only if the streak survives the session
+    // boundaries. The fifth overall read (in the third session) triggers the skip.
+
+    Port->SetBaudRate(115200);
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    // Enable events and read the register once
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Session 1: two reads from device 1 (session ends by timeout, streak = 2 is kept)
+    EnqueueEventsExchange(60ms, 0, 0, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(60ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Session 2: two more reads, still min_slave 1 (streak carried over, now 4)
+    EnqueueEventsExchange(60ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(60ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Session 3: the fifth read reaches the cap -> skip to min_slave 2 -> NO_EVENTS ends the session
+    EnqueueEventsExchange(60ms, 1, 1, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(60ms, 2, 1, 0, NoEventsResponse(), 0xFD);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Session 4: back to min_slave 0, the bus is now quiet
+    EnqueueEventsExchange(60ms, 0, 0, 0, NoEventsResponse(), 0xFD);
+    Cycle(serialClient, lastAccessedDevice);
 }
