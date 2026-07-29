@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1-wb103) stable; urgency=medium
+
+  * Regenerate config if the existing one is empty
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Fri, 24 Jul 2026 11:45:31 +0300
+
 wb-mqtt-serial (2.248.1-wb102) stable; urgency=medium
 
   * Convert numeric channel enum values to strings
