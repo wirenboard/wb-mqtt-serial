@@ -29,11 +29,16 @@
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Input {{in_num}}",
+                "title": "g_in{{in_num}}",
                 "id": "g_in{{in_num}}"
             },
             {
-                "title": "input{{in_num}}_channels",
+                "title": "gg_press_params",
+                "id": "gg_in{{in_num}}_press_params",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "gg_channels",
                 "id": "gg_in{{in_num}}_channels",
                 "group": "g_in{{in_num}}",
                 "ui_options": {
@@ -44,11 +49,11 @@
             },
             {% endfor -%}
             {
-                "title": "General",
+                "title": "g_general",
                 "id": "g_general"
             },
             {
-                "title": "HW Info",
+                "title": "g_hw_info",
                 "id": "g_hw_info"
             }
         ],
@@ -57,6 +62,7 @@
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             "in{{in_num}}_debounce_ms": {
                 "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": {{20 + in_num - 1}},
                 "reg_type": "holding",
                 "min": 0,
@@ -65,9 +71,31 @@
                 "group": "g_in{{in_num}}",
                 "order": 2
             },
+            "in{{in_num}}_lp_hold_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                "address": {{1100 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000
+            },
+            "in{{in_num}}_secp_waiting_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                "address": {{1140 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000
+            },
             {% endfor -%}
             "baud_rate": {
-                "title": "Baud rate",
+                "title": "baud_rate_title",
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
@@ -88,7 +116,7 @@
         "channels": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
-                "name": "Input {{in_num}}",
+                "name": "di_{{in_num}}",
                 "reg_type": "discrete",
                 "address": {{in_num - 1}},
                 "type": "switch",
@@ -96,32 +124,59 @@
                 "group": "gg_in{{in_num}}_channels"
             },
             {
-                "name": "Input {{in_num}} counter",
+                "name": "count_{{in_num}}",
                 "reg_type": "input",
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
-                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "count_single_{{in_num}}",
+                "reg_type": "press_counter",
+                "address": {{464 + in_num - 1}},
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "count_long_{{in_num}}",
+                "reg_type": "press_counter",
+                "address": {{480 + in_num - 1}},
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "count_double_{{in_num}}",
+                "reg_type": "press_counter",
+                "address": {{496 + in_num - 1}},
+                "sporadic": true,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "count_shortlong_{{in_num}}",
+                "reg_type": "press_counter",
+                "address": {{512 + in_num - 1}},
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {% endfor -%}
             {
-                "name": "Bit mask of input states",
+                "name": "state_inputs_mask",
                 "reg_type": "input",
                 "address": 8,
-                "group": "g_general",
                 "sporadic": true,
-                "enabled": false
+                "enabled": false,
+                "group": "g_general"
             },
             {
-                "name": "Reset all counters",
+                "name": "cmd_reset_counters",
                 "reg_type": "holding",
                 "address": 100,
                 "type": "pushbutton",
                 "group": "g_general"
             },
             {
-                "name": "Serial",
+                "name": "sn",
                 "reg_type": "input",
                 "address": 270,
                 "type": "text",
@@ -129,7 +184,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "HW Batch Number",
+                "name": "hw_batch",
                 "type": "text",
                 "reg_type": "input",
                 "address": 304,
@@ -140,7 +195,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "FW Version",
+                "name": "fw",
                 "reg_type": "input",
                 "address": 250,
                 "type": "text",
@@ -150,47 +205,48 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Supply voltage",
+                "name": "v_vin",
                 "reg_type": "input",
                 "address": 121,
-                "type": "voltage",
+                "units": "V",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "Uptime",
+                "name": "uptime",
                 "reg_type": "input",
                 "address": 104,
                 "format": "u32",
+                "units": "s",
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "Minimum Voltage Since Startup",
+                "name": "v_min_vin",
                 "reg_type": "input",
                 "address": 122,
                 "scale": 0.001,
-                "type": "voltage",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "MCU Temperature",
+                "name": "t_mcu",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
+                "units": "deg C",
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "MCU Voltage",
+                "name": "v_mcu",
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             }
@@ -198,36 +254,88 @@
         "translations": {
             "en": {
                 "template_title": "{{ title_en }}",
-                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
 
-                "debounce_time_title": "Debounce Time (ms)"
+                "g_general": "General",
+                "g_hw_info": "HW Info",
+                "gg_press_params": "Press Parameters",
+                "gg_channels": "Channels",
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "g_in{{in_num}}": "Input {{in_num}}",
+                {% endfor -%}
+
+                "baud_rate_title": "Baud Rate",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value",
+
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "debounce_time_title": "Debounce Time (ms)",
+
+                "lp_hold_time_description": "If press is longer than the specified time then it is long",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "di_{{in_num}}": "Input {{in_num}}",
+                "count_{{in_num}}": "Input {{in_num}} Counter",
+                "count_single_{{in_num}}": "Input {{in_num}} Single Press Counter",
+                "count_long_{{in_num}}": "Input {{in_num}} Long Press Counter",
+                "count_double_{{in_num}}": "Input {{in_num}} Double Press Counter",
+                "count_shortlong_{{in_num}}": "Input {{in_num}} Shortlong Press Counter",
+                {% endfor -%}
+
+                "state_inputs_mask": "Bit Mask of Input States",
+                "cmd_reset_counters": "Reset All Counters",
+                "sn": "Serial Number",
+                "hw_batch": "HW Batch Number",
+                "fw": "Firmware Version",
+                "v_vin": "Supply Voltage",
+                "uptime": "Uptime",
+                "v_min_vin": "Min Supply Voltage Since Startup",
+                "t_mcu": "MCU Temperature",
+                "v_mcu": "MCU Voltage"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
+
+                "g_general": "Общее",
+                "g_hw_info": "Данные модуля",
+                "gg_press_params": "Параметры нажатий",
+                "gg_channels": "Каналы",
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
-                "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} counter": "Счетчик {{in_num}}",
+                "g_in{{in_num}}": "Вход {{in_num}}",
                 {% endfor -%}
 
-                "General": "Общее",
-                "HW Info": "Данные модуля",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "baud_rate_title": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
 
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
-                "Bit mask of input states": "Битовая маска состояний входов",
-                "Reset all counters": "Сбросить все счетчики",
-                "Serial": "Серийный номер",
-                "HW Batch Number": "Номер партии",
-                "FW Version": "Версия прошивки",
-                "Supply voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
-                "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
+
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "di_{{in_num}}": "Вход {{in_num}}",
+                "count_{{in_num}}": "Вход {{in_num}}: счетчик замыканий",
+                "count_single_{{in_num}}": "Вход {{in_num}}: счетчик одиночных нажатий",
+                "count_long_{{in_num}}": "Вход {{in_num}}: счетчик длинных нажатий",
+                "count_double_{{in_num}}": "Вход {{in_num}}: счетчик двойных нажатий",
+                "count_shortlong_{{in_num}}": "Вход {{in_num}}: счетчик коротких, а затем длинных нажатий",
+                {% endfor -%}
+
+                "state_inputs_mask": "Битовая маска состояний входов",
+                "cmd_reset_counters": "Сбросить все счетчики",
+                "sn": "Серийный номер",
+                "hw_batch": "Номер партии",
+                "fw": "Версия прошивки",
+                "v_vin": "Напряжение питания",
+                "uptime": "Время работы с момента включения",
+                "v_min_vin": "Мин. напряжение питания с момента включения",
+                "t_mcu": "Температура МК",
+                "v_mcu": "Напряжение питания МК"
             }
         }
     }
 }
-
