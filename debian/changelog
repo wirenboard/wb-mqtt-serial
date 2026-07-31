@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.248.1-wb104) stable; urgency=medium
+
+  * Add new templates for WB-MDM3 (fw 2.12), WB-MAO4 and WB-MAO4-20mA (fw 2.9),
+    WB-LED and WB-MRGBW-D (fw 3.8): encoder support, configurable dimming step
+    for short presses, smooth dimming control from remote buttons, duplicate
+    control channels with auto-on, 2CCT output mode (WB-LED)
+  * Fix dimmer's min max params order
+
+ -- Egor Panchenko <egor.panchenko@wirenboard.com>  Fri, 31 Jul 2026 16:50:00 +0300
+
 wb-mqtt-serial (2.248.1-wb103) stable; urgency=medium
 
   * Regenerate config if the existing one is empty
