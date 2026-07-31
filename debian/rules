@@ -3,14 +3,17 @@
 COV_FAIL_UNDER := $(patsubst cov-fail-under=%,%,$(filter cov-fail-under=%,$(DEB_BUILD_OPTIONS)))
 COV_REPORT     := $(patsubst cov-report=%,%,$(filter cov-report=%,$(DEB_BUILD_OPTIONS)))
 
+# NB: use exported env vars, not MAKEFLAGS: since GNU make 4.4 (trixie)
+# variable definitions added to MAKEFLAGS in a makefile are no longer
+# propagated to sub-makes spawned by debhelper (dh_auto_build/dh_auto_test).
 ifneq ($(COV_FAIL_UNDER),)
-	MAKEFLAGS += COV_FAIL_UNDER=$(COV_FAIL_UNDER)
+export COV_FAIL_UNDER
 endif
 ifneq ($(COV_REPORT),)
-	MAKEFLAGS += COV_REPORT=$(COV_REPORT)
+export COV_REPORT
 endif
 ifneq (,$(findstring debug, $(DEB_BUILD_OPTIONS)))
-	MAKEFLAGS += DEBUG=1
+export DEBUG=1
 endif
 
 %:

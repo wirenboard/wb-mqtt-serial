@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.262.1) stable; urgency=medium
+
+  * Fix coverage reporting with GNU make 4.4 (trixie): export coverage
+    variables from debian/rules instead of MAKEFLAGS
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Fri, 31 Jul 2026 09:28:51 +0000
+
 wb-mqtt-serial (2.262.0) stable; urgency=medium
 
   * Add buttons functionality to WB-MCM8HV template
