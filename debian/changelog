@@ -1,13 +1,3 @@
-wb-mqtt-serial (2.262.3) stable; urgency=medium
-
-  * WB-MAO4, WB-MDM3, WB-MRGBW-D templates: migrate to WB-STD-001/002/003.
-    Channels, parameters, groups and enum titles now use the
-    identifier-as-key model with explicit en/ru translations; canonical
-    channel and group names are shared between the three templates.
-    MQTT topics are preserved via the "id" field
-
- -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 03 Aug 2026 23:51:28 +0700
-
 wb-mqtt-serial (2.262.2) stable; urgency=medium
 
   * Fix deps

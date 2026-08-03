@@ -23,31 +23,11 @@
     ("CCT1, CCT2 Temperature", "cct1_cct2_temperature_auto_change_period", 18, 31, "(dimmer_mode==768)"),
     ("CCT1, CCT2 Brightness", "cct1_cct2_brightness_auto_change_period", 19, 32, "(dimmer_mode==768)")
 ] -%}
-{#
-    Canonical channel id (WB-STD-001) derived from a legacy display title.
-    "RGB Strip Red" -> rgb_red, "Channels 1, 2 (B, R)" -> ch12, "CCT1" -> cct1.
-    Used so that the legacy display string stays the MQTT topic (via "id"),
-    while "name" carries the canonical snake_case identifier (WB-STD-003 7.1).
--#}
-{% macro canon_id(title) -%}
-{{- title
-    | replace("Channels 1, 2, 3, 4", "ch1234")
-    | replace("Channels 1, 2 (B, R)", "ch12")
-    | replace("Channels 3, 4 (G, W)", "ch34")
-    | replace("Channel 1 (B)", "ch1")
-    | replace("Channel 2 (R)", "ch2")
-    | replace("Channel 3 (G)", "ch3")
-    | replace("Channel 4 (W)", "ch4")
-    | replace("CCT1, CCT2", "cct1_cct2")
-    | replace("RGB Strip", "rgb")
-    | replace("Hue Changing Rate", "hue_rate")
-    | replace(" ", "_") | lower -}}
-{%- endmacro %}
 {% macro auto_change_period_parameter(title, param_id, index, order, condition) -%}
             {
                 "id": "{{ param_id }}",
                 "group": "gg_out_auto_change_params",
-                "title": "{{ param_id }}",
+                "title": "{{ title }} Period Auto-Change (ms/unit)",
                 "order": {{order}},
                 "address": {{2300 + index}},
                 "reg_type": "holding",
@@ -61,17 +41,16 @@
 {% macro auto_change_control(title, index, condition) -%}
             {
                 "group": "gg_out_channels_auto_change",
-                "name": "{{ canon_id(title) }}_auto_change",
-                "id": "{{ title }} Auto-Change",
+                "name": "{{ title }} Auto-Change",
                 "address": {{2200 + index}},
                 "type": "value",
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "e_stop",
-                    "e_decrease",
-                    "e_increase",
-                    "e_increase_decrease"
+                    "Stop",
+                    "Decrease",
+                    "Increase",
+                    "Increase/Decrease"
                 ],
                 "enabled": false,
                 "sporadic": true,
@@ -99,23 +78,23 @@
         "groups": [
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "g_in{{in_num}}",
-                "id": "g_in{{in_num}}"
+                "title": "Input {{in_num}}",
+                "id": "g_input_{{in_num}}"
             },
             {% endfor -%}
             {
-                "title": "g_encoders",
+                "title": "Encoders",
                 "id": "g_encoders"
             },
             {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
             {
-                "title": "gg_encoder_{{enc_num}}",
+                "title": "Encoder {{enc_num}}",
                 "id": "gg_encoder_{{enc_num}}",
                 "group": "g_encoders"
             },
             {% endfor -%}
             {
-                "title": "gg_encoder_channels",
+                "title": "encoder_channels",
                 "id": "gg_encoder_channels",
                 "group": "g_encoders",
                 "ui_options": {
@@ -126,21 +105,21 @@
 
             },
             {
-                "title": "g_outputs",
+                "title": "Outputs",
                 "id": "g_outputs"
             },
             {
-                "title": "g_auto_change",
+                "title": "Auto-Change",
                 "id": "g_auto_change",
                 "description": "g_auto_change_description"
             },
             {
-                "title": "gg_out_auto_change_params",
+                "title": "Periods Auto-Change",
                 "id": "gg_out_auto_change_params",
                 "group": "g_auto_change"
             },
             {
-                "title": "gg_out_channels_auto_change",
+                "title": "Auto-Change",
                 "id": "gg_out_channels_auto_change",
                 "group": "g_auto_change",
                 "ui_options": {
@@ -150,29 +129,29 @@
                 }
             },
             {
-                "title": "g_general",
+                "title": "General",
                 "id": "g_general"
             },
             {
-                "title": "g_hw_info",
+                "title": "HW Info",
                 "id": "g_hw_info"
             },
             {
-                "title": "g_debug",
+                "title": "Debug",
                 "id": "g_debug"
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for name_action in ["sp", "lp", "dp", "slp"] -%}
             {
-                "title": "gg_{{name_action}}_action",
+                "title": "Action_{{name_action}}",
                 "id": "gg_in_{{in_num}}_{{name_action}}_action",
-                "group": "g_in{{in_num}}"
+                "group": "g_input_{{in_num}}"
             },
             {% endfor -%}
             {
-                "title": "gg_in_press_params",
+                "title": "params",
                 "id": "gg_in_{{in_num}}_params",
-                "group": "g_in{{in_num}}",
+                "group": "g_input_{{in_num}}",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -180,9 +159,9 @@
                 }
             },
             {
-                "title": "gg_in_channels",
+                "title": "Input {{in_num}} Channels",
                 "id": "gg_in_{{in_num}}_channels",
-                "group": "g_in{{in_num}}",
+                "group": "g_input_{{in_num}}",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -211,7 +190,7 @@
                 "group": "g_outputs"
             },
             {
-                "title": "gg_out_params",
+                "title": "params",
                 "id": "gg_out_params",
                 "group": "g_outputs",
                 "ui_options": {
@@ -221,7 +200,7 @@
                 }
             },
             {
-                "title": "gg_out_channels",
+                "title": "Outputs Channels",
                 "id": "gg_out_channels",
                 "group": "g_outputs",
                 "ui_options": {
@@ -231,7 +210,7 @@
                 }
             },
             {
-                "title": "gg_out_channels_auto_on",
+                "title": "Output Channels Auto-On",
                 "id": "gg_out_channels_auto_on",
                 "description": "gg_out_channels_auto_on_description",
                 "group": "g_outputs",
@@ -246,25 +225,25 @@
         "parameters": [
             {
                 "id": "dimmer_mode",
-                "title": "p_dimmer_mode",
+                "title": "Dimmer Mode",
                 "description": "dimmer_mode_description",
                 "address": 4000,
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768],
                 "default": 256,
                 "enum_titles": [
-                    "e_mode_w_w_w_w",
-                    "e_mode_2w_w_w",
-                    "e_mode_cct_w_w",
-                    "e_mode_w_w_2w",
-                    "e_mode_2w_2w",
-                    "e_mode_cct_2w",
-                    "e_mode_w_w_cct",
-                    "e_mode_2w_cct",
-                    "e_mode_cct_cct",
-                    "e_mode_rgb_w",
-                    "e_mode_4w",
-                    "e_mode_2cct"
+                    "W + W + W + W",
+                    "2*W + W + W",
+                    "CCT + W + W",
+                    "W + W + 2*W",
+                    "2*W + 2*W",
+                    "CCT + 2*W",
+                    "W + W + CCT",
+                    "2*W + CCT",
+                    "CCT + CCT",
+                    "RGB + W",
+                    "4*W",
+                    "2*CCT"
                 ],
                 "order": 1,
                 "required": true
@@ -272,7 +251,7 @@
             {% for ch_number, ch_name in CHANNELS -%}
             {
                 "id": "ch{{ch_number}}_min",
-                "title": "p_ch{{ch_number}}_min",
+                "title": "Channel {{ch_number}} ({{ch_name}}) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": {{ 2 * loop.index - 1 }},
                 "group": "gg_out_params",
@@ -284,7 +263,7 @@
             },
             {
                 "id": "ch{{ch_number}}_max",
-                "title": "p_ch{{ch_number}}_max",
+                "title": "Channel {{ch_number}} ({{ch_name}}) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": {{ 2 * loop.index }},
                 "group": "gg_out_params",
@@ -373,30 +352,28 @@
 
             {# Encoders -#}
             {# All channels available for control -#}
-            {# Translation keys; the brightness/temperature entries reuse the
-               matching channel keys so one string serves both (WB-STD-003 4.3). -#}
             {% set enc_ctrl_ch_titles = [
-                "e_no_control",
-                "ch1_brightness",
-                "ch2_brightness",
-                "ch3_brightness",
-                "ch4_brightness",
-                "ch12_brightness",
-                "ch34_brightness",
-                "ch1234_brightness",
-                "cct1_temperature",
-                "cct1_brightness",
-                "cct2_temperature",
-                "cct2_brightness",
-                "e_red_brightness",
-                "e_green_brightness",
-                "e_blue_brightness",
-                "e_rgb_hue",
-                "e_rgb_saturation",
-                "e_rgb_brightness",
-                "e_rgb_hue_time",
-                "cct1_cct2_temperature",
-                "cct1_cct2_brightness"
+                "No Control",
+                "Channel 1 (B) Brightness",
+                "Channel 2 (R) Brightness",
+                "Channel 3 (G) Brightness",
+                "Channel 4 (W) Brightness",
+                "Channels 1, 2 (B, R) Brightness",
+                "Channels 3, 4 (G, W) Brightness",
+                "Channels 1, 2, 3, 4 Brightness",
+                "CCT1 Temperature",
+                "CCT1 Brightness",
+                "CCT2 Temperature",
+                "CCT2 Brightness",
+                "Red Brightness",
+                "Green Brightness",
+                "Blue Brightness",
+                "Hue of RGB Strip (circular, HSV-H)",
+                "Saturation of RGB Strip (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)",
+                "Hue Changing Time of RGB Strip",
+                "CCT1, CCT2 Temperature",
+                "CCT1, CCT2 Brightness"
                 ] -%}
             {# Configuration of available channels for each dimmer mode -#}
             {% set enc_ctrl_ch_configs = [
@@ -454,7 +431,7 @@
             {
                 "id": "encoder_{{enc_num}}_mode",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "p_encoder_mode",
+                "title": "Encoder Connection Type",
                 "description": "encoder_{{enc_num}}_mode_description",
                 "order": 1,
                 "address": {{376 + enc_num - 1}},
@@ -462,14 +439,14 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "e_not_used",
-                    "e_ab_type"
+                    "Not used",
+                    "AB type"
                 ]
             },
             {
                 "id": "encoder_{{enc_num}}_pps",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "p_pulses_per_step",
+                "title": "Pulses per Step",
                 "order": 2,
                 "address": {{384 + enc_num - 1}},
                 "reg_type": "holding",
@@ -482,7 +459,7 @@
             {% for config in enc_ctrl_ch_configs -%}
             {
                 "id": "encoder_{{enc_num}}_ctrl_ch",
-                "title": "p_controlled_channel",
+                "title": "Controlled Channel",
                 "group": "gg_encoder_{{enc_num}}",
                 "order": 3,
                 "address": {{388 + enc_num - 1}},
@@ -504,7 +481,7 @@
             {
                 "id": "encoder_{{enc_num}}_change_step",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "p_change_step",
+                "title": "Step of Value Change",
                 "order": 4,
                 "address": {{392 + enc_num - 1}},
                 "reg_type": "holding",
@@ -523,15 +500,15 @@
             {
                 "id": "encoder_{{enc_num}}_min_br_behavior",
                 "group": "gg_encoder_{{enc_num}}",
-                "title": "p_min_br_behavior",
+                "title": "Behavior When Brightness is Reduced Below the Minimum Value",
                 "order": 5,
                 "address": {{396 + enc_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "e_turn_off_channel",
-                    "e_keep_min_brightness"
+                    "Turn Off the Channel",
+                    "Keep Minimum Brightness"
                 ],
                 "condition": "(encoder_{{enc_num}}_mode==1)&&({{ch_min_br_behavior_conditions|join('||')}})"
             },
@@ -540,7 +517,7 @@
             {
                 "id": "fader_inc_w1",
                 "group": "gg_fader_inc",
-                "title": "ch1_brightness",
+                "title": "Channel 1 (B) Brightness",
                 "order": 1,
                 "address": 3000,
                 "reg_type": "holding",
@@ -552,7 +529,7 @@
             {
                 "id": "fader_inc_w2",
                 "group": "gg_fader_inc",
-                "title": "ch2_brightness",
+                "title": "Channel 2 (R) Brightness",
                 "order": 2,
                 "address": 3001,
                 "reg_type": "holding",
@@ -564,7 +541,7 @@
             {
                 "id": "fader_inc_w3",
                 "group": "gg_fader_inc",
-                "title": "ch3_brightness",
+                "title": "Channel 3 (G) Brightness",
                 "order": 3,
                 "address": 3002,
                 "reg_type": "holding",
@@ -576,7 +553,7 @@
             {
                 "id": "fader_inc_w4",
                 "group": "gg_fader_inc",
-                "title": "ch4_brightness",
+                "title": "Channel 4 (W) Brightness",
                 "order": 4,
                 "address": 3003,
                 "reg_type": "holding",
@@ -588,7 +565,7 @@
             {
                 "id": "fader_inc_w1_w2",
                 "group": "gg_fader_inc",
-                "title": "ch12_brightness",
+                "title": "Channels 1, 2 (B, R) Brightness",
                 "order": 1,
                 "address": 3004,
                 "reg_type": "holding",
@@ -600,7 +577,7 @@
             {
                 "id": "fader_inc_w3_w4",
                 "group": "gg_fader_inc",
-                "title": "ch34_brightness",
+                "title": "Channels 3, 4 (G, W) Brightness",
                 "order": 3,
                 "address": 3005,
                 "reg_type": "holding",
@@ -612,7 +589,7 @@
             {
                 "id": "fader_inc_w1_w2_w3_w4",
                 "group": "gg_fader_inc",
-                "title": "ch1234_brightness",
+                "title": "Channels 1, 2, 3, 4 Brightness",
                 "order": 1,
                 "address": 3006,
                 "reg_type": "holding",
@@ -624,7 +601,7 @@
             {
                 "id": "fader_inc_cct1_t",
                 "group": "gg_fader_inc",
-                "title": "cct1_temperature",
+                "title": "CCT1 Temperature",
                 "order": 1,
                 "address": 3007,
                 "reg_type": "holding",
@@ -636,7 +613,7 @@
             {
                 "id": "fader_inc_cct1_v",
                 "group": "gg_fader_inc",
-                "title": "cct1_brightness",
+                "title": "CCT1 Brightness",
                 "order": 2,
                 "address": 3008,
                 "reg_type": "holding",
@@ -648,7 +625,7 @@
             {
                 "id": "fader_inc_cct2_t",
                 "group": "gg_fader_inc",
-                "title": "cct2_temperature",
+                "title": "CCT2 Temperature",
                 "order": 3,
                 "address": 3009,
                 "reg_type": "holding",
@@ -660,7 +637,7 @@
             {
                 "id": "fader_inc_cct2_v",
                 "group": "gg_fader_inc",
-                "title": "cct2_brightness",
+                "title": "CCT2 Brightness",
                 "order": 4,
                 "address": 3010,
                 "reg_type": "holding",
@@ -672,7 +649,7 @@
             {
                 "id": "fade_rgb_h",
                 "group": "gg_fader_hue",
-                "title": "rgb_hue",
+                "title": "RGB Strip Hue",
                 "description": "hue_fader_description",
                 "order": 1,
                 "address": 3011,
@@ -685,7 +662,7 @@
             {
                 "id": "fader_inc_rgb_s",
                 "group": "gg_fader_inc",
-                "title": "rgb_saturation",
+                "title": "RGB Strip Saturation",
                 "order": 1,
                 "address": 3012,
                 "reg_type": "holding",
@@ -697,7 +674,7 @@
             {
                 "id": "fader_inc_rgb_v",
                 "group": "gg_fader_inc",
-                "title": "rgb_brightness",
+                "title": "RGB Strip Brightness",
                 "order": 2,
                 "address": 3013,
                 "reg_type": "holding",
@@ -712,7 +689,7 @@
             {
                 "id": "fader_inc_{{type_name[loop.index0]}}",
                 "group": "gg_fader_inc",
-                "title": "{{ canon_id(title) }}",
+                "title": "{{title}}",
                 "order": {{loop.index0 + 1}},
                 "address": {{3014 + loop.index0}},
                 "reg_type": "holding",
@@ -725,7 +702,7 @@
             {
                 "id": "fader_dec_w1",
                 "group": "gg_fader_dec",
-                "title": "ch1_brightness",
+                "title": "Channel 1 (B) Brightness",
                 "order": 1,
                 "address": 3100,
                 "reg_type": "holding",
@@ -737,7 +714,7 @@
             {
                 "id": "fader_dec_w2",
                 "group": "gg_fader_dec",
-                "title": "ch2_brightness",
+                "title": "Channel 2 (R) Brightness",
                 "order": 2,
                 "address": 3101,
                 "reg_type": "holding",
@@ -749,7 +726,7 @@
             {
                 "id": "fader_dec_w3",
                 "group": "gg_fader_dec",
-                "title": "ch3_brightness",
+                "title": "Channel 3 (G) Brightness",
                 "order": 3,
                 "address": 3102,
                 "reg_type": "holding",
@@ -761,7 +738,7 @@
             {
                 "id": "fader_dec_w4",
                 "group": "gg_fader_dec",
-                "title": "ch4_brightness",
+                "title": "Channel 4 (W) Brightness",
                 "order": 4,
                 "address": 3103,
                 "reg_type": "holding",
@@ -773,7 +750,7 @@
             {
                 "id": "fader_dec_w1_w2",
                 "group": "gg_fader_dec",
-                "title": "ch12_brightness",
+                "title": "Channels 1, 2 (B, R) Brightness",
                 "order": 1,
                 "address": 3104,
                 "reg_type": "holding",
@@ -785,7 +762,7 @@
             {
                 "id": "fader_dec_w3_w4",
                 "group": "gg_fader_dec",
-                "title": "ch34_brightness",
+                "title": "Channels 3, 4 (G, W) Brightness",
                 "order": 3,
                 "address": 3105,
                 "reg_type": "holding",
@@ -797,7 +774,7 @@
             {
                 "id": "fader_dec_w1_w2_w3_w4",
                 "group": "gg_fader_dec",
-                "title": "ch1234_brightness",
+                "title": "Channels 1, 2, 3, 4 Brightness",
                 "order": 1,
                 "address": 3106,
                 "reg_type": "holding",
@@ -809,7 +786,7 @@
             {
                 "id": "fader_dec_cct1_t",
                 "group": "gg_fader_dec",
-                "title": "cct1_temperature",
+                "title": "CCT1 Temperature",
                 "order": 1,
                 "address": 3107,
                 "reg_type": "holding",
@@ -821,7 +798,7 @@
             {
                 "id": "fader_dec_cct1_v",
                 "group": "gg_fader_dec",
-                "title": "cct1_brightness",
+                "title": "CCT1 Brightness",
                 "order": 2,
                 "address": 3108,
                 "reg_type": "holding",
@@ -833,7 +810,7 @@
             {
                 "id": "fader_dec_cct2_t",
                 "group": "gg_fader_dec",
-                "title": "cct2_temperature",
+                "title": "CCT2 Temperature",
                 "order": 3,
                 "address": 3109,
                 "reg_type": "holding",
@@ -845,7 +822,7 @@
             {
                 "id": "fader_dec_cct2_v",
                 "group": "gg_fader_dec",
-                "title": "cct2_brightness",
+                "title": "CCT2 Brightness",
                 "order": 4,
                 "address": 3110,
                 "reg_type": "holding",
@@ -857,7 +834,7 @@
             {
                 "id": "fader_dec_rgb_s",
                 "group": "gg_fader_dec",
-                "title": "rgb_saturation",
+                "title": "RGB Strip Saturation",
                 "order": 1,
                 "address": 3112,
                 "reg_type": "holding",
@@ -869,7 +846,7 @@
             {
                 "id": "fader_dec_rgb_v",
                 "group": "gg_fader_dec",
-                "title": "rgb_brightness",
+                "title": "RGB Strip Brightness",
                 "order": 2,
                 "address": 3113,
                 "reg_type": "holding",
@@ -884,7 +861,7 @@
             {
                 "id": "fader_dec_{{type_name[loop.index0]}}",
                 "group": "gg_fader_dec",
-                "title": "{{ canon_id(title) }}",
+                "title": "{{title}}",
                 "order": {{loop.index0 + 1}},
                 "address": {{3114 + loop.index0}},
                 "reg_type": "holding",
@@ -906,7 +883,7 @@
             {
                 "id": "power_normalization_{{ids[loop.index0]}}",
                 "group": "gg_cct_power_normalization",
-                "title": "{{ canon_id(title) }}",
+                "title": "{{title}}",
                 "order": {{order[loop.index0]}},
                 "address": {{3200 + loop.index0}},
                 "reg_type": "holding",
@@ -914,8 +891,8 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "e_disabled",
-                    "e_enabled"
+                    "Disabled",
+                    "Enabled"
                 ],
                 "condition": "{{conditions[loop.index0]}}"
             },
@@ -2535,7 +2512,7 @@
             {
                 "id": "in{{in_num}}_{{name}}_changing_step",
                 "group": "gg_in_{{ in_num }}_{{name}}_action",
-                "title": "p_change_step",
+                "title": "Step of Value Change",
                 "order": 1,
                 "address": {{1200 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
@@ -2549,7 +2526,7 @@
 
             {
                 "id": "baud_rate",
-                "title": "baud_rate",
+                "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
@@ -2564,8 +2541,7 @@
         "channels": [
             {
                 "group": "gg_out_channels",
-                "name": "rgb",
-                "id": "RGB Strip",
+                "name": "RGB Strip",
                 "address": 9,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2574,8 +2550,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "rgb_palette",
-                "id": "RGB Palette",
+                "name": "RGB Palette",
                 "type": "rgb",
                 "sporadic": true,
                 "consists_of": [
@@ -2596,8 +2571,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "rgb_palette_auto_on",
-                "id": "RGB Palette Auto-On",
+                "name": "RGB Palette Auto-On",
                 "enabled": false,
                 "type": "rgb",
                 "sporadic": true,
@@ -2634,8 +2608,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "rgb_hue",
-                "id": "RGB Strip Hue",
+                "name": "RGB Strip Hue",
                 "address": 2014,
                 "type": "range",
                 "reg_type": "holding",
@@ -2647,8 +2620,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "rgb_hue_auto_on",
-                "id": "RGB Strip Hue Auto-On",
+                "name": "RGB Strip Hue Auto-On",
                 "address": 2114,
                 "type": "range",
                 "enabled": false,
@@ -2666,8 +2638,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "rgb_saturation",
-                "id": "RGB Strip Saturation",
+                "name": "RGB Strip Saturation",
                 "address": 2015,
                 "type": "range",
                 "reg_type": "holding",
@@ -2679,8 +2650,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "rgb_saturation_auto_on",
-                "id": "RGB Strip Saturation Auto-On",
+                "name": "RGB Strip Saturation Auto-On",
                 "address": 2115,
                 "type": "range",
                 "enabled": false,
@@ -2698,8 +2668,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "rgb_brightness",
-                "id": "RGB Strip Brightness",
+                "name": "RGB Strip Brightness",
                 "address": 2016,
                 "type": "range",
                 "reg_type": "holding",
@@ -2711,8 +2680,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "rgb_brightness_auto_on",
-                "id": "RGB Strip Brightness Auto-On",
+                "name": "RGB Strip Brightness Auto-On",
                 "address": 2116,
                 "type": "range",
                 "enabled": false,
@@ -2730,8 +2698,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "hue_change",
-                "id": "Hue Changing",
+                "name": "Hue Changing",
                 "address": 10,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2740,8 +2707,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "hue_rate",
-                "id": "Hue Changing Rate",
+                "name": "Hue Changing Rate",
                 "address": 2017,
                 "type": "value",
                 "reg_type": "holding",
@@ -2753,8 +2719,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "hue_rate_auto_on",
-                "id": "Hue Changing Rate Auto-On",
+                "name": "Hue Changing Rate Auto-On",
                 "address": 2117,
                 "type": "value",
                 "enabled": false,
@@ -2772,8 +2737,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "ch1",
-                "id": "Channel 1 (B)",
+                "name": "Channel 1 (B)",
                 "address": 0,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2782,8 +2746,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "ch1_brightness",
-                "id": "Channel 1 (B) Brightness",
+                "name": "Channel 1 (B) Brightness",
                 "address": 2000,
                 "type": "range",
                 "reg_type": "holding",
@@ -2795,8 +2758,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch1_brightness_auto_on",
-                "id": "Channel 1 (B) Brightness Auto-On",
+                "name": "Channel 1 (B) Brightness Auto-On",
                 "address": 2100,
                 "type": "range",
                 "enabled": false,
@@ -2814,8 +2776,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "ch2",
-                "id": "Channel 2 (R)",
+                "name": "Channel 2 (R)",
                 "address": 1,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2824,8 +2785,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "ch2_brightness",
-                "id": "Channel 2 (R) Brightness",
+                "name": "Channel 2 (R) Brightness",
                 "address": 2001,
                 "type": "range",
                 "reg_type": "holding",
@@ -2837,8 +2797,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch2_brightness_auto_on",
-                "id": "Channel 2 (R) Brightness Auto-On",
+                "name": "Channel 2 (R) Brightness Auto-On",
                 "address": 2101,
                 "type": "range",
                 "enabled": false,
@@ -2857,8 +2816,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "Channels 1_2 (B_R)",
-                "name": "ch12",
-                "id": "Channels 1_2 (B_R)",
+                "name": "Channels 1, 2 (B, R)",
                 "address": 4,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2868,8 +2826,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "Channels 1_2 (B_R) Brightness",
-                "name": "ch12_brightness",
-                "id": "Channels 1_2 (B_R) Brightness",
+                "name": "Channels 1, 2 (B, R) Brightness",
                 "address": 2004,
                 "type": "range",
                 "reg_type": "holding",
@@ -2881,8 +2838,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch12_brightness_auto_on",
-                "id": "Channels 1, 2 (B, R) Brightness Auto-On",
+                "name": "Channels 1, 2 (B, R) Brightness Auto-On",
                 "address": 2104,
                 "type": "range",
                 "enabled": false,
@@ -2901,8 +2857,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "CCT1 (channels 1_2)",
-                "name": "cct1",
-                "id": "CCT1 (channels 1_2)",
+                "name": "CCT1 (channels 1, 2)",
                 "address": 7,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2911,8 +2866,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "cct1_temperature",
-                "id": "CCT1 Temperature",
+                "name": "CCT1 Temperature",
                 "address": 2007,
                 "type": "range",
                 "reg_type": "holding",
@@ -2924,8 +2878,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "cct1_temperature_auto_on",
-                "id": "CCT1 Temperature Auto-On",
+                "name": "CCT1 Temperature Auto-On",
                 "address": 2107,
                 "type": "range",
                 "enabled": false,
@@ -2943,8 +2896,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "cct1_brightness",
-                "id": "CCT1 Brightness",
+                "name": "CCT1 Brightness",
                 "address": 2008,
                 "type": "range",
                 "reg_type": "holding",
@@ -2956,8 +2908,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "cct1_brightness_auto_on",
-                "id": "CCT1 Brightness Auto-On",
+                "name": "CCT1 Brightness Auto-On",
                 "address": 2108,
                 "type": "range",
                 "enabled": false,
@@ -2975,8 +2926,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "ch3",
-                "id": "Channel 3 (G)",
+                "name": "Channel 3 (G)",
                 "address": 2,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2985,8 +2935,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "ch3_brightness",
-                "id": "Channel 3 (G) Brightness",
+                "name": "Channel 3 (G) Brightness",
                 "address": 2002,
                 "type": "range",
                 "reg_type": "holding",
@@ -2998,8 +2947,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch3_brightness_auto_on",
-                "id": "Channel 3 (G) Brightness Auto-On",
+                "name": "Channel 3 (G) Brightness Auto-On",
                 "address": 2102,
                 "type": "range",
                 "enabled": false,
@@ -3018,8 +2966,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "Channels 1_2_3_4",
-                "name": "ch1234",
-                "id": "Channels 1_2_3_4",
+                "name": "Channels 1, 2, 3, 4",
                 "address": 6,
                 "type": "switch",
                 "reg_type": "coil",
@@ -3029,8 +2976,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "Channels 1_2_3_4 Brightness",
-                "name": "ch1234_brightness",
-                "id": "Channels 1_2_3_4 Brightness",
+                "name": "Channels 1, 2, 3, 4 Brightness",
                 "address": 2006,
                 "type": "range",
                 "reg_type": "holding",
@@ -3042,8 +2988,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch1234_brightness_auto_on",
-                "id": "Channels 1, 2, 3, 4 Brightness Auto-On",
+                "name": "Channels 1, 2, 3, 4 Brightness Auto-On",
                 "address": 2106,
                 "type": "range",
                 "enabled": false,
@@ -3062,8 +3007,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "CCT2 (channels 3_4)",
-                "name": "cct2",
-                "id": "CCT2 (channels 3_4)",
+                "name": "CCT2 (channels 3, 4)",
                 "address": 8,
                 "type": "switch",
                 "reg_type": "coil",
@@ -3072,8 +3016,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "cct2_temperature",
-                "id": "CCT2 Temperature",
+                "name": "CCT2 Temperature",
                 "address": 2009,
                 "type": "range",
                 "reg_type": "holding",
@@ -3085,8 +3028,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "cct2_temperature_auto_on",
-                "id": "CCT2 Temperature Auto-On",
+                "name": "CCT2 Temperature Auto-On",
                 "address": 2109,
                 "type": "range",
                 "enabled": false,
@@ -3104,8 +3046,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "cct2_brightness",
-                "id": "CCT2 Brightness",
+                "name": "CCT2 Brightness",
                 "address": 2010,
                 "type": "range",
                 "reg_type": "holding",
@@ -3117,8 +3058,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "cct2_brightness_auto_on",
-                "id": "CCT2 Brightness Auto-On",
+                "name": "CCT2 Brightness Auto-On",
                 "address": 2110,
                 "type": "range",
                 "enabled": false,
@@ -3137,8 +3077,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "Channels 3_4 (G_W)",
-                "name": "ch34",
-                "id": "Channels 3_4 (G_W)",
+                "name": "Channels 3, 4 (G, W)",
                 "address": 5,
                 "type": "switch",
                 "reg_type": "coil",
@@ -3147,8 +3086,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "ch4",
-                "id": "Channel 4 (W)",
+                "name": "Channel 4 (W)",
                 "address": 3,
                 "type": "switch",
                 "reg_type": "coil",
@@ -3158,8 +3096,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "Channels 3_4 (G_W) Brightness",
-                "name": "ch34_brightness",
-                "id": "Channels 3_4 (G_W) Brightness",
+                "name": "Channels 3, 4 (G, W) Brightness",
                 "address": 2005,
                 "type": "range",
                 "reg_type": "holding",
@@ -3171,8 +3108,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch34_brightness_auto_on",
-                "id": "Channels 3, 4 (G, W) Brightness Auto-On",
+                "name": "Channels 3, 4 (G, W) Brightness Auto-On",
                 "address": 2105,
                 "type": "range",
                 "enabled": false,
@@ -3190,8 +3126,7 @@
             ) }}
             {
                 "group": "gg_out_channels",
-                "name": "ch4_brightness",
-                "id": "Channel 4 (W) Brightness",
+                "name": "Channel 4 (W) Brightness",
                 "address": 2003,
                 "type": "range",
                 "reg_type": "holding",
@@ -3203,8 +3138,7 @@
             },
             {
                 "group": "gg_out_channels_auto_on",
-                "name": "ch4_brightness_auto_on",
-                "id": "Channel 4 (W) Brightness Auto-On",
+                "name": "Channel 4 (W) Brightness Auto-On",
                 "address": 2103,
                 "type": "range",
                 "enabled": false,
@@ -3225,8 +3159,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "CCT1_CCT2",
-                "name": "cct1_cct2",
-                "id": "CCT1_CCT2",
+                "name": "CCT1, CCT2",
                 "address": 11,
                 "type": "switch",
                 "reg_type": "coil",
@@ -3236,8 +3169,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "CCT1_CCT2 Temperature",
-                "name": "cct1_cct2_temperature",
-                "id": "CCT1_CCT2 Temperature",
+                "name": "CCT1, CCT2 Temperature",
                 "address": 2018,
                 "type": "range",
                 "reg_type": "holding",
@@ -3250,8 +3182,7 @@
             {
                 "group": "gg_out_channels_auto_on",
                 "id": "CCT1_CCT2 Temperature Auto-On",
-                "name": "cct1_cct2_temperature_auto_on",
-                "id": "CCT1_CCT2 Temperature Auto-On",
+                "name": "CCT1, CCT2 Temperature Auto-On",
                 "address": 2118,
                 "type": "range",
                 "enabled": false,
@@ -3270,8 +3201,7 @@
             {
                 "group": "gg_out_channels",
                 "id": "CCT1_CCT2 Brightness",
-                "name": "cct1_cct2_brightness",
-                "id": "CCT1_CCT2 Brightness",
+                "name": "CCT1, CCT2 Brightness",
                 "address": 2019,
                 "type": "range",
                 "reg_type": "holding",
@@ -3284,8 +3214,7 @@
             {
                 "group": "gg_out_channels_auto_on",
                 "id": "CCT1_CCT2 Brightness Auto-On",
-                "name": "cct1_cct2_brightness_auto_on",
-                "id": "CCT1_CCT2 Brightness Auto-On",
+                "name": "CCT1, CCT2 Brightness Auto-On",
                 "address": 2119,
                 "type": "range",
                 "enabled": false,
@@ -3304,8 +3233,7 @@
             {# -#}
             {% for ch_number, ch_name in CHANNELS  -%}
             {
-                "name": "ch{{ch_number}}_raw_pwm",
-                "id": "Channel {{ch_number}} ({{ch_name}}) Raw PWM",
+                "name": "Channel {{ch_number}} ({{ch_name}}) Raw PWM",
                 "reg_type": "holding",
                 "order": {{ch_number}},
                 "address": {{90 + ch_number - 1}},
@@ -3319,8 +3247,7 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {
-                "name": "di_{{in_num}}",
-                "id": "Input {{in_num}}",
+                "name": "Input {{in_num}}",
                 "reg_type": "discrete",
                 "order": 1,
                 "address": {{0 + in_num - 1}},
@@ -3332,8 +3259,7 @@
                 {%- endif %}
             },
             {
-                "name": "count_{{in_num}}",
-                "id": "Input {{in_num}} Counter",
+                "name": "Input {{in_num}} Counter",
                 "reg_type": "input",
                 "order": 1,
                 "address": {{32 + in_num - 1}},
@@ -3345,8 +3271,7 @@
                 {%- endif %}
             },
             {
-                "name": "count_single_{{in_num}}",
-                "id": "Input {{in_num}} Single Press Counter",
+                "name": "Input {{in_num}} Single Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
                 "order": 1,
@@ -3359,8 +3284,7 @@
                 {%- endif %}
             },
             {
-                "name": "count_long_{{in_num}}",
-                "id": "Input {{in_num}} Long Press Counter",
+                "name": "Input {{in_num}} Long Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
                 "order": 1,
@@ -3373,8 +3297,7 @@
                 {%- endif %}
             },
             {
-                "name": "count_double_{{in_num}}",
-                "id": "Input {{in_num}} Double Press Counter",
+                "name": "Input {{in_num}} Double Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
                 "order": 1,
@@ -3387,8 +3310,7 @@
                 {%- endif %}
             },
             {
-                "name": "count_shortlong_{{in_num}}",
-                "id": "Input {{in_num}} Shortlong Press Counter",
+                "name": "Input {{in_num}} Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
                 "order": 1,
@@ -3404,8 +3326,7 @@
 
             {% for enc_num in range(1, ENCODERS_NUMBER + 1) -%}
             {
-                "name": "encoder_{{enc_num}}_position",
-                "id": "Encoder {{enc_num}} Position",
+                "name": "Encoder {{enc_num}} Position",
                 "enabled": false,
                 "reg_type": "holding",
                 "address": {{368 + ((enc_num - 1) * 2)}},
@@ -3415,8 +3336,7 @@
                 "condition": "encoder_{{enc_num}}_mode==1"
             },
             {
-                "name": "count_encoder_{{enc_num}}",
-                "id": "Encoder {{enc_num}} Steps Counter",
+                "name": "Encoder {{enc_num}} Steps Counter",
                 "description": "encoder_steps_counter_desc",
                 "enabled": true,
                 "reg_type": "press_counter",
@@ -3430,8 +3350,7 @@
             {% endfor -%}
 
             {
-                "name": "sn",
-                "id": "Serial",
+                "name": "Serial",
                 "type": "text",
                 "reg_type": "input",
                 "address": 270,
@@ -3439,8 +3358,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "fw",
-                "id": "FW Version",
+                "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
                 "type": "text",
@@ -3450,235 +3368,45 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "v_vin",
-                "id": "Supply Voltage",
+                "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
-                "units": "V",
+                "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "uptime",
-                "id": "Uptime",
+                "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "units": "s",
+                "type": "text",
                 "format": "u32",
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "t_mcu",
-                "id": "MCU Temperature",
+                "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "units": "deg C",
+                "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
                 "group": "g_hw_info"
             },
             {
-                "name": "v_mcu",
-                "id": "MCU Voltage",
+                "name": "MCU Voltage",
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "units": "V",
+                "type": "voltage",
                 "enabled": false,
                 "group": "g_hw_info"
             }
         ],
         "translations": {
             "en": {
-                {# --- canonical names: channels (WB-STD-001), groups (WB-STD-003 App.A), params, enums --- #}
-                "baud_rate": "Baud Rate",
-                "cct1": "CCT1 (channels 1, 2)",
-                "cct1_brightness": "CCT1 Brightness",
-                "cct1_brightness_auto_change": "CCT1 Brightness Auto-Change",
-                "cct1_brightness_auto_change_period": "CCT1 Brightness Period Auto-Change",
-                "cct1_brightness_auto_on": "CCT1 Brightness Auto-On",
-                "cct1_cct2": "CCT1, CCT2",
-                "cct1_cct2_brightness": "CCT1, CCT2 Brightness",
-                "cct1_cct2_brightness_auto_change": "CCT1, CCT2 Brightness Auto-Change",
-                "cct1_cct2_brightness_auto_change_period": "CCT1, CCT2 Brightness Period Auto-Change",
-                "cct1_cct2_brightness_auto_on": "CCT1, CCT2 Brightness Auto-On",
-                "cct1_cct2_temperature": "CCT1, CCT2 Temperature",
-                "cct1_cct2_temperature_auto_change": "CCT1, CCT2 Temperature Auto-Change",
-                "cct1_cct2_temperature_auto_change_period": "CCT1, CCT2 Temperature Period Auto-Change",
-                "cct1_cct2_temperature_auto_on": "CCT1, CCT2 Temperature Auto-On",
-                "cct1_temperature": "CCT1 Temperature",
-                "cct1_temperature_auto_change": "CCT1 Temperature Auto-Change",
-                "cct1_temperature_auto_change_period": "CCT1 Temperature Period Auto-Change",
-                "cct1_temperature_auto_on": "CCT1 Temperature Auto-On",
-                "cct2": "CCT2 (channels 3, 4)",
-                "cct2_brightness": "CCT2 Brightness",
-                "cct2_brightness_auto_change": "CCT2 Brightness Auto-Change",
-                "cct2_brightness_auto_change_period": "CCT2 Brightness Period Auto-Change",
-                "cct2_brightness_auto_on": "CCT2 Brightness Auto-On",
-                "cct2_temperature": "CCT2 Temperature",
-                "cct2_temperature_auto_change": "CCT2 Temperature Auto-Change",
-                "cct2_temperature_auto_change_period": "CCT2 Temperature Period Auto-Change",
-                "cct2_temperature_auto_on": "CCT2 Temperature Auto-On",
-                "ch1": "Channel 1 (B)",
-                "ch12": "Channels 1, 2 (B, R)",
-                "ch1234": "Channels 1, 2, 3, 4",
-                "ch1234_auto_change": "Channels 1, 2, 3, 4 Auto-Change",
-                "ch1234_brightness": "Channels 1, 2, 3, 4 Brightness",
-                "ch1234_brightness_auto_on": "Channels 1, 2, 3, 4 Brightness Auto-On",
-                "ch12_auto_change": "Channels 1, 2 (B, R) Auto-Change",
-                "ch12_brightness": "Channels 1, 2 (B, R) Brightness",
-                "ch12_brightness_auto_on": "Channels 1, 2 (B, R) Brightness Auto-On",
-                "ch1_auto_change": "Channel 1 (B) Auto-Change",
-                "ch1_brightness": "Channel 1 (B) Brightness",
-                "ch1_brightness_auto_on": "Channel 1 (B) Brightness Auto-On",
-                "ch1_raw_pwm": "Channel 1 (B) Raw PWM",
-                "ch2": "Channel 2 (R)",
-                "ch2_auto_change": "Channel 2 (R) Auto-Change",
-                "ch2_brightness": "Channel 2 (R) Brightness",
-                "ch2_brightness_auto_on": "Channel 2 (R) Brightness Auto-On",
-                "ch2_raw_pwm": "Channel 2 (R) Raw PWM",
-                "ch3": "Channel 3 (G)",
-                "ch34": "Channels 3, 4 (G, W)",
-                "ch34_auto_change": "Channels 3, 4 (G, W) Auto-Change",
-                "ch34_brightness": "Channels 3, 4 (G, W) Brightness",
-                "ch34_brightness_auto_on": "Channels 3, 4 (G, W) Brightness Auto-On",
-                "ch3_auto_change": "Channel 3 (G) Auto-Change",
-                "ch3_brightness": "Channel 3 (G) Brightness",
-                "ch3_brightness_auto_on": "Channel 3 (G) Brightness Auto-On",
-                "ch3_raw_pwm": "Channel 3 (G) Raw PWM",
-                "ch4": "Channel 4 (W)",
-                "ch4_auto_change": "Channel 4 (W) Auto-Change",
-                "ch4_brightness": "Channel 4 (W) Brightness",
-                "ch4_brightness_auto_on": "Channel 4 (W) Brightness Auto-On",
-                "ch4_raw_pwm": "Channel 4 (W) Raw PWM",
-                "channel_1_b_auto_change_period": "Channel 1 (B) Period Auto-Change",
-                "channel_2_r_auto_change_period": "Channel 2 (R) Period Auto-Change",
-                "channel_3_g_auto_change_period": "Channel 3 (G) Period Auto-Change",
-                "channel_4_w_auto_change_period": "Channel 4 (W) Period Auto-Change",
-                "channels_1_2_3_4_auto_change_period": "Channels 1, 2, 3, 4 Period Auto-Change",
-                "channels_1_2_b_r_auto_change_period": "Channels 1, 2 (B, R) Period Auto-Change",
-                "channels_3_4_g_w_auto_change_period": "Channels 3, 4 (G, W) Period Auto-Change",
-                "count_1": "Input 1 Counter",
-                "count_2": "Input 2 Counter",
-                "count_3": "Input 3 Counter",
-                "count_double_1": "Input 1 Double Press Counter",
-                "count_double_2": "Input 2 Double Press Counter",
-                "count_double_3": "Input 3 Double Press Counter",
-                "count_encoder_1": "Encoder 1 Steps Counter",
-                "count_long_1": "Input 1 Long Press Counter",
-                "count_long_2": "Input 2 Long Press Counter",
-                "count_long_3": "Input 3 Long Press Counter",
-                "count_shortlong_1": "Input 1 Shortlong Press Counter",
-                "count_shortlong_2": "Input 2 Shortlong Press Counter",
-                "count_shortlong_3": "Input 3 Shortlong Press Counter",
-                "count_single_1": "Input 1 Single Press Counter",
-                "count_single_2": "Input 2 Single Press Counter",
-                "count_single_3": "Input 3 Single Press Counter",
-                "di_1": "Input 1",
-                "di_2": "Input 2",
-                "di_3": "Input 3",
-                "e_ab_type": "AB Type",
-                "e_blue_brightness": "Blue Brightness",
-                "e_decrease": "Decrease",
-                "e_disabled": "Disabled",
-                "e_enabled": "Enabled",
-                "e_green_brightness": "Green Brightness",
-                "e_increase": "Increase",
-                "e_increase_decrease": "Increase/Decrease",
-                "e_keep_min_brightness": "Keep Minimum Brightness",
-                "e_mode_2cct": "2*CCT",
-                "e_mode_2w_2w": "2*W + 2*W",
-                "e_mode_2w_cct": "2*W + CCT",
-                "e_mode_2w_w_w": "2*W + W + W",
-                "e_mode_4w": "4*W",
-                "e_mode_cct_2w": "CCT + 2*W",
-                "e_mode_cct_cct": "CCT + CCT",
-                "e_mode_cct_w_w": "CCT + W + W",
-                "e_mode_rgb_w": "RGB + W",
-                "e_mode_w_w_2w": "W + W + 2*W",
-                "e_mode_w_w_cct": "W + W + CCT",
-                "e_mode_w_w_w_w": "W + W + W + W",
-                "e_no_control": "No Control",
-                "e_not_used": "Not Used",
-                "e_red_brightness": "Red Brightness",
-                "e_rgb_brightness": "Brightness of RGB Strip (HSV-V)",
-                "e_rgb_hue": "Hue of RGB Strip (circular, HSV-H)",
-                "e_rgb_hue_time": "Hue Changing Time of RGB Strip",
-                "e_rgb_saturation": "Saturation of RGB Strip (HSV-S)",
-                "e_stop": "Stop",
-                "e_turn_off_channel": "Turn Off the Channel",
-                "encoder_1_position": "Encoder 1 Position",
-                "fw": "Firmware Version",
-                "g_auto_change": "Auto-Change",
-                "g_debug": "Debug",
-                "g_encoders": "Encoders",
-                "g_general": "General",
-                "g_hw_info": "HW Info",
-                "g_in1": "Input 1",
-                "g_in2": "Input 2",
-                "g_in3": "Input 3",
-                "g_outputs": "Outputs",
-                "gg_dp_action": "Double Press Action",
-                "gg_encoder_1": "Encoder 1",
-                "gg_encoder_channels": "Encoder Channels",
-                "gg_in_channels": "Input Channels",
-                "gg_in_press_params": "Input Parameters",
-                "gg_lp_action": "Long Press Action",
-                "gg_out_auto_change_params": "Periods Auto-Change",
-                "gg_out_channels": "Output Channels",
-                "gg_out_channels_auto_change": "Auto-Change",
-                "gg_out_channels_auto_on": "Output Channels Auto-On",
-                "gg_out_params": "Output Parameters",
-                "gg_slp_action": "Shortlong Press Action",
-                "gg_sp_action": "Single Press Action",
-                "hue_change": "Hue Changing",
-                "hue_changing_rate_auto_change_period": "Hue Changing Rate Period Auto-Change",
-                "hue_rate": "Hue Changing Rate",
-                "hue_rate_auto_change": "Hue Changing Rate Auto-Change",
-                "hue_rate_auto_on": "Hue Changing Rate Auto-On",
-                "p_ch1_max": "Channel 1 Maximum Value",
-                "p_ch1_min": "Channel 1 Minimum Value",
-                "p_ch2_max": "Channel 2 Maximum Value",
-                "p_ch2_min": "Channel 2 Minimum Value",
-                "p_ch3_max": "Channel 3 Maximum Value",
-                "p_ch3_min": "Channel 3 Minimum Value",
-                "p_ch4_max": "Channel 4 Maximum Value",
-                "p_ch4_min": "Channel 4 Minimum Value",
-                "p_change_step": "Step of Value Change",
-                "p_controlled_channel": "Controlled Channel",
-                "p_dimmer_mode": "Dimmer Mode",
-                "p_encoder_mode": "Encoder Connection Type",
-                "p_min_br_behavior": "Behavior When Brightness is Reduced Below the Minimum Value",
-                "p_pulses_per_step": "Pulses per Step",
-                "rgb": "RGB Strip",
-                "rgb_blue_auto_change": "RGB Strip Blue Auto-Change",
-                "rgb_blue_auto_change_period": "RGB Strip Blue Period Auto-Change",
-                "rgb_brightness": "RGB Strip Brightness",
-                "rgb_brightness_auto_change": "RGB Strip Brightness Auto-Change",
-                "rgb_brightness_auto_change_period": "RGB Strip Brightness Period Auto-Change",
-                "rgb_brightness_auto_on": "RGB Strip Brightness Auto-On",
-                "rgb_green_auto_change": "RGB Strip Green Auto-Change",
-                "rgb_green_auto_change_period": "RGB Strip Green Period Auto-Change",
-                "rgb_hue": "RGB Strip Hue",
-                "rgb_hue_auto_change": "RGB Strip Hue Auto-Change",
-                "rgb_hue_auto_change_period": "RGB Strip Hue Period Auto-Change",
-                "rgb_hue_auto_on": "RGB Strip Hue Auto-On",
-                "rgb_palette": "RGB Palette",
-                "rgb_palette_auto_on": "RGB Palette Auto-On",
-                "rgb_red_auto_change": "RGB Strip Red Auto-Change",
-                "rgb_red_auto_change_period": "RGB Strip Red Period Auto-Change",
-                "rgb_saturation": "RGB Strip Saturation",
-                "rgb_saturation_auto_change": "RGB Strip Saturation Auto-Change",
-                "rgb_saturation_auto_change_period": "RGB Strip Saturation Period Auto-Change",
-                "rgb_saturation_auto_on": "RGB Strip Saturation Auto-On",
-                "sn": "Serial Number",
-                "t_mcu": "MCU Temperature",
-                "uptime": "Uptime",
-                "v_mcu": "MCU Voltage",
-                "v_vin": "Supply Voltage",
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3.8 (4-channel CV LED Dimmer)",
 
                 "sp_title": "Short Press",
@@ -3783,6 +3511,10 @@
 
                 "dimmer_mode_description": "Select the operating mode before setting the dimmer",
 
+                "Action_sp" : "Action short press",
+                "Action_lp" : "Action long press",
+                "Action_dp" : "Action double press",
+                "Action_slp" : "Action short and after long press",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
@@ -3812,196 +3544,11 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "gg_out_channels_auto_on_description": "Channels are enabled when writing a value > 0:",
-                "g_auto_change_description": "Channels in this group start automatic smooth change of light parameters in either direction, or with direction inversion, the same way as long-press of local buttons"
+                "g_auto_change_description": "Channels in this group start automatic smooth change of light parameters in either direction, or with direction inversion, the same way as long-press of local buttons",
 
+                "Uptime": "Uptime (s)"
             },
             "ru": {
-                {# --- canonical names: channels (WB-STD-001), groups (WB-STD-003 App.A), params, enums --- #}
-                "baud_rate": "Скорость обмена",
-                "cct1": "CCT1 (каналы 1, 2)",
-                "cct1_brightness": "CCT1: яркость",
-                "cct1_brightness_auto_change": "CCT1: яркость автоизменение",
-                "cct1_brightness_auto_change_period": "CCT1:: яркость - период автоизменения",
-                "cct1_brightness_auto_on": "CCT1: яркость с автовключением",
-                "cct1_cct2": "CCT1, CCT2",
-                "cct1_cct2_brightness": "CCT1, CCT2: яркость",
-                "cct1_cct2_brightness_auto_change": "CCT1, CCT2: яркость автоизменение",
-                "cct1_cct2_brightness_auto_change_period": "CCT1, CCT2:: яркость - период автоизменения",
-                "cct1_cct2_brightness_auto_on": "CCT1, CCT2: яркость с автовключением",
-                "cct1_cct2_temperature": "CCT1, CCT2: температура",
-                "cct1_cct2_temperature_auto_change": "CCT1, CCT2: температура автоизменение",
-                "cct1_cct2_temperature_auto_change_period": "CCT1, CCT2:: температура - период автоизменения",
-                "cct1_cct2_temperature_auto_on": "CCT1, CCT2: температура с автовключением",
-                "cct1_temperature": "CCT1: температура",
-                "cct1_temperature_auto_change": "CCT1: температура автоизменение",
-                "cct1_temperature_auto_change_period": "CCT1:: температура - период автоизменения",
-                "cct1_temperature_auto_on": "CCT1: температура с автовключением",
-                "cct2": "CCT2 (каналы 3, 4)",
-                "cct2_brightness": "CCT2: яркость",
-                "cct2_brightness_auto_change": "CCT2: яркость автоизменение",
-                "cct2_brightness_auto_change_period": "CCT2:: яркость - период автоизменения",
-                "cct2_brightness_auto_on": "CCT2: яркость с автовключением",
-                "cct2_temperature": "CCT2: температура",
-                "cct2_temperature_auto_change": "CCT2: температура автоизменение",
-                "cct2_temperature_auto_change_period": "CCT2:: температура - период автоизменения",
-                "cct2_temperature_auto_on": "CCT2: температура с автовключением",
-                "ch1": "Канал 1 (B)",
-                "ch12": "Каналы 1, 2 (B, R)",
-                "ch1234": "Каналы 1, 2, 3, 4",
-                "ch1234_auto_change": "Каналы 1, 2, 3, 4: автоизменение",
-                "ch1234_brightness": "Каналы 1, 2, 3, 4: яркость",
-                "ch1234_brightness_auto_on": "Каналы 1, 2, 3, 4: яркость с автовключением",
-                "ch12_auto_change": "Каналы 1, 2 (B, R): автоизменение",
-                "ch12_brightness": "Каналы 1, 2 (B, R): яркость",
-                "ch12_brightness_auto_on": "Каналы 1, 2 (B, R): яркость с автовключением",
-                "ch1_auto_change": "Канал 1 (B): автоизменение",
-                "ch1_brightness": "Канал 1 (B): яркость",
-                "ch1_brightness_auto_on": "Канал 1 (B): яркость с автовключением",
-                "ch1_raw_pwm": "Канал 1 (B): прямое задание ШИМ",
-                "ch2": "Канал 2 (R)",
-                "ch2_auto_change": "Канал 2 (R): автоизменение",
-                "ch2_brightness": "Канал 2 (R): яркость",
-                "ch2_brightness_auto_on": "Канал 2 (R): яркость с автовключением",
-                "ch2_raw_pwm": "Канал 2 (R): прямое задание ШИМ",
-                "ch3": "Канал 3 (G)",
-                "ch34": "Каналы 3, 4 (G, W)",
-                "ch34_auto_change": "Каналы 3, 4 (G, W): автоизменение",
-                "ch34_brightness": "Каналы 3, 4 (G, W): яркость",
-                "ch34_brightness_auto_on": "Каналы 3, 4 (G, W): яркость с автовключением",
-                "ch3_auto_change": "Канал 3 (G): автоизменение",
-                "ch3_brightness": "Канал 3 (G): яркость",
-                "ch3_brightness_auto_on": "Канал 3 (G): яркость с автовключением",
-                "ch3_raw_pwm": "Канал 3 (G): прямое задание ШИМ",
-                "ch4": "Канал 4 (W)",
-                "ch4_auto_change": "Канал 4 (W): автоизменение",
-                "ch4_brightness": "Канал 4 (W): яркость",
-                "ch4_brightness_auto_on": "Канал 4 (W): яркость с автовключением",
-                "ch4_raw_pwm": "Канал 4 (W): прямое задание ШИМ",
-                "channel_1_b_auto_change_period": "Канал 1 (B) - период автоизменения",
-                "channel_2_r_auto_change_period": "Канал 2 (R) - период автоизменения",
-                "channel_3_g_auto_change_period": "Канал 3 (G) - период автоизменения",
-                "channel_4_w_auto_change_period": "Канал 4 (W) - период автоизменения",
-                "channels_1_2_3_4_auto_change_period": "Каналы 1, 2, 3, 4 - период автоизменения",
-                "channels_1_2_b_r_auto_change_period": "Каналы 1, 2 (B, R) - период автоизменения",
-                "channels_3_4_g_w_auto_change_period": "Каналы 3, 4 (G, W) - период автоизменения",
-                "count_1": "Вход 1: счетчик замыканий",
-                "count_2": "Вход 2: счетчик замыканий",
-                "count_3": "Вход 3: счетчик замыканий",
-                "count_double_1": "Вход 1: счетчик двойных нажатий",
-                "count_double_2": "Вход 2: счетчик двойных нажатий",
-                "count_double_3": "Вход 3: счетчик двойных нажатий",
-                "count_encoder_1": "Энкодер 1: счетчик шагов",
-                "count_long_1": "Вход 1: счетчик длинных нажатий",
-                "count_long_2": "Вход 2: счетчик длинных нажатий",
-                "count_long_3": "Вход 3: счетчик длинных нажатий",
-                "count_shortlong_1": "Вход 1: счетчик коротких, а затем длинных нажатий",
-                "count_shortlong_2": "Вход 2: счетчик коротких, а затем длинных нажатий",
-                "count_shortlong_3": "Вход 3: счетчик коротких, а затем длинных нажатий",
-                "count_single_1": "Вход 1: счетчик одиночных нажатий",
-                "count_single_2": "Вход 2: счетчик одиночных нажатий",
-                "count_single_3": "Вход 3: счетчик одиночных нажатий",
-                "di_1": "Вход 1",
-                "di_2": "Вход 2",
-                "di_3": "Вход 3",
-                "e_ab_type": "Тип AB",
-                "e_blue_brightness": "Яркость синего",
-                "e_decrease": "Уменьшить",
-                "e_disabled": "Выключено",
-                "e_enabled": "Включено",
-                "e_green_brightness": "Яркость зеленого",
-                "e_increase": "Увеличить",
-                "e_increase_decrease": "Увеличить/уменьшить",
-                "e_keep_min_brightness": "Сохранить минимальную: яркость",
-                "e_mode_2cct": "2*CCT",
-                "e_mode_2w_2w": "2*W + 2*W",
-                "e_mode_2w_cct": "2*W + CCT",
-                "e_mode_2w_w_w": "2*W + W + W",
-                "e_mode_4w": "4*W",
-                "e_mode_cct_2w": "CCT + 2*W",
-                "e_mode_cct_cct": "CCT + CCT",
-                "e_mode_cct_w_w": "CCT + W + W",
-                "e_mode_rgb_w": "RGB + W",
-                "e_mode_w_w_2w": "W + W + 2*W",
-                "e_mode_w_w_cct": "W + W + CCT",
-                "e_mode_w_w_w_w": "W + W + W + W",
-                "e_no_control": "Без управления",
-                "e_not_used": "Не используется",
-                "e_red_brightness": "Яркость красного",
-                "e_rgb_brightness": "Яркость RGB-ленты (HSV-V)",
-                "e_rgb_hue": "Оттенок RGB-ленты (по кругу, HSV-H)",
-                "e_rgb_hue_time": "Время смены оттенка RGB-ленты",
-                "e_rgb_saturation": "Насыщенность RGB-ленты (HSV-S)",
-                "e_stop": "Остановить",
-                "e_turn_off_channel": "Выключить канал",
-                "encoder_1_position": "Энкодер 1: положение",
-                "fw": "Версия прошивки",
-                "g_auto_change": "Автоизменение",
-                "g_debug": "Диагностика",
-                "g_encoders": "Энкодеры",
-                "g_general": "Общее",
-                "g_hw_info": "Данные модуля",
-                "g_in1": "Вход 1",
-                "g_in2": "Вход 2",
-                "g_in3": "Вход 3",
-                "g_outputs": "Выходы",
-                "gg_dp_action": "Действие по двойному нажатию",
-                "gg_encoder_1": "Энкодер 1",
-                "gg_encoder_channels": "Каналы энкодера",
-                "gg_in_channels": "Каналы входа",
-                "gg_in_press_params": "Параметры входа",
-                "gg_lp_action": "Действие по длинному нажатию",
-                "gg_out_auto_change_params": "Периоды автоизменения",
-                "gg_out_channels": "Каналы выходов",
-                "gg_out_channels_auto_change": "Автоизменение",
-                "gg_out_channels_auto_on": "Каналы выходов с автовключением",
-                "gg_out_params": "Параметры выходов",
-                "gg_slp_action": "Действие по короткому, а затем длинному нажатию",
-                "gg_sp_action": "Действие по одиночному нажатию",
-                "hue_change": "Смена оттенка",
-                "hue_changing_rate_auto_change_period": "Скорость смены оттенка - период автоизменения",
-                "hue_rate": "Скорость смены оттенка",
-                "hue_rate_auto_change": "Скорость смены оттенка: автоизменение",
-                "hue_rate_auto_on": "Скорость смены оттенка с автовключением",
-                "p_ch1_max": "Канал 1: максимальное значение",
-                "p_ch1_min": "Канал 1: минимальное значение",
-                "p_ch2_max": "Канал 2: максимальное значение",
-                "p_ch2_min": "Канал 2: минимальное значение",
-                "p_ch3_max": "Канал 3: максимальное значение",
-                "p_ch3_min": "Канал 3: минимальное значение",
-                "p_ch4_max": "Канал 4: максимальное значение",
-                "p_ch4_min": "Канал 4: минимальное значение",
-                "p_change_step": "Шаг изменения значения",
-                "p_controlled_channel": "Управляемый канал",
-                "p_dimmer_mode": "Режим работы",
-                "p_encoder_mode": "Тип подключения энкодера",
-                "p_min_br_behavior": "Поведение при снижении яркости ниже минимальной",
-                "p_pulses_per_step": "Импульсов на шаг",
-                "rgb": "RGB-лента",
-                "rgb_blue_auto_change": "RGB: синий: автоизменение",
-                "rgb_blue_auto_change_period": "RGB: синий - период автоизменения",
-                "rgb_brightness": "RGB:: яркость",
-                "rgb_brightness_auto_change": "RGB:: яркость автоизменение",
-                "rgb_brightness_auto_change_period": "RGB:: яркость - период автоизменения",
-                "rgb_brightness_auto_on": "RGB:: яркость с автовключением",
-                "rgb_green_auto_change": "RGB: зеленый: автоизменение",
-                "rgb_green_auto_change_period": "RGB: зеленый - период автоизменения",
-                "rgb_hue": "RGB: оттенок",
-                "rgb_hue_auto_change": "RGB: оттенок: автоизменение",
-                "rgb_hue_auto_change_period": "RGB: оттенок - период автоизменения",
-                "rgb_hue_auto_on": "RGB: оттенок с автовключением",
-                "rgb_palette": "RGB-палитра",
-                "rgb_palette_auto_on": "RGB-палитра с автовключением",
-                "rgb_red_auto_change": "RGB: красный: автоизменение",
-                "rgb_red_auto_change_period": "RGB: красный - период автоизменения",
-                "rgb_saturation": "RGB: насыщенность",
-                "rgb_saturation_auto_change": "RGB: насыщенность: автоизменение",
-                "rgb_saturation_auto_change_period": "RGB: насыщенность - период автоизменения",
-                "rgb_saturation_auto_on": "RGB: насыщенность с автовключением",
-                "sn": "Серийный номер",
-                "t_mcu": "Температура МК",
-                "uptime": "Время работы с момента включения",
-                "v_mcu": "Напряжение питания МК",
-                "v_vin": "Напряжение питания",
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3.8 (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
@@ -4015,9 +3562,64 @@
 
                 "cct_power_normalization_title": "Нормализация мощности CCT лент",
 
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
 
+                "Stop": "Стоп",
+                "Decrease": "Уменьшение",
+                "Increase": "Увеличение",
+                "Increase/Decrease": "Увеличение/уменьшение",
+                "Periods Auto-Change": "Скорость авто-изменения",
 
+                "Channel 1 (B) Auto-Change": "Авто-изменение канала 1 (B)",
+                "Channel 2 (R) Auto-Change": "Авто-изменение канала 2 (R)",
+                "Channel 3 (G) Auto-Change": "Авто-изменение канала 3 (G)",
+                "Channel 4 (W) Auto-Change": "Авто-изменение канала 4 (W)",
+                "Channels 1, 2 (B, R) Auto-Change": "Авто-изменение каналов 1 и 2 (B, R)",
+                "Channels 3, 4 (G, W) Auto-Change": "Авто-изменение каналов 3 и 4 (G, W)",
+                "Channels 1, 2, 3, 4 Auto-Change": "Авто-изменение каналов 1, 2, 3 и 4",
+                "CCT1 Temperature Auto-Change": "Авто-изменение цветовой температуры CCT1",
+                "CCT1 Brightness Auto-Change": "Авто-изменение яркости CCT1",
+                "CCT2 Temperature Auto-Change": "Авто-изменение цветовой температуры CCT2",
+                "CCT2 Brightness Auto-Change": "Авто-изменение яркости CCT2",
+                "RGB Strip Red Auto-Change": "Авто-изменение красного RGB ленты",
+                "RGB Strip Green Auto-Change": "Авто-изменение зелёного RGB ленты",
+                "RGB Strip Blue Auto-Change": "Авто-изменение синего RGB ленты",
+                "RGB Strip Hue Auto-Change": "Авто-изменение оттенка RGB ленты (H)",
+                "RGB Strip Saturation Auto-Change": "Авто-изменение насыщенности RGB ленты (S)",
+                "RGB Strip Brightness Auto-Change": "Авто-изменение яркости RGB ленты (V)",
+                "CCT1, CCT2 Temperature Auto-Change": "Авто-изменение цветовой температуры CCT1 и CCT2",
+                "CCT1, CCT2 Brightness Auto-Change": "Авто-изменение яркости CCT1 и CCT2",
+                "Hue Changing Rate Auto-Change": "Авто-изменение скорости смены оттенка",
+                "Channel 1 (B) Period Auto-Change (ms/unit)": "Период авто-изменения канала 1 (B) (мс/ед)",
+                "Channel 2 (R) Period Auto-Change (ms/unit)": "Период авто-изменения канала 2 (R) (мс/ед)",
+                "Channel 3 (G) Period Auto-Change (ms/unit)": "Период авто-изменения канала 3 (G) (мс/ед)",
+                "Channel 4 (W) Period Auto-Change (ms/unit)": "Период авто-изменения канала 4 (W) (мс/ед)",
+                "Channels 1, 2 (B, R) Period Auto-Change (ms/unit)": "Период авто-изменения каналов 1 и 2 (B, R) (мс/ед)",
+                "Channels 3, 4 (G, W) Period Auto-Change (ms/unit)": "Период авто-изменения каналов 3 и 4 (G, W) (мс/ед)",
+                "Channels 1, 2, 3, 4 Period Auto-Change (ms/unit)": "Период авто-изменения каналов 1, 2, 3 и 4 (мс/ед)",
+                "CCT1 Temperature Period Auto-Change (ms/unit)": "Период авто-изменения цветовой температуры CCT1 (мс/ед)",
+                "CCT1 Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости CCT1 (мс/ед)",
+                "CCT2 Temperature Period Auto-Change (ms/unit)": "Период авто-изменения цветовой температуры CCT2 (мс/ед)",
+                "CCT2 Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости CCT2 (мс/ед)",
+                "RGB Strip Red Period Auto-Change (ms/unit)": "Период авто-изменения красного RGB ленты (мс/ед)",
+                "RGB Strip Green Period Auto-Change (ms/unit)": "Период авто-изменения зелёного RGB ленты (мс/ед)",
+                "RGB Strip Blue Period Auto-Change (ms/unit)": "Период авто-изменения синего RGB ленты (мс/ед)",
+                "RGB Strip Hue Period Auto-Change (ms/unit)": "Период авто-изменения оттенка (мс/ед)",
+                "RGB Strip Saturation Period Auto-Change (ms/unit)": "Период авто-изменения насыщенности (мс/ед)",
+                "RGB Strip Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости (мс/ед)",
+                "CCT1, CCT2 Temperature Period Auto-Change (ms/unit)": "Период авто-изменения цветовой температуры CCT1 и CCT2 (мс/ед)",
+                "CCT1, CCT2 Brightness Period Auto-Change (ms/unit)": "Период авто-изменения яркости CCT1 и CCT2 (мс/ед)",
+                "Hue Changing Rate Period Auto-Change (ms/unit)": "Период авто-изменения скорости смены оттенка (мс/ед)",
 
+                "Outputs": "Выходы",
+                "Outputs Channels": "Каналы выходов",
+                "Output Channels Auto-On": "Каналы выходов с авто-включением",
+                "Auto-Change": "Авто-изменение",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
 
                 "gg_out_channels_auto_on_description": "Каналы включаются при записи значения > 0:",
                 "g_auto_change_description": "Каналы из этой группы позволяют запускать авто-изменение параметров света в любую сторону, либо со сменой направления так же как это происходит для долгих нажатий локальных кнопок",
@@ -4111,13 +3713,86 @@
                 "dec_ch1234_act_title": "Уменьшить яркость каналов 1, 2, 3, 4",
                 "inc_dec_ch1234_act_title": "Увеличить/уменьшить яркость каналов 1, 2, 3, 4",
 
+                "Channel 1 (B)": "Канал 1 (B)",
+                "Channel 2 (R)": "Канал 2 (R)",
+                "Channel 3 (G)": "Канал 3 (G)",
+                "Channel 4 (W)": "Канал 4 (W)",
+                "Channels 1, 2 (B, R)": "Каналы 1, 2 (B, R)",
+                "Channels 3, 4 (G, W)": "Каналы 3, 4 (G, W)",
+                "CCT1 (channels 1, 2)": "Лента CCT1 (каналы 1, 2)",
+                "CCT2 (channels 3, 4)": "Лента CCT2 (каналы 3, 4)",
+                "RGB Strip": "Лента RGB",
+                "Hue Changing": "Изменение оттенка RGB ленты",
+                "Channels 1, 2, 3, 4": "Каналы 1, 2, 3, 4",
 
+                "CCT1": "Лента CCT1",
+                "CCT2": "Лента CCT2",
 
+                "Channel 1 (B) Brightness": "Яркость канала 1 (B)",
+                "Channel 2 (R) Brightness": "Яркость канала 2 (R)",
+                "Channel 3 (G) Brightness": "Яркость канала 3 (G)",
+                "Channel 4 (W) Brightness": "Яркость канала 4 (W)",
+                "Channels 1, 2 (B, R) Brightness": "Яркость каналов 1, 2 (B, R)",
+                "Channels 3, 4 (G, W) Brightness": "Яркость каналов 3, 4 (G, W)",
+                "Channel 1 (B) Brightness Auto-On": "Яркость канала 1 (B) с авто-включением",
+                "Channel 2 (R) Brightness Auto-On": "Яркость канала 2 (R) с авто-включением",
+                "Channel 3 (G) Brightness Auto-On": "Яркость канала 3 (G) с авто-включением",
+                "Channel 4 (W) Brightness Auto-On": "Яркость канала 4 (W) с авто-включением",
+                "Channels 1, 2 (B, R) Brightness Auto-On": "Яркость каналов 1, 2 (B, R) с авто-включением",
+                "Channels 3, 4 (G, W) Brightness Auto-On": "Яркость каналов 3, 4 (G, W) с авто-включением",
+                "CCT1 Temperature": "Цветовая температура ленты CCT1",
+                "CCT1 Brightness": "Яркость ленты CCT1",
+                "CCT2 Temperature": "Цветовая температура ленты CCT2",
+                "CCT2 Brightness": "Яркость ленты CCT2",
+                "CCT1 Temperature Auto-On": "Цветовая температура ленты CCT1 с авто-включением",
+                "CCT1 Brightness Auto-On": "Яркость ленты CCT1 с авто-включением",
+                "CCT2 Temperature Auto-On": "Цветовая температура ленты CCT2 с авто-включением",
+                "CCT2 Brightness Auto-On": "Яркость ленты CCT2 с авто-включением",
+                "RGB Palette": "Палитра RGB",
+                "RGB Strip Hue": "Оттенок RGB ленты (H)",
+                "RGB Strip Saturation": "Насыщенность цвета RGB ленты (S)",
+                "RGB Strip Brightness": "Яркость RGB ленты (V)",
+                "Hue Changing Rate": "Время изменения оттенка (Hue) на 1° (мс)",
+                "RGB Palette Auto-On": "Палитра RGB с авто-включением",
+                "RGB Strip Hue Auto-On": "Оттенок RGB ленты (H) с авто-включением",
+                "RGB Strip Saturation Auto-On": "Насыщенность цвета RGB ленты (S) с авто-включением",
+                "RGB Strip Brightness Auto-On": "Яркость RGB ленты (V) с авто-включением",
+                "Hue Changing Rate Auto-On": "Время изменения оттенка (Hue) на 1° (мс) с авто-включением",
+                "Channels 1, 2, 3, 4 Brightness": "Яркость каналов 1, 2, 3, 4",
+                "Channels 1, 2, 3, 4 Brightness Auto-On": "Яркость каналов 1, 2, 3, 4 с авто-включением",
+                "CCT1, CCT2 Temperature": "Цветовая температура лент CCT1 и CCT2",
+                "CCT1, CCT2 Temperature Auto-On": "Цветовая температура лент CCT1 и CCT2 с авто-включением",
+                "CCT1, CCT2 Brightness": "Яркость лент CCT1 и CCT2",
+                "CCT1, CCT2 Brightness Auto-On": "Яркость лент CCT1 и CCT2 с авто-включением",
 
+                "Channel 1 (B) Raw PWM": "Прямое управление ШИМ канала 1 (B)",
+                "Channel 2 (R) Raw PWM": "Прямое управление ШИМ канала 2 (R)",
+                "Channel 3 (G) Raw PWM": "Прямое управление ШИМ канала 3 (G)",
+                "Channel 4 (W) Raw PWM": "Прямое управление ШИМ канала 4 (W)",
 
+                "Input 1 Counter": "Счетчик 1",
+                "Input 2 Counter": "Счетчик 2",
+                "Input 3 Counter": "Счетчик 3",
+                "Input 1 Single Press Counter": "Счетчик коротких нажатий входа 1",
+                "Input 2 Single Press Counter": "Счетчик коротких нажатий входа 2",
+                "Input 3 Single Press Counter": "Счетчик коротких нажатий входа 3",
+                "Input 1 Long Press Counter": "Счетчик длинных нажатий входа 1",
+                "Input 2 Long Press Counter": "Счетчик длинных нажатий входа 2",
+                "Input 3 Long Press Counter": "Счетчик длинных нажатий входа 3",
+                "Input 1 Double Press Counter": "Счетчик двойных нажатий входа 1",
+                "Input 2 Double Press Counter": "Счетчик двойных нажатий входа 2",
+                "Input 3 Double Press Counter": "Счетчик двойных нажатий входа 3",
+                "Input 1 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 1",
+                "Input 2 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 2",
+                "Input 3 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 3",
 
+                "Dimmer Mode": "Режим работы",
                 "dimmer_mode_description": "Выберите режим перед настройкой диммера",
 
+                "Action_sp" : "Действие для короткого нажатия",
+                "Action_lp" : "Действие для длинного нажатия",
+                "Action_dp" : "Действие для двойного нажатия",
+                "Action_slp" : "Действие для короткого, затем длинного нажатия",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки (мс/ед)",
@@ -4133,14 +3808,43 @@
                 {% set input1_num = ((enc_num - 1) * 2) + 1 -%}
                 {% set input2_num = ((enc_num - 1) * 2) + 2 -%}
                 "encoder_{{enc_num}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
+                "Encoder {{enc_num}} Position": "Положение энкодера {{enc_num}}",
+                "Encoder {{enc_num}} Steps Counter": "Счетчик шагов энкодера {{enc_num}}",
+                "Encoder {{enc_num}}": "Энкодер {{enc_num}}",
                 {% endfor -%}
 
                 "encoder_steps_counter_desc": "С учетом параметра «Количество импульсов на один шаг»",
 
+                "Encoders": "Энкодеры",
+                "Not used": "Не используется",
+                "AB type": "Тип AB",
 
+                "Encoder Connection Type": "Тип подключения энкодера",
+                "Pulses per Step": "Количество импульсов на один шаг",
+                "Controlled Channel": "Управляемый канал",
+                "Step of Value Change": "Шаг изменения значения",
 
+                "No Control": "Управление отключено",
+                "Red Brightness": "Яркость красного",
+                "Green Brightness": "Яркость зеленого",
+                "Blue Brightness": "Яркость синего",
+                "Hue of RGB Strip (circular, HSV-H)": "Оттенок RGB ленты (HSV-H, по кругу)",
+                "Saturation of RGB Strip (HSV-S)": "Насыщенность цвета RGB ленты (HSV-S)",
+                "Brightness of RGB Strip (HSV-V)": "Яркость RGB ленты (HSV-V)",
+                "Hue Changing Time of RGB Strip": "Время непрерывного изменения оттенка RGB ленты",
 
+                "Behavior When Brightness is Reduced Below the Minimum Value": "Поведение при уменьшении яркости ниже минимального значения",
+                "Turn Off the Channel": "Выключить канал",
+                "Keep Minimum Brightness": "Оставить минимальную яркость",
 
+                "Channel 1 (B) Minimum Value": "Нижний порог диммирования канала 1 (B)",
+                "Channel 2 (R) Minimum Value": "Нижний порог диммирования канала 2 (R)",
+                "Channel 3 (G) Minimum Value": "Нижний порог диммирования канала 3 (G)",
+                "Channel 4 (W) Minimum Value": "Нижний порог диммирования канала 4 (W)",
+                "Channel 1 (B) Maximum Value": "Верхний порог диммирования канала 1 (B)",
+                "Channel 2 (R) Maximum Value": "Верхний порог диммирования канала 2 (R)",
+                "Channel 3 (G) Maximum Value": "Верхний порог диммирования канала 3 (G)",
+                "Channel 4 (W) Maximum Value": "Верхний порог диммирования канала 4 (W)",
 
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",
@@ -4150,9 +3854,18 @@
 
                 "hue_fader_description": "Время изменения оттенка (Hue) на 360°. Учтите, что оттенок изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
 
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость."
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
 
+                "Disabled": "Отключено",
+                "Enabled": "Включено"
             }
         }
     }

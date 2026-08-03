@@ -29,43 +29,43 @@
         "groups": [
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "g_in{{ch_number}}",
-                "id": "g_in{{ch_number}}"
+                "title": "Input {{ch_number}}",
+                "id": "input_{{ch_number}}"
             },
             {% for press_type in PRESS_TYPES -%}
             {
-                "title": "gg_{{ press_type | replace(' ', '_') }}_press_action",
-                "id": "gg_in{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
-                "group": "g_in{{ ch_number }}"
+                "title": "{{ press_type | title }} Press Action",
+                "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
+                "group": "input_{{ ch_number }}"
             },
             {% endfor -%}
             {
-                "title": "gg_switch_on_action",
-                "id": "gg_in{{ ch_number }}_switch_on_action",
-                "group": "g_in{{ ch_number }}"
+                "title": "Action when Switch is On",
+                "id": "input_{{ ch_number }}_switch_on_action",
+                "group": "input_{{ ch_number }}"
             },
             {
-                "title": "gg_switch_off_action",
-                "id": "gg_in{{ ch_number }}_switch_off_action",
-                "group": "g_in{{ ch_number }}"
+                "title": "Action when Switch is Off",
+                "id": "input_{{ ch_number }}_switch_off_action",
+                "group": "input_{{ ch_number }}"
             },
             {
-                "title": "gg_press_params",
-                "id": "gg_in{{ ch_number }}_press_params",
-                "group": "g_in{{ ch_number }}"
+                "title": "Input Parameters",
+                "id": "input_{{ ch_number }}_parameters",
+                "group": "input_{{ ch_number }}"
             },
             {% endfor -%}
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
-                "title": "g_out{{ch_number + 1}}",
-                "id": "g_out{{ch_number + 1}}"
+                "title": "Channel {{ch_number + 1}}",
+                "id": "channel_{{ch_number + 1}}"
             },
             {% endfor -%}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "gg_in_channels",
-                "id": "gg_in{{ch_number}}_channels",
-                "group": "g_in{{ch_number}}",
+                "title": "Inputs {{ch_number}} Counters",
+                "id": "input_{{ch_number}}_counters",
+                "group": "input_{{ch_number}}",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -75,18 +75,18 @@
             {% endfor -%}
 
             {
-                "title": "g_encoders",
+                "title": "Encoders",
                 "id": "g_encoders"
             },
             {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
             {
-                "title": "gg_encoder_{{encoder_number}}",
+                "title": "Encoder {{encoder_number}}",
                 "id": "gg_encoder_{{encoder_number}}",
                 "group": "g_encoders"
             },
             {% endfor -%}
             {
-                "title": "gg_encoder_channels",
+                "title": "encoder_channels",
                 "id": "gg_encoder_channels",
                 "group": "g_encoders",
                 "ui_options": {
@@ -97,53 +97,53 @@
             },
 
             {
-                "title": "g_safety",
+                "title": "Safety Mode",
                 "id": "g_safety",
                 "description": "g_safety_description"
             },
             {
-                "title": "g_power_up_behaviour",
+                "title": "Power Up Behaviour",
                 "id": "g_power_up_behaviour",
                 "description": "g_power_up_behaviour_description"
             },
             {
-                "title": "gg_safety_behaviour",
+                "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "g_out{{ ch_number }}",
+                "title": "Channel {{ ch_number }}",
                 "id": "gg_safety_mode_ch_{{ ch_number }}",
                 "group": "gg_safety_behaviour"
             },
             {
-                "title": "g_out{{ ch_number }}",
+                "title": "Channel {{ ch_number }}",
                 "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
                 "group": "g_power_up_behaviour"
             },
             {% endfor -%}
             {
-                "title": "gg_safety_input_control",
+                "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
                 "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
 
             {
-                "title": "g_general",
-                "id": "g_general"
+                "title": "General",
+                "id": "general"
             },
             {
-                "title": "gg_legacy_inputs_mode",
-                "id": "gg_legacy_inputs_mode",
-                "group": "g_general",
+                "title": "Legacy Inputs Mode",
+                "id": "gg_mode",
+                "group": "general",
                 "description": "inputs_mode_description"
             },
             {
-                "title": "gg_general_parameters",
+                "title": "General Parameters",
                 "id": "gg_general_parameters",
-                "group": "g_general",
+                "group": "general",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -151,9 +151,9 @@
                 }
             },
             {
-                "title": "gg_general_channels",
+                "title": "General Channels",
                 "id": "gg_general_channels",
-                "group": "g_general",
+                "group": "general",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -161,12 +161,12 @@
                 }
             },
             {
-                "title": "g_hw_info",
-                "id": "g_hw_info"
+                "title": "HW Info",
+                "id": "hw_info"
             },
             {
-                "title": "g_debug",
-                "id": "g_debug"
+                "title": "Debug",
+                "id": "debug"
             }
         ],
 
@@ -174,18 +174,18 @@
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
-                "title": "p_inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
+                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3],
                 "default": 0,
                 "enum_titles": [
-                    "e_control_disabled",
-                    "e_ctrl_out{{ch_number + 1}}_1btn",
-                    "e_ctrl_out{{ch_number + 1}}_2btn",
-                    "e_custom_mode"
+                    "Control disabled",
+                    "Control output {{ch_number + 1}} in 1-button mode",
+                    "Control output {{ch_number + 1}} in 2-button mode",
+                    "Custom mode"
                 ],
-                "group": "gg_legacy_inputs_mode",
+                "group": "gg_mode",
                 "order": {{ch_number}}
             },
             {% endfor -%}
@@ -198,55 +198,55 @@
             {% set encoder_disabled_condition = "(encoder_" ~ cond_enc_num ~ "_mode==0)" if cond_enc_num <= ENCODERS_NUMBER else "(1==1)" -%}
             {
                 "id": "{{action_bind}}_number",
-                "title": "p_output_number",
+                "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
-                    "e_no_action",
-                    "e_output1",
-                    "e_output2",
-                    "e_output3",
-                    "e_all_outputs"
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "All Outputs"
                 ],
                 "default": 0,
-                "group": "gg_in{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 1,
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}"
             },
             {
                 "id": "{{action_bind}}_action_single",
-                "title": "p_action",
+                "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
-                    "e_turn_off",
-                    "e_turn_on",
-                    "e_toggle",
-                    "e_decrease_level",
-                    "e_increase_level"{% if press_type in ["long", "shortlong"] %},
-                    "e_increase_decrease_level"{% endif %}
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle",
+                    "Decrease level",
+                    "Increase level"{% if press_type in ["long", "shortlong"] %},
+                    "Increase/Decrease level"{% endif %}
                 ],
                 "default": 0,
-                "group": "gg_in{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
                 "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=3)&&{{encoder_disabled_condition}}"
             },
             {
                 "id": "{{action_bind}}_action_all",
-                "title": "p_action",
+                "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 3, 4],
                 "enum_titles": [
-                    "e_turn_off",
-                    "e_turn_on",
-                    "e_decrease_level",
-                    "e_increase_level"
+                    "Turn Off",
+                    "Turn On",
+                    "Decrease level",
+                    "Increase level"
                 ],
                 "default": 0,
-                "group": "gg_in{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
                 "condition": "{{action_bind}}_number==100&&{{encoder_disabled_condition}}"
             },
@@ -258,8 +258,8 @@
             {% set encoder_disabled_condition = "(encoder_" ~ cond_enc_num ~ "_mode==0)" if cond_enc_num <= ENCODERS_NUMBER else "(1==1)" -%}
             {
                 "id": "input_{{ch_number+1}}_{{press_type}}_press_changing_step",
-                "group": "gg_in{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
-                "title": "p_change_step",
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "title": "Level Change Step (%)",
                 "order": 3,
                 "address": {{1200 + ch_number + loop.index0 * 20}},
                 "reg_type": "holding",
@@ -274,57 +274,57 @@
             {% set encoder_disabled_condition = "(encoder_" ~ cond_enc_num ~ "_mode==0)" if cond_enc_num <= ENCODERS_NUMBER else "(1==1)" -%}
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
-                "title": "p_output_number",
+                "title": "Output Number",
                 "address": {{704 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
-                    "e_no_action",
-                    "e_output1",
-                    "e_output2",
-                    "e_output3",
-                    "e_all_outputs"
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "All Outputs"
                 ],
                 "default": 0,
-                "group": "gg_in{{ch_number + 1}}_switch_{{sw_act}}_action",
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_mode==1&&{{encoder_disabled_condition}}",
                 "order": 1
             },
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
-                "title": "p_action",
+                "title": "Action",
                 "address": {{736 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "e_turn_off",
-                    "e_turn_on",
-                    "e_toggle"
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
                 ],
                 "default": {{ 0 if sw_act == "off" else 1}},
-                "group": "gg_in{{ch_number + 1}}_switch_{{sw_act}}_action",
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=3&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
-                "title": "p_action",
+                "title": "Action",
                 "address": {{736 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
-                    "e_turn_off",
-                    "e_turn_on"
+                    "Turn Off",
+                    "Turn On"
                 ],
                 "default": {{ 0 if sw_act == "off" else 1}},
-                "group": "gg_in{{ch_number + 1}}_switch_{{sw_act}}_action",
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {% endfor -%}{% endfor -%}
             {
                 "id": "safety_timer_s",
-                "title": "safety_timer_s",
+                "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
                 "description": "poll_timeout_description",
                 "address": 8,
@@ -337,22 +337,22 @@
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "safety_mode_ch_{{ch_number}}_action",
-                "title": "p_action",
+                "title": "Action",
                 "reg_type": "holding",
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "e_no_action",
-                    "e_turn_off",
-                    "e_turn_on",
-                    "e_set_brightness"
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Set Brightness"
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
-                "title": "p_level",
+                "title": "Brightness (%)",
                 "description": "level_after_actions_description",
                 "reg_type": "holding",
                 "address": {{656 + ch_number - 1}},
@@ -365,22 +365,22 @@
             },
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
-                "title": "p_action",
+                "title": "Action",
                 "reg_type": "holding",
                 "address": {{664 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "e_turn_off",
-                    "e_set_previous_state",
-                    "e_turn_on",
-                    "e_set_brightness"
+                    "Turn Off",
+                    "Set Previous State",
+                    "Turn On",
+                    "Set Brightness"
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
-                "title": "p_level",
+                "title": "Brightness (%)",
                 "description": "level_after_actions_description",
                 "reg_type": "holding",
                 "address": {{672 + ch_number - 1}},
@@ -395,16 +395,16 @@
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "id": "in_{{in_number}}_safety_input_control",
-                "title": "g_in{{in_number}}",
+                "title": "Input {{in_number}}",
                 "group": "gg_safety_input_control",
                 "address": {{640 + in_number - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "e_dont_change",
-                    "e_disable_in_safety",
-                    "e_enable_only_in_safety"
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
                 ]
             },
             {% endfor -%}
@@ -415,56 +415,56 @@
             {% set encoder_disabled_condition = "(encoder_" ~ cond_enc_num ~ "_mode==0)" if cond_enc_num <= ENCODERS_NUMBER else "(1==1)" -%}
             {
                 "id": "input_{{ch_number + 1}}_mode",
-                "title": "p_input_mode",
+                "title": "Input Mode",
                 "description": "input_mode_description",
                 "address": {{416 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
-                    "e_button",
-                    "e_switch"
+                    "Button",
+                    "Switch"
                 ],
                 "required": true,
                 "default": 0,
                 "condition": "(isDefined({{selected_mode}})==0||{{selected_mode}}==3)&&{{encoder_disabled_condition}}",
-                "group": "g_in{{ch_number + 1}}"
+                "group": "input_{{ch_number + 1}}"
             },
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
-                "title": "p_hold_time",
+                "title": "Long Press Time (ms)",
                 "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
                 "reg_type": "holding",
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
-                "group": "gg_in{{ch_number + 1}}_press_params",
+                "group": "input_{{ch_number + 1}}_parameters",
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "order": 1
             },
             {
                 "id": "input_{{ch_number + 1}}_double_time",
-                "title": "p_double_time",
+                "title": "Second Press Waiting Time (ms)",
                 "description": "input_double_time_description",
                 "address": {{1140 + ch_number}},
                 "reg_type": "holding",
                 "default": 300,
                 "min": 0,
                 "max": 2000,
-                "group": "gg_in{{ch_number + 1}}_press_params",
+                "group": "input_{{ch_number + 1}}_parameters",
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "order": 2
             },
             {
                 "id": "input_{{ch_number + 1}}_debounce_time",
-                "title": "p_debounce_time",
+                "title": "Debounce Time (ms)",
                 "description": "input_debounce_time_description",
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
                 "default": 50,
                 "min": 2,
                 "max": 200,
-                "group": "gg_in{{ch_number + 1}}_press_params",
+                "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
             },
             {% endfor -%}
@@ -472,14 +472,14 @@
             {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
             {
                 "id": "encoder_{{encoder_number}}_mode",
-                "title": "p_encoder_mode",
+                "title": "Encoder Connection Type",
                 "description": "encoder_{{encoder_number}}_mode_description",
                 "address": {{376 + encoder_number - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
-                    "e_not_used",
-                    "e_ab_type"
+                    "Not used",
+                    "AB type"
                 ],
                 "default": 0,
                 "group": "gg_encoder_{{encoder_number}}",
@@ -487,7 +487,7 @@
             },
             {
                 "id": "encoder_{{encoder_number}}_pulses_per_step",
-                "title": "p_pulses_per_step",
+                "title": "Pulses per Step",
                 "address": {{384 + encoder_number - 1}},
                 "reg_type": "holding",
                 "min": 1,
@@ -499,14 +499,14 @@
             },
             {
                 "id": "encoder_{{encoder_number}}_controlled_channel",
-                "title": "p_controlled_channel",
+                "title": "Controlled Channel",
                 "address": {{388 + encoder_number - 1}},
                 "reg_type": "holding",
                 "enum": [0, {% for ch_number in range(1, OUTPUTS_NUMBER + 1) %}{{ch_number}}{% if not loop.last %}, {% endif %}{% endfor %}],
                 "enum_titles": [
-                    "e_no_control",
+                    "No Control",
                     {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-                    "e_channel{{ch_number}}"{% if not loop.last %},{% endif %}
+                    "Channel {{ch_number}}"{% if not loop.last %},{% endif %}
                     {% endfor -%}
                 ],
                 "default": 0,
@@ -516,7 +516,7 @@
             },
             {
                 "id": "encoder_{{encoder_number}}_change_step",
-                "title": "p_change_step",
+                "title": "Level Change Step (%)",
                 "address": {{392 + encoder_number - 1}},
                 "reg_type": "holding",
                 "min": 1,
@@ -528,13 +528,13 @@
             },
             {
                 "id": "encoder_{{encoder_number}}_min_br_behavior",
-                "title": "p_min_br_behavior",
+                "title": "Behavior When Level is Reduced Below the Minimum Value",
                 "address": {{396 + encoder_number - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
-                    "e_turn_off_channel",
-                    "e_keep_min_level"
+                    "Turn Off the Channel",
+                    "Keep Minimum Level"
                 ],
                 "default": 0,
                 "group": "gg_encoder_{{encoder_number}}",
@@ -545,86 +545,86 @@
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
                 "id": "channel{{ ch_number + 1}}_dimming_curve",
-                "title": "p_dimming_curve_k{{ ch_number + 1}}",
+                "title": "Channel {{ ch_number + 1}} Dimming Curve",
                 "address": {{50 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "e_curve_log",
-                    "e_curve_linear",
-                    "e_curve_switch"
+                    "LED lamp or incandescent lamp (logarithmic)",
+                    "resistive load (linear)",
+                    "switching mode (on/off)"
                 ],
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ ch_number + 1}}",
                 "order": 1
             },
             {
                 "id": "channel{{ ch_number + 1}}_dimming_type",
-                "title": "p_dimming_type_k{{ ch_number + 1}}",
+                "title": "Channel {{ ch_number + 1}} Dimming Type",
                 "address": {{60 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "e_edge_leading",
-                    "e_edge_trailing"
+                    "leading edge (motors, fans, incandescent lamps)",
+                    "trailing edge (LED lamps)"
                 ],
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ ch_number + 1 }}",
                 "order": 2
             },
             {
                 "id": "channel{{ ch_number + 1 }}_min_value",
-                "title": "p_min_value_k{{ ch_number + 1 }}",
+                "title": "Channel {{ ch_number + 1 }} Min Value (us)",
                 "description": "channel_min_value_description",
                 "address": {{70 + ch_number}},
                 "reg_type": "holding",
                 "min": 0,
                 "max": 9999,
                 "default": 1000,
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ ch_number + 1 }}",
                 "order": 3
             },
             {
                 "id": "channel{{ ch_number + 1 }}_max_value",
-                "title": "p_max_value_k{{ ch_number + 1 }}",
+                "title": "Channel {{ ch_number + 1 }} Max Value (us)",
                 "description": "channel_max_value_description",
                 "address": {{80 + ch_number}},
                 "reg_type": "holding",
                 "min": 0,
                 "max": 9999,
                 "default": 9999,
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ ch_number + 1 }}",
                 "order": 4
             },
             {
                 "id": "channel{{ ch_number + 1 }}_increase_rate",
-                "title": "p_increase_rate_k{{ ch_number + 1 }}",
+                "title": "Channel {{ ch_number + 1 }} Increase Rate (ms/%)",
                 "description": "increase_rate_description",
                 "address": {{140 + ch_number}},
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 10,
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ ch_number + 1 }}",
                 "order": 5
             },
             {
                 "id": "channel{{ ch_number + 1 }}_decrease_rate",
-                "title": "p_decrease_rate_k{{ ch_number + 1 }}",
+                "title": "Channel {{ ch_number + 1 }} Decrease Rate (ms/%)",
                 "description": "decrease_rate_description",
                 "address": {{150 + ch_number}},
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 10,
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ ch_number + 1 }}",
                 "order": 6
             },
             {
                 "id": "action{{ch_number + 1}}_repeat_time",
-                "title": "p_action_repeat_time",
+                "title": "Action Repeat Time (ms)",
                 "description": "action_repeat_time_description",
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ch_number + 1}}",
                 "address": {{896 + ch_number}},
                 "reg_type": "holding",
                 "default": 20,
@@ -636,7 +636,7 @@
 
             {
                 "id": "baud_rate",
-                "title": "baud_rate",
+                "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
@@ -658,64 +658,58 @@
             {% set cond_enc_num = (ch_number // 2) + 1 -%}
             {% set encoder_disabled_condition = "(encoder_" ~ cond_enc_num ~ "_mode==0)" if cond_enc_num <= ENCODERS_NUMBER else "(1==1)" -%}
             {
-                "name": "di_{{ch_number + 1}}",
-                "id": "Input {{ch_number + 1}}",
+                "name": "Input {{ch_number + 1}}",
                 "reg_type": "discrete",
                 "address": {{ch_number}},
                 "type": "switch",
-                "group": "gg_in{{ch_number + 1}}_channels",
+                "group": "input_{{ch_number + 1}}_counters",
                 "condition": "{{encoder_disabled_condition}}",
                 "sporadic": true
             },
             {
-                "name": "count_{{ch_number + 1}}",
-                "id": "Input {{ch_number + 1}} counter",
+                "name": "Input {{ch_number + 1}} counter",
                 "reg_type": "input",
                 "address": {{32 + ch_number}},
                 "type": "value",
-                "group": "gg_in{{ch_number + 1}}_channels",
+                "group": "input_{{ch_number + 1}}_counters",
                 "condition": "{{encoder_disabled_condition}}",
                 "sporadic": true
             },
             {
-                "name": "count_single_{{ch_number + 1}}",
-                "id": "Input {{ch_number + 1}} Single Press Counter",
+                "name": "Input {{ch_number + 1}} Single Press Counter",
                 "reg_type": "press_counter",
                 "address": {{464 + ch_number}},
                 "type": "value",
-                "group": "gg_in{{ch_number + 1}}_channels",
+                "group": "input_{{ch_number + 1}}_counters",
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "sporadic": true
             },
             {
-                "name": "count_long_{{ch_number + 1}}",
-                "id": "Input {{ch_number + 1}} Long Press Counter",
+                "name": "Input {{ch_number + 1}} Long Press Counter",
                 "reg_type": "press_counter",
                 "address": {{480 + ch_number}},
                 "type": "value",
-                "group": "gg_in{{ch_number + 1}}_channels",
+                "group": "input_{{ch_number + 1}}_counters",
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "sporadic": true
             },
             {
-                "name": "count_double_{{ch_number + 1}}",
-                "id": "Input {{ch_number + 1}} Double Press Counter",
+                "name": "Input {{ch_number + 1}} Double Press Counter",
                 "reg_type": "press_counter",
                 "address": {{496 + ch_number}},
                 "type": "value",
                 "enabled": false,
-                "group": "gg_in{{ch_number + 1}}_channels",
+                "group": "input_{{ch_number + 1}}_counters",
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "sporadic": true
             },
             {
-                "name": "count_shortlong_{{ch_number + 1}}",
-                "id": "Input {{ch_number + 1}} Shortlong Press Counter",
+                "name": "Input {{ch_number + 1}} Shortlong Press Counter",
                 "reg_type": "press_counter",
                 "address": {{512 + ch_number}},
                 "type": "value",
                 "enabled": false,
-                "group": "gg_in{{ch_number + 1}}_channels",
+                "group": "input_{{ch_number + 1}}_counters",
                 "condition": "input_{{ch_number + 1}}_mode!=1&&{{encoder_disabled_condition}}",
                 "sporadic": true
             },
@@ -723,8 +717,7 @@
 
             {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
             {
-                "name": "encoder_{{encoder_number}}_position",
-                "id": "Encoder {{encoder_number}} Position",
+                "name": "Encoder {{encoder_number}} Position",
                 "enabled": false,
                 "reg_type": "holding",
                 "address": {{368 + (encoder_number - 1) * 2}},
@@ -734,8 +727,7 @@
                 "condition": "encoder_{{encoder_number}}_mode==1"
             },
             {
-                "name": "count_encoder_{{encoder_number}}",
-                "id": "Encoder {{encoder_number}} Steps Counter",
+                "name": "Encoder {{encoder_number}} Steps Counter",
                 "description": "encoder_steps_counter_desc",
                 "reg_type": "input",
                 "address": {{364 + encoder_number - 1}},
@@ -748,308 +740,163 @@
 
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "do_k{{ch_number + 1}}",
-                "id": "K{{ch_number + 1}}",
+                "name": "K{{ch_number + 1}}",
                 "reg_type": "coil",
                 "address": {{ch_number}},
                 "type": "switch",
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ch_number + 1}}",
                 "sporadic": true
             },
             {
-                "name": "level_k{{ch_number + 1}}",
-                "id": "Channel {{ch_number + 1}}",
+                "name": "Channel {{ch_number + 1}}",
                 "reg_type": "holding",
                 "address": {{ch_number}},
                 "type": "range",
                 "max": 100,
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ch_number + 1}}",
                 "sporadic": true
             },
             {
-                "name": "level_auto_on_k{{ch_number + 1}}",
-                "id": "Channel {{ch_number + 1}} with Auto-On",
+                "name": "Channel {{ch_number + 1}} with Auto-On",
                 "reg_type": "holding",
                 "address": {{4 + ch_number}},
                 "type": "range",
                 "enabled": false,
                 "max": 100,
-                "group": "g_out{{ch_number + 1}}",
+                "group": "channel_{{ch_number + 1}}",
                 "sporadic": true
             },
             {
-                "name": "auto_change_k{{ch_number + 1}}",
-                "id": "Channel {{ch_number + 1}} Auto-Change",
+                "name": "Channel {{ch_number + 1}} Auto-Change",
                 "reg_type": "holding",
                 "address": {{24 + ch_number}},
                 "type": "value",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "e_stop",
-                    "e_decrease",
-                    "e_increase",
-                    "e_increase_decrease"
+                    "Stop",
+                    "Decrease",
+                    "Increase",
+                    "Increase/Decrease"
                 ],
                 "enabled": false,
                 "sporadic": true,
-                "group": "g_out{{ch_number + 1}}"
+                "group": "channel_{{ch_number + 1}}"
             },
             {
-                "name": "time_raw_duty_k{{ch_number + 1}}",
-                "id": "Channel {{ch_number + 1}} Raw Duty (us)",
+                "name": "Channel {{ch_number + 1}} Raw Duty (us)",
                 "reg_type": "holding",
                 "address": {{90 + ch_number}},
-                "units": "us",
                 "readonly": true,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "debug"
             },
             {% endfor -%}
             {
-                "name": "sn",
-                "id": "Serial",
+                "name": "Serial",
                 "type": "text",
                 "reg_type": "input",
                 "address": 270,
                 "format": "u32",
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "hw_batch",
-                "id": "HW Batch Number",
+                "name": "HW Batch Number",
                 "type": "text",
                 "reg_type": "input",
                 "address": 304,
                 "format": "string",
                 "string_data_size": 16,
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "fw",
-                "id": "FW Version",
+                "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
                 "type": "text",
                 "format": "string",
                 "string_data_size": 16,
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "v_vin",
-                "id": "Supply voltage",
+                "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
-                "units": "V",
+                "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "uptime",
-                "id": "Uptime",
+                "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "units": "s",
+                "type": "text",
                 "format": "u32",
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "t_mcu",
-                "id": "MCU Temperature",
+                "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "units": "deg C",
+                "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "v_mcu",
-                "id": "MCU Voltage",
+                "name": "MCU Voltage",
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "units": "V",
+                "type": "voltage",
                 "enabled": false,
-                "group": "g_hw_info"
+                "group": "hw_info"
             },
             {
-                "name": "state_ac_line",
-                "id": "AC on L-N",
+                "name": "AC on L-N",
                 "reg_type": "input",
                 "address": 97,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "e_no_voltage",
-                    "e_voltage_stable",
-                    "e_voltage_unstable"
+                    "No voltage",
+                    "Voltage stable",
+                    "Voltage unstable"
                 ],
                 "group": "gg_general_channels"
             },
             {
-                "name": "alarm_overcurrent",
-                "id": "Overcurrent",
+                "name": "Overcurrent",
                 "reg_type": "input",
                 "address": 100,
-                "type": "alarm",
+                "type": "switch",
                 "group": "gg_general_channels"
             },
             {
-                "name": "time_zero_cross_offset",
-                "id": "Zero-Cross Offset (us)",
+                "name": "Zero-Cross Offset (us)",
                 "reg_type": "input",
-                "units": "us",
                 "address": 98,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "debug"
             },
             {
-                "name": "time_ac_period",
-                "id": "Last AC Voltage Period (us)",
+                "name": "Last AC Voltage Period (us)",
                 "reg_type": "input",
-                "units": "us",
                 "address": 99,
                 "enabled": false,
-                "group": "g_debug"
+                "group": "debug"
             }
         ],
 
         "translations": {
             "en": {
-                {# --- canonical enum titles (WB-STD-003 4.3) --- #}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "e_output{{n}}": "Output {{n}}",
-                "e_channel{{n}}": "Channel {{n}}",
-                "e_ctrl_out{{n}}_1btn": "Control output {{n}} in 1-button mode",
-                "e_ctrl_out{{n}}_2btn": "Control output {{n}} in 2-button mode",
-                {% endfor -%}
-                "e_control_disabled": "Control disabled",
-                "e_custom_mode": "Custom mode",
-                "e_no_action": "No Action",
-                "e_all_outputs": "All Outputs",
-                "e_turn_off": "Turn Off",
-                "e_turn_on": "Turn On",
-                "e_toggle": "Toggle",
-                "e_decrease_level": "Decrease Level",
-                "e_increase_level": "Increase Level",
-                "e_increase_decrease_level": "Increase/Decrease Level",
-                "e_set_brightness": "Set Brightness",
-                "e_set_previous_state": "Set Previous State",
-                "e_dont_change": "Don't Change",
-                "e_disable_in_safety": "Disable in Safety Mode",
-                "e_enable_only_in_safety": "Enable Only in Safety Mode",
-                "e_button": "Button",
-                "e_switch": "Switch",
-                "e_not_used": "Not Used",
-                "e_ab_type": "AB Type",
-                "e_no_control": "No Control",
-                "e_turn_off_channel": "Turn Off the Channel",
-                "e_keep_min_level": "Keep Minimum Level",
-                "e_curve_log": "LED lamp or incandescent lamp (logarithmic)",
-                "e_curve_linear": "Resistive load (linear)",
-                "e_curve_switch": "Switching mode (on/off)",
-                "e_edge_leading": "Leading edge (motors, fans, incandescent lamps)",
-                "e_edge_trailing": "Trailing edge (LED lamps)",
-                "e_stop": "Stop",
-                "e_decrease": "Decrease",
-                "e_increase": "Increase",
-                "e_increase_decrease": "Increase/Decrease",
-                "e_no_voltage": "No Voltage",
-                "e_voltage_stable": "Voltage Stable",
-                "e_voltage_unstable": "Voltage Unstable",
-                {# --- canonical parameter titles (WB-STD-003 4.3) --- #}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "p_inputs{{ (n-1)*2 + 1 }}{{ (n-1)*2 + 2 }}_mode": "Inputs {{ (n-1)*2 + 1 }}-{{ (n-1)*2 + 2 }}",
-                "p_dimming_curve_k{{n}}": "Channel {{n}} Dimming Curve",
-                "p_dimming_type_k{{n}}": "Channel {{n}} Dimming Type",
-                "p_min_value_k{{n}}": "Channel {{n}} Min Value (us)",
-                "p_max_value_k{{n}}": "Channel {{n}} Max Value (us)",
-                "p_increase_rate_k{{n}}": "Channel {{n}} Increase Rate (ms/%)",
-                "p_decrease_rate_k{{n}}": "Channel {{n}} Decrease Rate (ms/%)",
-                {% endfor -%}
-                "p_output_number": "Output Number",
-                "p_action": "Action",
-                "p_change_step": "Level Change Step (%)",
-                "p_level": "Brightness (%)",
-                "p_input_mode": "Input Mode",
-                "p_hold_time": "Long Press Time (ms)",
-                "p_double_time": "Second Press Waiting Time (ms)",
-                "p_debounce_time": "Debounce Time (ms)",
-                "p_encoder_mode": "Encoder Connection Type",
-                "p_pulses_per_step": "Pulses per Step",
-                "p_controlled_channel": "Controlled Channel",
-                "p_min_br_behavior": "Behavior When Level is Reduced Below the Minimum Value",
-                "p_action_repeat_time": "Action Repeat Time (ms)",
-                "safety_timer_s": "Safety Poll Timeout (s)",
-                "baud_rate": "Baud Rate",
-                {# --- canonical group titles (WB-STD-003 Appendix A) --- #}
-                {% for n in range(1, INPUTS_NUMBER + 1) -%}
-                "g_in{{n}}": "Input {{n}}",
-                {% endfor -%}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "g_out{{n}}": "Channel {{n}}",
-                {% endfor -%}
-                {% for n in range(1, ENCODERS_NUMBER + 1) -%}
-                "gg_encoder_{{n}}": "Encoder {{n}}",
-                {% endfor -%}
-                "gg_single_press_action": "Single Press Action",
-                "gg_long_press_action": "Long Press Action",
-                "gg_double_press_action": "Double Press Action",
-                "gg_shortlong_press_action": "Shortlong Press Action",
-                "gg_switch_on_action": "Action when Switch is On",
-                "gg_switch_off_action": "Action when Switch is Off",
-                "gg_press_params": "Input Parameters",
-                "gg_in_channels": "Input Channels",
-                "gg_encoder_channels": "Encoder Channels",
-                "g_encoders": "Encoders",
-                "g_safety": "Safety Mode",
-                "gg_safety_behaviour": "Safety Behaviour",
-                "gg_safety_input_control": "Inputs Control In Safety Mode",
-                "g_power_up_behaviour": "Power Up Behaviour",
-                "g_general": "General",
-                "gg_legacy_inputs_mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
-                "gg_general_parameters": "General Parameters",
-                "gg_general_channels": "General Channels",
-                "g_hw_info": "HW Info",
-                "g_debug": "Debug",
-                {# --- canonical channel names (WB-STD-001 6.1, 6.3) --- #}
-                {% for n in range(1, INPUTS_NUMBER + 1) -%}
-                "di_{{n}}": "Input {{n}}",
-                "count_{{n}}": "Input {{n}} Counter",
-                "count_single_{{n}}": "Input {{n}} Single Press Counter",
-                "count_long_{{n}}": "Input {{n}} Long Press Counter",
-                "count_double_{{n}}": "Input {{n}} Double Press Counter",
-                "count_shortlong_{{n}}": "Input {{n}} Shortlong Press Counter",
-                {% endfor -%}
-                {% for n in range(1, ENCODERS_NUMBER + 1) -%}
-                "encoder_{{n}}_position": "Encoder {{n}} Position",
-                "count_encoder_{{n}}": "Encoder {{n}} Steps Counter",
-                {% endfor -%}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "do_k{{n}}": "K{{n}}",
-                "level_k{{n}}": "Channel {{n}}",
-                "level_auto_on_k{{n}}": "Channel {{n}} with Auto-On",
-                "auto_change_k{{n}}": "Channel {{n}} Auto-Change",
-                "time_raw_duty_k{{n}}": "Channel {{n}} Raw Duty",
-                {% endfor -%}
-                "sn": "Serial Number",
-                "fw": "Firmware Version",
-                "hw_batch": "HW Batch Number",
-                "uptime": "Uptime",
-                "v_vin": "Supply Voltage",
-                "t_mcu": "MCU Temperature",
-                "v_mcu": "MCU Voltage",
-                "state_ac_line": "AC on L-N",
-                "alarm_overcurrent": "Overcurrent",
-                "time_zero_cross_offset": "Zero-Cross Offset",
-                "time_ac_period": "Last AC Voltage Period",
                 "WB-MDM3_template_title": "WB-MDM3 fw2.12 (3-channel MOSFET dimmer)",
                 "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
                 "inputs_mode_description": "There is no need to select the input mode. Inputs and outputs can be bound in any combinations",
+                "Legacy Inputs Mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
@@ -1076,187 +923,109 @@
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "g_power_up_behaviour_description": "Actions when Power is On",
 
-                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)"
             },
             "ru": {
-                {# --- canonical enum titles (WB-STD-003 4.3) --- #}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "e_output{{n}}": "Выход {{n}}",
-                "e_channel{{n}}": "Канал {{n}}",
-                "e_ctrl_out{{n}}_1btn": "Управление выходом {{n}} в режиме одной кнопки",
-                "e_ctrl_out{{n}}_2btn": "Управление выходом {{n}} в режиме двух кнопок",
-                {% endfor -%}
-                "e_control_disabled": "Управление отключено",
-                "e_custom_mode": "Пользовательский режим",
-                "e_no_action": "Ничего не делать",
-                "e_all_outputs": "Все выходы",
-                "e_turn_off": "Выключить",
-                "e_turn_on": "Включить",
-                "e_toggle": "Переключить",
-                "e_decrease_level": "Уменьшить уровень",
-                "e_increase_level": "Увеличить уровень",
-                "e_increase_decrease_level": "Увеличить/уменьшить уровень",
-                "e_set_brightness": "Установить яркость",
-                "e_set_previous_state": "Установить предыдущее состояние",
-                "e_dont_change": "Не менять",
-                "e_disable_in_safety": "Запретить в безопасном режиме",
-                "e_enable_only_in_safety": "Разрешить только в безопасном режиме",
-                "e_button": "Кнопка",
-                "e_switch": "Выключатель",
-                "e_not_used": "Не используется",
-                "e_ab_type": "Тип AB",
-                "e_no_control": "Без управления",
-                "e_turn_off_channel": "Выключить канал",
-                "e_keep_min_level": "Сохранить минимальный уровень",
-                "e_curve_log": "Светодиодная или лампа накаливания (логарифмическая)",
-                "e_curve_linear": "Резистивная нагрузка (линейная)",
-                "e_curve_switch": "Режим переключения (вкл/выкл)",
-                "e_edge_leading": "По переднему фронту (двигатели, вентиляторы, лампы накаливания)",
-                "e_edge_trailing": "По заднему фронту (светодиодные лампы)",
-                "e_stop": "Остановить",
-                "e_decrease": "Уменьшить",
-                "e_increase": "Увеличить",
-                "e_increase_decrease": "Увеличить/уменьшить",
-                "e_no_voltage": "Нет напряжения",
-                "e_voltage_stable": "Напряжение стабильно",
-                "e_voltage_unstable": "Напряжение нестабильно",
-                {# --- canonical parameter titles (WB-STD-003 4.3) --- #}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "p_inputs{{ (n-1)*2 + 1 }}{{ (n-1)*2 + 2 }}_mode": "Входы {{ (n-1)*2 + 1 }}-{{ (n-1)*2 + 2 }}",
-                "p_dimming_curve_k{{n}}": "Канал {{n}}: кривая диммирования",
-                "p_dimming_type_k{{n}}": "Канал {{n}}: тип диммирования",
-                "p_min_value_k{{n}}": "Канал {{n}}: минимальное значение (мкс)",
-                "p_max_value_k{{n}}": "Канал {{n}}: максимальное значение (мкс)",
-                "p_increase_rate_k{{n}}": "Канал {{n}}: скорость увеличения (мс/%)",
-                "p_decrease_rate_k{{n}}": "Канал {{n}}: скорость уменьшения (мс/%)",
-                {% endfor -%}
-                "p_output_number": "Номер выхода",
-                "p_action": "Действие",
-                "p_change_step": "Шаг изменения уровня (%)",
-                "p_level": "Яркость (%)",
-                "p_input_mode": "Режим работы входа",
-                "p_hold_time": "Время длинного нажатия (мс)",
-                "p_double_time": "Время ожидания второго нажатия (мс)",
-                "p_debounce_time": "Время подавления дребезга (мс)",
-                "p_encoder_mode": "Тип подключения энкодера",
-                "p_pulses_per_step": "Импульсов на шаг",
-                "p_controlled_channel": "Управляемый канал",
-                "p_min_br_behavior": "Поведение при снижении уровня ниже минимального",
-                "p_action_repeat_time": "Время повтора действия (мс)",
-                "safety_timer_s": "Таймаут потери связи (с)",
-                "baud_rate": "Скорость обмена",
-                {# --- canonical group titles (WB-STD-003 Appendix A) --- #}
-                {% for n in range(1, INPUTS_NUMBER + 1) -%}
-                "g_in{{n}}": "Вход {{n}}",
-                {% endfor -%}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "g_out{{n}}": "Канал {{n}}",
-                {% endfor -%}
-                {% for n in range(1, ENCODERS_NUMBER + 1) -%}
-                "gg_encoder_{{n}}": "Энкодер {{n}}",
-                {% endfor -%}
-                "gg_single_press_action": "Действие по одиночному нажатию",
-                "gg_long_press_action": "Действие по длинному нажатию",
-                "gg_double_press_action": "Действие по двойному нажатию",
-                "gg_shortlong_press_action": "Действие по короткому, а затем длинному нажатию",
-                "gg_switch_on_action": "Действие при включении выключателя",
-                "gg_switch_off_action": "Действие при выключении выключателя",
-                "gg_press_params": "Параметры входа",
-                "gg_in_channels": "Каналы входа",
-                "gg_encoder_channels": "Каналы энкодера",
-                "g_encoders": "Энкодеры",
-                "g_safety": "Безопасный режим",
-                "gg_safety_behaviour": "Поведение в безопасном режиме",
-                "gg_safety_input_control": "Управление с входов в безопасном режиме",
-                "g_power_up_behaviour": "Поведение при включении питания",
-                "g_general": "Общее",
-                "gg_legacy_inputs_mode": "Режим работы входов (до версии прошивки 2.6.6 включительно)",
-                "gg_general_parameters": "Общие параметры",
-                "gg_general_channels": "Общие каналы",
-                "g_hw_info": "Данные модуля",
-                "g_debug": "Диагностика",
-                {# --- canonical channel names (WB-STD-001 6.1, 6.3) --- #}
-                {% for n in range(1, INPUTS_NUMBER + 1) -%}
-                "di_{{n}}": "Вход {{n}}",
-                "count_{{n}}": "Вход {{n}}: счетчик замыканий",
-                "count_single_{{n}}": "Вход {{n}}: счетчик одиночных нажатий",
-                "count_long_{{n}}": "Вход {{n}}: счетчик длинных нажатий",
-                "count_double_{{n}}": "Вход {{n}}: счетчик двойных нажатий",
-                "count_shortlong_{{n}}": "Вход {{n}}: счетчик коротких, а затем длинных нажатий",
-                {% endfor -%}
-                {% for n in range(1, ENCODERS_NUMBER + 1) -%}
-                "encoder_{{n}}_position": "Энкодер {{n}}: положение",
-                "count_encoder_{{n}}": "Энкодер {{n}}: счетчик шагов",
-                {% endfor -%}
-                {% for n in range(1, OUTPUTS_NUMBER + 1) -%}
-                "do_k{{n}}": "K{{n}}",
-                "level_k{{n}}": "Канал {{n}}",
-                "level_auto_on_k{{n}}": "Канал {{n}} с автовключением",
-                "auto_change_k{{n}}": "Канал {{n}}: автоизменение",
-                "time_raw_duty_k{{n}}": "Канал {{n}}: длительность импульса",
-                {% endfor -%}
-                "sn": "Серийный номер",
-                "fw": "Версия прошивки",
-                "hw_batch": "Номер партии",
-                "uptime": "Время работы с момента включения",
-                "v_vin": "Напряжение питания",
-                "t_mcu": "Температура МК",
-                "v_mcu": "Напряжение питания МК",
-                "state_ac_line": "Напряжение на клеммах L-N",
-                "alarm_overcurrent": "Перегрузка по току",
-                "time_zero_cross_offset": "Смещение перехода через ноль",
-                "time_ac_period": "Последний период напряжения сети",
                 "WB-MDM3_template_title": "WB-MDM3 fw2.12 (3-канальный диммер)",
-                "e_not_used": "Не используется",
-                "e_ab_type": "Тип AB",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Encoders": "Энкодеры",
+                "Encoder Connection Type": "Тип подключения энкодера",
+                "Not used": "Не используется",
+                "AB type": "Тип AB",
+                "Pulses per Step": "Количество импульсов на один шаг",
                 "encoder_steps_counter_desc": "С учетом параметра «Количество импульсов на один шаг»",
-                "e_no_control": "Управление отключено",
-                "e_turn_off_channel": "Выключить канал",
-                "e_keep_min_level": "Оставить минимальный уровень",
-                "e_control_disabled": "Управление отключено",
-                "e_custom_mode": "Пользовательский режим",
+                "Controlled Channel": "Управляемый канал",
+                "No Control": "Управление отключено",
+                "Level Change Step (%)": "Шаг изменения уровня (%)",
+                "Behavior When Level is Reduced Below the Minimum Value": "Поведение при уменьшении уровня ниже минимального значения",
+                "Turn Off the Channel": "Выключить канал",
+                "Keep Minimum Level": "Оставить минимальный уровень",
+                "Legacy Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
+                "Input Parameters": "Параметры нажатий",
+                "Control disabled": "Управление отключено",
+                "Custom mode": "Пользовательский режим",
                 "inputs_mode_description": "Выбирать режим работы входов нет необходимости. Можно связывать входы и выходы в произвольных комбинациях",
 
-                "e_button": "Кнопка без фиксации",
-                "e_switch": "Выключатель с фиксацией",
+                "Input Mode": "Режим работы входа",
+                "Button": "Кнопка без фиксации",
+                "Switch": "Выключатель с фиксацией",
+                "Action when Switch is On": "Действие в положении \"включено\"",
+                "Action when Switch is Off": "Действие в положении \"выключено\"",
 
-                "e_set_brightness": "Установить яркость",
+                "Set Brightness": "Установить яркость",
+                "Brightness (%)": "Яркость (%)",
 
-                "e_curve_log": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
-                "e_curve_linear": "резистивная нагрузка (линейная кривая яркости)",
-                "e_curve_switch": "ключевой режим",
-                "e_edge_leading": "по переднему фронту (моторы, вентиляторы, лампы накаливания)",
-                "e_edge_trailing": "по заднему фронту (светодиодные лампы)",
+                "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
+                "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
+                "switching mode (on/off)": "ключевой режим",
+                "leading edge (motors, fans, incandescent lamps)": "по переднему фронту (моторы, вентиляторы, лампы накаливания)",
+                "trailing edge (LED lamps)": "по заднему фронту (светодиодные лампы)",
                 "channel_min_value_description": "Сырое задание для канала, соответствующее минимальной яркости (1%)",
                 "channel_max_value_description": "Сырое задание для канала, соответствующее максимальной яркости (100%)",
+                "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Channel {{ch_number}}": "Канал {{ch_number}}",
+                "Channel {{ch_number}} with Auto-On": "Канал {{ch_number}} с авто-включением",
+                "Channel {{ch_number}} Auto-Change": "Авто-изменение канала {{ch_number}}",
+                "Channel {{ch_number}} Dimming Curve": "Кривая диммирования канала {{ch_number}}",
+                "Channel {{ch_number}} Dimming Type": "Режим диммирования канала {{ch_number}}",
+                "Channel {{ch_number}} Min Value (us)": "Нижний порог диммирования канала {{ch_number}} (мкс)",
+                "Channel {{ch_number}} Max Value (us)": "Верхний порог диммирования канала {{ch_number}} (мкс)",
+                "Channel {{ch_number}} Increase Rate (ms/%)": "Скорость увеличения яркости канала {{ch_number}} (мс/%)",
+                "Channel {{ch_number}} Decrease Rate (ms/%)": "Скорость уменьшения яркости канала {{ch_number}} (мс/%)",
+                "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}": "Входы {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
+                "Output {{ch_number}}": "Выход {{ch_number}}",
+                "Control output {{ch_number}} in 1-button mode": "Управление выходом {{ch_number}} в 1-кнопочном режиме",
+                "Control output {{ch_number}} in 2-button mode": "Управление выходом {{ch_number}} в 2-кнопочном режиме",
                 {% endfor -%}
 
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{ch_number}}": "Вход {{ch_number}}",
+                "Input {{ch_number}} counter": "Счетчик {{ch_number}}",
+                "Input {{ch_number}} Single Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
                 {% for encoder_number in range(1, ENCODERS_NUMBER + 1) -%}
+                "Encoder {{encoder_number}}": "Энкодер {{encoder_number}}",
+                "Encoder {{encoder_number}} Position": "Положение энкодера {{encoder_number}}",
+                "Encoder {{encoder_number}} Steps Counter": "Счетчик шагов энкодера {{encoder_number}}",
                 {% set input1_num = ((encoder_number - 1) * 2) + 1 -%}
                 {% set input2_num = ((encoder_number - 1) * 2) + 2 -%}
                 "encoder_{{encoder_number}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
                 {% endfor -%}
 
+                "Single Press Action": "Действие для короткого нажатия",
+                "Long Press Action": "Действие для длинного нажатия",
+                "Double Press Action": "Действие для двойного нажатия",
+                "Shortlong Press Action": "Действие для короткого, затем длинного нажатия",
 
-                "e_no_action": "Ничего не делать",
-                "e_all_outputs": "Все выходы",
-                "e_turn_off": "Выключить",
-                "e_turn_on": "Включить",
-                "e_toggle": "Переключить",
-                "e_stop": "Стоп",
-                "e_increase": "Увеличение",
-                "e_decrease": "Уменьшение",
-                "e_increase_decrease": "Увеличение/уменьшение",
-                "e_decrease_level": "Уменьшить уровень",
-                "e_increase_level": "Увеличить уровень",
-                "e_increase_decrease_level": "Увеличить/уменьшить уровень",
+                "No Action": "Ничего не делать",
+                "All Outputs": "Все выходы",
+                "Turn Off": "Выключить",
+                "Turn On": "Включить",
+                "Toggle": "Переключить",
+                "Stop": "Стоп",
+                "Increase": "Увеличение",
+                "Decrease": "Уменьшение",
+                "Increase/Decrease": "Увеличение/уменьшение",
+                "Decrease level": "Уменьшить уровень",
+                "Increase level": "Увеличить уровень",
+                "Increase/Decrease level": "Увеличить/уменьшить уровень",
+                "Output Number": "Номер выхода",
+                "Action": "Действие",
 
+                "Long Press Time (ms)": "Время длинного нажатия (мс)",
+                "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
+                "Debounce Time (ms)": "Время подавления дребезга (мс)",
+                "Action Repeat Time (ms)": "Длительность периода повторения действий (мс)",
 
                 "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией поддерживается",
 
@@ -1268,21 +1037,40 @@
                 "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени",
                 "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
 
+                "Safety Mode": "Безопасный режим",
                 "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
-                "e_dont_change": "Не блокировать",
-                "e_disable_in_safety": "Блокировать в безопасном режиме",
-                "e_enable_only_in_safety": "Разрешить только в безопасном режиме",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
 
+                "Power Up Behaviour": "Поведение при включении питания",
                 "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
-                "e_set_previous_state": "Установить предыдущее состояние",
+                "Set Previous State": "Установить предыдущее состояние",
 
                 "level_after_actions_description": "Можно установить уровень яркости на 0% (канал выключен)",
 
-                "e_no_voltage": "Нет напряжения",
-                "e_voltage_stable": "Напряжение стабильно",
-                "e_voltage_unstable": "Напряжение нестабильно"
+                "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
+                "FW Version": "Версия прошивки",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "AC on L-N": "Напряжение на клеммах L-N",
+                "No voltage": "Нет напряжения",
+                "Voltage stable": "Напряжение стабильно",
+                "Voltage unstable": "Напряжение нестабильно",
+                "Overcurrent": "Перегрузка по току",
+                "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
+                "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
+                "Channel 3 Raw Duty (us)": "Сырое задание для канала 3 (мкс)",
+                "Zero-Cross Offset (us)": "Смещение от перехода напряжения через ноль (мкс)",
+                "Last AC Voltage Period (us)": "Длительность последнего периода переменного напряжения (мкс)"
             }
         }
     }
