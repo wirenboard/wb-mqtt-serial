@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.262.2) stable; urgency=medium
+
+  * Fix deps
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 03 Aug 2026 12:20:00 +0400
+
 wb-mqtt-serial (2.262.1) stable; urgency=medium
 
   * Fix coverage reporting with GNU make 4.4 (trixie): export coverage
