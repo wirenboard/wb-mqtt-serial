@@ -1,6 +1,8 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set ENCODERS_NUMBER = 2 -%}
+{# UI titles: unified with WB-MRGBW-D / WB-MDM3 / WB-MAO4 -#}
+{% set ACTION_TITLES = {"sp": "Single", "lp": "Long", "dp": "Double", "slp": "Shortlong"} -%}
 {% set AUTO_CHANGE_PARAMETERS = [
     ("RGB Strip Red", "rgb_red_auto_change_period", 11, 10, "(dimmer_mode==256)"),
     ("RGB Strip Green", "rgb_green_auto_change_period", 12, 11, "(dimmer_mode==256)"),
@@ -82,10 +84,11 @@
                 "title": "Input {{in_num}}",
                 "id": "g_input_{{in_num}}"
             },
-            {# declare press-type groups and latching-button groups -#}
-            {% for name_action in ["sp", "lp", "dp", "slp", "switch_on", "switch_off"] -%}
+            {# declare press-type groups; latching-button groups are declared below
+               as gg_input_<N>_switch_<on|off>_action -#}
+            {% for name_action in ["sp", "lp", "dp", "slp"] -%}
             {
-                "title": "Action_{{ name_action }}",
+                "title": "{{ ACTION_TITLES[name_action] }} Press Action",
                 "id": "gg_in_{{ in_num }}_{{ name_action }}_action",
                 "group": "g_input_{{in_num}}"
             },
@@ -104,7 +107,7 @@
             },
             {% endfor -%}
             {
-                "title": "encoder_channels",
+                "title": "Encoder Channels",
                 "id": "gg_encoder_channels",
                 "group": "g_encoders",
                 "ui_options": {
@@ -184,14 +187,15 @@
                 "group": "g_power_up_behaviour"
             },
             {% endfor -%}
+            {% set RGB_TITLES = {'H': 'Hue', 'S': 'Saturation', 'V': 'Brightness'} -%}
             {% for ch_name_rgb in ['H', 'S', 'V'] -%}
             {
-                "title": "Channel RGB_{{ ch_name_rgb }}",
+                "title": "RGB Strip {{ RGB_TITLES[ch_name_rgb] }}",
                 "id": "gggg_safety_mode_ch_RGB_{{ ch_name_rgb }}",
                 "group": "ggg_safety_mode_ch_RGB"
             },
             {
-                "title": "Channel RGB_{{ ch_name_rgb }}",
+                "title": "RGB Strip {{ RGB_TITLES[ch_name_rgb] }}",
                 "id": "gggg_power_up_behaviour_ch_RGB_{{ ch_name_rgb }}",
                 "group": "ggg_power_up_behaviour_ch_RGB"
             },
@@ -226,7 +230,7 @@
             {# declare input channel groups -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "params",
+                "title": "Input Parameters",
                 "id": "gg_in_{{in_num}}_params",
                 "group": "g_input_{{in_num}}",
                 "ui_options": {
@@ -246,19 +250,6 @@
                     }
                 }
             },
-            {# declare input groups of switch type -#}
-            {% for sw_act in ["off", "on"] -%}
-            {
-                "title": "Input {{in_num}} Switch {{sw_act}} Channels",
-                "id": "gg_in_{{ in_num }}_switch_{{sw_act}}_action",
-                "group": "g_input_{{in_num}}",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {% endfor -%}
             {% endfor -%}
             {
                 "title": "fader_hue_title",
@@ -281,7 +272,7 @@
                 "group": "g_outputs"
             },
             {
-                "title": "params",
+                "title": "Output Parameters",
                 "id": "gg_out_params",
                 "group": "g_outputs",
                 "ui_options": {
@@ -291,7 +282,7 @@
                 }
             },
             {
-                "title": "Outputs Channels",
+                "title": "Output Channels",
                 "id": "gg_out_channels",
                 "group": "g_outputs",
                 "ui_options": {
@@ -2386,10 +2377,6 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "Uptime": "Uptime (s)",
-                "Action_sp" : "Action short press",
-                "Action_lp" : "Action long press",
-                "Action_dp" : "Action double press",
-                "Action_slp" : "Action short and after long press",
                 "input_mode_description" : "Button is the default mode. Switch mode is supported",
                 "input_switch_on_title" : "Out action",
                 "input_switch_off_title" : "Out action",
@@ -2417,6 +2404,20 @@
                 "sw_cct1_cct2_act_title": "CCT1, CCT2 Strips"
             },
             "ru": {
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}} Channels": "Каналы входа {{in_num}}",
+                {% endfor -%}
+                "Input Parameters": "Параметры нажатий",
+                "Output Parameters": "Параметры выходов",
+                "Output Channels": "Каналы выходов",
+                "Encoder Channels": "Каналы энкодера",
+                "Single Press Action": "Действие для одиночного нажатия",
+                "Long Press Action": "Действие для длинного нажатия",
+                "Double Press Action": "Действие для двойного нажатия",
+                "Shortlong Press Action": "Действие для короткого, а затем длинного нажатия",
+                "RGB Strip Hue": "RGB-лента: оттенок",
+                "RGB Strip Saturation": "RGB-лента: насыщенность",
+                "RGB Strip Brightness": "RGB-лента: яркость",
                 "WB-LED_template_title": "WB-LED fw3.8 (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
@@ -2436,7 +2437,6 @@
                 "Increase/Decrease": "Увеличение/уменьшение",
 
                 "Outputs": "Выходы",
-                "Outputs Channels": "Каналы выходов",
                 "Output Channels Auto-On": "Каналы выходов с авто-включением",
                 "Auto-Change": "Авто-изменение",
                 "General": "Общее",
@@ -2632,7 +2632,7 @@
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
                 "Input {{in_num}} Counter": "Счетчик {{in_num}}",
-                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
+                "Input {{in_num}} Single Press Counter": "Счетчик одиночных нажатий входа {{in_num}}",
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
@@ -2710,10 +2710,6 @@
                 "Turn On" : "Включить",
                 "Turn On and Set Brightness" : "Включить и установить яркость",
                 "Turn On and Set Level" : "Включить и установить уровень",
-                "Action_sp" : "Действие для короткого нажатия",
-                "Action_lp" : "Действие для длинного нажатия",
-                "Action_dp" : "Действие для двойного нажатия",
-                "Action_slp" : "Действие для короткого, затем длинного нажатия",
                 "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации",
                 "input_switch_on_title" : "Выход",
                 "input_switch_off_title" : "Выход",
@@ -2752,9 +2748,6 @@
                 "sw_rgb_act_title" : "Лента RGB",
                 "sw_rgb_hue_changing_act_title": "Изменение оттенка RGB ленты",
                 "sw_cct1_cct2_act_title": "Ленты CCT1 и CCT2",
-                "Channel RGB_H" : "Канал H",
-                "Channel RGB_S" : "Канал S",
-                "Channel RGB_V" : "Канал V",
                 "Action Hue" : "Действие с оттенком",
                 "Action Saturation" : "Действие с насыщенностью",
                 "Action Brightness" : "Действие с яркостью",
