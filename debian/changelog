@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.262.3) stable; urgency=medium
+
+  * WB-MAO4, WB-MDM3, WB-MRGBW-D, WB-LED templates: unify UI texts for
+    entities that are named differently across the templates, translate
+    placeholder group titles, fix the WB-MAO4 safety group carrying the
+    power-up description, and drop 8 duplicate unused group ids in WB-LED
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 04 Aug 2026 00:42:00 +0700
+
 wb-mqtt-serial (2.262.2) stable; urgency=medium
 
   * Fix deps

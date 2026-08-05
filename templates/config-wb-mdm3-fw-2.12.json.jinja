@@ -63,7 +63,7 @@
             {% endfor -%}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Inputs {{ch_number}} Counters",
+                "title": "Input {{ch_number}} Channels",
                 "id": "input_{{ch_number}}_counters",
                 "group": "input_{{ch_number}}",
                 "ui_options": {
@@ -86,7 +86,7 @@
             },
             {% endfor -%}
             {
-                "title": "encoder_channels",
+                "title": "Encoder Channels",
                 "id": "gg_encoder_channels",
                 "group": "g_encoders",
                 "ui_options": {
@@ -893,6 +893,12 @@
 
         "translations": {
             "en": {
+                {# Align English display text with the sibling templates.
+                   Channel "name" is unchanged - only the shown string. -#}
+                {% for n in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{n}} counter": "Input {{n}} Counter",
+                {% endfor -%}
+                "Supply voltage": "Supply Voltage",
                 "WB-MDM3_template_title": "WB-MDM3 fw2.12 (3-channel MOSFET dimmer)",
                 "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
                 "inputs_mode_description": "There is no need to select the input mode. Inputs and outputs can be bound in any combinations",
@@ -927,6 +933,12 @@
                 "Uptime": "Uptime (s)"
             },
             "ru": {
+                {% for n in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{n}} Channels": "Каналы входа {{n}}",
+                {% endfor -%}
+                "Encoder Channels": "Каналы энкодера",
+                "General Parameters": "Общие параметры",
+                "General Channels": "Общие каналы",
                 "WB-MDM3_template_title": "WB-MDM3 fw2.12 (3-канальный диммер)",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
@@ -987,7 +999,7 @@
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{ch_number}}": "Вход {{ch_number}}",
                 "Input {{ch_number}} counter": "Счетчик {{ch_number}}",
-                "Input {{ch_number}} Single Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Single Press Counter": "Счетчик одиночных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
@@ -1002,10 +1014,10 @@
                 "encoder_{{encoder_number}}_mode_description": "Когда отключен, входы {{input1_num}} и {{input2_num}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{input1_num}} и {{input2_num}} подключены к выходам A и B энкодера. <br>Для корректной работы энкодера необходимо уменьшить время подавления дребезга входов {{input1_num}} и {{input2_num}} до 2-5 мс.",
                 {% endfor -%}
 
-                "Single Press Action": "Действие для короткого нажатия",
+                "Single Press Action": "Действие для одиночного нажатия",
                 "Long Press Action": "Действие для длинного нажатия",
                 "Double Press Action": "Действие для двойного нажатия",
-                "Shortlong Press Action": "Действие для короткого, затем длинного нажатия",
+                "Shortlong Press Action": "Действие для короткого, а затем длинного нажатия",
 
                 "No Action": "Ничего не делать",
                 "All Outputs": "Все выходы",

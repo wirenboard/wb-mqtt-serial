@@ -1,6 +1,8 @@
 {% set INPUTS_NUMBER = 3 -%}
 {% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
 {% set ENCODERS_NUMBER = 1 -%}
+{# UI titles: unified with WB-LED / WB-MDM3 / WB-MAO4 -#}
+{% set ACTION_TITLES = {"sp": "Single", "lp": "Long", "dp": "Double", "slp": "Shortlong"} -%}
 {% set AUTO_CHANGE_PARAMETERS = [
     ("RGB Strip Red", "rgb_red_auto_change_period", 11, 10, "(dimmer_mode==256)"),
     ("RGB Strip Green", "rgb_green_auto_change_period", 12, 11, "(dimmer_mode==256)"),
@@ -94,7 +96,7 @@
             },
             {% endfor -%}
             {
-                "title": "encoder_channels",
+                "title": "Encoder Channels",
                 "id": "gg_encoder_channels",
                 "group": "g_encoders",
                 "ui_options": {
@@ -143,13 +145,13 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for name_action in ["sp", "lp", "dp", "slp"] -%}
             {
-                "title": "Action_{{name_action}}",
+                "title": "{{ ACTION_TITLES[name_action] }} Press Action",
                 "id": "gg_in_{{in_num}}_{{name_action}}_action",
                 "group": "g_input_{{in_num}}"
             },
             {% endfor -%}
             {
-                "title": "params",
+                "title": "Input Parameters",
                 "id": "gg_in_{{in_num}}_params",
                 "group": "g_input_{{in_num}}",
                 "ui_options": {
@@ -190,7 +192,7 @@
                 "group": "g_outputs"
             },
             {
-                "title": "params",
+                "title": "Output Parameters",
                 "id": "gg_out_params",
                 "group": "g_outputs",
                 "ui_options": {
@@ -200,7 +202,7 @@
                 }
             },
             {
-                "title": "Outputs Channels",
+                "title": "Output Channels",
                 "id": "gg_out_channels",
                 "group": "g_outputs",
                 "ui_options": {
@@ -3511,10 +3513,6 @@
 
                 "dimmer_mode_description": "Select the operating mode before setting the dimmer",
 
-                "Action_sp" : "Action short press",
-                "Action_lp" : "Action long press",
-                "Action_dp" : "Action double press",
-                "Action_slp" : "Action short and after long press",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
@@ -3549,6 +3547,16 @@
                 "Uptime": "Uptime (s)"
             },
             "ru": {
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}} Channels": "Каналы входа {{in_num}}",
+                {% endfor -%}
+                "Input Parameters": "Параметры нажатий",
+                "Output Parameters": "Параметры выходов",
+                "Encoder Channels": "Каналы энкодера",
+                "Single Press Action": "Действие для одиночного нажатия",
+                "Long Press Action": "Действие для длинного нажатия",
+                "Double Press Action": "Действие для двойного нажатия",
+                "Shortlong Press Action": "Действие для короткого, а затем длинного нажатия",
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3.8 (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
@@ -3614,7 +3622,7 @@
                 "Hue Changing Rate Period Auto-Change (ms/unit)": "Период авто-изменения скорости смены оттенка (мс/ед)",
 
                 "Outputs": "Выходы",
-                "Outputs Channels": "Каналы выходов",
+                "Output Channels": "Каналы выходов",
                 "Output Channels Auto-On": "Каналы выходов с авто-включением",
                 "Auto-Change": "Авто-изменение",
                 "General": "Общее",
@@ -3773,9 +3781,9 @@
                 "Input 1 Counter": "Счетчик 1",
                 "Input 2 Counter": "Счетчик 2",
                 "Input 3 Counter": "Счетчик 3",
-                "Input 1 Single Press Counter": "Счетчик коротких нажатий входа 1",
-                "Input 2 Single Press Counter": "Счетчик коротких нажатий входа 2",
-                "Input 3 Single Press Counter": "Счетчик коротких нажатий входа 3",
+                "Input 1 Single Press Counter": "Счетчик одиночных нажатий входа 1",
+                "Input 2 Single Press Counter": "Счетчик одиночных нажатий входа 2",
+                "Input 3 Single Press Counter": "Счетчик одиночных нажатий входа 3",
                 "Input 1 Long Press Counter": "Счетчик длинных нажатий входа 1",
                 "Input 2 Long Press Counter": "Счетчик длинных нажатий входа 2",
                 "Input 3 Long Press Counter": "Счетчик длинных нажатий входа 3",
@@ -3789,10 +3797,6 @@
                 "Dimmer Mode": "Режим работы",
                 "dimmer_mode_description": "Выберите режим перед настройкой диммера",
 
-                "Action_sp" : "Действие для короткого нажатия",
-                "Action_lp" : "Действие для длинного нажатия",
-                "Action_dp" : "Действие для двойного нажатия",
-                "Action_slp" : "Действие для короткого, затем длинного нажатия",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки (мс/ед)",
