@@ -84,6 +84,7 @@
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
+                "description": "safety_behaviour_description",
                 "group": "g_safety"
             },
             {
@@ -172,10 +173,11 @@
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1],
+                "enum": [0, 1, 2],
                 "enum_titles": [
                     "Don't change output state",
-                    "Switch output to safety state"
+                    "Switch output to safety state",
+                    "Switch output according to input state"
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
@@ -622,6 +624,7 @@
                 "Uptime": "Uptime (s)",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "safety_behaviour_description": "Option \"Switch output according to input state\" works for latching switch mode only",
 
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
                 "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
@@ -680,8 +683,10 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
+                "safety_behaviour_description": "Вариант \"Установить выход согласно состоянию входа\" применим только для режима \"Переключатель с фиксацией\"",
                 "Don't change output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Switch output according to input state": "Установить выход согласно состоянию входа",
 
                 "Output Safe State": "Безопасное состояние выходов",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
