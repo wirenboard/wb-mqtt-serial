@@ -1,3 +1,17 @@
+wb-mqtt-serial (2.262.5) stable; urgency=medium
+
+  * Unify displayed UI texts across several WB families (display-only): WB-MAI
+    (MAI11/MAI2-CC/MAI6), WB-MIO, WB-UPS v.3, WB-DALI, WB-MCM8, WB-MS v.2,
+    WB-MWAC (MWAC/MWAC2/MWAC2 ver.2), WB-M1W2, WB-LED, WB-MRGBW-D. Canonical
+    texts — Serial Number, Firmware Version, Supply Voltage, Min Supply Voltage
+    Since Startup, Min MCU Voltage Since Startup; RU "одиночных нажатий" for the
+    single-press counter; fix a Cyrillic homoglyph ("сhange"->"change") in the
+    WB-MWAC/WB-MWAC2 safety-behaviour enum title. Only current (g-wb) templates
+    are touched. Channel names (MQTT topics) are not changed — backward
+    compatible, Validate.dat unchanged.
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 06 Aug 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.262.4) stable; urgency=medium
 
   * WB-MR relay family templates (WB-MR3, WB-MR6C/-NC/CU/v.3, WB-MRM2-mini/NO,

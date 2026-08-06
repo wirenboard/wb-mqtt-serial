@@ -938,6 +938,8 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
                 "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime",
@@ -1003,7 +1005,7 @@
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
                 "Input {{ letter }}{{ in_num }}": "Вход {{ letter }}{{ in_num }}",
-                "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик одиночных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num }}",

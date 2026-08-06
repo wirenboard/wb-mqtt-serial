@@ -132,6 +132,9 @@
         ],
         "translations": {
             "en": {
+                "Serial NO": "Serial Number",
+                "FW Version": "Firmware Version",
+                "Minimum MCU Voltage Since Startup": "Min MCU Voltage Since Startup",
                 "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog input module)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
@@ -151,7 +154,7 @@
                 "Serial NO": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
-                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "Minimum MCU Voltage Since Startup": "Мин. напряжение питания МК с момента включения",
                 "Uptime": "Время работы с момента включения (с)"
             }
         }
