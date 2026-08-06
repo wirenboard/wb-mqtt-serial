@@ -1,3 +1,17 @@
+wb-mqtt-serial (2.262.4) stable; urgency=medium
+
+  * WB-MR relay family templates (WB-MR3, WB-MR6C/-NC/CU/v.3, WB-MRM2-mini/NO,
+    WB-MRM2-mini/NC, WB-MRWM2): unify displayed UI texts for entities named
+    differently across templates — Serial Number, Firmware Version, Supply
+    Voltage, Min Supply Voltage Since Startup, Min MCU Voltage Since Startup;
+    RU "одиночных нажатий" for the single-press counter; fix a Cyrillic
+    homoglyph ("сhange"→"change") in the WB-MRWM2 safety-behaviour enum title.
+    Only current (g-wb) templates are touched; obsolete g-wb-old ones are left
+    as is. Channel names (MQTT topics) are not changed — backward compatible,
+    Validate.dat unchanged.
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 05 Aug 2026 18:02:10 +0300
+
 wb-mqtt-serial (2.262.3) stable; urgency=medium
 
   * WB-MAO4, WB-MDM3, WB-MRGBW-D, WB-LED templates: unify UI texts for
