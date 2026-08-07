@@ -1,3 +1,18 @@
+wb-mqtt-serial (2.262.6) stable; urgency=medium
+
+  * Finish unifying displayed UI texts across the remaining WB families
+    (display-only): WB-MAO4 (mao4, mao4-20ma, mao4-20ma-fw-2.9), WB-MDM3,
+    WB-MSW (v3/v4/v4_lora), WB-MIR (v2/v2-buttons/v3/v3-fw-4.35) — Serial
+    Number, Firmware Version, Supply Voltage, Min Supply/MCU Voltage Since
+    Startup; RU "одиночных нажатий"; for WB-MAO4 the press-counter display is
+    aligned (Short->Single, Shortlong) via translations only — channel names
+    (MQTT topics) are unchanged. Also add the missing Serial Number / Firmware
+    Version display texts to the WB-MAO4/MDM3/LED/MRGBW-D fw-variant templates
+    from the earlier migration, and fix a "воспроизведена" typo in WB-MSW/MIR
+    descriptions. Only current (g-wb) templates. Validate.dat unchanged.
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 06 Aug 2026 15:00:00 +0300
+
 wb-mqtt-serial (2.262.5) stable; urgency=medium
 
   * Unify displayed UI texts across several WB families (display-only): WB-MAI
