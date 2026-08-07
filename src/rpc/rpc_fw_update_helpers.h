@@ -3,10 +3,10 @@
 #include <list>
 #include <string>
 
+#include "rpc_fw_downloader.h"
 #include <wblib/json_utils.h>
 
 struct TFwDeviceInfo;
-class TFwDownloader;
 
 // Non-updatable signatures (e.g. WB-MSW-LORA devices)
 const std::list<std::string> NonUpdatableSignatures = {"msw5GL", "msw3G419L"};
@@ -30,4 +30,5 @@ std::string SanitizeVersionString(const std::string& s);
 
 Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
                                       TFwDownloader& downloader,
-                                      const std::string& releaseSuite);
+                                      const std::string& releaseSuite,
+                                      ENetworkAccess networkAccess = ENetworkAccess::Allowed);

@@ -64,7 +64,8 @@ bool ComponentFirmwareIsNewer(const std::string& currentVersion, const std::stri
 // Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info() - response building part
 Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
                                       TFwDownloader& downloader,
-                                      const std::string& releaseSuite)
+                                      const std::string& releaseSuite,
+                                      ENetworkAccess networkAccess)
 {
     Json::Value result;
     result["fw"] = deviceInfo.FwVersion;
@@ -84,7 +85,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
 
     // Look up released firmware
     try {
-        auto released = downloader.GetReleasedFirmware(deviceInfo.FwSignature, releaseSuite);
+        auto released = downloader.GetReleasedFirmware(deviceInfo.FwSignature, releaseSuite, networkAccess);
         result["available_fw"] = released.Version;
         result["fw_has_update"] = FirmwareIsNewer(deviceInfo.FwVersion, released.Version);
     } catch (const std::exception& e) {
@@ -93,7 +94,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
 
     // Look up bootloader
     try {
-        auto bootloader = downloader.GetReleasedBootloader(deviceInfo.FwSignature, releaseSuite);
+        auto bootloader = downloader.GetReleasedBootloader(deviceInfo.FwSignature, releaseSuite, networkAccess);
         result["available_bootloader"] = bootloader.Version;
         result["bootloader_has_update"] = FirmwareIsNewer(deviceInfo.BootloaderVersion, bootloader.Version);
     } catch (const std::exception& e) {
@@ -108,7 +109,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
     // Component info
     for (const auto& comp: deviceInfo.Components) {
         try {
-            auto released = downloader.GetReleasedFirmware(comp.Signature, releaseSuite);
+            auto released = downloader.GetReleasedFirmware(comp.Signature, releaseSuite, networkAccess);
             Json::Value compJson;
             compJson["model"] = comp.Model;
             compJson["fw"] = comp.FwVersion;
@@ -249,6 +250,8 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
             return;
         }
 
+        Downloader->PrefetchReleaseIndexes();
+
         auto task = std::make_shared<TFwGetFirmwareInfoTask>(static_cast<uint8_t>(params.SlaveId),
                                                              params.Protocol,
                                                              ReleaseSuite,
@@ -279,6 +282,8 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
 
         auto params = ParseRequestParams(request);
         auto softwareType = request.get("type", "firmware").asString();
+
+        Downloader->PrefetchReleaseIndexes();
 
         auto task = std::make_shared<TFwUpdateSerialClientTask>(static_cast<uint8_t>(params.SlaveId),
                                                                 params.Protocol,
@@ -326,6 +331,8 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
         }
 
         auto params = ParseRequestParams(request);
+
+        Downloader->PrefetchReleaseIndexes();
 
         auto task = std::make_shared<TFwRestoreTask>(static_cast<uint8_t>(params.SlaveId),
                                                      params.Protocol,

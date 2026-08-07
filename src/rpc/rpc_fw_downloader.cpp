@@ -16,9 +16,14 @@
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
 const std::string TFwDownloader::FW_RELEASES_BASE_URL = "https://fw-releases.wirenboard.com";
+const std::string TFwDownloader::FW_RELEASES_INDEX_URL =
+    TFwDownloader::FW_RELEASES_BASE_URL + "/fw/by-signature/release-versions.yaml";
+const std::string TFwDownloader::BOOTLOADER_RELEASES_INDEX_URL =
+    TFwDownloader::FW_RELEASES_BASE_URL + "/boot/by-signature/release-versions.yaml";
 const std::chrono::minutes TFwDownloader::RELEASE_CACHE_TTL{10};
 const std::chrono::minutes TFwDownloader::BOOTLOADER_CACHE_TTL{30};
 const std::chrono::hours TFwDownloader::WBFW_CACHE_TTL{2};
+const std::chrono::seconds TFwDownloader::FAILED_DOWNLOAD_RETRY_INTERVAL{60};
 
 #ifndef __EMSCRIPTEN__
 
@@ -59,6 +64,7 @@ std::vector<uint8_t> TCurlHttpClient::GetBinary(const std::string& url)
     curl_easy_setopt(curl.get(), CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl.get(), CURLOPT_TIMEOUT, 30L);
     curl_easy_setopt(curl.get(), CURLOPT_CONNECTTIMEOUT, 10L);
+    curl_easy_setopt(curl.get(), CURLOPT_NOSIGNAL, 1L);
 
     CURLcode res = curl_easy_perform(curl.get());
     if (res != CURLE_OK) {
@@ -144,9 +150,9 @@ std::string ParseFwVersionFromUrl(const std::string& url)
 //       suite1: path/to/firmware.wbfw
 // Limitations: no support for YAML features like quoted strings, multi-line values,
 // anchors, aliases, or flow syntax. Indentation-based: 2 spaces = signature, 4+ = suite.
-std::map<std::string, std::map<std::string, std::string>> ParseReleaseVersionsYaml(const std::string& text)
+TReleaseIndex ParseReleaseVersionsYaml(const std::string& text)
 {
-    std::map<std::string, std::map<std::string, std::string>> result;
+    TReleaseIndex result;
     std::istringstream stream(text);
     std::string line;
     bool inReleases = false;
@@ -265,34 +271,55 @@ std::string ReadReleaseSuite(const std::string& releasePath)
 TFwDownloader::TFwDownloader(PHttpClient httpClient): HttpClient(std::move(httpClient))
 {}
 
+void TFwDownloader::UpdateReleaseIndex(const std::string& indexUrl,
+                                       TReleaseCacheEntry& cache,
+                                       std::chrono::minutes ttl,
+                                       ENetworkAccess networkAccess)
+{
+    auto now = std::chrono::steady_clock::now();
+    {
+        std::lock_guard<std::mutex> lock(CacheMutex);
+        if (!cache.Releases.empty() && (now < cache.ExpiresAt || networkAccess == ENetworkAccess::CacheOnly)) {
+            return;
+        }
+        if (networkAccess == ENetworkAccess::CacheOnly) {
+            throw std::runtime_error(indexUrl + " is not in cache");
+        }
+        if (now < cache.RetryAt) {
+            throw std::runtime_error("Skipping " + indexUrl + " download, the previous attempt has failed");
+        }
+    }
+
+    LOG(Debug) << "Downloading " << indexUrl;
+    std::string text;
+    try {
+        text = HttpClient->GetText(indexUrl);
+    } catch (const std::exception&) {
+        std::lock_guard<std::mutex> lock(CacheMutex);
+        cache.RetryAt = std::chrono::steady_clock::now() + FAILED_DOWNLOAD_RETRY_INTERVAL;
+        throw;
+    }
+
+    auto releases = ParseReleaseVersionsYaml(text);
+    std::lock_guard<std::mutex> lock(CacheMutex);
+    cache.ExpiresAt = now + ttl;
+    cache.RetryAt = std::chrono::steady_clock::time_point();
+    cache.Releases = std::move(releases);
+}
+
 // Cf. fw_downloader.py _get_released_binary() + the @ttl_lru_cache wrappers.
 TReleasedBinary TFwDownloader::GetReleasedBinary(const std::string& indexUrl,
                                                  TReleaseCacheEntry& cache,
                                                  std::chrono::minutes ttl,
                                                  const std::string& fwSignature,
-                                                 const std::string& releaseSuite)
+                                                 const std::string& releaseSuite,
+                                                 ENetworkAccess networkAccess)
 {
-    auto now = std::chrono::steady_clock::now();
-    std::map<std::string, std::map<std::string, std::string>> releases;
-    {
-        std::lock_guard<std::mutex> lock(CacheMutex);
-        if (now < cache.ExpiresAt && !cache.Releases.empty()) {
-            releases = cache.Releases;
-        }
-    }
+    UpdateReleaseIndex(indexUrl, cache, ttl, networkAccess);
 
-    if (releases.empty()) {
-        LOG(Debug) << "Looking up released binary in " << indexUrl << " (suite: " << releaseSuite << ")";
-        auto text = HttpClient->GetText(indexUrl);
-        releases = ParseReleaseVersionsYaml(text);
-
-        std::lock_guard<std::mutex> lock(CacheMutex);
-        cache.Releases = releases;
-        cache.ExpiresAt = now + ttl;
-    }
-
-    auto sigIt = releases.find(fwSignature);
-    if (sigIt == releases.end()) {
+    std::lock_guard<std::mutex> lock(CacheMutex);
+    auto sigIt = cache.Releases.find(fwSignature);
+    if (sigIt == cache.Releases.end()) {
         throw std::runtime_error("Released binary not found for " + fwSignature + ", release: " + releaseSuite);
     }
 
@@ -306,29 +333,35 @@ TReleasedBinary TFwDownloader::GetReleasedBinary(const std::string& indexUrl,
 }
 
 // Cf. fw_downloader.py:89 get_released_fw()
-TReleasedBinary TFwDownloader::GetReleasedFirmware(const std::string& fwSignature, const std::string& releaseSuite)
+TReleasedBinary TFwDownloader::GetReleasedFirmware(const std::string& fwSignature,
+                                                   const std::string& releaseSuite,
+                                                   ENetworkAccess networkAccess)
 {
-    return GetReleasedBinary(FW_RELEASES_BASE_URL + "/fw/by-signature/release-versions.yaml",
+    return GetReleasedBinary(FW_RELEASES_INDEX_URL,
                              ReleaseCache,
                              RELEASE_CACHE_TTL,
                              fwSignature,
-                             releaseSuite);
+                             releaseSuite,
+                             networkAccess);
 }
 
 // Cf. fw_downloader.py get_released_bootloader()
 // The released bootloader now comes from boot/by-signature/release-versions.yaml keyed by the
 // controller's release suite (testing/stable), mirroring firmwares, instead of the old
 // suite-agnostic bootloader/by-signature/<sig>/main/latest.txt.
-TReleasedBinary TFwDownloader::GetReleasedBootloader(const std::string& fwSignature, const std::string& releaseSuite)
+TReleasedBinary TFwDownloader::GetReleasedBootloader(const std::string& fwSignature,
+                                                     const std::string& releaseSuite,
+                                                     ENetworkAccess networkAccess)
 {
     if (fwSignature.empty()) {
         throw std::runtime_error("Cannot get bootloader: empty firmware signature");
     }
-    return GetReleasedBinary(FW_RELEASES_BASE_URL + "/boot/by-signature/release-versions.yaml",
+    return GetReleasedBinary(BOOTLOADER_RELEASES_INDEX_URL,
                              BootloaderReleaseCache,
                              BOOTLOADER_CACHE_TTL,
                              fwSignature,
-                             releaseSuite);
+                             releaseSuite,
+                             networkAccess);
 }
 
 // Cf. firmware_update.py:205 download_wbfw()
@@ -355,4 +388,25 @@ TParsedWBFW TFwDownloader::DownloadAndParseWBFW(const std::string& url)
     }
 
     return firmware;
+}
+
+void TFwDownloader::PrefetchReleaseIndexes()
+{
+    try {
+        UpdateReleaseIndex(FW_RELEASES_INDEX_URL, //
+                           ReleaseCache,
+                           RELEASE_CACHE_TTL,
+                           ENetworkAccess::Allowed);
+    } catch (const std::exception& e) {
+        LOG(Warn) << "Cannot get firmware releases: " << e.what();
+    }
+
+    try {
+        UpdateReleaseIndex(BOOTLOADER_RELEASES_INDEX_URL,
+                           BootloaderReleaseCache,
+                           BOOTLOADER_CACHE_TTL,
+                           ENetworkAccess::Allowed);
+    } catch (const std::exception& e) {
+        LOG(Warn) << "Cannot get bootloader releases: " << e.what();
+    }
 }
