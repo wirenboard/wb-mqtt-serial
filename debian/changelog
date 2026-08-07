@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.263.0) stable; urgency=medium
+
+  * Move firmware release indexes download from port thread to RPC thread
+
+ -- Ilya Titov <mail@u236.org>  Fri, 07 Aug 2026 11:24:52 +0300
+
 wb-mqtt-serial (2.262.6) stable; urgency=medium
 
   * Finish unifying displayed UI texts across the remaining WB families
