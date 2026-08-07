@@ -277,6 +277,8 @@
         ],
         "translations": {
             "en": {
+                "Serial NO": "Serial Number",
+                "FW Version": "Firmware Version",
                 "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement module)",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",

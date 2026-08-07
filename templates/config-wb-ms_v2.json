@@ -446,6 +446,9 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
+                "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
                 "WB-MS-v2_template_title": "WB-MS v.2 (Modbus sensor)",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
@@ -488,7 +491,7 @@
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "Disabled": "Отключен",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
                 "VOC Sensor Installed": "Датчик VOC установлен",

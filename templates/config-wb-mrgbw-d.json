@@ -271,6 +271,8 @@
 
         "translations": {
             "en": {
+                "Serial NO": "Serial Number",
+                "FW Version": "Firmware Version",
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
