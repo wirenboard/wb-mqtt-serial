@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.248.1-wb104) stable; urgency=medium
+wb-mqtt-serial (2.248.1-wb105) stable; urgency=medium
 
   * Add new templates for WB-MDM3 (fw 2.12), WB-MAO4 and WB-MAO4-20mA (fw 2.9),
     WB-LED and WB-MRGBW-D (fw 3.8): encoder support, configurable dimming step
@@ -6,7 +6,14 @@ wb-mqtt-serial (2.248.1-wb104) stable; urgency=medium
     control channels with auto-on, 2CCT output mode (WB-LED)
   * Fix dimmer's min max params order
 
- -- Egor Panchenko <egor.panchenko@wirenboard.com>  Fri, 31 Jul 2026 16:50:00 +0300
+ -- Egor Panchenko <egor.panchenko@wirenboard.com>  Mon, 10 Aug 2026 11:29:00 +0300
+
+wb-mqtt-serial (2.248.1-wb104) stable; urgency=medium
+
+  * Add buttons functionality to WB-MCM8HV template
+  * Bring WB-MCM8HV template in line with WB-STD-001/002/003
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Wed, 29 Jul 2026 22:49:00 +0700
 
 wb-mqtt-serial (2.248.1-wb103) stable; urgency=medium
 
