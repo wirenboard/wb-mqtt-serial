@@ -442,10 +442,11 @@
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1],
+                "enum": [0, 1, 2],
                 "enum_titles": [
                     "Don't change output state",
-                    "Switch output to safety state"
+                    "Switch output to safety state",
+                    "Switch output according to input state"
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
@@ -1085,7 +1086,7 @@
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "safety_behaviour_description": "Action when module switches into safe mode",
+                "safety_behaviour_description": "Option \"Switch output according to input state\" works for latching switch mode only",
                 "outputs_safe_state_description": "Outputs state after module power on (if the \"Set output to safe state\" item is selected in the \"States of the relay on power up\" setting) and in the safe mode, if the transition to the safe state is activated",
 
                 "sp_title": "Short Press",
@@ -1210,7 +1211,7 @@
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
-                "safety_behaviour_description": "Действие при переходе модуля в безопасный режим",
+                "safety_behaviour_description": "Вариант \"Установить выход согласно состоянию входа\" применим только для режима \"Переключатель с фиксацией\"",
                 "Outputs State After Power On": "Состояния выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
@@ -1240,6 +1241,7 @@
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Don't change output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Switch output according to input state": "Установить выход согласно состоянию входа",
 
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
