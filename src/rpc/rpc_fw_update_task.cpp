@@ -1,5 +1,6 @@
 #include "rpc_fw_update_task.h"
 #include "log.h"
+#include "rpc_fw_update_helpers.h"
 #include "rpc_helpers.h"
 #include "serial_exc.h"
 
@@ -183,27 +184,32 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
                                           FwRegisters::FW_SIGNATURE_COUNT,
                                           true); // holding
 
+    if (!IsValidFwSignature(info.FwSignature)) {
+        LOG(Debug) << "Firmware signature is not a valid value, ignoring it";
+        info.FwSignature.clear();
+    }
+
     // Read firmware version - Cf. firmware_update.py:255 read_fw_version()
     // In bootloader mode, firmware version registers may not be available
     try {
-        info.FwVersion = ReadStringRegister(traits,
-                                            port,
-                                            slaveId,
-                                            FwRegisters::FW_VERSION_ADDR,
-                                            FwRegisters::FW_VERSION_COUNT,
-                                            true); // holding
+        info.FwVersion = SanitizeVersionString(ReadStringRegister(traits,
+                                                                  port,
+                                                                  slaveId,
+                                                                  FwRegisters::FW_VERSION_ADDR,
+                                                                  FwRegisters::FW_VERSION_COUNT,
+                                                                  true)); // holding
     } catch (const std::exception& e) {
         LOG(Debug) << "Cannot read firmware version: " << e.what();
     }
 
     // Read bootloader version - Cf. firmware_update.py:234 read_bootloader_info()
     try {
-        info.BootloaderVersion = ReadStringRegister(traits,
-                                                    port,
-                                                    slaveId,
-                                                    FwRegisters::BOOTLOADER_VERSION_ADDR,
-                                                    FwRegisters::BOOTLOADER_VERSION_COUNT,
-                                                    true); // holding
+        info.BootloaderVersion = SanitizeVersionString(ReadStringRegister(traits,
+                                                                          port,
+                                                                          slaveId,
+                                                                          FwRegisters::BOOTLOADER_VERSION_ADDR,
+                                                                          FwRegisters::BOOTLOADER_VERSION_COUNT,
+                                                                          true)); // holding
     } catch (const std::exception& e) {
         LOG(Debug) << "Cannot read bootloader version: " << e.what();
     }
@@ -296,7 +302,7 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
                                                 FwRegisters::COMPONENT_MODEL_BASE +
                                                     static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
                                                 FwRegisters::COMPONENT_MODEL_COUNT);
-                info.Components.push_back({compNum, signature, fwVer, model});
+                info.Components.push_back({compNum, signature, SanitizeVersionString(fwVer), model});
             } catch (const std::exception& e) {
                 LOG(Debug) << "Cannot read component " << compNum << " info: " << e.what();
             }

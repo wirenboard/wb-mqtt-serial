@@ -4,6 +4,8 @@
 #include "rpc_fw_update_helpers.h"
 #include "rpc_fw_update_task.h"
 
+#include <algorithm>
+
 #ifndef __EMSCRIPTEN__
 #include "rpc_fw_get_firmware_info_task.h"
 #include "rpc_fw_restore_task.h"
@@ -29,6 +31,21 @@ bool IsNonUpdatableSignature(const std::string& sig)
     return std::find(NonUpdatableSignatures.begin(), NonUpdatableSignatures.end(), sig) != NonUpdatableSignatures.end();
 }
 
+bool IsPrintableAscii(const std::string& s)
+{
+    return std::all_of(s.begin(), s.end(), [](unsigned char c) { return c >= 0x20 && c <= 0x7E; });
+}
+
+bool IsValidFwSignature(const std::string& sig)
+{
+    return !sig.empty() && IsPrintableAscii(sig);
+}
+
+std::string SanitizeVersionString(const std::string& s)
+{
+    return IsPrintableAscii(s) ? s : std::string();
+}
+
 // Cf. version_comparison.py:8 firmware_is_newer()
 bool FirmwareIsNewer(const std::string& currentVersion, const std::string& availableVersion)
 {
@@ -47,7 +64,8 @@ bool ComponentFirmwareIsNewer(const std::string& currentVersion, const std::stri
 // Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info() - response building part
 Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
                                       TFwDownloader& downloader,
-                                      const std::string& releaseSuite)
+                                      const std::string& releaseSuite,
+                                      ENetworkAccess networkAccess)
 {
     Json::Value result;
     result["fw"] = deviceInfo.FwVersion;
@@ -61,13 +79,13 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
     result["model"] = deviceInfo.DeviceModel;
 
     // Skip non-updatable signatures
-    if (IsNonUpdatableSignature(deviceInfo.FwSignature)) {
+    if (deviceInfo.FwSignature.empty() || IsNonUpdatableSignature(deviceInfo.FwSignature)) {
         return result;
     }
 
     // Look up released firmware
     try {
-        auto released = downloader.GetReleasedFirmware(deviceInfo.FwSignature, releaseSuite);
+        auto released = downloader.GetReleasedFirmware(deviceInfo.FwSignature, releaseSuite, networkAccess);
         result["available_fw"] = released.Version;
         result["fw_has_update"] = FirmwareIsNewer(deviceInfo.FwVersion, released.Version);
     } catch (const std::exception& e) {
@@ -76,7 +94,7 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
 
     // Look up bootloader
     try {
-        auto bootloader = downloader.GetLatestBootloader(deviceInfo.FwSignature);
+        auto bootloader = downloader.GetReleasedBootloader(deviceInfo.FwSignature, releaseSuite, networkAccess);
         result["available_bootloader"] = bootloader.Version;
         result["bootloader_has_update"] = FirmwareIsNewer(deviceInfo.BootloaderVersion, bootloader.Version);
     } catch (const std::exception& e) {
@@ -85,12 +103,13 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
 
     // Serial devices are always updatable. TCP devices would need additional checks
     // (port settings preservation, protocol type, baud rate), but wb-mqtt-serial only handles serial.
-    result["can_update"] = true;
+    result["can_update"] =
+        !result["available_fw"].asString().empty() || !result["available_bootloader"].asString().empty();
 
     // Component info
     for (const auto& comp: deviceInfo.Components) {
         try {
-            auto released = downloader.GetReleasedFirmware(comp.Signature, releaseSuite);
+            auto released = downloader.GetReleasedFirmware(comp.Signature, releaseSuite, networkAccess);
             Json::Value compJson;
             compJson["model"] = comp.Model;
             compJson["fw"] = comp.FwVersion;
@@ -231,6 +250,8 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
             return;
         }
 
+        Downloader->PrefetchReleaseIndexes();
+
         auto task = std::make_shared<TFwGetFirmwareInfoTask>(static_cast<uint8_t>(params.SlaveId),
                                                              params.Protocol,
                                                              ReleaseSuite,
@@ -261,6 +282,8 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
 
         auto params = ParseRequestParams(request);
         auto softwareType = request.get("type", "firmware").asString();
+
+        Downloader->PrefetchReleaseIndexes();
 
         auto task = std::make_shared<TFwUpdateSerialClientTask>(static_cast<uint8_t>(params.SlaveId),
                                                                 params.Protocol,
@@ -308,6 +331,8 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
         }
 
         auto params = ParseRequestParams(request);
+
+        Downloader->PrefetchReleaseIndexes();
 
         auto task = std::make_shared<TFwRestoreTask>(static_cast<uint8_t>(params.SlaveId),
                                                      params.Protocol,
