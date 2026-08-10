@@ -1,3 +1,23 @@
+wb-mqtt-serial (2.248.1-wb106) stable; urgency=medium
+
+  * Move firmware release indexes download from port thread to RPC thread
+
+  [ Petr Krasnoshchekov ]
+  * fw-update GetFirmwareInfo: stop reporting garbage for third-party devices.
+    Sanitize the firmware and bootloader version strings read from the device
+    (printable ASCII only) so raw bytes no longer leak into fw/bootloader; treat
+    an empty or non-printable firmware signature as "no signature" and skip the
+    release-server lookup (no more bogus by-signature// requests); report
+    can_update only when the release server actually offers a firmware or
+    bootloader for the device
+
+  [ Ilia Skochilov ]
+  * Take the released bootloader version from boot/by-signature/release-versions.yaml by the
+    controller's release suite (testing/stable), mirroring firmwares, instead of the
+    suite-agnostic bootloader/by-signature/<signature>/main/latest.txt
+
+ -- Ilya Titov <mail@u236.org>  Mon, 10 Aug 2026 13:09:17 +0300
+
 wb-mqtt-serial (2.248.1-wb105) stable; urgency=medium
 
   * Add new templates for WB-MDM3 (fw 2.12), WB-MAO4 and WB-MAO4-20mA (fw 2.9),

@@ -117,7 +117,7 @@ void TFwUpdateSerialClientTask::DoBootloaderUpdate(TPort& port,
                                                    Modbus::IModbusTraits& traits,
                                                    const TFwDeviceInfo& info)
 {
-    auto bootloader = Downloader->GetLatestBootloader(info.FwSignature);
+    auto bootloader = Downloader->GetReleasedBootloader(info.FwSignature, ReleaseSuite);
     DoFlash(port,
             traits,
             "bootloader",
