@@ -1145,7 +1145,7 @@ TEST_F(TFwTaskTest, GetInfoGarbageVersionsSanitized)
     task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
 
     ASSERT_TRUE(gotResult);
-    EXPECT_EQ(resultInfo.FwVersion, "");        // garbage dropped at source
+    EXPECT_EQ(resultInfo.FwVersion, "");         // garbage dropped at source
     EXPECT_EQ(resultInfo.BootloaderVersion, ""); // garbage dropped at source
     EXPECT_EQ(resultInfo.DeviceModel, "EFAN");
 }
@@ -1730,13 +1730,13 @@ TEST_F(FwHandlerTest, IsPrintableAsciiPlain)
 {
     EXPECT_TRUE(IsPrintableAscii("3.7.0"));
     EXPECT_TRUE(IsPrintableAscii("WB-MSW v.3")); // spaces and dots are printable
-    EXPECT_TRUE(IsPrintableAscii("")); // empty is trivially printable
+    EXPECT_TRUE(IsPrintableAscii(""));           // empty is trivially printable
 }
 
 TEST_F(FwHandlerTest, IsPrintableAsciiControlChar)
 {
     EXPECT_FALSE(IsPrintableAscii(std::string("\x0F"
-                                              "F")));      // control char
+                                              "F")));        // control char
     EXPECT_FALSE(IsPrintableAscii(std::string("\x01\x02"))); // control chars
     EXPECT_FALSE(IsPrintableAscii(std::string("ab\x7F")));   // DEL is not printable
 }
@@ -1762,9 +1762,9 @@ TEST_F(FwHandlerTest, IsValidFwSignatureEmpty)
 TEST_F(FwHandlerTest, IsValidFwSignatureGarbage)
 {
     EXPECT_FALSE(IsValidFwSignature(std::string("\x0F"
-                                                "F")));      // control char
+                                                "F")));       // control char
     EXPECT_FALSE(IsValidFwSignature(std::string("\xC0sig"))); // high byte
-    EXPECT_FALSE(IsValidFwSignature(std::string("ab\x01"))); // control char in the middle
+    EXPECT_FALSE(IsValidFwSignature(std::string("ab\x01")));  // control char in the middle
 }
 
 TEST_F(FwHandlerTest, SanitizeVersionString)
@@ -2551,8 +2551,7 @@ TEST_F(FwHandlerIntegrationTest, UpdateBootloader)
     SetupReleasesYaml();
     SetupBootloaderInfo("wbled", "2.0.0");
     std::vector<uint8_t> wbfwData(168, 0xBB);
-    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.0.0.wbfw",
-                                wbfwData);
+    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.0.0.wbfw", wbfwData);
 
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
     EnqueueFlashExpectations(true, true);
