@@ -1467,6 +1467,9 @@
         ],
         "translations": {
             "en": {
+                "Serial NO": "Serial Number",
+                "FW Version": "Firmware Version",
+                "Minimum MCU Voltage Since Startup": "Min MCU Voltage Since Startup",
                 "WB-MIR-v2_template_title": "WB-MIR v.2 (Modbus IR remote control)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
@@ -1614,7 +1617,7 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "Minimum MCU Voltage Since Startup": "Мин. напряжение питания МК с момента включения",
                 "1-Wire": "Датчик 1-Wire",
                 "External Temperature Sensor": "Датчик температуры",
                 "External Temperature Sensor OK": "Датчик температуры исправен",

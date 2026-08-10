@@ -560,6 +560,10 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
+                "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
+                "Minimum MCU Voltage Since Startup": "Min MCU Voltage Since Startup",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
                 "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
@@ -583,7 +587,7 @@
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
                 "Input {{in_num}} counter": "Счетчик {{in_num}}",
-                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
+                "Input {{in_num}} Single Press Counter": "Счетчик одиночных нажатий входа {{in_num}}",
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
@@ -621,10 +625,10 @@
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "Minimum MCU Voltage Since Startup": "Мин. напряжение питания МК с момента включения",
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",

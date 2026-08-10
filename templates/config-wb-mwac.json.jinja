@@ -410,7 +410,7 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Don't сhange state",
+                    "Don't change state",
                     "Switch to safety state"
                 ]
             },
@@ -637,6 +637,8 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
@@ -687,7 +689,7 @@
                 {% set letter = "S" if in_num < 4 else "F" -%}
                 {% set in_num_offset = 0 if in_num < 4 else 3 -%}
                 "Input {{ letter }}{{ in_num - in_num_offset }}": "Вход {{ letter }}{{ in_num - in_num_offset }}",
-                "Input {{ letter }}{{ in_num - in_num_offset }} Single Press Counter": "Счетчик коротких нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
+                "Input {{ letter }}{{ in_num - in_num_offset }} Single Press Counter": "Счетчик одиночных нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Long Press Counter": "Счетчик длинных нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
@@ -742,7 +744,7 @@
                 "mapping_matrix_actions_description": "Назначение действия для режима \"Влажная уборка\" доступно начиная с прошивки версии 1.21.0",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. 1 — 65534 с, 10 по умолчанию.",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
-                "Don't сhange state": "Ничего не делать",
+                "Don't change state": "Ничего не делать",
                 "Switch to safety state": "Перевести в безопасное состояние",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",

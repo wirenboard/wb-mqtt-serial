@@ -1639,6 +1639,9 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
+                "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
                 "WB-MSW-v4_template_title": "WB-MSW-LORA v.4 (wall-mounted Modbus sensor)",
                 "group_sound_level_title": "Sound Level",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
@@ -1811,7 +1814,7 @@
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "Disabled": "Отключен",
-                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
                 "Sound ADC Channel": "Канал ADC датчика шума",
@@ -1844,7 +1847,7 @@
                 "No Action": "Ничего не делать",
                 "Play IR Command": "Воспроизвести ИК-команду",
                 "Safety Command": "ИК-команда",
-                "safety_command_description": "ИК-команда, которая будет воcпроизведена в безопасном режиме"
+                "safety_command_description": "ИК-команда, которая будет воспроизведена в безопасном режиме"
             }
         }
     }

@@ -12,6 +12,8 @@
 {% set ENCODER_CHANGE_STEP_DEFAULT = 1 -%}
 {% set ENCODER_CHANGE_STEP_MAX = 100 -%}
 {% set PRESS_TYPES = ["short", "long", "double", "short long"] -%}
+{# UI titles: unified with WB-MDM3 / WB-MRGBW-D and WB-STD-001 6.3 wording -#}
+{% set PRESS_TITLES = {"short": "Single", "long": "Long", "double": "Double", "short long": "Shortlong"} -%}
 {% set SHORT_PRESS_TYPES = ["short", "double"] -%}
 {% set SHORT_PRESS_CHANGE_STEP_DEFAULT = 1 -%}
 {% set SHORT_PRESS_CHANGE_STEP_MAX = 100 -%}
@@ -45,7 +47,7 @@
             },
             {% for press_type in PRESS_TYPES -%}
             {
-                "title": "{{ press_type | title }} Press Action",
+                "title": "{{ PRESS_TITLES[press_type] }} Press Action",
                 "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "group": "input_{{ ch_number }}"
             },
@@ -119,7 +121,7 @@
             },
             {% endfor -%}
             {
-                "title": "encoder_channels",
+                "title": "Encoder Channels",
                 "id": "gg_encoder_channels",
                 "group": "g_encoders",
                 "ui_options": {
@@ -175,12 +177,12 @@
             },
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour"
+                "id": "g_power_up_behaviour",
+                "description": "g_power_up_behaviour_description"
             },
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
-                "description": "g_power_up_behaviour_description",
                 "group": "g_safety"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -1032,6 +1034,19 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
+                {# Align English display text with WB-MDM3 / WB-MRGBW-D and
+                   WB-STD-001 6.3. Channel "name" is unchanged (it is the MQTT
+                   topic and the key in wb-mqtt-serial.conf) - only the
+                   displayed string is overridden here. -#}
+                {% for n in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{n}} Short Press Counter": "Input {{n}} Single Press Counter",
+                "Input {{n}} Short Long Press Counter": "Input {{n}} Shortlong Press Counter",
+                {% endfor -%}
+                "Supply voltage": "Supply Voltage",
+                "g_power_up_behaviour_description": "Configures output behaviour when the device is powered up",
+                "Input Counters": "Input Channels",
                 "template_title": "{{ title_en }}",
                 "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor",
@@ -1069,6 +1084,15 @@
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
             },
             "ru": {
+                "Input Parameters": "Параметры нажатий",
+                "Input Counters": "Каналы входа",
+                "Output Channels": "Каналы выходов",
+                "Encoder Channels": "Каналы энкодера",
+                "Single Press Action": "Действие для одиночного нажатия",
+                "Shortlong Press Action": "Действие для короткого, а затем длинного нажатия",
+                {% for n in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                "Light Scene {{n}} Channels": "Каналы световой сцены {{n}}",
+                {% endfor -%}
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "template_title": "{{ title_ru }}",
@@ -1099,16 +1123,14 @@
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{ch_number}}": "Вход {{ch_number}}",
                 "Input {{ch_number}} Counter": "Счетчик {{ch_number}}",
-                "Input {{ch_number}} Short Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Short Press Counter": "Счетчик одиночных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
-                "Short Press Action": "Действие для короткого нажатия",
                 "Long Press Action": "Действие для длинного нажатия",
                 "Double Press Action": "Действие для двойного нажатия",
-                "Short Long Press Action": "Действие для короткого, затем длинного нажатия",
 
                 "No Action": "Ничего не делать",
                 "All Outputs": "Все выходы",

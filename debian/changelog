@@ -1,9 +1,67 @@
-wb-mqtt-serial (2.263.0) stable; urgency=medium
+wb-mqtt-serial (2.264.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add option to safety behaviour - switch output according to input state
   * WB-MRWM template: remove reg 5
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 05 Aug 2026 13:15:51 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 10 Aug 2026 11:15:51 +0300
+
+wb-mqtt-serial (2.263.0) stable; urgency=medium
+
+  * Move firmware release indexes download from port thread to RPC thread
+
+ -- Ilya Titov <mail@u236.org>  Fri, 07 Aug 2026 11:24:52 +0300
+
+wb-mqtt-serial (2.262.6) stable; urgency=medium
+
+  * Finish unifying displayed UI texts across the remaining WB families
+    (display-only): WB-MAO4 (mao4, mao4-20ma, mao4-20ma-fw-2.9), WB-MDM3,
+    WB-MSW (v3/v4/v4_lora), WB-MIR (v2/v2-buttons/v3/v3-fw-4.35) — Serial
+    Number, Firmware Version, Supply Voltage, Min Supply/MCU Voltage Since
+    Startup; RU "одиночных нажатий"; for WB-MAO4 the press-counter display is
+    aligned (Short->Single, Shortlong) via translations only — channel names
+    (MQTT topics) are unchanged. Also add the missing Serial Number / Firmware
+    Version display texts to the WB-MAO4/MDM3/LED/MRGBW-D fw-variant templates
+    from the earlier migration, and fix a "воспроизведена" typo in WB-MSW/MIR
+    descriptions. Only current (g-wb) templates. Validate.dat unchanged.
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 06 Aug 2026 15:00:00 +0300
+
+wb-mqtt-serial (2.262.5) stable; urgency=medium
+
+  * Unify displayed UI texts across several WB families (display-only): WB-MAI
+    (MAI11/MAI2-CC/MAI6), WB-MIO, WB-UPS v.3, WB-DALI, WB-MCM8, WB-MS v.2,
+    WB-MWAC (MWAC/MWAC2/MWAC2 ver.2), WB-M1W2, WB-LED, WB-MRGBW-D. Canonical
+    texts — Serial Number, Firmware Version, Supply Voltage, Min Supply Voltage
+    Since Startup, Min MCU Voltage Since Startup; RU "одиночных нажатий" for the
+    single-press counter; fix a Cyrillic homoglyph ("сhange"->"change") in the
+    WB-MWAC/WB-MWAC2 safety-behaviour enum title. Only current (g-wb) templates
+    are touched. Channel names (MQTT topics) are not changed — backward
+    compatible, Validate.dat unchanged.
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 06 Aug 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.262.4) stable; urgency=medium
+
+  * WB-MR relay family templates (WB-MR3, WB-MR6C/-NC/CU/v.3, WB-MRM2-mini/NO,
+    WB-MRM2-mini/NC, WB-MRWM2): unify displayed UI texts for entities named
+    differently across templates — Serial Number, Firmware Version, Supply
+    Voltage, Min Supply Voltage Since Startup, Min MCU Voltage Since Startup;
+    RU "одиночных нажатий" for the single-press counter; fix a Cyrillic
+    homoglyph ("сhange"→"change") in the WB-MRWM2 safety-behaviour enum title.
+    Only current (g-wb) templates are touched; obsolete g-wb-old ones are left
+    as is. Channel names (MQTT topics) are not changed — backward compatible,
+    Validate.dat unchanged.
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 05 Aug 2026 18:02:10 +0300
+
+wb-mqtt-serial (2.262.3) stable; urgency=medium
+
+  * WB-MAO4, WB-MDM3, WB-MRGBW-D, WB-LED templates: unify UI texts for
+    entities that are named differently across the templates, translate
+    placeholder group titles, fix the WB-MAO4 safety group carrying the
+    power-up description, and drop 8 duplicate unused group ids in WB-LED
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 04 Aug 2026 00:42:00 +0700
 
 wb-mqtt-serial (2.262.2) stable; urgency=medium
 

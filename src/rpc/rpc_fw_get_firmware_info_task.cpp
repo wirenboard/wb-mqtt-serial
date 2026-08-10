@@ -34,7 +34,7 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
 
         auto traits = MakeModbusTraits(Protocol);
         auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
-        auto result = BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite);
+        auto result = BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite, ENetworkAccess::CacheOnly);
 
         if (OnResult) {
             OnResult(result);

@@ -435,7 +435,7 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Don't сhange state",
+                    "Don't change state",
                     "Switch to the safety state"
                 ]
             },
@@ -700,6 +700,8 @@
         ],
         "translations": {
             "en": {
+                "Serial": "Serial Number",
+                "FW Version": "Firmware Version",
                 "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime",
@@ -753,7 +755,7 @@
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
                 "Input {{ letter }}{{ in_num }}": "Вход {{ letter }}{{ in_num }}",
-                "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик одиночных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num }}",
@@ -810,7 +812,7 @@
                 "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле.",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
                 "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\".",
-                "Don't сhange state": "Ничего не делать",
+                "Don't change state": "Ничего не делать",
                 "Outputs Control By Inputs In Safety Mode": "Управление выходами с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
