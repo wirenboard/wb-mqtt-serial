@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.263.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add option to safety behaviour - switch output according to input state
+  * WB-MRWM template: remove reg 5
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 05 Aug 2026 13:15:51 +0300
 

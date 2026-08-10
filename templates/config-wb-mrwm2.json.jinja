@@ -162,15 +162,6 @@
             }
         ],
 
-        "setup": [
-            {
-                "title": "disable legacy input mode control",
-                "address": 5,
-                "reg_type": "holding",
-                "value": 0
-            }
-        ],
-
         "parameters": {
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% if in_num == 0 -%}
