@@ -411,7 +411,9 @@ void TTemplateMap::ValidateTemplate(const Json::Value& templateRoot)
     if (!Validator) {
         throw std::runtime_error("Device templates schema is not loaded");
     }
-    ValidateDeviceTemplate(templateRoot, *Validator);
+    Json::Value root(templateRoot);
+    FixChannelsEnum(root);
+    ValidateDeviceTemplate(root, *Validator);
 }
 
 PDeviceTemplate TTemplateMap::FindUserDefinedTemplate(const std::string& deviceType)
