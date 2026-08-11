@@ -249,6 +249,13 @@ namespace
         }
     }
 
+    //! Converts numeric channel enum values to strings and validates the template
+    void FixAndValidateDeviceTemplate(Json::Value& root, WBMQTT::JSON::TValidator& validator)
+    {
+        FixChannelsEnum(root);
+        ValidateDeviceTemplate(root, validator);
+    }
+
     //! Prepares a valid template for use: adds condition dependencies, normalizes parameters
     void AnnotateDeviceTemplate(Json::Value& root)
     {
@@ -412,8 +419,7 @@ void TTemplateMap::ValidateTemplate(const Json::Value& templateRoot)
         throw std::runtime_error("Device templates schema is not loaded");
     }
     Json::Value root(templateRoot);
-    FixChannelsEnum(root);
-    ValidateDeviceTemplate(root, *Validator);
+    FixAndValidateDeviceTemplate(root, *Validator);
 }
 
 PDeviceTemplate TTemplateMap::FindUserDefinedTemplate(const std::string& deviceType)
@@ -514,15 +520,16 @@ const Json::Value& TDeviceTemplate::GetTemplate()
 {
     if (Template.isNull()) {
         Json::Value root(WBMQTT::JSON::Parse(GetFilePath()));
-        FixChannelsEnum(root);
         // Skip deprecated template validation, it may be broken according to latest schema
         if (!IsDeprecated()) {
             try {
-                ValidateDeviceTemplate(root, *Validator);
+                FixAndValidateDeviceTemplate(root, *Validator);
             } catch (const std::runtime_error& e) {
                 throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
             AnnotateDeviceTemplate(root);
+        } else {
+            FixChannelsEnum(root);
         }
         Template = root["device"];
     }
