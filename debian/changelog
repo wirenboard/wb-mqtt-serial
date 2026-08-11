@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.263.2) stable; urgency=medium
+
+  * Clarify max_read_registers applies to coils and discrete inputs too
+
+ -- Alexander Kuznetsov <alexander.kuznetsov@wirenboard.com>  Tue, 11 Aug 2026 14:12:19 +0300
+
 wb-mqtt-serial (2.263.1) stable; urgency=medium
 
   * Fix templates/Upload RPC numeric channel enum values validation
