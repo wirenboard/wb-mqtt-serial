@@ -249,10 +249,15 @@ namespace
         }
     }
 
-    //! Converts numeric channel enum values to strings and validates the template
-    void FixAndValidateDeviceTemplate(Json::Value& root, WBMQTT::JSON::TValidator& validator)
+    //! Converts numeric channel enum values to strings
+    void FixDeviceTemplate(Json::Value& root)
     {
         FixChannelsEnum(root);
+    }
+
+    void FixAndValidateDeviceTemplate(Json::Value& root, WBMQTT::JSON::TValidator& validator)
+    {
+        FixDeviceTemplate(root);
         ValidateDeviceTemplate(root, validator);
     }
 
@@ -529,7 +534,7 @@ const Json::Value& TDeviceTemplate::GetTemplate()
             }
             AnnotateDeviceTemplate(root);
         } else {
-            FixChannelsEnum(root);
+            FixDeviceTemplate(root);
         }
         Template = root["device"];
     }
