@@ -414,6 +414,28 @@ TEST_F(TRPCTemplatesHandlerTest, UploadInvalidCondition)
     EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
 }
 
+TEST_F(TRPCTemplatesHandlerTest, UploadNumericChannelEnum)
+{
+    // Templates use numeric channel enums, the schema allows strings only,
+    // so the values must be converted before validation, as it is done on disk load
+    auto root = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    auto& channel = root["device"]["channels"][0];
+    channel["enum"].append(0);
+    channel["enum"].append(1);
+    channel["enum_titles"].append("off");
+    channel["enum_titles"].append("on");
+
+    Upload(MakeUploadRequest(SerializeJson(root), "numeric-enum.json"));
+
+    EXPECT_EQ(std::vector<std::string>{"numeric-enum.json"}, ListUserTemplatesDir());
+    // The file keeps the original values, the loaded template has them converted
+    auto stored = WBMQTT::JSON::Parse((UserTemplatesDir / "numeric-enum.json").string());
+    EXPECT_TRUE(stored["device"]["channels"][0]["enum"][0].isNumeric());
+    auto loaded = Templates->GetTemplate(NEW_TYPE)->GetTemplate();
+    EXPECT_EQ("0", loaded["channels"][0]["enum"][0].asString());
+    EXPECT_EQ("1", loaded["channels"][0]["enum"][1].asString());
+}
+
 TEST_F(TRPCTemplatesHandlerTest, DeleteOverride)
 {
     Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded", "g-relay"), "msu34.json", true));

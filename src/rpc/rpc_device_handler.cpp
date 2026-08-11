@@ -325,11 +325,13 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
             int unsupportedValue =
                 config.RegisterConfig->Format == S16 ? static_cast<int16_t>(0xFFFE) : static_cast<uint16_t>(0xFFFE);
             if (item.isMember("enum")) {
-                const auto& list = item["enum"];
-                for (auto it = list.begin(); it != list.end(); ++it) {
-                    if ((*it).asInt() == unsupportedValue) {
-                        reg.CheckUnsupported = false;
-                        break;
+                for (const auto& value: item["enum"]) {
+                    try {
+                        if (std::stoi(value.asString(), 0, 0) == unsupportedValue) {
+                            reg.CheckUnsupported = false;
+                            break;
+                        }
+                    } catch (const std::logic_error&) {
                     }
                 }
             } else {

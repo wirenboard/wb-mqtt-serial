@@ -1,0 +1,50 @@
+{
+    "device_type": "channel_enum",
+    "device": {
+        "name": "channel enum",
+        "id": "channel enum",
+        "channels": [
+            {
+                "name": "unsupported in enum",
+                "id": "unsupported_in_enum",
+                "reg_type": "input",
+                "address": 0,
+                "enum": [1, 65534],
+                "enum_titles": ["one", "unsupported"]
+            },
+            {
+                "name": "supported enum",
+                "id": "supported_enum",
+                "reg_type": "input",
+                "address": 1,
+                "enum": [0, 1],
+                "enum_titles": ["off", "on"]
+            },
+            {
+                "name": "signed enum",
+                "id": "signed_enum",
+                "reg_type": "input",
+                "format": "s16",
+                "address": 2,
+                "enum": [-2, 0],
+                "enum_titles": ["unsupported", "zero"]
+            },
+            {
+                "name": "hex enum",
+                "id": "hex_enum",
+                "reg_type": "input",
+                "address": 3,
+                "enum": ["0xFFFE", "0x10"],
+                "enum_titles": ["unsupported", "sixteen"]
+            },
+            {
+                "name": "range with unsupported",
+                "id": "range_with_unsupported",
+                "reg_type": "input",
+                "address": 4,
+                "min": 0,
+                "max": 65535
+            }
+        ]
+    }
+}
