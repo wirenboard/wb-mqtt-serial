@@ -296,3 +296,34 @@ TEST(TDeviceLoadTest, GetParametersRegisterListThrowsOnUnknownParam)
     ASSERT_THROW(request.GetParametersRegisterList(), TRPCException)
         << "should throw when requested parameter does not exist in template";
 }
+
+/**
+ * Checks that unsupported value 0xFFFE is detected in channel enums,
+ * which are converted to strings on template load.
+ */
+TEST(TDeviceLoadTest, CheckUnsupportedInChannelEnum)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("channel_enum")->GetTemplate();
+
+    TRPCRegisterList registerList =
+        CreateRegisterList(protocolParams, nullptr, deviceTemplate["channels"], Json::Value(), std::string(), true);
+
+    std::map<std::string, bool> checkUnsupported;
+    for (const auto& reg: registerList) {
+        checkUnsupported[reg.Id] = reg.CheckUnsupported;
+    }
+
+    ASSERT_EQ(checkUnsupported.size(), 5u);
+    ASSERT_FALSE(checkUnsupported["unsupported_in_enum"]);
+    ASSERT_TRUE(checkUnsupported["supported_enum"]);
+    ASSERT_FALSE(checkUnsupported["signed_enum"]);
+    ASSERT_FALSE(checkUnsupported["hex_enum"]);
+    ASSERT_FALSE(checkUnsupported["range_with_unsupported"]);
+}
