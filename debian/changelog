@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.263.3) stable; urgency=medium
+
+  * README: document channel name semantics, translation keys and WB-STD links
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 12 Aug 2026 17:32:14 +0300
+
 wb-mqtt-serial (2.263.2) stable; urgency=medium
 
   * Clarify max_read_registers applies to coils and discrete inputs too
