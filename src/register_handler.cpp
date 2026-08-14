@@ -71,6 +71,26 @@ void TRegisterHandler::Flush(TPort& port)
     }
 }
 
+bool TRegisterHandler::NeedRetryAfterWriteFail()
+{
+    std::lock_guard<std::mutex> lock(SetValueMutex);
+    if (!Dirty) {
+        return false;
+    }
+    if (!WriteFail) {
+        WriteFirstTryTime = steady_clock::now();
+        WriteFail = true;
+    }
+    if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) >
+        Reg->Device()->DeviceConfig()->MaxWriteFailTime)
+    {
+        Dirty = false;
+        WriteFail = false;
+        return false;
+    }
+    return true;
+}
+
 void TRegisterHandler::SetTextValue(const std::string& v)
 {
     std::lock_guard<std::mutex> lock(SetValueMutex);
