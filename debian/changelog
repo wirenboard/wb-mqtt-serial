@@ -2,7 +2,7 @@ wb-mqtt-serial (2.248.1-wb107) stable; urgency=medium
 
   * Fix write retry on a disconnected device
 
- -- Ilya Titov <mail@u236.org>  Fri, 14 Aug 2026 09:48:34 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 14 Aug 2026 09:48:34 +0300
 
 wb-mqtt-serial (2.248.1-wb106) stable; urgency=medium
 
@@ -22,7 +22,7 @@ wb-mqtt-serial (2.248.1-wb106) stable; urgency=medium
     controller's release suite (testing/stable), mirroring firmwares, instead of the
     suite-agnostic bootloader/by-signature/<signature>/main/latest.txt
 
- -- Ilya Titov <mail@u236.org>  Mon, 10 Aug 2026 13:09:17 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 10 Aug 2026 13:09:17 +0300
 
 wb-mqtt-serial (2.248.1-wb105) stable; urgency=medium
 
