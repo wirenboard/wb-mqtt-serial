@@ -164,7 +164,6 @@
             },
             "bus{{in_num}}_sens{{sens_num}}_temp_offset_deg": {
                 "title": "sens{{sens_num}}_temp_offset_deg_title",
-                "description": "sens_temp_offset_deg_description",
                 "address": {{1616 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
                 "reg_type": "holding",
                 "format": "s16",
@@ -733,7 +732,16 @@
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
                 "temperature_readings_period_s_title": "Temperature sensor poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
-                "w1_sensors_description": "Adding new sensors:<br>1) Make sure that the new sensors are connected to the bus<br>2) Click the 'Save New Sensors On The Bus' button on the device widget<br>3) Click the 'Review config' button<br>4) Click the 'Save config' button<br>New sensors will be saved in free cells.<br><br>If the sensor is not used, specify '0'.",
+                "w1_sensors_description": "{{
+                    "Adding new sensors:<br>"
+                    ~ "1) Make sure that the new sensors are connected to the bus<br>"
+                    ~ "2) Click the 'Save New Sensors On The Bus' button on the device widget<br>"
+                    ~ "3) Click the 'Review config' button<br>"
+                    ~ "4) Click the 'Save config' button<br>"
+                    ~ "New sensors will be saved in free cells.<br><br>"
+                    ~ "If the sensor is not used, specify '0'.<br><br>"
+                    ~ "The Temperature Offset value is added to the sensor readings and belongs to the slot, not to the sensor ID: replacing the sensor in the slot keeps the offset."
+                }}",
 
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
 
@@ -748,8 +756,6 @@
                 "g_safety_description": "Safety mode is activated if there is no Modbus polling for the specified time",
                 "poll_timeout_description": "Time without modbus polling after which safety mode will be activated",
                 "safety_command_description": "IR Command that will be played in safety mode",
-
-                "sens_temp_offset_deg_description": "The value is added to the sensor readings. The offset belongs to the sensor slot, not to the sensor ID: replacing the sensor in the slot keeps the offset",
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "sens{{sens_num}}_temp_offset_deg_title": "Sensor {{sens_num}} Temperature Offset (°C)"{% if not loop.last %},{% endif %}
@@ -795,8 +801,16 @@
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
                 "temperature_readings_period_s_title": "Период опроса датчика температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
-                "w1_sensors_description": "Добавление новых датчиков:<br>1) убедитесь, что новые датчики подключены на шину;<br>2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>3) нажмите кнопку «Перечитать настройки»;<br>4) нажмите кнопку «Сохранить настройки».<br>Новые датчики будут сохранены в свободные ячейки.<br><br>Если датчик не используется, укажите '0'.",
-                "sens_temp_offset_deg_description": "Значение прибавляется к показаниям датчика. Поправка привязана к ячейке, а не к ID датчика: при замене датчика в ячейке поправка сохраняется",
+                "w1_sensors_description": "{{
+                    "Добавление новых датчиков:<br>"
+                    ~ "1) убедитесь, что новые датчики подключены на шину;<br>"
+                    ~ "2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>"
+                    ~ "3) нажмите кнопку «Перечитать настройки»;<br>"
+                    ~ "4) нажмите кнопку «Сохранить настройки».<br>"
+                    ~ "Новые датчики будут сохранены в свободные ячейки.<br><br>"
+                    ~ "Если датчик не используется, укажите '0'.<br><br>"
+                    ~ "Значение поправки температуры прибавляется к показаниям датчика и привязано к ячейке, а не к ID датчика: при замене датчика в ячейке поправка сохраняется."
+                }}",
 
                 "Input": "Вход",
                 "Input Counter": "Счетчик",
