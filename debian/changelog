@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.264.1) stable; urgency=medium
+
+  * Fix Dooya 82 Voltage switch register address (0x27 -> 0x28)
+
+ -- Alexander Kuznetsov <alexander.kuznetsov@wirenboard.com>  Mon, 17 Aug 2026 10:23:56 +0300
+
 wb-mqtt-serial (2.264.0) stable; urgency=medium
 
   * Add temperature offset registers for templates with multisensor 1-Wire support (WB-MS v.2, WB-MIR v.3, WB-M1W2 v.3)
