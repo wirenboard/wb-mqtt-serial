@@ -148,7 +148,22 @@
                 "format": "u64",
                 "type": "w1-id",
                 "group": "gg_in{{in_num}}_sensors",
-                "order": {{1 + (sens_num - FIRST_SENSOR)}},
+                "order": {{1 + (sens_num - FIRST_SENSOR) * 2}},
+                "condition": "in{{in_num}}_mode==0"
+            },
+            "bus{{in_num}}_sens{{sens_num}}_temp_offset_deg": {
+                "title": "sens{{sens_num}}_temp_offset_deg_title",
+                "description": "sens_temp_offset_deg_description",
+                "address": {{1616 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.0625,
+                "default": 0,
+                "min": -10,
+                "max": 10,
+                "fw": "4.36.0",
+                "group": "gg_in{{in_num}}_sensors",
+                "order": {{2 + (sens_num - FIRST_SENSOR) * 2}},
                 "condition": "in{{in_num}}_mode==0"
             },
             {% endfor -%}
@@ -377,6 +392,22 @@
                 "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
+            {
+                "id": "bus{{in_num}}_raw_temp{{sens_num}}",
+                "name": "Temp Without Offset {{in_num}}:{{sens_num}}",
+                "reg_type": "input",
+                "address": {{1696 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
+                "type": "value",
+                "enabled": false,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.0625,
+                "round_to": 0.05,
+                "error_value": "0x7FFF",
+                "fw": "4.36.0",
+                "group": "gg_debug_bus{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==0"
+            },
             {% endfor -%}
             {
                 "id": "bus{{in_num}}_new_sens_count",
@@ -579,7 +610,13 @@
 
                 "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
-                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50"
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
+
+                "sens_temp_offset_deg_description": "The value is added to the sensor readings. The offset belongs to the sensor slot, not to the sensor ID: replacing the sensor in the slot keeps the offset",
+
+                {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
+                "sens{{sens_num}}_temp_offset_deg_title": "Sensor {{sens_num}} Temperature Offset (°C)"{% if not loop.last %},{% endif %}
+                {% endfor -%}
             },
             "ru": {
                 "WB-M1W2_v3_template_title": "WB-M1W2 v.3 fw4.35 (2-канальный преобразователь для термометров 1-Wire с функцией счётных входов)",
@@ -630,8 +667,11 @@
                 "MCU Voltage": "Напряжение питания МК",
                 "Minimum MCU Voltage Since Startup": "Мин. напряжение питания МК с момента включения",
 
+                "sens_temp_offset_deg_description": "Значение прибавляется к показаниям датчика. Поправка привязана к ячейке, а не к ID датчика: при замене датчика в ячейке поправка сохраняется",
+
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",
+                "sens{{sens_num}}_temp_offset_deg_title": "Поправка температуры датчика {{sens_num}} (°C)",
                 {% endfor -%}
 
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
@@ -648,6 +688,7 @@
                 "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
                 "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
                 "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действ. температура {{in_num}}:{{sens_num}}",
+                "Temp Without Offset {{in_num}}:{{sens_num}}": "Температура без учета поправки {{in_num}}:{{sens_num}}",
                 "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
                 "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
                 {% endfor -%}
