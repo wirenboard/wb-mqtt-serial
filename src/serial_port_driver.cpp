@@ -364,7 +364,7 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
 
 void TDeviceChannel::PublishIfExpired(WBMQTT::TDeviceDriver& deviceDriver, std::chrono::steady_clock::time_point now)
 {
-    if (MaxPublishInterval > std::chrono::seconds(0) && now - LastControlUpdate >= MaxPublishInterval &&
+    if (MaxPublishInterval > DefaultMaxPublishInterval && now - LastControlUpdate >= MaxPublishInterval &&
         HasValuesOfAllRegisters() && !ShouldNotPublishPressCounter())
     {
         UpdateValueAndError(deviceDriver, {TPublishParameters::PublishAll, std::chrono::milliseconds(0)});
