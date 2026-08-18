@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.265.0) stable; urgency=medium
+
+  * Add max_publish_interval option for devices and channels
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 18 Aug 2026 13:45:09 +0300
+
 wb-mqtt-serial (2.264.2) stable; urgency=medium
 
   * Fix offset descriptions in templates with multisensor 1-Wire support (WB-MS v.2, WB-MIR v.3, WB-M1W2 v.3)
