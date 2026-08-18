@@ -392,9 +392,9 @@ int main(int argc, char* argv[])
             fwUpdateRpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();
-            }
-            rpcFwUpdateHandler->Stop();
-            if (!serialDriver) {
+                rpcFwUpdateHandler->Stop();
+            } else {
+                rpcFwUpdateHandler->Stop();
                 mqtt->Stop();
             }
         });
