@@ -205,12 +205,12 @@ namespace
     {
         auto res = defaultValue;
         Get(data, "max_publish_interval", res);
-        if (res > DefaultMaxPublishInterval && res < MaxPublishIntervalLowLimit) {
+        if (res > MaxPublishIntervalDisabled && res < MaxPublishIntervalLowLimit) {
             LOG(Warn) << "\"max_publish_interval\" is set to " << MaxPublishIntervalLowLimit.count() << " instead of "
                       << res.count();
             res = MaxPublishIntervalLowLimit;
         }
-        return std::max(res, DefaultMaxPublishInterval);
+        return std::max(res, MaxPublishIntervalDisabled);
     }
 
     struct TLoadingContext
@@ -227,7 +227,7 @@ namespace
         const Json::Value* translations = nullptr;
 
         // Value from device or parent channel (used if a channel doesn't define its own)
-        std::chrono::seconds max_publish_interval = DefaultMaxPublishInterval;
+        std::chrono::seconds max_publish_interval = MaxPublishIntervalDisabled;
 
         TLoadingContext(const IDeviceFactory& f, const IRegisterAddress& base_address)
             : factory(f),
@@ -1023,7 +1023,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     TLoadingContext context(*protocolParams.factory,
                             protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress());
     context.translations = loadParams.Translations;
-    context.max_publish_interval = GetMaxPublishInterval(*cfg, DefaultMaxPublishInterval);
+    context.max_publish_interval = GetMaxPublishInterval(*cfg, MaxPublishIntervalDisabled);
     auto regTypes = protocolParams.protocol->GetRegTypes();
     LoadSetupItems(*deviceWithChannels->Device, *cfg, *regTypes, context);
     LoadChannels(*deviceWithChannels, *cfg, params.Defaults.ReadRateLimit, *regTypes, context);

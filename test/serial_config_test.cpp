@@ -98,7 +98,7 @@ protected:
                         }
                         Emit() << "Precision: " << device_channel->Precision;
                         Emit() << "ReadOnly: " << device_channel->ReadOnly;
-                        if (device_channel->MaxPublishInterval > DefaultMaxPublishInterval) {
+                        if (device_channel->MaxPublishInterval >= MaxPublishIntervalLowLimit) {
                             Emit() << "MaxPublishInterval: " << device_channel->MaxPublishInterval.count();
                         }
                         if (!device_channel->Registers.empty()) {

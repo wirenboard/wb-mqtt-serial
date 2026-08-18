@@ -17,7 +17,7 @@
 
 typedef std::unordered_map<std::string, std::string> TTitleTranslations;
 
-const std::chrono::seconds DefaultMaxPublishInterval(0);
+const std::chrono::seconds MaxPublishIntervalDisabled(0);
 const std::chrono::seconds MaxPublishIntervalLowLimit(5);
 
 struct TDeviceChannelConfig
@@ -34,7 +34,7 @@ struct TDeviceChannelConfig
     bool ReadOnly = false;
     bool Hidden = false;
     std::string Units;
-    std::chrono::seconds MaxPublishInterval = DefaultMaxPublishInterval;
+    std::chrono::seconds MaxPublishInterval = MaxPublishIntervalDisabled;
     std::vector<PRegister> Registers;
 
     TDeviceChannelConfig(const std::string& type = "text",
