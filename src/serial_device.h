@@ -31,6 +31,7 @@ struct TDeviceChannelConfig
     bool ReadOnly = false;
     bool Hidden = false;
     std::string Units;
+    std::chrono::seconds MaxPublishInterval = std::chrono::seconds(0);
     std::vector<PRegister> Registers;
 
     TDeviceChannelConfig(const std::string& type = "text",
@@ -80,6 +81,7 @@ const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
+const std::chrono::seconds MaxPublishIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxWriteFailTime(600);
 
 struct TDeviceConfig

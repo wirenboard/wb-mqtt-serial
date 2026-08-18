@@ -18,6 +18,9 @@ struct TDeviceChannel: public TDeviceChannelConfig
     void UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy);
     void UpdateError(WBMQTT::TDeviceDriver& deviceDriver);
 
+    //! Publish value if it hasn't been published during MaxPublishInterval
+    void PublishIfExpired(WBMQTT::TDeviceDriver& deviceDriver, std::chrono::steady_clock::time_point now);
+
     bool HasValuesOfAllRegisters() const;
 
     void DoNotPublishNextZeroPressCounter();

@@ -196,6 +196,11 @@ void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)
         LOG(Error) << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
     }
+    for (const auto& deviceChannels: DeviceToChannelsMap) {
+        for (const auto& channel: deviceChannels.second) {
+            channel->PublishIfExpired(*MqttDriver, now);
+        }
+    }
 }
 
 void TSerialPortDriver::ClearDevices() noexcept
@@ -349,6 +354,15 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
             }
             break;
         }
+    }
+}
+
+void TDeviceChannel::PublishIfExpired(WBMQTT::TDeviceDriver& deviceDriver, std::chrono::steady_clock::time_point now)
+{
+    if (MaxPublishInterval > std::chrono::seconds(0) && now - LastControlUpdate >= MaxPublishInterval &&
+        HasValuesOfAllRegisters())
+    {
+        UpdateValueAndError(deviceDriver, {TPublishParameters::PublishAll, std::chrono::milliseconds(0)});
     }
 }
 
