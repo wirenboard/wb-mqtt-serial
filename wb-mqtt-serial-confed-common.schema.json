@@ -76,6 +76,14 @@
           "default": 1000,
           "propertyOrder": 114
         },
+        "max_publish_interval": {
+          "type": "integer",
+          "title": "Max publish interval (s)",
+          "description": "max_publish_interval_desc",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 115
+        },
         "min_request_interval": {
           "title": "Minimal interval between requests to the devices (ms)",
           "type": "integer",
@@ -194,7 +202,7 @@
           "description": "preserve_setup_order_desc",
           "default": false,
           "format": "checkbox",
-          "propertyOrder": 115
+          "propertyOrder": 116
         }
       }
     },
@@ -399,7 +407,7 @@
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 17,
+          "propertyOrder": 18,
           "format": "wb-serial-int",
           "options": {
             "grid_columns": 3,
@@ -413,7 +421,7 @@
           "title": "'Off' value",
           "description": "Value corresponding to the 'Off' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 18,
+          "propertyOrder": 19,
           "format": "wb-serial-int",
           "options": {
             "grid_columns": 3,
@@ -447,6 +455,14 @@
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 16
+        },
+        "max_publish_interval": {
+          "type": "integer",
+          "title": "Max publish interval (s)",
+          "description": "max_publish_interval_desc",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 17
         },
         "error_value": {
           "title": "Error value",
@@ -662,6 +678,19 @@
           },
           "format": "siWb",
           "propertyOrder": 4
+        },
+        "max_publish_interval": {
+          "type": "integer",
+          "title": "Max publish interval (s)",
+          "description": "max_publish_interval_desc",
+          "minimum": 0,
+          "default": 0,
+          "options": {
+            "dependencies": {
+              "enabled": true
+            }
+          },
+          "propertyOrder": 5
         }
       }
     },
@@ -1202,7 +1231,8 @@
       "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped.",
       "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue",
       "hidden_channel_description": "Hidden channels are not displayed in UI, but are published in MQTT. They are useful for channels that are needed for internal purposes, but should not be exposed to users directly",
-      "preserve_setup_order_desc": "If enabled, setup items are written to the device in the order they are defined in the template. Otherwise items are sorted by register type and address."
+      "preserve_setup_order_desc": "If enabled, setup items are written to the device in the order they are defined in the template. Otherwise items are sorted by register type and address.",
+      "max_publish_interval_desc": "Publish a value even if it hasn't changed during the specified time. Zero disables publishing of unchanged values. Values less than 5 are replaced with 5. A value set for a channel overrides the device's one."
     },
     "ru": {
       "Response timeout (ms)": "Таймаут ответа (мс)",
@@ -1359,7 +1389,9 @@
       "Hidden": "Скрытый",
       "hidden_channel_description": "Канал не отображается в интерфейсе, но публикуется в MQTT. Это полезно для каналов, которые нужны для внутренних целей, но не должны быть доступны пользователям напрямую",
       "Preserve setup items order": "Сохранять порядок параметров настройки",
-      "preserve_setup_order_desc": "Если включено, параметры настройки записываются в устройство в том порядке, в котором они заданы в шаблоне. Иначе параметры сортируются по типу регистра и адресу."
+      "preserve_setup_order_desc": "Если включено, параметры настройки записываются в устройство в том порядке, в котором они заданы в шаблоне. Иначе параметры сортируются по типу регистра и адресу.",
+      "Max publish interval (s)": "Максимальный интервал публикации (с)",
+      "max_publish_interval_desc": "Публиковать значение, даже если оно не менялось заданное время. Ноль отключает публикацию неизменившихся значений. Значения меньше 5 заменяются на 5. Значение, заданное у канала, приоритетнее заданного у устройства."
     }
   }
 }
