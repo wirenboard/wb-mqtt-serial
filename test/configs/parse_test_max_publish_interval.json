@@ -1,0 +1,42 @@
+// max_publish_interval parsing test
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                // Value from the template is used for all channels without their own value
+                {
+                    "device_type" : "max_publish_interval_test",
+                    "slave_id": 1
+                },
+                // Device's value from config overrides the template's one
+                {
+                    "device_type" : "max_publish_interval_test",
+                    "slave_id": 2,
+                    "max_publish_interval": 30
+                },
+                // Channel's value from config overrides all other values
+                {
+                    "device_type" : "max_publish_interval_test",
+                    "slave_id": 3,
+                    "channels": [
+                        {
+                            "name": "Inherited",
+                            "max_publish_interval": 0
+                        },
+                        {
+                            "name": "Own",
+                            "max_publish_interval": 3
+                        }
+                    ]
+                },
+                // Zero for a device doesn't affect channels with their own value
+                {
+                    "device_type" : "max_publish_interval_test",
+                    "slave_id": 4,
+                    "max_publish_interval": 0
+                }
+            ]
+        }
+    ]
+}

@@ -196,6 +196,11 @@ void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)
         LOG(Error) << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
     }
+    PublishExpiredValues(now);
+}
+
+void TSerialPortDriver::PublishExpiredValues(std::chrono::steady_clock::time_point now)
+{
     for (const auto& deviceChannels: DeviceToChannelsMap) {
         for (const auto& channel: deviceChannels.second) {
             channel->PublishIfExpired(*MqttDriver, now);

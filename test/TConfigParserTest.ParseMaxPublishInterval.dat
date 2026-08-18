@@ -1,0 +1,456 @@
+Debug: 0
+PublishParams: 0 0
+Ports:
+    ------
+    ConnSettings: </dev/ttyNSC0 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: max-publish-interval_1
+        Name: max publish interval 1
+        SlaveId: 1
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        MinReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: -1
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Inherited
+            Type: value
+            MqttId: Inherited
+            DeviceId: max-publish-interval_1
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 10
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Own
+            Type: value
+            MqttId: Own
+            DeviceId: max-publish-interval_1
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 20
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Disabled
+            Type: value
+            MqttId: Disabled
+            DeviceId: max-publish-interval_1
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Clamped
+            Type: value
+            MqttId: Clamped
+            DeviceId: max-publish-interval_1
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 5
+            Registers:
+                ------
+                Type and Address: input: 4
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: max-publish-interval_2
+        Name: max publish interval 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        MinReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: -1
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Inherited
+            Type: value
+            MqttId: Inherited
+            DeviceId: max-publish-interval_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 30
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Own
+            Type: value
+            MqttId: Own
+            DeviceId: max-publish-interval_2
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 20
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Disabled
+            Type: value
+            MqttId: Disabled
+            DeviceId: max-publish-interval_2
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Clamped
+            Type: value
+            MqttId: Clamped
+            DeviceId: max-publish-interval_2
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 5
+            Registers:
+                ------
+                Type and Address: input: 4
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: max-publish-interval_3
+        Name: max publish interval 3
+        SlaveId: 3
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        MinReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: -1
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Inherited
+            Type: value
+            MqttId: Inherited
+            DeviceId: max-publish-interval_3
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Own
+            Type: value
+            MqttId: Own
+            DeviceId: max-publish-interval_3
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 5
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Disabled
+            Type: value
+            MqttId: Disabled
+            DeviceId: max-publish-interval_3
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Clamped
+            Type: value
+            MqttId: Clamped
+            DeviceId: max-publish-interval_3
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 5
+            Registers:
+                ------
+                Type and Address: input: 4
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: max-publish-interval_4
+        Name: max publish interval 4
+        SlaveId: 4
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        MinReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: -1
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Inherited
+            Type: value
+            MqttId: Inherited
+            DeviceId: max-publish-interval_4
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Own
+            Type: value
+            MqttId: Own
+            DeviceId: max-publish-interval_4
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 20
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Disabled
+            Type: value
+            MqttId: Disabled
+            DeviceId: max-publish-interval_4
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Clamped
+            Type: value
+            MqttId: Clamped
+            DeviceId: max-publish-interval_4
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            MaxPublishInterval: 5
+            Registers:
+                ------
+                Type and Address: input: 4
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian

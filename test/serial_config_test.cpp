@@ -98,6 +98,9 @@ protected:
                         }
                         Emit() << "Precision: " << device_channel->Precision;
                         Emit() << "ReadOnly: " << device_channel->ReadOnly;
+                        if (device_channel->MaxPublishInterval > std::chrono::seconds(0)) {
+                            Emit() << "MaxPublishInterval: " << device_channel->MaxPublishInterval.count();
+                        }
                         if (!device_channel->Registers.empty()) {
                             Emit() << "Registers:";
                         }
@@ -183,6 +186,11 @@ TEST_F(TConfigParserTest, Parse)
 TEST_F(TConfigParserTest, ParseRateLimit)
 {
     PrintConfig(GetConfig("configs/parse_test_rate_limit.json"));
+}
+
+TEST_F(TConfigParserTest, ParseMaxPublishInterval)
+{
+    PrintConfig(GetConfig("configs/parse_test_max_publish_interval.json"));
 }
 
 TEST_F(TConfigParserTest, SameSetupItems)

@@ -63,6 +63,10 @@ public:
 
     void SetUpDevices();
     void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());
+
+    //! Publish values of channels with expired MaxPublishInterval
+    void PublishExpiredValues(std::chrono::steady_clock::time_point now);
+
     void ClearDevices() noexcept;
     void OnValueRead(PRegister reg);
 
