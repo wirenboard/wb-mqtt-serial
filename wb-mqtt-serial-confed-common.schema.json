@@ -739,6 +739,13 @@
               "mode": [4, 5]
             }
           }
+        },
+        "max_publish_interval": {
+          "type": "integer",
+          "title": "Max publish interval (s)",
+          "description": "max_publish_interval_desc",
+          "minimum": 0,
+          "propertyOrder": 4
         }
       },
       "required": ["mode", "name"]
