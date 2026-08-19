@@ -20,6 +20,8 @@ public:
                         WBMQTT::PMqttClient mqtt,
                         PHttpClient httpClient = nullptr);
 
+    void Stop();
+
     struct TRequestParams
     {
         int SlaveId = 0;
