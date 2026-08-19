@@ -24,6 +24,7 @@ namespace util
     int CompareVersionStrings(const std::string& v1, const std::string& v2);
 
     typedef std::function<std::chrono::steady_clock::time_point()> TGetNowFn;
+    typedef std::function<std::chrono::system_clock::time_point()> TGetSystemTimeFn;
 
     class TSpentTimeMeter
     {

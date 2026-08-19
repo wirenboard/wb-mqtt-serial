@@ -14,6 +14,13 @@ namespace
     const auto DISCONNECTED_POLL_DELAY_STEP = 500ms;
     const auto DISCONNECTED_POLL_DELAY_LIMIT = 10s;
 
+    // 2028-02-29 23:59:59 UTC, fake system time of time synchronization tests
+    const time_t FAKE_SYSTEM_TIME = 1835481599;
+
+    // Devices are set to local time, not to UTC. POSIX form is used to avoid dependency on tzdata
+    const char* FAKE_TIMEZONE = "MSK-3";
+    const seconds FAKE_TIMEZONE_OFFSET = 3h;
+
     class TTimeMock
     {
         steady_clock::time_point Time;
@@ -84,7 +91,10 @@ public:
     void SetUp() override
     {
         TLoggedFixture::SetUp();
+        setenv("TZ", FAKE_TIMEZONE, 1);
+        tzset();
         TimeMock.Reset();
+        SystemTime = system_clock::from_time_t(FAKE_SYSTEM_TIME);
         Port = std::make_shared<TFakeSerialPortWithTime>(*this, TimeMock);
         FeaturePort = std::make_shared<TFeaturePort>(Port, false);
         TModbusDevice::Register(DeviceFactory);
@@ -94,6 +104,8 @@ public:
     void TearDown() override
     {
         FeaturePort->Close();
+        unsetenv("TZ");
+        tzset();
         TLoggedFixture::TearDown();
     }
 
@@ -135,6 +147,36 @@ public:
                          0x00, // value Hi
                          0x01  // value Lo
                      }),
+                     __func__,
+                     readTime);
+    }
+
+    void EnqueueWriteLocalTime(uint8_t slaveId, uint64_t localTime, microseconds readTime, bool error = false)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        std::vector<int> request = {
+            0x10, // function code
+            0x01, // starting address Hi
+            0xC4, // starting address Lo
+            0x00, // quantity Hi
+            0x04, // quantity Lo
+            0x08  // byte count
+        };
+        for (auto i = 0; i < 8; ++i) {
+            request.push_back((localTime >> (56 - i * 8)) & 0xFF);
+        }
+        Port->Expect(WrapPDU(request),
+                     error ? WrapPDU({
+                                 0x90, // function code + exception bit
+                                 0x02  // ILLEGAL_DATA_ADDRESS
+                             })
+                           : WrapPDU({
+                                 0x10, // function code
+                                 0x01, // starting address Hi
+                                 0xC4, // starting address Lo
+                                 0x00, // quantity Hi
+                                 0x04  // quantity Lo
+                             }),
                      __func__,
                      readTime);
     }
@@ -340,12 +382,14 @@ public:
     {
         return std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
                                                config,
-                                               DeviceFactory.GetProtocol("modbus"));
+                                               DeviceFactory.GetProtocol("modbus"),
+                                               [this]() { return SystemTime; });
     }
 
     std::shared_ptr<TFakeSerialPortWithTime> Port;
     std::shared_ptr<TFeaturePort> FeaturePort;
     TTimeMock TimeMock;
+    system_clock::time_point SystemTime;
     TSerialDeviceFactory DeviceFactory;
 };
 
@@ -1110,4 +1154,99 @@ TEST_F(TPollTest, EventsCapPersistsBetweenReadingSessions)
     // Session 4: back to min_slave 0, the bus is now quiet
     EnqueueEventsExchange(60ms, 0, 0, 0, NoEventsResponse(), 0xFD);
     Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, TimeSync)
+{
+    // One register, time synchronization every 24 hours
+    // 1. Local time must be written before the first read
+    // 2. No new write during the interval
+    // 3. Local time must be written again after the interval
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.TimeSyncInterval = 24h;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count(), 10ms);
+    for (size_t i = 0; i < 2; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    SystemTime += 23h;
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    SystemTime += 2h;
+    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count() + duration_cast<seconds>(25h).count(), 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, TimeSyncDisabled)
+{
+    // Zero interval disables time synchronization, only registers are read
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.TimeSyncInterval = TimeSyncDisabled;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        SystemTime += 25h;
+    }
+}
+
+TEST_F(TPollTest, TimeSyncFailure)
+{
+    // One register, time synchronization every 24 hours
+    // 1. Device replies with an error to the local time write on the first poll
+    // 2. No new attempts while the device is connected, even after the interval
+    // 3. The attempt is repeated after reconnect
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.TimeSyncInterval = 24h;
+    config.CommonConfig->DeviceTimeout = 0ms;
+    config.CommonConfig->DeviceMaxFailCycles = 1;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count(), 10ms, /*error=*/true);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+
+    SystemTime += 25h;
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueReadHoldingError(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
+
+    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count() + duration_cast<seconds>(25h).count(), 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }

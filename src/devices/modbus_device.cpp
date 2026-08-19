@@ -45,13 +45,15 @@ void TModbusDevice::Register(TSerialDeviceFactory& factory)
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
                              const TModbusDeviceConfig& config,
-                             PProtocol protocol)
+                             PProtocol protocol,
+                             util::TGetSystemTimeFn systemTimeFn)
     : TSerialDevice(config.CommonConfig, protocol),
       TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead),
       ContinuousReadEnabled(false),
+      SystemTimeFn(systemTimeFn),
       TimeSyncInterval(config.TimeSyncInterval),
       TimeSyncFailed(false)
 {}
@@ -75,6 +77,7 @@ void TModbusDevice::PrepareImpl(TPort& port)
 {
     TSerialDevice::PrepareImpl(port);
     if (GetConnectionState() != TDeviceConnectionState::CONNECTED) {
+        TimeSyncFailed = false;
         if (EnableWbContinuousRead) {
             ContinuousReadEnabled =
                 Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
@@ -98,7 +101,6 @@ void TModbusDevice::PrepareImpl(TPort& port)
                 reg->IncludeInPolling();
             }
         }
-        TimeSyncFailed = false;
         SyncTime(port);
     }
 }
@@ -152,7 +154,7 @@ void TModbusDevice::SyncTime(TPort& port)
     if (TimeSyncInterval <= TimeSyncDisabled || TimeSyncFailed) {
         return;
     }
-    const auto now = std::chrono::system_clock::now();
+    const auto now = SystemTimeFn();
     if (now - LastTimeSync < TimeSyncInterval) {
         return;
     }

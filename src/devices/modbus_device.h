@@ -67,6 +67,8 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
     bool EnableWbContinuousRead;
     bool ContinuousReadEnabled;
+
+    util::TGetSystemTimeFn SystemTimeFn;
     std::chrono::hours TimeSyncInterval;
     std::chrono::system_clock::time_point LastTimeSync;
     bool TimeSyncFailed;
@@ -74,7 +76,8 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
                   const TModbusDeviceConfig& config,
-                  PProtocol protocol);
+                  PProtocol protocol,
+                  util::TGetSystemTimeFn systemTimeFn = std::chrono::system_clock::now);
 
     bool GetForceFrameTimeout();
     bool GetContinuousReadEnabled();
