@@ -51,7 +51,9 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead),
-      ContinuousReadEnabled(false)
+      ContinuousReadEnabled(false),
+      TimeSyncInterval(config.TimeSyncInterval),
+      TimeSyncFailed(false)
 {}
 
 bool TModbusDevice::GetForceFrameTimeout()
@@ -96,7 +98,8 @@ void TModbusDevice::PrepareImpl(TPort& port)
                 reg->IncludeInPolling();
             }
         }
-        SyncMWACTime(port);
+        TimeSyncFailed = false;
+        SyncTime(port);
     }
 }
 
@@ -119,7 +122,7 @@ void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool br
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    SyncMWACTime(port);
+    SyncTime(port);
     Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
@@ -144,32 +147,35 @@ std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
         std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
-void TModbusDevice::SyncMWACTime(TPort& port)
+void TModbusDevice::SyncTime(TPort& port)
 {
-    if (DeviceConfig()->DeviceType == "WB-MWAC-v2 ver2" && util::CompareVersionStrings(GetWbFwVersion(), "1.24.0") >= 0)
-    {
-        const auto now = std::chrono::system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::hours>(now - LastMWACTimeSync).count() > 24) {
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::MWAC_UNIXTIME_REGISTER_NAME);
-            try {
-                const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
-                std::tm localTm{};
-                localtime_r(&nowTimeT, &localTm);
-                const auto deviceTime = timegm(&localTm);
-                Modbus::WriteRegister(*ModbusTraits,
-                                      port,
-                                      SlaveId,
-                                      *config,
-                                      TRegisterValue(deviceTime),
-                                      ModbusCache,
-                                      DeviceConfig()->RequestDelay,
-                                      GetResponseTimeout(port),
-                                      GetFrameTimeout(port));
-                LastMWACTimeSync = now;
-                LOG(Debug) << "MWAC time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
-            } catch (const std::exception& e) {
-                LOG(Debug) << "MWAC time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e.what();
-            }
-        }
+    if (TimeSyncInterval <= TimeSyncDisabled || TimeSyncFailed) {
+        return;
+    }
+    const auto now = std::chrono::system_clock::now();
+    if (now - LastTimeSync < TimeSyncInterval) {
+        return;
+    }
+    auto config = WbRegisters::GetRegisterConfig(WbRegisters::LOCAL_TIME_REGISTER_NAME);
+    try {
+        const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
+        std::tm localTm{};
+        localtime_r(&nowTimeT, &localTm);
+        const auto deviceTime = timegm(&localTm);
+        Modbus::WriteRegister(*ModbusTraits,
+                              port,
+                              SlaveId,
+                              *config,
+                              TRegisterValue(deviceTime),
+                              ModbusCache,
+                              DeviceConfig()->RequestDelay,
+                              GetResponseTimeout(port),
+                              GetFrameTimeout(port));
+        LastTimeSync = now;
+        LOG(Debug) << "Time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
+    } catch (const std::exception& e) {
+        TimeSyncFailed = true;
+        LOG(Debug) << "Time sync failed, no more attempts until reconnect [slave_id is "
+                   << DeviceConfig()->SlaveId + "]" << e.what();
     }
 }
