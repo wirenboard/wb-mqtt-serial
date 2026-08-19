@@ -17,9 +17,9 @@ namespace
     // 2028-02-29 23:59:59 UTC, fake system time of time synchronization tests
     const time_t FAKE_SYSTEM_TIME = 1835481599;
 
-    // Devices are set to local time, not to UTC. POSIX form is used to avoid dependency on tzdata
+    // Devices are set to local time, not to UTC. POSIX form of UTC+3 is used to avoid dependency on tzdata
     const char* FAKE_TIMEZONE = "MSK-3";
-    const seconds FAKE_TIMEZONE_OFFSET = 3h;
+    const time_t FAKE_LOCAL_TIME = FAKE_SYSTEM_TIME + duration_cast<seconds>(3h).count();
 
     class TTimeMock
     {
@@ -1174,7 +1174,7 @@ TEST_F(TPollTest, TimeSync)
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count(), 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
     for (size_t i = 0; i < 2; ++i) {
         EnqueueReadHolding(1, 1, 1, 10ms);
         Cycle(serialClient, lastAccessedDevice);
@@ -1185,7 +1185,7 @@ TEST_F(TPollTest, TimeSync)
     Cycle(serialClient, lastAccessedDevice);
 
     SystemTime += 2h;
-    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count() + duration_cast<seconds>(25h).count(), 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
 }
@@ -1232,7 +1232,7 @@ TEST_F(TPollTest, TimeSyncFailure)
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count(), 10ms, /*error=*/true);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, /*error=*/true);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
@@ -1245,7 +1245,7 @@ TEST_F(TPollTest, TimeSyncFailure)
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
 
-    EnqueueWriteLocalTime(1, FAKE_SYSTEM_TIME + FAKE_TIMEZONE_OFFSET.count() + duration_cast<seconds>(25h).count(), 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
