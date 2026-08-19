@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.265.0) stable; urgency=medium
+
+  * Add wb_time_sync_interval device parameter
+  * Rename unixtime control type to local_time
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 19 Aug 2026 13:46:20 +0300
+
 wb-mqtt-serial (2.264.2) stable; urgency=medium
 
   * Fix offset descriptions in templates with multisensor 1-Wire support (WB-MS v.2, WB-MIR v.3, WB-M1W2 v.3)
