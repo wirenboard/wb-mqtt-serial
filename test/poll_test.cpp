@@ -17,6 +17,9 @@ namespace
     // 2028-02-29 23:59:59 UTC, fake system time of time synchronization tests
     const time_t FAKE_SYSTEM_TIME = 1835481599;
 
+    // Modbus exception code that is not treated as unsupported register
+    const uint8_t SLAVE_DEVICE_FAILURE = 0x04;
+
     // Devices are set to local time, not to UTC. POSIX form of UTC+3 is used to avoid dependency on tzdata
     const char* FAKE_TIMEZONE = "MSK-3";
     const time_t FAKE_LOCAL_TIME = FAKE_SYSTEM_TIME + duration_cast<seconds>(3h).count();
@@ -151,7 +154,7 @@ public:
                      readTime);
     }
 
-    void EnqueueWriteLocalTime(uint8_t slaveId, uint64_t localTime, microseconds readTime, bool error = false)
+    void EnqueueWriteLocalTime(uint8_t slaveId, uint64_t localTime, microseconds readTime, uint8_t exceptionCode = 0)
     {
         SetModbusRTUSlaveId(slaveId);
         std::vector<int> request = {
@@ -166,17 +169,17 @@ public:
             request.push_back((localTime >> (56 - i * 8)) & 0xFF);
         }
         Port->Expect(WrapPDU(request),
-                     error ? WrapPDU({
-                                 0x90, // function code + exception bit
-                                 0x02  // ILLEGAL_DATA_ADDRESS
-                             })
-                           : WrapPDU({
-                                 0x10, // function code
-                                 0x01, // starting address Hi
-                                 0xC4, // starting address Lo
-                                 0x00, // quantity Hi
-                                 0x04  // quantity Lo
-                             }),
+                     exceptionCode ? WrapPDU({
+                                         0x90,         // function code + exception bit
+                                         exceptionCode //
+                                     })
+                                   : WrapPDU({
+                                         0x10, // function code
+                                         0x01, // starting address Hi
+                                         0xC4, // starting address Lo
+                                         0x00, // quantity Hi
+                                         0x04  // quantity Lo
+                                     }),
                      __func__,
                      readTime);
     }
@@ -1212,10 +1215,36 @@ TEST_F(TPollTest, TimeSyncDisabled)
     }
 }
 
-TEST_F(TPollTest, TimeSyncFailure)
+TEST_F(TPollTest, TimeSyncTransientFailure)
 {
     // One register, time synchronization every 24 hours
-    // 1. Device replies with an error to the local time write on the first poll
+    // Device fails to write local time, but the register is supported,
+    // so the attempt is repeated on the next poll
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.TimeSyncInterval = 24h;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, SLAVE_DEVICE_FAILURE);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, TimeSyncNotSupported)
+{
+    // One register, time synchronization every 24 hours
+    // 1. Device replies with ILLEGAL_DATA_ADDRESS to the local time write on the first poll
     // 2. No new attempts while the device is connected, even after the interval
     // 3. The attempt is repeated after reconnect
 
@@ -1232,7 +1261,7 @@ TEST_F(TPollTest, TimeSyncFailure)
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, /*error=*/true);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, Modbus::ILLEGAL_DATA_ADDRESS);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);

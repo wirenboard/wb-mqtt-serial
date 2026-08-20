@@ -175,9 +175,11 @@ void TModbusDevice::SyncTime(TPort& port)
                               GetFrameTimeout(port));
         LastTimeSync = now;
         LOG(Debug) << "Time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
-    } catch (const std::exception& e) {
+    } catch (const TSerialDevicePermanentRegisterException& e) {
         TimeSyncFailed = true;
-        LOG(Debug) << "Time sync failed, no more attempts until reconnect [slave_id is "
+        LOG(Debug) << "Device doesn't support time sync, no more attempts until reconnect [slave_id is "
                    << DeviceConfig()->SlaveId + "]" << e.what();
+    } catch (const std::exception& e) {
+        LOG(Debug) << "Time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e.what();
     }
 }
