@@ -325,12 +325,16 @@ int main(int argc, char* argv[])
                                        protocolSchemasMap);
         } catch (const exception& e) {
             LOG(Error) << e.what();
+            LOG(Warn) << "Config is invalid. Continue to serve RPC requests only, devices polling is disabled";
         }
 
         PMQTTSerialDriver serialDriver;
         TRPCDeviceParametersCache parametersCache;
 
         if (handlerConfig) {
+            if (handlerConfig->PortConfigs.empty()) {
+                LOG(Info) << "Config is loaded, but there are no enabled ports. Continue to serve RPC requests";
+            }
             if (handlerConfig->Debug) {
                 Debug.SetEnabled(true);
             }
@@ -388,13 +392,11 @@ int main(int argc, char* argv[])
         rpcServer->Start();
 
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
+            rpcFwUpdateHandler->ClearStateTopic();
             rpcServer->Stop();
-            fwUpdateRpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();
-                rpcFwUpdateHandler->Stop();
             } else {
-                rpcFwUpdateHandler->Stop();
                 mqtt->Stop();
             }
         });
@@ -408,5 +410,5 @@ int main(int argc, char* argv[])
         LOG(Error) << "FATAL: " << e.what();
         return 1;
     }
-    return 0;
+    return 7;
 }

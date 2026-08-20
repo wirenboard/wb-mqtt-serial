@@ -1,26 +1,11 @@
-wb-mqtt-serial (2.264.3) stable; urgency=medium
-
-  * Clear fw-update RPC and firmware update state topics on service stop
-
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 18 Aug 2026 13:00:00 +0400
-
-wb-mqtt-serial (2.264.2) stable; urgency=medium
-
-  * Fix offset descriptions in templates with multisensor 1-Wire support (WB-MS v.2, WB-MIR v.3, WB-M1W2 v.3)
-
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 17 Aug 2026 11:37:53 +0300
-
-wb-mqtt-serial (2.264.1) stable; urgency=medium
-
-  * Fix Carel template titles
-
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 17 Aug 2026 10:19:33 +0300
-
 wb-mqtt-serial (2.264.0) stable; urgency=medium
 
-  * Add temperature offset registers for templates with multisensor 1-Wire support (WB-MS v.2, WB-MIR v.3, WB-M1W2 v.3)
+  * Log config read outcome when continuing in RPC-only mode or with no enabled ports
+  * Exit with code 7 on SIGTERM/SIGINT
+  * Clear retained firmware update state topic on shutdown
+  * systemd unit: SuccessExitStatus=7, RestartPreventExitStatus=2 6, start after mosquitto
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 13 Aug 2026 14:09:51 +0300
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 20 Aug 2026 13:18:25 +0000
 
 wb-mqtt-serial (2.263.2) stable; urgency=medium
 

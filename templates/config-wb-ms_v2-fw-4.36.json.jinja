@@ -160,21 +160,7 @@
                 "format": "u64",
                 "type": "w1-id",
                 "group": "gg_in{{in_num}}_sensors",
-                "order": {{1 + (sens_num - FIRST_SENSOR) * 2}},
-                "condition": "in{{in_num}}_mode==0"
-            },
-            "bus{{in_num}}_sens{{sens_num}}_temp_offset_deg": {
-                "title": "sens{{sens_num}}_temp_offset_deg_title",
-                "address": {{1616 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                "reg_type": "holding",
-                "format": "s16",
-                "scale": 0.0625,
-                "default": 0,
-                "min": -10,
-                "max": 10,
-                "fw": "4.38.0",
-                "group": "gg_in{{in_num}}_sensors",
-                "order": {{2 + (sens_num - FIRST_SENSOR) * 2}},
+                "order": {{1 + (sens_num - FIRST_SENSOR)}},
                 "condition": "in{{in_num}}_mode==0"
             },
             {% endfor -%}
@@ -437,22 +423,6 @@
                 "scale": 0.0625,
                 "round_to": 0.05,
                 "error_value": "0x7FFF",
-                "group": "gg_debug_bus{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==0"
-            },
-            {
-                "id": "bus{{in_num}}_raw_temp{{sens_num}}",
-                "name": "Temp Without Offset {{in_num}}:{{sens_num}}",
-                "reg_type": "input",
-                "address": {{1696 + (sens_num - FIRST_SENSOR) + SENSORS_NUMBER_WITH_RESERVE * (in_num - FIRST_INPUT)}},
-                "type": "value",
-                "enabled": false,
-                "units": "deg C",
-                "format": "s16",
-                "scale": 0.0625,
-                "round_to": 0.05,
-                "error_value": "0x7FFF",
-                "fw": "4.38.0",
                 "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
@@ -825,16 +795,7 @@
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
                 "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
-                "w1_sensors_description": "{{
-                    "Adding new sensors:<br>"
-                    ~ "1) Make sure that the new sensors are connected to the bus<br>"
-                    ~ "2) Click the 'Save New Sensors On The Bus' button on the device widget<br>"
-                    ~ "3) Click the 'Review config' button<br>"
-                    ~ "4) Click the 'Save config' button<br>"
-                    ~ "New sensors will be saved in free cells.<br><br>"
-                    ~ "If the sensor is not used, specify '0'.<br><br>"
-                    ~ "The Temperature Offset value is added to the sensor readings and belongs to the slot, not to the sensor ID: replacing the sensor in the slot keeps the offset."
-                }}",
+                "w1_sensors_description": "Adding new sensors:<br>1) Make sure that the new sensors are connected to the bus<br>2) Click the 'Save New Sensors On The Bus' button on the device widget<br>3) Click the 'Review config' button<br>4) Click the 'Save config' button<br>New sensors will be saved in free cells.<br><br>If the sensor is not used, specify '0'.",
 
                 "WB-MS-v2_template_title": "WB-MS v.2 fw4.36 (Modbus sensor)",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
@@ -848,11 +809,7 @@
 
                 "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
-                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
-
-                {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
-                "sens{{sens_num}}_temp_offset_deg_title": "Sensor {{sens_num}} Temperature Offset (°C)"{% if not loop.last %},{% endif %}
-                {% endfor -%}
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50"
             },
             "ru": {
                 "WB-MS-v2_template_title": "WB-MS v.2 fw4.36 (универсальный Modbus-датчик)",
@@ -872,16 +829,7 @@
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
-                "w1_sensors_description": "{{
-                    "Добавление новых датчиков:<br>"
-                    ~ "1) убедитесь, что новые датчики подключены на шину;<br>"
-                    ~ "2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>"
-                    ~ "3) нажмите кнопку «Перечитать настройки»;<br>"
-                    ~ "4) нажмите кнопку «Сохранить настройки».<br>"
-                    ~ "Новые датчики будут сохранены в свободные ячейки.<br><br>"
-                    ~ "Если датчик не используется, укажите '0'.<br><br>"
-                    ~ "Значение поправки температуры прибавляется к показаниям датчика и привязано к ячейке, а не к ID датчика: при замене датчика в ячейке поправка сохраняется."
-                }}",
+                "w1_sensors_description": "Добавление новых датчиков:<br>1) убедитесь, что новые датчики подключены на шину;<br>2) нажмите кнопку «Сохранить новые датчики на шине» в виджете устройства;<br>3) нажмите кнопку «Перечитать настройки»;<br>4) нажмите кнопку «Сохранить настройки».<br>Новые датчики будут сохранены в свободные ячейки.<br><br>Если датчик не используется, укажите '0'.",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
@@ -897,7 +845,6 @@
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "Sensor {{sens_num}} ID": "ID датчика {{sens_num}}",
-                "sens{{sens_num}}_temp_offset_deg_title": "Поправка температуры датчика {{sens_num}} (°C)",
                 {% endfor -%}
 
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
@@ -914,7 +861,6 @@
                 "Temperature {{in_num}}:{{sens_num}}": "Температура {{in_num}}:{{sens_num}}",
                 "Sensor {{in_num}}:{{sens_num}} OK": "Датчик {{in_num}}:{{sens_num}} подключен",
                 "Last Valid Temp {{in_num}}:{{sens_num}}": "Последняя действ. температура {{in_num}}:{{sens_num}}",
-                "Temp Without Offset {{in_num}}:{{sens_num}}": "Температура без учета поправки {{in_num}}:{{sens_num}}",
                 "New Sensor {{in_num}}:{{sens_num}} ID": "ID нового датчика {{in_num}}:{{sens_num}}",
                 "Found Sensor {{in_num}}:{{sens_num}} ID": "ID обнаруженного датчика {{in_num}}:{{sens_num}}",
                 {% endfor -%}

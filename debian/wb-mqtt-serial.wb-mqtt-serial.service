@@ -1,7 +1,7 @@
 [Unit]
 Description=MQTT Driver for serial devices
 Wants=wb-hwconf-manager.service wb-modules.service
-After=network.target wb-hwconf-manager.service wb-modules.service
+After=network.target wb-hwconf-manager.service wb-modules.service mosquitto.service
 
 [Service]
 Type=simple
@@ -10,6 +10,8 @@ RestartSec=1
 User=root
 ExecStart=/usr/bin/wb-mqtt-serial
 ExecStartPre=/usr/lib/wb-mqtt-serial/generate-system-config.sh
+RestartPreventExitStatus=2 6
+SuccessExitStatus=7
 
 [Install]
 WantedBy=multi-user.target

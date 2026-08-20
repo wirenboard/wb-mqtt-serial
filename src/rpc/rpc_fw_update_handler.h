@@ -20,8 +20,6 @@ public:
                         WBMQTT::PMqttClient mqtt,
                         PHttpClient httpClient = nullptr);
 
-    void Stop();
-
     struct TRequestParams
     {
         int SlaveId = 0;
@@ -31,6 +29,9 @@ public:
     };
 
     static TRequestParams ParseRequestParams(const Json::Value& request);
+
+    //! Clear the retained state topic, call on service shutdown
+    void ClearStateTopic();
 
 private:
     // Test constructor: initializes without MQTT/RPC infrastructure
