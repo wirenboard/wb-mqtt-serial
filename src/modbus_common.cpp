@@ -1000,6 +1000,37 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    bool IsWbContinuousReadEnabled(PSerialDevice device,
+                                   IModbusTraits& traits,
+                                   TPort& port,
+                                   uint8_t slaveId,
+                                   const TRegisterConfig& config)
+    {
+        try {
+            auto value = Modbus::ReadRegister(traits,
+                                              port,
+                                              slaveId,
+                                              config,
+                                              device->DeviceConfig()->RequestDelay,
+                                              device->GetResponseTimeout(port),
+                                              device->GetFrameTimeout(port))
+                             .Get<uint64_t>();
+            return (value == 1 || value == 2);
+        } catch (const Modbus::TModbusExceptionError& err) {
+            RethrowSerialDeviceException(err);
+        } catch (const Modbus::TMalformedResponseError& err) {
+            try {
+                port.SkipNoise();
+            } catch (const std::exception& e) {
+                LOG(Warn) << "SkipNoise failed: " << e.what();
+            }
+            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase& err) {
+            throw TSerialDeviceTransientErrorException(err.what());
+        }
+        return false;
+    }
+
     bool EnableWbContinuousRead(PSerialDevice device,
                                 IModbusTraits& traits,
                                 TPort& port,
@@ -1008,15 +1039,17 @@ namespace Modbus // modbus protocol common utilities
     {
         auto config = WbRegisters::GetRegisterConfig("continuous_read");
         try {
-            Modbus::WriteRegister(traits,
-                                  port,
-                                  slaveId,
-                                  *config,
-                                  TRegisterValue(1),
-                                  cache,
-                                  device->DeviceConfig()->RequestDelay,
-                                  device->GetResponseTimeout(port),
-                                  device->GetFrameTimeout(port));
+            if (!IsWbContinuousReadEnabled(device, traits, port, slaveId, *config)) {
+                Modbus::WriteRegister(traits,
+                                      port,
+                                      slaveId,
+                                      *config,
+                                      TRegisterValue(1),
+                                      cache,
+                                      device->DeviceConfig()->RequestDelay,
+                                      device->GetResponseTimeout(port),
+                                      device->GetFrameTimeout(port));
+            }
             LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
             if (device->DeviceConfig()->MaxRegHole < MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS) {
                 device->DeviceConfig()->MaxRegHole = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;

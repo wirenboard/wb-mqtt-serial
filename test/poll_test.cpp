@@ -122,6 +122,21 @@ public:
     {
         SetModbusRTUSlaveId(slaveId);
         Port->Expect(WrapPDU({
+                         0x03, // function code
+                         0x00, // starting address Hi
+                         0x72, // starting address Lo
+                         0x00, // quantity Hi
+                         0x01  // quantity Lo
+                     }),
+                     WrapPDU({
+                         0x03, // function code
+                         0x02, // byte count
+                         0x00, // data Hi
+                         0x00  // data Lo
+                     }),
+                     __func__,
+                     readTime);
+        Port->Expect(WrapPDU({
                          0x06, // function code
                          0x00, // starting address Hi
                          0x72, // starting address Lo

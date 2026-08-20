@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.265.0) stable; urgency=medium
+
+  * Do not write continuous read register if continuous read is already enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 20 Aug 2026 12:30:55 +0300
+
 wb-mqtt-serial (2.264.3) stable; urgency=medium
 
   * Clear fw-update RPC and firmware update state topics on service stop

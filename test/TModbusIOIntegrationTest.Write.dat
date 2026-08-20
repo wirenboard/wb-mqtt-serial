@@ -83,6 +83,9 @@ Unsubscribe -- em-test: /devices/modbus-io-1-2/controls/#
 Open()
 Sleep(5000)
 EnqueueSetupSectionWriteResponse()
+>> 01 03 00 72 00 01 24 11
+<< 01 03 02 00 00 B8 44
+EnqueueSetupSectionWriteResponse()
 >> 01 06 00 72 00 01 E8 11
 << 01 06 00 72 00 01 E8 11
 EnqueueSetupSectionWriteResponse()
@@ -98,6 +101,9 @@ Publish: /devices/modbus-io-1-1/controls/Coil 0: '1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1: '0' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 2: '0' (QoS 1, retained)
 Sleep(5000)
+EnqueueSetupSectionWriteResponse()
+>> 01 03 00 72 00 01 24 11
+<< 01 03 02 00 00 B8 44
 EnqueueSetupSectionWriteResponse()
 >> 01 06 00 72 00 01 E8 11
 << 01 06 00 72 00 01 E8 11
