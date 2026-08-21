@@ -64,15 +64,29 @@ namespace // general utilities
                (type == Modbus::REG_HOLDING_MULTI);
     }
 
-    void RethrowSerialDeviceException(const Modbus::TModbusExceptionError& err)
+    // сonverts modbus error to TSerialDeviceException, must be called only from catch block
+    void RethrowSerialDeviceException(TPort& port)
     {
-        if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
-            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
-            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
-        {
-            throw TSerialDevicePermanentRegisterException(err.what());
+        try {
+            throw;
+        } catch (const Modbus::TModbusExceptionError& err) {
+            if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+                err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+                err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+            {
+                throw TSerialDevicePermanentRegisterException(err.what());
+            }
+            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TMalformedResponseError& err) {
+            try {
+                port.SkipNoise();
+            } catch (const std::exception& e) {
+                LOG(Warn) << "SkipNoise failed: " << e.what();
+            }
+            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase& err) {
+            throw TSerialDeviceTransientErrorException(err.what());
         }
-        throw TSerialDeviceTransientErrorException(err.what());
     }
 
     void CheckWbStringRegister(PRegister reg)
@@ -302,17 +316,8 @@ namespace Modbus // modbus protocol common utilities
                                           Device()->GetFrameTimeout(port));
             ResponseTime = res.ResponseTime;
             ParseReadResponse(res.Pdu, function, *this, cache);
-        } catch (const Modbus::TModbusExceptionError& err) {
-            RethrowSerialDeviceException(err);
-        } catch (const Modbus::TMalformedResponseError& err) {
-            try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
-            }
-            throw TSerialDeviceTransientErrorException(err.what());
-        } catch (const Modbus::TErrorBase& err) {
-            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase&) {
+            RethrowSerialDeviceException(port);
         }
     }
 
@@ -675,17 +680,8 @@ namespace Modbus // modbus protocol common utilities
             port.SleepSinceLastInteraction(requestDelay);
             auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, responseTimeout, frameTimeout);
             Modbus::ExtractResponseData(fn, res.Pdu);
-        } catch (const Modbus::TModbusExceptionError& err) {
-            RethrowSerialDeviceException(err);
-        } catch (const Modbus::TMalformedResponseError& err) {
-            try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
-            }
-            throw TSerialDeviceTransientErrorException(err.what());
-        } catch (const Modbus::TErrorBase& err) {
-            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase&) {
+            RethrowSerialDeviceException(port);
         }
     }
 
@@ -1016,17 +1012,8 @@ namespace Modbus // modbus protocol common utilities
                                               device->GetFrameTimeout(port))
                              .Get<uint64_t>();
             return (value == 1 || value == 2);
-        } catch (const Modbus::TModbusExceptionError& err) {
-            RethrowSerialDeviceException(err);
-        } catch (const Modbus::TMalformedResponseError& err) {
-            try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
-            }
-            throw TSerialDeviceTransientErrorException(err.what());
-        } catch (const Modbus::TErrorBase& err) {
-            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase&) {
+            RethrowSerialDeviceException(port);
         }
         return false;
     }
