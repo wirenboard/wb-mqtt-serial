@@ -17,7 +17,7 @@ export DEBUG=1
 endif
 
 %:
-	dh $@ --parallel
+	dh $@
 
 override_dh_installinit:
 	dh_installinit --noscripts

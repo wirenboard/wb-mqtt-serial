@@ -389,9 +389,12 @@ int main(int argc, char* argv[])
 
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
             rpcServer->Stop();
+            fwUpdateRpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();
+                rpcFwUpdateHandler->Stop();
             } else {
+                rpcFwUpdateHandler->Stop();
                 mqtt->Stop();
             }
         });
