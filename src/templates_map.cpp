@@ -1,6 +1,7 @@
 #include "templates_map.h"
 
 #include <filesystem>
+#include <unordered_set>
 
 #include "expression_evaluator.h"
 #include "file_utils.h"
@@ -15,6 +16,19 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
+    //! Template sections whose items may have a "condition"
+    const std::vector<std::string> CONDITION_SECTIONS = {"channels", "setup", "parameters"};
+
+    //! Must be equal in all declarations of a parameter
+    const std::vector<std::string> COMMON_PARAMETER_PROPERTIES = {SerialConfig::WRITE_ADDRESS_PROPERTY_NAME,
+                                                                  SerialConfig::ADDRESS_PROPERTY_NAME,
+                                                                  SerialConfig::FW_VERSION_PROPERTY_NAME};
+
+    //! Define how a register is read and converted, must be equal in all declarations
+    //! of a parameter used in conditions. Kept in sync with LoadRegisterConfig
+    const std::vector<std::string> REGISTER_READING_PROPERTIES =
+        {"reg_type", "format", "scale", "offset", "round_to", "word_order", "byte_order"};
+
     bool EndsWith(const string& str, const string& suffix)
     {
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
@@ -131,8 +145,7 @@ namespace
     {
         Expressions::TExpressionsCache exprCache;
         const bool restrictWriteAddress = ProtocolRestrictsWriteAddress(protocol);
-        std::vector<std::string> sections = {"channels", "setup", "parameters"};
-        for (const auto& section: sections) {
+        for (const auto& section: CONDITION_SECTIONS) {
             if (deviceTemplate.isMember(section)) {
                 const Json::Value& sectionNodes = deviceTemplate[section];
                 for (auto it = sectionNodes.begin(); it != sectionNodes.end(); ++it) {
@@ -161,11 +174,30 @@ namespace
         }
     }
 
+    //! Collects ids of the parameters referenced in conditions.
+    //! Conditions are already validated by ValidateTemplateSections, so parse errors are not decorated here
+    std::unordered_set<std::string> CollectConditionParameterIds(const Json::Value& deviceTemplate)
+    {
+        std::unordered_set<std::string> res;
+        std::unordered_set<std::string> processedConditions;
+        Expressions::TParser parser;
+        for (const auto& section: CONDITION_SECTIONS) {
+            for (const auto& node: deviceTemplate[section]) {
+                auto condition = node["condition"].asString();
+                if (condition.empty() || !processedConditions.emplace(condition).second) {
+                    continue;
+                }
+                auto dependencies = Expressions::GetDependencies(parser.Parse(condition).get());
+                res.insert(dependencies.begin(), dependencies.end());
+            }
+        }
+        return res;
+    }
+
     void AddDependenciesToTemplateSections(Json::Value& deviceTemplate)
     {
         Expressions::TExpressionsCache exprCache;
-        std::vector<std::string> sections = {"channels", "setup", "parameters"};
-        for (const auto& section: sections) {
+        for (const auto& section: CONDITION_SECTIONS) {
             if (deviceTemplate.isMember(section)) {
                 Json::Value& sectionNodes = deviceTemplate[section];
                 for (auto it = sectionNodes.begin(); it != sectionNodes.end(); ++it) {
@@ -175,44 +207,36 @@ namespace
         }
     }
 
-    bool CheckParameterProperty(std::unordered_map<std::string, Json::Value>& map,
-                                const Json::Value& parameter,
-                                const std::string& propertyName,
-                                std::string& error)
+    void ValidateParameterProperties(const Json::Value& deviceTemplate)
     {
-        std::string id = parameter["id"].asString();
-        Json::Value value = parameter[propertyName];
-        auto it = map.find(id);
-        if (it != map.end() && it->second != value) {
-            error = "Parameter \"" + id + "\" has several declarations with different \"" + propertyName +
-                    "\" values (" + (it->second.isNull() ? "[null]" : it->second.asString()) + " and " +
-                    (value.isNull() ? "[null]" : value.asString()) + "). ";
-            return false;
-        }
-        map[id] = value;
-        return true;
-    }
-
-    void ValidateParameterProperties(const Json::Value& parameters)
-    {
+        const Json::Value& parameters = deviceTemplate["parameters"];
         if (!parameters.isArray()) {
             return;
         }
-        std::unordered_map<std::string, Json::Value> writeAddressMap;
-        std::unordered_map<std::string, Json::Value> addressMap;
-        std::unordered_map<std::string, Json::Value> fwVersionMap;
-        std::string error;
+        auto conditionParameters = CollectConditionParameterIds(deviceTemplate);
+        std::unordered_map<std::string, const Json::Value*> firstDeclarations;
         for (const auto& parameter: parameters) {
-            if (!CheckParameterProperty(writeAddressMap, parameter, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME, error) ||
-                !CheckParameterProperty(addressMap, parameter, SerialConfig::ADDRESS_PROPERTY_NAME, error) ||
-                !CheckParameterProperty(fwVersionMap, parameter, SerialConfig::FW_VERSION_PROPERTY_NAME, error))
-            {
-                break;
+            auto id = parameter["id"].asString();
+            auto insertRes = firstDeclarations.emplace(id, &parameter);
+            if (insertRes.second) {
+                continue;
             }
-        }
-        if (!error.empty()) {
-            throw std::runtime_error(
-                error + "All parameter declarations with the same id must have the same addresses and FW versions.");
+            const auto& firstDeclaration = *insertRes.first->second;
+            auto propertyNames = COMMON_PARAMETER_PROPERTIES;
+            if (conditionParameters.count(id)) {
+                propertyNames.insert(propertyNames.end(),
+                                     REGISTER_READING_PROPERTIES.begin(),
+                                     REGISTER_READING_PROPERTIES.end());
+            }
+            for (const auto& propertyName: propertyNames) {
+                auto firstValue = firstDeclaration[propertyName].asString();
+                auto value = parameter[propertyName].asString();
+                if (firstValue != value) {
+                    throw std::runtime_error("Parameter \"" + id + "\" has several declarations with different \"" +
+                                             propertyName + "\" values (\"" + firstValue + "\" and \"" + value +
+                                             "\").");
+                }
+            }
         }
     }
 
@@ -240,8 +264,8 @@ namespace
     {
         validator.Validate(root);
         ValidateTemplateSections(root["device"], root["device"].get("protocol", "modbus").asString());
-        // Check that parameters with same ids have same addresses (for parameters declared as array)
-        ValidateParameterProperties(root["device"]["parameters"]);
+        // Check declarations with the same id (for parameters declared as array)
+        ValidateParameterProperties(root["device"]);
         // Check that channels refer to valid subdevices and they are not nested too deep
         if (root["device"].isMember("subdevices")) {
             TSubDevicesTemplateMap subdevices(root["device_type"].asString(), root["device"]);

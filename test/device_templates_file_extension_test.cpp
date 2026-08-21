@@ -164,10 +164,59 @@ TEST_F(TDeviceTemplatesTest, ParameterAddresses)
     } catch (const std::runtime_error& e) {
         std::string error =
             "File: test/device-templates/config-parameters-array-invalid-address.json error: Parameter \"p2\" has "
-            "several declarations with different \"address\" values (9996 and 9997). All parameter declarations with "
-            "the same id must have the same addresses and FW versions.";
+            "several declarations with different \"address\" values (\"9996\" and \"9997\").";
         ASSERT_STREQ(error.c_str(), e.what());
     }
+}
+
+/**
+ * Checks that the TDeviceTemplate::GetTemplate throws exception if declarations of a parameter
+ * used in conditions of channels, parameters or setup items differ in register reading
+ * and conversion properties.
+ */
+TEST_F(TDeviceTemplatesTest, ConditionSourceParameterProperties)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+
+    const std::unordered_map<std::string, std::string> expectedErrors = {
+        // the condition is in a channel
+        {"parameters_condition_source_invalid_scale",
+         "File: test/device-templates/config-parameters-condition-source-invalid-scale.json error: Parameter "
+         "\"mode\" has several declarations with different \"scale\" values (\"1\" and \"2\")."},
+        // the condition is in a setup item
+        {"parameters_condition_source_invalid_setup",
+         "File: test/device-templates/config-parameters-condition-source-invalid-setup.json error: Parameter "
+         "\"mode\" has several declarations with different \"scale\" values (\"1\" and \"2\")."},
+        // the condition is in another parameter
+        {"parameters_condition_source_invalid_param",
+         "File: test/device-templates/config-parameters-condition-source-invalid-param.json error: Parameter "
+         "\"mode\" has several declarations with different \"format\" values (\"u16\" and \"s16\")."},
+        // a property omitted in one declaration differs from a non default value in another
+        {"parameters_condition_source_invalid_offset",
+         "File: test/device-templates/config-parameters-condition-source-invalid-offset.json error: Parameter "
+         "\"mode\" has several declarations with different \"offset\" values (\"5\" and \"\")."},
+    };
+
+    for (const auto& [deviceType, expectedError]: expectedErrors) {
+        try {
+            templateMap.GetTemplate(deviceType)->GetTemplate();
+            ADD_FAILURE() << "Expect std::runtime_error for " << deviceType;
+        } catch (const std::runtime_error& e) {
+            ASSERT_STREQ(expectedError.c_str(), e.what());
+        }
+    }
+}
+
+/**
+ * Checks that declarations differing only in enum or in the spelling of equal reading properties
+ * are accepted, and that parameters not used in conditions are not restricted.
+ */
+TEST_F(TDeviceTemplatesTest, ConditionSourceParameterEquivalentProperties)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_NO_THROW(templateMap.GetTemplate("parameters_condition_source_valid")->GetTemplate());
 }
 
 TEST_F(TDeviceTemplatesTest, AlarmControlType)

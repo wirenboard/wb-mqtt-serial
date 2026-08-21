@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.265.0) stable; urgency=medium
+
+  * Check that declarations of a parameter used in conditions read and convert
+    the register identically. A device template violating the rule is rejected
+    on first use and on templates/Upload
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Aug 2026 12:00:00 +0400
+
 wb-mqtt-serial (2.264.3) stable; urgency=medium
 
   * Clear fw-update RPC and firmware update state topics on service stop
