@@ -82,7 +82,7 @@ Open()
 Sleep(5000)
 EnqueueContinuousReadEnableResponse()
 >> 01 03 00 72 00 01 24 11
-<< 01 83 02 C0 F1
+<< 01 03 02 00 01 79 84
 EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
@@ -96,33 +96,27 @@ EnqueueContinuousReadHoldingResponse()
 << 01 03 02 00 02 39 85
 Publish: /devices/modbus-sample/controls/R3: '2' (QoS 1, retained)
 EnqueueContinuousReadCoilResponse()
->> 01 01 00 01 00 01 AC 0A
-<< 01 01 01 01 90 48
+>> 01 01 00 01 00 46 EC 38
+<< 01 01 09 FF FF FF FF FF FF FF FF FF 49 62
 Publish: /devices/modbus-sample/controls/C1: '1' (QoS 1, retained)
-EnqueueContinuousReadCoilResponse()
->> 01 01 00 46 00 01 1C 1F
-<< 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C2: '1' (QoS 1, retained)
 EnqueueContinuousReadCoilResponse()
 >> 01 01 00 AA 00 01 DD EA
 << 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C3: '1' (QoS 1, retained)
->>> LoopOnce() [separated]
+>>> LoopOnce() [continuous]
 EnqueueContinuousReadHoldingResponse()
->> 01 03 00 01 00 01 D5 CA
-<< 01 03 02 00 00 B8 44
-EnqueueContinuousReadHoldingResponse()
->> 01 03 00 08 00 01 05 C8
-<< 01 03 02 00 01 79 84
+>> 01 03 00 01 00 08 15 CC
+<< 01 03 10 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 72 98
+Publish: /devices/modbus-sample/controls/R1: '1' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/R2: '8' (QoS 1, retained)
 EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 14 00 01 C4 0E
-<< 01 03 02 00 02 39 85
+<< 01 03 02 00 03 F8 45
+Publish: /devices/modbus-sample/controls/R3: '3' (QoS 1, retained)
 EnqueueContinuousReadCoilResponse()
->> 01 01 00 01 00 01 AC 0A
-<< 01 01 01 01 90 48
-EnqueueContinuousReadCoilResponse()
->> 01 01 00 46 00 01 1C 1F
-<< 01 01 01 01 90 48
+>> 01 01 00 01 00 46 EC 38
+<< 01 01 09 FF FF FF FF FF FF FF FF FF 49 62
 EnqueueContinuousReadCoilResponse()
 >> 01 01 00 AA 00 01 DD EA
 << 01 01 01 01 90 48

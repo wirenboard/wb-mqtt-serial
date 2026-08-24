@@ -64,15 +64,29 @@ namespace // general utilities
                (type == Modbus::REG_HOLDING_MULTI);
     }
 
-    void RethrowSerialDeviceException(const Modbus::TModbusExceptionError& err)
+    // сonverts modbus error to TSerialDeviceException, must be called only from catch block
+    void RethrowSerialDeviceException(TPort& port)
     {
-        if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
-            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
-            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
-        {
-            throw TSerialDevicePermanentRegisterException(err.what());
+        try {
+            throw;
+        } catch (const Modbus::TModbusExceptionError& err) {
+            if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+                err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+                err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+            {
+                throw TSerialDevicePermanentRegisterException(err.what());
+            }
+            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TMalformedResponseError& err) {
+            try {
+                port.SkipNoise();
+            } catch (const std::exception& e) {
+                LOG(Warn) << "SkipNoise failed: " << e.what();
+            }
+            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase& err) {
+            throw TSerialDeviceTransientErrorException(err.what());
         }
-        throw TSerialDeviceTransientErrorException(err.what());
     }
 
     void CheckWbStringRegister(PRegister reg)
@@ -302,17 +316,8 @@ namespace Modbus // modbus protocol common utilities
                                           Device()->GetFrameTimeout(port));
             ResponseTime = res.ResponseTime;
             ParseReadResponse(res.Pdu, function, *this, cache);
-        } catch (const Modbus::TModbusExceptionError& err) {
-            RethrowSerialDeviceException(err);
-        } catch (const Modbus::TMalformedResponseError& err) {
-            try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
-            }
-            throw TSerialDeviceTransientErrorException(err.what());
-        } catch (const Modbus::TErrorBase& err) {
-            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase&) {
+            RethrowSerialDeviceException(port);
         }
     }
 
@@ -675,17 +680,8 @@ namespace Modbus // modbus protocol common utilities
             port.SleepSinceLastInteraction(requestDelay);
             auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, responseTimeout, frameTimeout);
             Modbus::ExtractResponseData(fn, res.Pdu);
-        } catch (const Modbus::TModbusExceptionError& err) {
-            RethrowSerialDeviceException(err);
-        } catch (const Modbus::TMalformedResponseError& err) {
-            try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
-            }
-            throw TSerialDeviceTransientErrorException(err.what());
-        } catch (const Modbus::TErrorBase& err) {
-            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase&) {
+            RethrowSerialDeviceException(port);
         }
     }
 
@@ -1000,6 +996,28 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    bool IsWbContinuousReadEnabled(PSerialDevice device,
+                                   IModbusTraits& traits,
+                                   TPort& port,
+                                   uint8_t slaveId,
+                                   const TRegisterConfig& config)
+    {
+        try {
+            auto value = Modbus::ReadRegister(traits,
+                                              port,
+                                              slaveId,
+                                              config,
+                                              device->DeviceConfig()->RequestDelay,
+                                              device->GetResponseTimeout(port),
+                                              device->GetFrameTimeout(port))
+                             .Get<uint64_t>();
+            return (value == 1 || value == 2);
+        } catch (const Modbus::TErrorBase&) {
+            RethrowSerialDeviceException(port);
+        }
+        return false;
+    }
+
     bool EnableWbContinuousRead(PSerialDevice device,
                                 IModbusTraits& traits,
                                 TPort& port,
@@ -1008,15 +1026,17 @@ namespace Modbus // modbus protocol common utilities
     {
         auto config = WbRegisters::GetRegisterConfig("continuous_read");
         try {
-            Modbus::WriteRegister(traits,
-                                  port,
-                                  slaveId,
-                                  *config,
-                                  TRegisterValue(1),
-                                  cache,
-                                  device->DeviceConfig()->RequestDelay,
-                                  device->GetResponseTimeout(port),
-                                  device->GetFrameTimeout(port));
+            if (!IsWbContinuousReadEnabled(device, traits, port, slaveId, *config)) {
+                Modbus::WriteRegister(traits,
+                                      port,
+                                      slaveId,
+                                      *config,
+                                      TRegisterValue(1),
+                                      cache,
+                                      device->DeviceConfig()->RequestDelay,
+                                      device->GetResponseTimeout(port),
+                                      device->GetFrameTimeout(port));
+            }
             LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
             if (device->DeviceConfig()->MaxRegHole < MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS) {
                 device->DeviceConfig()->MaxRegHole = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;

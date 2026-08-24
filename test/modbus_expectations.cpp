@@ -2687,21 +2687,28 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         __func__);
 }
 
-void TModbusExpectations::EnqueueContinuousReadEnableResponse(bool ok)
+void TModbusExpectations::EnqueueContinuousReadEnableResponse(TContinuousReadState state)
 {
-    if (!ok) {
-        Expector()->Expect(WrapPDU({
-                               0x06, // function code
-                               0x00, // starting address Hi
-                               0x72, // starting address Lo (114)
-                               0x00, // value Hi
-                               0x01, // value Lo
-                           }),
-                           WrapPDU({
-                               0x86, // function code + 80
-                               0x02, // illegal data address
-                           }),
-                           __func__);
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x72, // starting address Lo (114)
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       state == TContinuousReadState::UNSUPPORTED
+                           ? WrapPDU({
+                                 0x83, // function code + 80
+                                 0x02, // illegal data address
+                             })
+                           : WrapPDU({
+                                 0x03,                                                                  // function code
+                                 0x02,                                                                  // byte count
+                                 0x00,                                                                  // data Hi
+                                 static_cast<int>(state == TContinuousReadState::ENABLED ? 0x01 : 0x00) // data Lo
+                             }),
+                       __func__);
+    if (state != TContinuousReadState::DISABLED) {
         return;
     }
     Expector()->Expect(WrapPDU({
