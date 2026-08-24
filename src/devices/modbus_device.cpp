@@ -55,7 +55,7 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ContinuousReadEnabled(false),
       SystemTimeFn(systemTimeFn),
       TimeSyncInterval(config.TimeSyncInterval),
-      TimeSyncFailed(false)
+      TimeSyncUnsupported(false)
 {}
 
 bool TModbusDevice::GetForceFrameTimeout()
@@ -77,7 +77,7 @@ void TModbusDevice::PrepareImpl(TPort& port)
 {
     TSerialDevice::PrepareImpl(port);
     if (GetConnectionState() != TDeviceConnectionState::CONNECTED) {
-        TimeSyncFailed = false;
+        TimeSyncUnsupported = false;
         if (EnableWbContinuousRead) {
             ContinuousReadEnabled =
                 Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
@@ -151,7 +151,7 @@ std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
 
 void TModbusDevice::SyncTime(TPort& port)
 {
-    if (TimeSyncInterval <= TimeSyncDisabled || TimeSyncFailed) {
+    if (TimeSyncInterval <= TimeSyncDisabled || TimeSyncUnsupported) {
         return;
     }
     const auto now = SystemTimeFn();
@@ -176,7 +176,7 @@ void TModbusDevice::SyncTime(TPort& port)
         LastTimeSync = now;
         LOG(Debug) << "Time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        TimeSyncFailed = true;
+        TimeSyncUnsupported = true;
         LOG(Debug) << "Device doesn't support time sync, no more attempts until reconnect [slave_id is "
                    << DeviceConfig()->SlaveId + "]" << e.what();
     } catch (const std::exception& e) {

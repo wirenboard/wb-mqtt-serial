@@ -71,7 +71,7 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     util::TGetSystemTimeFn SystemTimeFn;
     std::chrono::hours TimeSyncInterval;
     std::chrono::system_clock::time_point LastTimeSync;
-    bool TimeSyncFailed;
+    bool TimeSyncUnsupported;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
