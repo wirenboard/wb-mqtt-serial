@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.266.0) stable; urgency=medium
+
+  * Do not write continuous read register if continuous read is already enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Aug 2026 10:21:35 +0300
+
 wb-mqtt-serial (2.265.0) stable; urgency=medium
 
   * Check that declarations of a parameter used in conditions read and convert

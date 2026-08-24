@@ -81,6 +81,9 @@ Unsubscribe -- em-test: /devices/modbus-sample/controls/#
 Open()
 Sleep(5000)
 EnqueueContinuousReadEnableResponse()
+>> 01 03 00 72 00 01 24 11
+<< 01 03 02 00 00 B8 44
+EnqueueContinuousReadEnableResponse()
 >> 01 06 00 72 00 01 E8 11
 << 01 06 00 72 00 01 E8 11
 EnqueueContinuousReadHoldingResponse()
