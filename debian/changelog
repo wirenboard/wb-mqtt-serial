@@ -1,8 +1,16 @@
-wb-mqtt-serial (2.265.0) stable; urgency=medium
+wb-mqtt-serial (2.266.0) stable; urgency=medium
 
   * Do not write continuous read register if continuous read is already enabled
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 20 Aug 2026 12:30:55 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Aug 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.265.0) stable; urgency=medium
+
+  * Check that declarations of a parameter used in conditions read and convert
+    the register identically. A device template violating the rule is rejected
+    on first use and on templates/Upload
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Aug 2026 12:00:00 +0400
 
 wb-mqtt-serial (2.264.3) stable; urgency=medium
 

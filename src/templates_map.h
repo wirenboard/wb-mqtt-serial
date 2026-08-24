@@ -125,6 +125,7 @@ public:
     /**
      * @brief Validate device template JSON the same way as its first use does:
      *        templates schema, condition expressions, parameter address consistency,
+     *        register reading properties of parameters used in conditions,
      *        subdevices nesting. Doesn't modify the template
      *
      * @param templateRoot device template file contents

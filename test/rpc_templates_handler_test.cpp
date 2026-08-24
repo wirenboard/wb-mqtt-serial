@@ -414,6 +414,41 @@ TEST_F(TRPCTemplatesHandlerTest, UploadInvalidCondition)
     EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
 }
 
+TEST_F(TRPCTemplatesHandlerTest, UploadConditionSourceParameterMismatch)
+{
+    // A schema-valid template where declarations of a parameter used in conditions
+    // differ in register reading and conversion properties must be rejected
+    auto root = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    root["device"]["channels"][0]["condition"] = "mode==1";
+    Json::Value sel;
+    sel["id"] = "sel";
+    sel["title"] = "sel";
+    sel["address"] = 1;
+    root["device"]["parameters"].append(sel);
+    Json::Value mode;
+    mode["id"] = "mode";
+    mode["title"] = "mode";
+    mode["address"] = 2;
+    mode["scale"] = 1;
+    mode["condition"] = "sel==0";
+    root["device"]["parameters"].append(mode);
+    mode["scale"] = 2;
+    mode["condition"] = "sel==1";
+    root["device"]["parameters"].append(mode);
+
+    try {
+        Upload(MakeUploadRequest(SerializeJson(root), "condition-source.json"));
+        ADD_FAILURE() << "Expect an exception";
+    } catch (const std::exception& e) {
+        EXPECT_NE(std::string(e.what()).find("Parameter \"mode\" has several declarations with different \"scale\" "
+                                             "values (\"1\" and \"2\")."),
+                  std::string::npos)
+            << e.what();
+    }
+    EXPECT_TRUE(ListUserTemplatesDir().empty());
+    EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
+}
+
 TEST_F(TRPCTemplatesHandlerTest, UploadNumericChannelEnum)
 {
     // Templates use numeric channel enums, the schema allows strings only,
