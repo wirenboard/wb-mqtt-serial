@@ -75,6 +75,7 @@ void TSerialClient::Activate()
         RegReader = std::make_unique<TSerialClientRegisterAndEventsReader>(Devices,
                                                                            GetReadEventsPeriod(*Port),
                                                                            NowFn,
+                                                                           std::chrono::system_clock::now,
                                                                            LowPriorityRateLimit);
         LastAccessedDevice = std::make_unique<TSerialClientDeviceAccessHandler>(RegReader->GetEventsReader());
     }
@@ -227,9 +228,10 @@ void TSerialClient::ResumePoll(PSerialDevice device)
 TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,
                                                                            std::chrono::milliseconds readEventsPeriod,
                                                                            util::TGetNowFn nowFn,
+                                                                           util::TGetSystemTimeFn systemTimeFn,
                                                                            size_t lowPriorityRateLimit)
     : EventsReader(std::make_shared<TSerialClientEventsReader>(MAX_EVENT_READ_ERRORS)),
-      RegisterPoller(lowPriorityRateLimit),
+      RegisterPoller(lowPriorityRateLimit, systemTimeFn),
       TimeBalancer(BALANCING_THRESHOLD),
       ReadEventsPeriod(readEventsPeriod),
       SpentTime(nowFn),

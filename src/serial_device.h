@@ -231,7 +231,7 @@ public:
      * @brief Write current local time to the device if the synchronization interval has elapsed.
      *        Does nothing if synchronization is disabled or the device doesn't support it.
      */
-    void SyncTime(TPort& port);
+    void SyncTime(TPort& port, std::chrono::system_clock::time_point now);
 
     /**
      * Reads multiple registers.
@@ -269,8 +269,6 @@ public:
 
     const std::string& GetWbFwVersion() const;
     void SetWbFwVersion(const std::string& wbFwVersion);
-
-    void SetSystemTimeFn(util::TGetSystemTimeFn systemTimeFn);
 
     // Reset values caches
     virtual void InvalidateReadCache();
@@ -312,7 +310,6 @@ private:
     bool WbDevice;
     std::string WbFwVersion;
 
-    util::TGetSystemTimeFn SystemTimeFn;
     std::chrono::system_clock::time_point LastTimeSync;
     bool TimeSyncUnsupported;
 

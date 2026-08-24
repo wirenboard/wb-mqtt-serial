@@ -95,7 +95,6 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PProtocol protocol)
       SupportsHoles(true),
       SporadicOnly(true),
       WbDevice(false),
-      SystemTimeFn(std::chrono::system_clock::now),
       TimeSyncUnsupported(false)
 {}
 
@@ -170,12 +169,11 @@ void TSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, c
 void TSerialDevice::WriteTimeImpl(TPort& port, time_t deviceTime)
 {}
 
-void TSerialDevice::SyncTime(TPort& port)
+void TSerialDevice::SyncTime(TPort& port, std::chrono::system_clock::time_point now)
 {
     if (DeviceConfig()->TimeSyncInterval <= TimeSyncDisabled || TimeSyncUnsupported) {
         return;
     }
-    const auto now = SystemTimeFn();
     if (now - LastTimeSync < DeviceConfig()->TimeSyncInterval) {
         return;
     }
@@ -326,11 +324,6 @@ const std::string& TSerialDevice::GetWbFwVersion() const
 void TSerialDevice::SetWbFwVersion(const std::string& wbFwVersion)
 {
     WbFwVersion = wbFwVersion;
-}
-
-void TSerialDevice::SetSystemTimeFn(util::TGetSystemTimeFn systemTimeFn)
-{
-    SystemTimeFn = systemTimeFn;
 }
 
 void TSerialDevice::SetDisconnected()

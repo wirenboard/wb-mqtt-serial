@@ -398,11 +398,9 @@ public:
 
     std::shared_ptr<TModbusDevice> MakeDevice(const TModbusDeviceConfig& config)
     {
-        auto device = std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
-                                                      config,
-                                                      DeviceFactory.GetProtocol("modbus"));
-        device->SetSystemTimeFn([this]() { return SystemTime; });
-        return device;
+        return std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
+                                               config,
+                                               DeviceFactory.GetProtocol("modbus"));
     }
 
     std::shared_ptr<TFakeSerialPortWithTime> Port;
@@ -1190,7 +1188,11 @@ TEST_F(TPollTest, TimeSync)
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
 
-    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
@@ -1221,7 +1223,11 @@ TEST_F(TPollTest, TimeSyncDisabled)
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
 
-    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     for (size_t i = 0; i < 3; ++i) {
@@ -1245,7 +1251,11 @@ TEST_F(TPollTest, TimeSyncTransientFailure)
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
 
-    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, SLAVE_DEVICE_FAILURE);
@@ -1274,7 +1284,11 @@ TEST_F(TPollTest, TimeSyncNotSupported)
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
 
-    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, Modbus::ILLEGAL_DATA_ADDRESS);

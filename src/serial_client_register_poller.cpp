@@ -108,10 +108,12 @@ namespace
     };
 };
 
-TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateLimit)
+TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateLimit,
+                                                         util::TGetSystemTimeFn systemTimeFn)
     : Scheduler(MAX_LOW_PRIORITY_LAG),
       ThrottlingStateLogger(),
-      LowPriorityRateLimiter(lowPriorityRateLimit)
+      LowPriorityRateLimiter(lowPriorityRateLimit),
+      SystemTimeFn(systemTimeFn)
 {}
 
 void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& devices,
@@ -120,12 +122,12 @@ void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& dev
     std::unique_lock lock(Mutex);
 
     for (const auto& dev: devices) {
-        auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High);
+        auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High, SystemTimeFn);
         if (pollableDevice->HasRegisters()) {
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::High);
             Devices.insert({dev, pollableDevice});
         }
-        pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::Low);
+        pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::Low, SystemTimeFn);
         if (pollableDevice->HasRegisters()) {
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::Low);
             Devices.insert({dev, pollableDevice});

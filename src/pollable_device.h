@@ -15,12 +15,16 @@ class TPollableDevice
     PSerialDevice Device;
     TPriorityQueueSchedule<PRegister, TRegisterComparePredicate> Registers;
     TPriority Priority;
+    util::TGetSystemTimeFn SystemTimeFn;
     std::chrono::milliseconds DisconnectedPollDelay;
 
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point currentTime);
 
 public:
-    TPollableDevice(PSerialDevice device, std::chrono::steady_clock::time_point currentTime, TPriority priority);
+    TPollableDevice(PSerialDevice device,
+                    std::chrono::steady_clock::time_point currentTime,
+                    TPriority priority,
+                    util::TGetSystemTimeFn systemTimeFn = std::chrono::system_clock::now);
 
     PRegisterRange ReadRegisterRange(TFeaturePort& port,
                                      std::chrono::milliseconds pollLimit,
