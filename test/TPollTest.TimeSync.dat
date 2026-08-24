@@ -1,12 +1,12 @@
 Open()
 0: Cycle
 Sleep(1000)
-EnqueueWriteLocalTime()
->> 01 10 01 C4 00 04 08 00 00 00 00 6D 67 64 2F 80 1A
-<< 01 10 01 C4 00 04 81 CB
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
+EnqueueWriteLocalTime()
+>> 01 10 01 C4 00 04 08 00 00 00 00 6D 67 64 2F 80 1A
+<< 01 10 01 C4 00 04 81 CB
 21000: <modbus:1:(type 0): 1>
 21000: Cycle end
 
@@ -25,12 +25,12 @@ EnqueueReadHolding()
 41000: Cycle end
 
 41000: Cycle
-EnqueueWriteLocalTime()
->> 01 10 01 C4 00 04 08 00 00 00 00 6D 68 C3 BF CA 45
-<< 01 10 01 C4 00 04 81 CB
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
+EnqueueWriteLocalTime()
+>> 01 10 01 C4 00 04 08 00 00 00 00 6D 68 C3 BF CA 45
+<< 01 10 01 C4 00 04 81 CB
 61000: <modbus:1:(type 0): 1>
 61000: Cycle end
 

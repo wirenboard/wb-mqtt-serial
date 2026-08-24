@@ -228,7 +228,8 @@ public:
     void WriteRegister(TPort& port, PRegister reg, uint64_t value);
 
     /**
-     * @brief Write current local time to the device if the synchronization interval has elapsed.
+     * @brief Write local time corresponding to now to the device
+     *        if the synchronization interval has elapsed.
      *        Does nothing if synchronization is disabled or the device doesn't support it.
      */
     void SyncTime(TPort& port, std::chrono::system_clock::time_point now);
