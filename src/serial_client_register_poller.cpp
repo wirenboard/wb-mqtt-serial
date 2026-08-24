@@ -108,12 +108,10 @@ namespace
     };
 };
 
-TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateLimit,
-                                                         util::TGetSystemTimeFn systemTimeFn)
+TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateLimit)
     : Scheduler(MAX_LOW_PRIORITY_LAG),
       ThrottlingStateLogger(),
-      LowPriorityRateLimiter(lowPriorityRateLimit),
-      SystemTimeFn(systemTimeFn)
+      LowPriorityRateLimiter(lowPriorityRateLimit)
 {}
 
 void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& devices,
@@ -122,12 +120,12 @@ void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& dev
     std::unique_lock lock(Mutex);
 
     for (const auto& dev: devices) {
-        auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High, SystemTimeFn);
+        auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High);
         if (pollableDevice->HasRegisters()) {
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::High);
             Devices.insert({dev, pollableDevice});
         }
-        pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::Low, SystemTimeFn);
+        pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::Low);
         if (pollableDevice->HasRegisters()) {
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::Low);
             Devices.insert({dev, pollableDevice});
@@ -208,7 +206,8 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TFeaturePort& port,
                                                        std::chrono::milliseconds maxPollingTime,
                                                        bool readAtLeastOneRegister,
                                                        TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                       TRegisterCallback callback)
+                                                       TRegisterCallback callback,
+                                                       util::TGetSystemTimeFn systemTimeFn)
 {
     RescheduleDisconnectedDevices();
     RescheduleDevicesWithSpendedPoll(spentTime.GetStartTime());
@@ -253,6 +252,10 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TFeaturePort& port,
     }
 
     res.Device = reader.GetDevice()->GetDevice();
+
+    if (res.Device->GetConnectionState() == TDeviceConnectionState::CONNECTED) {
+        res.Device->SyncTime(port, systemTimeFn());
+    }
 
     for (auto& reg: range->RegisterList()) {
         if (callback) {

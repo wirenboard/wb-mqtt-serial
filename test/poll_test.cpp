@@ -1176,7 +1176,7 @@ TEST_F(TPollTest, EventsCapPersistsBetweenReadingSessions)
 TEST_F(TPollTest, TimeSync)
 {
     // One register, time synchronization every 24 hours
-    // 1. Local time must be written before the first read
+    // 1. Local time must be written after the first read
     // 2. No new write during the interval
     // 3. Local time must be written again after the interval
 
@@ -1195,19 +1195,20 @@ TEST_F(TPollTest, TimeSync)
         [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
+    EnqueueReadHolding(1, 1, 1, 10ms);
     EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
-    for (size_t i = 0; i < 2; ++i) {
-        EnqueueReadHolding(1, 1, 1, 10ms);
-        Cycle(serialClient, lastAccessedDevice);
-    }
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
 
     SystemTime += 23h;
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
 
     SystemTime += 2h;
-    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     Cycle(serialClient, lastAccessedDevice);
 }
 
@@ -1258,12 +1259,12 @@ TEST_F(TPollTest, TimeSyncTransientFailure)
         [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, SLAVE_DEVICE_FAILURE);
     EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, SLAVE_DEVICE_FAILURE);
     Cycle(serialClient, lastAccessedDevice);
 
-    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
     Cycle(serialClient, lastAccessedDevice);
 }
 
@@ -1291,8 +1292,8 @@ TEST_F(TPollTest, TimeSyncNotSupported)
         [this]() { return SystemTime; });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, Modbus::ILLEGAL_DATA_ADDRESS);
     EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, Modbus::ILLEGAL_DATA_ADDRESS);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 
@@ -1304,8 +1305,8 @@ TEST_F(TPollTest, TimeSyncNotSupported)
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
 
-    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }

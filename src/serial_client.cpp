@@ -231,12 +231,13 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
                                                                            util::TGetSystemTimeFn systemTimeFn,
                                                                            size_t lowPriorityRateLimit)
     : EventsReader(std::make_shared<TSerialClientEventsReader>(MAX_EVENT_READ_ERRORS)),
-      RegisterPoller(lowPriorityRateLimit, systemTimeFn),
+      RegisterPoller(lowPriorityRateLimit),
       TimeBalancer(BALANCING_THRESHOLD),
       ReadEventsPeriod(readEventsPeriod),
       SpentTime(nowFn),
       LastCycleWasTooSmallToPoll(false),
-      NowFn(nowFn)
+      NowFn(nowFn),
+      SystemTimeFn(systemTimeFn)
 {
     auto currentTime = NowFn();
     RegisterPoller.SetDevices(devices, currentTime);
@@ -313,7 +314,8 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TFeaturePort& 
                                             std::min(handler.PollLimit, MAX_POLL_TIME),
                                             readAtLeastOneRegister,
                                             lastAccessedDevice,
-                                            regCallback);
+                                            regCallback,
+                                            SystemTimeFn);
 
     TimeBalancer.AddEntry(TClientTaskType::POLLING, res.Deadline, TPriority::Low);
     if (res.NotEnoughTime) {

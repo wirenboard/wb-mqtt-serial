@@ -52,6 +52,7 @@ private:
     util::TSpentTimeMeter SpentTime;
     bool LastCycleWasTooSmallToPoll;
     util::TGetNowFn NowFn;
+    util::TGetSystemTimeFn SystemTimeFn;
 };
 
 class ISerialClientTask

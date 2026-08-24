@@ -15,11 +15,9 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
 
 TPollableDevice::TPollableDevice(PSerialDevice device,
                                  std::chrono::steady_clock::time_point currentTime,
-                                 TPriority priority,
-                                 util::TGetSystemTimeFn systemTimeFn)
+                                 TPriority priority)
     : Device(device),
       Priority(priority),
-      SystemTimeFn(systemTimeFn),
       DisconnectedPollDelay(0)
 {
     for (const auto& reg: Device->GetRegisters()) {
@@ -55,7 +53,6 @@ PRegisterRange TPollableDevice::ReadRegisterRange(TFeaturePort& port,
     if (!registerRange->RegisterList().empty()) {
         bool readOk = false;
         if (lastAccessedDevice.PrepareToAccess(port, Device)) {
-            Device->SyncTime(port, SystemTimeFn());
             Device->ReadRegisterRange(port, registerRange);
             readOk = true;
         }

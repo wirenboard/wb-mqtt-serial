@@ -37,8 +37,7 @@ class TSerialClientRegisterPoller
 public:
     typedef std::function<void(PRegister reg)> TRegisterCallback;
 
-    TSerialClientRegisterPoller(size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max(),
-                                util::TGetSystemTimeFn systemTimeFn = std::chrono::system_clock::now);
+    TSerialClientRegisterPoller(size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
     void SetDevices(const std::list<PSerialDevice>& devices, std::chrono::steady_clock::time_point currentTime);
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback callback);
@@ -47,7 +46,8 @@ public:
                               std::chrono::milliseconds maxPollingTime,
                               bool readAtLeastOneRegister,
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                              TRegisterCallback callback);
+                              TRegisterCallback callback,
+                              util::TGetSystemTimeFn systemTimeFn);
 
     void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
     void ResumePoll(PSerialDevice device);
@@ -73,6 +73,4 @@ private:
     std::vector<PSerialDevice> DisconnectedDevicesWaitingForReschedule;
 
     std::unordered_map<PSerialDevice, std::chrono::steady_clock::time_point> DevicesWithSpendedPoll;
-
-    util::TGetSystemTimeFn SystemTimeFn;
 };
