@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.267.0) stable; urgency=medium
+
+  * Add wb_time_sync_interval device parameter
+  * Rename unixtime control type to local_time
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Aug 2026 10:30:49 +0300
+
 wb-mqtt-serial (2.266.0) stable; urgency=medium
 
   * Do not write continuous read register if continuous read is already enabled

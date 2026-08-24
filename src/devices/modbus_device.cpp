@@ -96,7 +96,6 @@ void TModbusDevice::PrepareImpl(TPort& port)
                 reg->IncludeInPolling();
             }
         }
-        SyncMWACTime(port);
     }
 }
 
@@ -119,7 +118,6 @@ void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool br
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    SyncMWACTime(port);
     Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
@@ -144,32 +142,15 @@ std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
         std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
-void TModbusDevice::SyncMWACTime(TPort& port)
+void TModbusDevice::WriteTimeImpl(TPort& port, time_t deviceTime)
 {
-    if (DeviceConfig()->DeviceType == "WB-MWAC-v2 ver2" && util::CompareVersionStrings(GetWbFwVersion(), "1.24.0") >= 0)
-    {
-        const auto now = std::chrono::system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::hours>(now - LastMWACTimeSync).count() > 24) {
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::MWAC_UNIXTIME_REGISTER_NAME);
-            try {
-                const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
-                std::tm localTm{};
-                localtime_r(&nowTimeT, &localTm);
-                const auto deviceTime = timegm(&localTm);
-                Modbus::WriteRegister(*ModbusTraits,
-                                      port,
-                                      SlaveId,
-                                      *config,
-                                      TRegisterValue(deviceTime),
-                                      ModbusCache,
-                                      DeviceConfig()->RequestDelay,
-                                      GetResponseTimeout(port),
-                                      GetFrameTimeout(port));
-                LastMWACTimeSync = now;
-                LOG(Debug) << "MWAC time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
-            } catch (const std::exception& e) {
-                LOG(Debug) << "MWAC time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e.what();
-            }
-        }
-    }
+    Modbus::WriteRegister(*ModbusTraits,
+                          port,
+                          SlaveId,
+                          *WbRegisters::GetRegisterConfig(WbRegisters::LOCAL_TIME_REGISTER_NAME),
+                          TRegisterValue(deviceTime),
+                          ModbusCache,
+                          DeviceConfig()->RequestDelay,
+                          GetResponseTimeout(port),
+                          GetFrameTimeout(port));
 }

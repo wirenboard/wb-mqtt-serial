@@ -1,0 +1,37 @@
+Open()
+0: Cycle
+Sleep(1000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+EnqueueWriteLocalTime()
+>> 01 10 01 C4 00 04 08 00 00 00 00 6D 67 64 2F 80 1A
+<< 01 90 02 CD C1
+21000: <modbus:1:(type 0): 1>
+21000: Cycle end
+
+21000: Cycle
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+31000: <modbus:1:(type 0): 1>
+31000: Cycle end
+
+31000: Cycle
+EnqueueReadHoldingError()
+>> 01 03 00 01 00 01 D5 CA
+41000: <modbus:1:(type 0): 1> with errors: 001
+41000: Cycle end
+
+41000: Cycle
+Sleep(1000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+EnqueueWriteLocalTime()
+>> 01 10 01 C4 00 04 08 00 00 00 00 6D 68 C3 BF CA 45
+<< 01 10 01 C4 00 04 81 CB
+62000: <modbus:1:(type 0): 1>
+62000: Cycle end
+
+Close()

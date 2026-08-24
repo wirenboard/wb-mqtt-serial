@@ -14,6 +14,16 @@ namespace
     const auto DISCONNECTED_POLL_DELAY_STEP = 500ms;
     const auto DISCONNECTED_POLL_DELAY_LIMIT = 10s;
 
+    // 2028-02-29 23:59:59 UTC, fake system time of time synchronization tests
+    const time_t FAKE_SYSTEM_TIME = 1835481599;
+
+    // Modbus exception code that is not treated as unsupported register
+    const uint8_t SLAVE_DEVICE_FAILURE = 0x04;
+
+    // Devices are set to local time, not to UTC. POSIX form of UTC+3 is used to avoid dependency on tzdata
+    const char* FAKE_TIMEZONE = "MSK-3";
+    const time_t FAKE_LOCAL_TIME = FAKE_SYSTEM_TIME + duration_cast<seconds>(3h).count();
+
     class TTimeMock
     {
         steady_clock::time_point Time;
@@ -84,7 +94,10 @@ public:
     void SetUp() override
     {
         TLoggedFixture::SetUp();
+        setenv("TZ", FAKE_TIMEZONE, 1);
+        tzset();
         TimeMock.Reset();
+        SystemTime = system_clock::from_time_t(FAKE_SYSTEM_TIME);
         Port = std::make_shared<TFakeSerialPortWithTime>(*this, TimeMock);
         FeaturePort = std::make_shared<TFeaturePort>(Port, false);
         TModbusDevice::Register(DeviceFactory);
@@ -94,6 +107,8 @@ public:
     void TearDown() override
     {
         FeaturePort->Close();
+        unsetenv("TZ");
+        tzset();
         TLoggedFixture::TearDown();
     }
 
@@ -150,6 +165,36 @@ public:
                          0x00, // value Hi
                          0x01  // value Lo
                      }),
+                     __func__,
+                     readTime);
+    }
+
+    void EnqueueWriteLocalTime(uint8_t slaveId, uint64_t localTime, microseconds readTime, uint8_t exceptionCode = 0)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        std::vector<int> request = {
+            0x10, // function code
+            0x01, // starting address Hi
+            0xC4, // starting address Lo
+            0x00, // quantity Hi
+            0x04, // quantity Lo
+            0x08  // byte count
+        };
+        for (auto i = 0; i < 8; ++i) {
+            request.push_back((localTime >> (56 - i * 8)) & 0xFF);
+        }
+        Port->Expect(WrapPDU(request),
+                     exceptionCode ? WrapPDU({
+                                         0x90,         // function code + exception bit
+                                         exceptionCode //
+                                     })
+                                   : WrapPDU({
+                                         0x10, // function code
+                                         0x01, // starting address Hi
+                                         0xC4, // starting address Lo
+                                         0x00, // quantity Hi
+                                         0x04  // quantity Lo
+                                     }),
                      __func__,
                      readTime);
     }
@@ -361,6 +406,7 @@ public:
     std::shared_ptr<TFakeSerialPortWithTime> Port;
     std::shared_ptr<TFeaturePort> FeaturePort;
     TTimeMock TimeMock;
+    system_clock::time_point SystemTime;
     TSerialDeviceFactory DeviceFactory;
 };
 
@@ -1125,4 +1171,142 @@ TEST_F(TPollTest, EventsCapPersistsBetweenReadingSessions)
     // Session 4: back to min_slave 0, the bus is now quiet
     EnqueueEventsExchange(60ms, 0, 0, 0, NoEventsResponse(), 0xFD);
     Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, TimeSync)
+{
+    // One register, time synchronization every 24 hours
+    // 1. Local time must be written after the first read
+    // 2. No new write during the interval
+    // 3. Local time must be written again after the interval
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->TimeSyncInterval = 24h;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    SystemTime += 23h;
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    SystemTime += 2h;
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, TimeSyncDisabled)
+{
+    // Zero interval disables time synchronization, only registers are read
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->TimeSyncInterval = TimeSyncDisabled;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        SystemTime += 25h;
+    }
+}
+
+TEST_F(TPollTest, TimeSyncTransientFailure)
+{
+    // One register, time synchronization every 24 hours
+    // Device fails to write local time, but the register is supported,
+    // so the attempt is repeated on the next poll
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->TimeSyncInterval = 24h;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, SLAVE_DEVICE_FAILURE);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, TimeSyncNotSupported)
+{
+    // One register, time synchronization every 24 hours
+    // 1. Device replies with ILLEGAL_DATA_ADDRESS to the local time write on the first poll
+    // 2. No new attempts while the device is connected, even after the interval
+    // 3. The attempt is repeated after reconnect
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->TimeSyncInterval = 24h;
+    config.CommonConfig->DeviceTimeout = 0ms;
+    config.CommonConfig->DeviceMaxFailCycles = 1;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1);
+
+    TSerialClientRegisterAndEventsReader serialClient(
+        {device},
+        50ms,
+        [this]() { return TimeMock.GetTime(); },
+        [this]() { return SystemTime; });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME, 10ms, Modbus::ILLEGAL_DATA_ADDRESS);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+
+    SystemTime += 25h;
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueReadHoldingError(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }

@@ -42,6 +42,7 @@ public:
         TModbusDeviceConfig config;
         config.CommonConfig = deviceConfig;
         WBMQTT::JSON::Get(data, "enable_wb_continuous_read", config.EnableWbContinuousRead);
+        WBMQTT::JSON::Get(data, "wb_time_sync_interval", deviceConfig->TimeSyncInterval);
         WBMQTT::JSON::Get(data,
                           "continue_polling_on_illegal_modbus_exception",
                           deviceConfig->ContinuePollingOnIllegalModbusException);
@@ -59,7 +60,6 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
     bool EnableWbContinuousRead;
     bool ContinuousReadEnabled;
-    std::chrono::system_clock::time_point LastMWACTimeSync;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
@@ -80,7 +80,5 @@ public:
 protected:
     void PrepareImpl(TPort& port) override;
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
-
-private:
-    void SyncMWACTime(TPort& port);
+    void WriteTimeImpl(TPort& port, time_t deviceTime) override;
 };
