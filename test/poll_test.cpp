@@ -398,10 +398,11 @@ public:
 
     std::shared_ptr<TModbusDevice> MakeDevice(const TModbusDeviceConfig& config)
     {
-        return std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
-                                               config,
-                                               DeviceFactory.GetProtocol("modbus"),
-                                               [this]() { return SystemTime; });
+        auto device = std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
+                                                      config,
+                                                      DeviceFactory.GetProtocol("modbus"));
+        device->SetSystemTimeFn([this]() { return SystemTime; });
+        return device;
     }
 
     std::shared_ptr<TFakeSerialPortWithTime> Port;
@@ -1184,7 +1185,7 @@ TEST_F(TPollTest, TimeSync)
     Port->SetBaudRate(115200);
 
     auto config = MakeDeviceConfig("device1", "1");
-    config.TimeSyncInterval = 24h;
+    config.CommonConfig->TimeSyncInterval = 24h;
 
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
@@ -1215,7 +1216,7 @@ TEST_F(TPollTest, TimeSyncDisabled)
     Port->SetBaudRate(115200);
 
     auto config = MakeDeviceConfig("device1", "1");
-    config.TimeSyncInterval = TimeSyncDisabled;
+    config.CommonConfig->TimeSyncInterval = TimeSyncDisabled;
 
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
@@ -1239,7 +1240,7 @@ TEST_F(TPollTest, TimeSyncTransientFailure)
     Port->SetBaudRate(115200);
 
     auto config = MakeDeviceConfig("device1", "1");
-    config.TimeSyncInterval = 24h;
+    config.CommonConfig->TimeSyncInterval = 24h;
 
     auto device = MakeDevice(config);
     AddRegister(*device, 1);
@@ -1266,7 +1267,7 @@ TEST_F(TPollTest, TimeSyncNotSupported)
     Port->SetBaudRate(115200);
 
     auto config = MakeDeviceConfig("device1", "1");
-    config.TimeSyncInterval = 24h;
+    config.CommonConfig->TimeSyncInterval = 24h;
     config.CommonConfig->DeviceTimeout = 0ms;
     config.CommonConfig->DeviceMaxFailCycles = 1;
 

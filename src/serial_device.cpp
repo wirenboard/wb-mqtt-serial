@@ -94,7 +94,9 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PProtocol protocol)
       RemainingFailCycles(0),
       SupportsHoles(true),
       SporadicOnly(true),
-      WbDevice(false)
+      WbDevice(false),
+      SystemTimeFn(std::chrono::system_clock::now),
+      TimeSyncUnsupported(false)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -110,6 +112,10 @@ PRegisterRange TSerialDevice::CreateRegisterRange() const
 void TSerialDevice::Prepare(TPort& port, TDevicePrepareMode prepareMode)
 {
     bool deviceWasDisconnected = (ConnectionState != TDeviceConnectionState::CONNECTED);
+    if (deviceWasDisconnected) {
+        LastTimeSync = std::chrono::system_clock::time_point();
+        TimeSyncUnsupported = false;
+    }
     try {
         PrepareImpl(port);
         if (prepareMode == TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED && deviceWasDisconnected) {
@@ -159,6 +165,34 @@ TRegisterValue TSerialDevice::ReadRegisterImpl(TPort& port, const TRegisterConfi
 void TSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value)
 {
     throw TSerialDeviceException(ToString() + ": register writing is not supported");
+}
+
+void TSerialDevice::WriteTimeImpl(TPort& port, time_t deviceTime)
+{}
+
+void TSerialDevice::SyncTime(TPort& port)
+{
+    if (DeviceConfig()->TimeSyncInterval <= TimeSyncDisabled || TimeSyncUnsupported) {
+        return;
+    }
+    const auto now = SystemTimeFn();
+    if (now - LastTimeSync < DeviceConfig()->TimeSyncInterval) {
+        return;
+    }
+    try {
+        const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
+        std::tm localTm{};
+        localtime_r(&nowTimeT, &localTm);
+        WriteTimeImpl(port, timegm(&localTm));
+        LastTimeSync = now;
+        LOG(Debug) << "Time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        TimeSyncUnsupported = true;
+        LOG(Debug) << "Device doesn't support time sync, no more attempts until reconnect [slave_id is "
+                   << DeviceConfig()->SlaveId + "]" << e.what();
+    } catch (const std::exception& e) {
+        LOG(Debug) << "Time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e.what();
+    }
 }
 
 void TSerialDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError)
@@ -292,6 +326,11 @@ const std::string& TSerialDevice::GetWbFwVersion() const
 void TSerialDevice::SetWbFwVersion(const std::string& wbFwVersion)
 {
     WbFwVersion = wbFwVersion;
+}
+
+void TSerialDevice::SetSystemTimeFn(util::TGetSystemTimeFn systemTimeFn)
+{
+    SystemTimeFn = systemTimeFn;
 }
 
 void TSerialDevice::SetDisconnected()

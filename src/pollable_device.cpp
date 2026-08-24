@@ -53,6 +53,7 @@ PRegisterRange TPollableDevice::ReadRegisterRange(TFeaturePort& port,
     if (!registerRange->RegisterList().empty()) {
         bool readOk = false;
         if (lastAccessedDevice.PrepareToAccess(port, Device)) {
+            Device->SyncTime(port);
             Device->ReadRegisterRange(port, registerRange);
             readOk = true;
         }

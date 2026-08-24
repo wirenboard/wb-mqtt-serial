@@ -45,17 +45,13 @@ void TModbusDevice::Register(TSerialDeviceFactory& factory)
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
                              const TModbusDeviceConfig& config,
-                             PProtocol protocol,
-                             util::TGetSystemTimeFn systemTimeFn)
+                             PProtocol protocol)
     : TSerialDevice(config.CommonConfig, protocol),
       TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead),
-      ContinuousReadEnabled(false),
-      SystemTimeFn(systemTimeFn),
-      TimeSyncInterval(config.TimeSyncInterval),
-      TimeSyncUnsupported(false)
+      ContinuousReadEnabled(false)
 {}
 
 bool TModbusDevice::GetForceFrameTimeout()
@@ -77,7 +73,6 @@ void TModbusDevice::PrepareImpl(TPort& port)
 {
     TSerialDevice::PrepareImpl(port);
     if (GetConnectionState() != TDeviceConnectionState::CONNECTED) {
-        TimeSyncUnsupported = false;
         if (EnableWbContinuousRead) {
             ContinuousReadEnabled =
                 Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
@@ -101,7 +96,6 @@ void TModbusDevice::PrepareImpl(TPort& port)
                 reg->IncludeInPolling();
             }
         }
-        SyncTime(port);
     }
 }
 
@@ -124,7 +118,6 @@ void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool br
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    SyncTime(port);
     Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
@@ -149,37 +142,15 @@ std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
         std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
-void TModbusDevice::SyncTime(TPort& port)
+void TModbusDevice::WriteTimeImpl(TPort& port, time_t deviceTime)
 {
-    if (TimeSyncInterval <= TimeSyncDisabled || TimeSyncUnsupported) {
-        return;
-    }
-    const auto now = SystemTimeFn();
-    if (now - LastTimeSync < TimeSyncInterval) {
-        return;
-    }
-    auto config = WbRegisters::GetRegisterConfig(WbRegisters::LOCAL_TIME_REGISTER_NAME);
-    try {
-        const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
-        std::tm localTm{};
-        localtime_r(&nowTimeT, &localTm);
-        const auto deviceTime = timegm(&localTm);
-        Modbus::WriteRegister(*ModbusTraits,
-                              port,
-                              SlaveId,
-                              *config,
-                              TRegisterValue(deviceTime),
-                              ModbusCache,
-                              DeviceConfig()->RequestDelay,
-                              GetResponseTimeout(port),
-                              GetFrameTimeout(port));
-        LastTimeSync = now;
-        LOG(Debug) << "Time sync [slave_id is " << DeviceConfig()->SlaveId + "]";
-    } catch (const TSerialDevicePermanentRegisterException& e) {
-        TimeSyncUnsupported = true;
-        LOG(Debug) << "Device doesn't support time sync, no more attempts until reconnect [slave_id is "
-                   << DeviceConfig()->SlaveId + "]" << e.what();
-    } catch (const std::exception& e) {
-        LOG(Debug) << "Time sync failed [slave_id is " << DeviceConfig()->SlaveId + "]" << e.what();
-    }
+    Modbus::WriteRegister(*ModbusTraits,
+                          port,
+                          SlaveId,
+                          *WbRegisters::GetRegisterConfig(WbRegisters::LOCAL_TIME_REGISTER_NAME),
+                          TRegisterValue(deviceTime),
+                          ModbusCache,
+                          DeviceConfig()->RequestDelay,
+                          GetResponseTimeout(port),
+                          GetFrameTimeout(port));
 }
