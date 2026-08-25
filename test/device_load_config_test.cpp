@@ -56,6 +56,59 @@ TEST(TDeviceLoadConfigTest, CreateParametersRegisterList)
 }
 
 /**
+ * Checks register list creation for parameter fw variants (declarations with the same id and different fw).
+ * One register per parameter and condition is created, a parameter is read if any of its declarations
+ * is supported by the device firmware version. The order of declarations does not affect the result.
+ */
+TEST(TDeviceLoadConfigTest, CreateRegisterListFwVariants)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    auto deviceTemplate = templateMap.GetTemplate("parameters_fw_variants")->GetTemplate();
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+
+    auto makeIdsJson = [&](const Json::Value& parameters, const std::string& fwVersion) {
+        auto device = MakeDevice(protocolParams, deviceTemplate, fwVersion, false);
+        TRPCRegisterList registerList = CreateParametersRegisterList(protocolParams, device, parameters);
+        Json::Value json;
+        for (const auto& reg: registerList) {
+            json[reg.Id] = true;
+        }
+        // a group of declarations with the same id and condition must produce a single register,
+        // duplicates would be hidden by the id-keyed json
+        EXPECT_EQ(registerList.size(), json.size());
+        return json;
+    };
+
+    // The order of declarations in the template must not affect the result
+    Json::Value reversedParameters(Json::arrayValue);
+    for (Json::ArrayIndex i = deviceTemplate["parameters"].size(); i > 0; --i) {
+        reversedParameters.append(deviceTemplate["parameters"][i - 1]);
+    }
+
+    for (const auto& parameters: {deviceTemplate["parameters"], reversedParameters}) {
+        // Old firmware: the parameter added in a newer firmware is filtered out
+        Json::Value oldFw;
+        oldFw["mode"] = true;
+        oldFw["p1"] = true;
+        oldFw["p3"] = true;
+        ASSERT_TRUE(JsonsMatch(makeIdsJson(parameters, "2.0.0"), oldFw));
+
+        // New firmware: every parameter is read once
+        Json::Value newFw(oldFw);
+        newFw["p2"] = true;
+        ASSERT_TRUE(JsonsMatch(makeIdsJson(parameters, "2.4.0"), newFw));
+
+        // Unknown firmware: every parameter is read once
+        ASSERT_TRUE(JsonsMatch(makeIdsJson(parameters, std::string()), newFw));
+    }
+}
+
+/**
  * Checks that the parameter list is not contains items unmatched with template conditions.
  * Uses JSON-objects containig fake read values and result data for matching.
  */
@@ -783,6 +836,43 @@ TEST(TDeviceLoadTest, GetParametersRegisterListConditionOutcomes)
         ASSERT_EQ(registerList.size(), 1u);
         EXPECT_EQ(registerList.front().Id, "sp");
         EXPECT_EQ(data["mode"].asInt(), 1);
+    }
+}
+
+/**
+ * Checks that the fw variants of a requested parameter are not ambiguous for device/Load:
+ * the declarations with the same condition and different "fw" form a chain and give a single register.
+ */
+TEST(TDeviceLoadTest, GetParametersRegisterListFwVariants)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templateMap.GetTemplate("parameters_fw_variants");
+
+    // "p1" has two variants without a condition, both match on a new and on an old firmware
+    for (const auto& fwVersion: {"2.4.0", "2.0.0"}) {
+        auto device = MakeDevice(protocolParams, deviceTemplate->GetTemplate(), fwVersion, false);
+        TRPCDeviceLoadRequest request(protocolParams, device, deviceTemplate, false);
+        request.Parameters.insert("p1");
+        auto registerList = request.GetParametersRegisterList(Json::Value(Json::objectValue));
+        ASSERT_EQ(registerList.size(), 1u) << fwVersion;
+        EXPECT_EQ(registerList.front().Id, "p1");
+    }
+
+    // the "p3" variants share the condition "mode==1", both match and form a chain
+    {
+        TRPCDeviceLoadRequest request(protocolParams, nullptr, deviceTemplate, false);
+        request.Parameters.insert("p3");
+        Json::Value condParams(Json::objectValue);
+        condParams["mode"] = 1;
+        auto registerList = request.GetParametersRegisterList(condParams);
+        ASSERT_EQ(registerList.size(), 1u);
+        EXPECT_EQ(registerList.front().Id, "p3");
     }
 }
 

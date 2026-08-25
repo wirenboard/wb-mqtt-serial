@@ -17,8 +17,7 @@
             {
                 "id": "variant",
                 "title": "Variant",
-                "address": 101,
-                "readonly": true
+                "address": 101
             },
             {
                 "id": "unrelated",

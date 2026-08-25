@@ -31,6 +31,8 @@ public:
      *        conditionParams are evaluated with an undefined value, a parameter with false conditions
      *        is dropped. A parameter already read for condition evaluation is put into data instead
      *        of the list. A null conditionParams skips the condition evaluation.
+     *        A chain of fw variants of a parameter (the same condition, pairwise different "fw")
+     *        is not ambiguous, CreateParametersRegisterList merges it into one register.
      *
      * @throws TRPCException if several declarations of a parameter match at once
      */

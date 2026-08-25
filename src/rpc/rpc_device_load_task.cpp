@@ -165,7 +165,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Va
     auto notFound = Parameters;
     Expressions::TExpressionsCache cache;
     TJsonParams exprParams(conditionParams);
-    std::set<std::string> matched;
+    TActiveParameterDeclarations matched;
     Json::Value items(Json::arrayValue);
     for (auto it = params.begin(); it != params.end(); ++it) {
         auto item = *it;
@@ -182,8 +182,9 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Va
             if (!CheckCondition(item, exprParams, &cache)) {
                 continue;
             }
-            // a template error, config validation reports it as a duplicate definition of the parameter
-            if (!matched.emplace(id).second) {
+            // A chain of fw variants is not ambiguous, CreateParametersRegisterList merges it into one register.
+            // Anything else is a template error, config validation reports it as a duplicate definition
+            if (!matched.Add(id, *it)) {
                 throw TRPCException("Parameter \"" + id +
                                         "\" is ambiguous: several declarations match the condition parameter values",
                                     TRPCResultCode::RPC_WRONG_PARAM_VALUE);

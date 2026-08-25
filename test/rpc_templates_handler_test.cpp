@@ -173,6 +173,62 @@ TEST_F(TRPCTemplatesHandlerTest, UploadNewType)
     EXPECT_EQ((UserTemplatesDir / "uploaded-device.json").string(), deviceTemplate->GetFilePath());
 }
 
+TEST_F(TRPCTemplatesHandlerTest, UploadTypeWithParameterFwVariants)
+{
+    auto templateJson = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    Json::Value parameter;
+    parameter["id"] = "p1";
+    parameter["title"] = "p1";
+    parameter["address"] = 10;
+    parameter["enum"].append(0);
+    parameter["enum"].append(1);
+    parameter["enum_titles"].append("a");
+    parameter["enum_titles"].append("b");
+    templateJson["device"]["parameters"].append(parameter);
+    parameter["fw"] = "2.2.0";
+    parameter["enum"].append(2);
+    parameter["enum_titles"].append("c");
+    templateJson["device"]["parameters"].append(parameter);
+
+    auto response = Upload(MakeUploadRequest(SerializeJson(templateJson), "uploaded-device.json"));
+    GetSingleType(response, "Custom devices");
+    EXPECT_NO_THROW(Templates->GetTemplate(NEW_TYPE)->GetTemplate());
+}
+
+TEST_F(TRPCTemplatesHandlerTest, UploadParameterFwVariantsMismatch)
+{
+    // A schema-valid template where fw variants of a parameter differ not only in enum values
+    // must be rejected by the same check as on template load
+    auto templateJson = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    Json::Value parameter;
+    parameter["id"] = "p1";
+    parameter["title"] = "p1";
+    parameter["address"] = 10;
+    parameter["scale"] = 1;
+    parameter["enum"].append(0);
+    parameter["enum"].append(1);
+    parameter["enum_titles"].append("a");
+    parameter["enum_titles"].append("b");
+    templateJson["device"]["parameters"].append(parameter);
+    parameter["fw"] = "2.2.0";
+    parameter["scale"] = 2;
+    parameter["enum"].append(2);
+    parameter["enum_titles"].append("c");
+    templateJson["device"]["parameters"].append(parameter);
+
+    try {
+        Upload(MakeUploadRequest(SerializeJson(templateJson), "uploaded-device.json"));
+        ADD_FAILURE() << "Expect an exception";
+    } catch (const std::exception& e) {
+        EXPECT_NE(std::string(e.what()).find("Parameter \"p1\" has several declarations with different \"scale\" "
+                                             "values (\"1\" and \"2\")."),
+                  std::string::npos)
+            << e.what();
+    }
+    EXPECT_TRUE(ListUserTemplatesDir().empty());
+    EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
+}
+
 TEST_F(TRPCTemplatesHandlerTest, UploadNewTypeTranslatedGroupName)
 {
     auto response = Upload(

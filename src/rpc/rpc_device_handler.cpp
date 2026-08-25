@@ -375,6 +375,10 @@ TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& proto
     auto fwVersion = device ? device->GetWbFwVersion() : std::string();
     auto checkUnsupported = device && device->IsWbDevice();
 
+    // The fw variants of a parameter (declarations with the same id and condition) define the same register,
+    // the first variant supported by the device firmware gives the register of the group.
+    // The enum matters only for the unsupported value marker check and no firmware adds 0xFFFE to an enum
+    std::set<std::pair<std::string, std::string>> createdRegisters;
     TRPCRegisterList registerList;
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         const auto& item = *it;
@@ -388,7 +392,9 @@ TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& proto
         if (!IsSupportedByFw(item, fwVersion)) {
             continue;
         }
-        registerList.push_back(CreateRPCRegister(protocolParams, device, id, item, checkUnsupported));
+        if (createdRegisters.emplace(id, item["condition"].asString()).second) {
+            registerList.push_back(CreateRPCRegister(protocolParams, device, id, item, checkUnsupported));
+        }
     }
     return registerList;
 }
