@@ -226,7 +226,6 @@ namespace
         TTitleTranslations translated_name_prefixes;
         const Json::Value* translations = nullptr;
 
-        // Value from device or parent channel (used if a channel doesn't define its own)
         std::chrono::seconds max_publish_interval = MaxPublishIntervalDisabled;
 
         TLoadingContext(const IDeviceFactory& f, const IRegisterAddress& base_address)
