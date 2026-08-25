@@ -7,6 +7,60 @@
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
+namespace
+{
+    bool IsSupportedByFw(const Json::Value& item, const std::string& fwVersion)
+    {
+        if (fwVersion.empty()) {
+            return true;
+        }
+        std::string fw = item["fw"].asString();
+        return fw.empty() || util::CompareVersionStrings(fw, fwVersion) <= 0;
+    }
+
+    TRPCRegister CreateRPCRegister(const TDeviceProtocolParams& protocolParams,
+                                   PSerialDevice device,
+                                   const std::string& id,
+                                   const Json::Value& item,
+                                   bool checkUnsupported)
+    {
+        auto config = LoadRegisterConfig(item,
+                                         *protocolParams.protocol->GetRegTypes(),
+                                         std::string(),
+                                         *protocolParams.factory,
+                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                                         0);
+        TRPCRegister reg = {id,
+                            item["condition"].asString(),
+                            std::make_shared<TRegister>(device, config.RegisterConfig),
+                            checkUnsupported};
+        reg.Register->SetAvailable(TRegisterAvailability::AVAILABLE);
+
+        // this code checks enums and ranges only for 16-bit register unsupported value 0xFFFE
+        // it must be modified to check larger registers like 24, 32 or 64-bits
+        if (reg.CheckUnsupported) {
+            int unsupportedValue =
+                config.RegisterConfig->Format == S16 ? static_cast<int16_t>(0xFFFE) : static_cast<uint16_t>(0xFFFE);
+            if (item.isMember("enum")) {
+                for (const auto& value: item["enum"]) {
+                    try {
+                        if (std::stoi(value.asString(), 0, 0) == unsupportedValue) {
+                            reg.CheckUnsupported = false;
+                            break;
+                        }
+                    } catch (const std::logic_error&) {
+                    }
+                }
+            } else {
+                if (item["min"].asInt() <= unsupportedValue && item["max"].asInt() >= unsupportedValue) {
+                    reg.CheckUnsupported = false;
+                }
+            }
+        }
+        return reg;
+    }
+} // namespace
+
 void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
 {
     for (const auto& portConfig: handlerConfig->PortConfigs) {
@@ -283,65 +337,58 @@ void PrepareSession(TPort& port, PSerialDevice device, int maxRetries)
     }
 }
 
-TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
-                                    const PSerialDevice& device,
-                                    const Json::Value& templateItems,
-                                    const Json::Value& knownItems,
-                                    const std::string& fwVersion,
-                                    bool checkUnsupported,
-                                    bool filterReadOnly)
+void EndSession(TPort& port, PSerialDevice device)
 {
+    try {
+        device->EndSession(port);
+    } catch (const TSerialDeviceException& e) {
+        LOG(Warn) << port.GetDescription() << " " << device->ToString() << " unable to end session: " << e.what();
+    }
+}
+
+TRPCRegisterList CreateChannelsRegisterList(const TDeviceProtocolParams& protocolParams,
+                                            PSerialDevice device,
+                                            const Json::Value& channels)
+{
+    // nullptr checks are needed for tests
+    auto fwVersion = device ? device->GetWbFwVersion() : std::string();
+    auto checkUnsupported = device && device->IsWbDevice();
+
     TRPCRegisterList registerList;
-    for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
+    for (const auto& item: channels) {
+        if (item["address"].isNull() || !IsSupportedByFw(item, fwVersion)) {
+            continue;
+        }
+        registerList.push_back(
+            CreateRPCRegister(protocolParams, device, item["id"].asString(), item, checkUnsupported));
+    }
+    return registerList;
+}
+
+TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& protocolParams,
+                                              PSerialDevice device,
+                                              const Json::Value& parameters,
+                                              const Json::Value& knownValues,
+                                              const std::set<std::string>& ids)
+{
+    // nullptr checks are needed for tests
+    auto fwVersion = device ? device->GetWbFwVersion() : std::string();
+    auto checkUnsupported = device && device->IsWbDevice();
+
+    TRPCRegisterList registerList;
+    for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         const auto& item = *it;
-        auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
-        if (item["address"].isNull() || !knownItems[id].isNull()) {
+        auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
+        if (item["address"].isNull() || !knownValues[id].isNull()) {
             continue;
         }
-        if (filterReadOnly && item["readonly"].asBool()) {
+        if (!ids.empty() && !ids.count(id)) {
             continue;
         }
-        if (!fwVersion.empty()) {
-            std::string fw = item["fw"].asString();
-            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
-                continue;
-            }
+        if (!IsSupportedByFw(item, fwVersion)) {
+            continue;
         }
-        auto config = LoadRegisterConfig(item,
-                                         *protocolParams.protocol->GetRegTypes(),
-                                         std::string(),
-                                         *protocolParams.factory,
-                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
-                                         0);
-        TRPCRegister reg = {id,
-                            item["condition"].asString(),
-                            std::make_shared<TRegister>(device, config.RegisterConfig),
-                            checkUnsupported};
-        reg.Register->SetAvailable(TRegisterAvailability::AVAILABLE);
-
-        // this code checks enums and ranges only for 16-bit register unsupported value 0xFFFE
-        // it must be modified to check larger registers like 24, 32 or 64-bits
-        if (reg.CheckUnsupported) {
-            int unsupportedValue =
-                config.RegisterConfig->Format == S16 ? static_cast<int16_t>(0xFFFE) : static_cast<uint16_t>(0xFFFE);
-            if (item.isMember("enum")) {
-                for (const auto& value: item["enum"]) {
-                    try {
-                        if (std::stoi(value.asString(), 0, 0) == unsupportedValue) {
-                            reg.CheckUnsupported = false;
-                            break;
-                        }
-                    } catch (const std::logic_error&) {
-                    }
-                }
-            } else {
-                if (item["min"].asInt() <= unsupportedValue && item["max"].asInt() >= unsupportedValue) {
-                    reg.CheckUnsupported = false;
-                }
-            }
-        }
-
-        registerList.push_back(reg);
+        registerList.push_back(CreateRPCRegister(protocolParams, device, id, item, checkUnsupported));
     }
     return registerList;
 }
@@ -393,12 +440,6 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
         }
     }
 
-    try {
-        device->EndSession(port);
-    } catch (const TSerialDeviceException& e) {
-        LOG(Warn) << port.GetDescription() << " " << device->ToString() << " unable to end session: " << e.what();
-    }
-
     if (!error.empty()) {
         LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
@@ -423,5 +464,20 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
         return std::stod(str.c_str(), 0);
     } catch (const std::invalid_argument&) {
         return str;
+    }
+}
+
+bool RegisterGotValue(const TRPCRegister& item)
+{
+    return item.Register->IsSupported() && !item.Register->GetErrorState().test(TRegister::TError::ReadError) &&
+           item.Register->GetValue().GetType() != TRegisterValue::ValueType::Undefined;
+}
+
+void MergeRegisterListValues(const TRPCRegisterList& registerList, Json::Value& values)
+{
+    for (const auto& item: registerList) {
+        if (RegisterGotValue(item)) {
+            values[item.Id] = RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
+        }
     }
 }

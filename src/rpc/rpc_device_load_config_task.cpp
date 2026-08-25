@@ -102,20 +102,23 @@ namespace
         port->SkipNoise();
         PrepareSession(*port, rpcRequest->Device, MAX_RPC_RETRIES);
 
-        if (rpcRequest->Device->IsWbDevice()) {
-            CheckTemplate(port, rpcRequest, deviceModel);
-        }
+        try {
+            if (rpcRequest->Device->IsWbDevice()) {
+                CheckTemplate(port, rpcRequest, deviceModel);
+            }
 
-        auto registerList = CreateRegisterList(rpcRequest->ProtocolParams,
-                                               rpcRequest->Device,
-                                               templateParams,
-                                               parameters,
-                                               rpcRequest->Device->GetWbFwVersion(),
-                                               rpcRequest->Device->IsWbDevice(),
-                                               true /* filterReadOnly */);
-        ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RPC_RETRIES);
-        GetRegisterListParameters(registerList, parameters);
-        MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, parameters);
+            auto registerList = CreateParametersRegisterList(rpcRequest->ProtocolParams,
+                                                             rpcRequest->Device,
+                                                             templateParams,
+                                                             parameters);
+            ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RPC_RETRIES);
+            MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, &parameters);
+            GetRegisterListParameters(registerList, parameters);
+        } catch (...) {
+            EndSession(*port, rpcRequest->Device);
+            throw;
+        }
+        EndSession(*port, rpcRequest->Device);
 
         Json::Value result(Json::objectValue);
         result["parameters"] = parameters;

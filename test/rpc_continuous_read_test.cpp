@@ -97,7 +97,7 @@ TEST_F(TRPCContinuousReadTest, RestoresModeValue)
     TRPCDeviceRequest request(DeviceFactory.GetProtocolParams("modbus"), Device, DeviceTemplate, false);
     auto registerList = MakeRegisterList(0xFFFE);
     Json::Value data;
-    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, data);
+    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, &data);
 
     ASSERT_EQ(data["parameter"].asString(), UNSUPPORTED_VALUE);
     SerialPort->Close();
@@ -121,7 +121,7 @@ TEST_F(TRPCContinuousReadTest, RestoresModeEnabledByDriver)
     TRPCDeviceRequest request(DeviceFactory.GetProtocolParams("modbus"), Device, DeviceTemplate, false);
     auto registerList = MakeRegisterList(0xFFFE);
     Json::Value data;
-    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, data);
+    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, &data);
 
     ASSERT_EQ(data["parameter"].asString(), UNSUPPORTED_VALUE);
     SerialPort->Close();
@@ -139,7 +139,7 @@ TEST_F(TRPCContinuousReadTest, SkipsDisabledMode)
     TRPCDeviceRequest request(DeviceFactory.GetProtocolParams("modbus"), Device, DeviceTemplate, false);
     auto registerList = MakeRegisterList(0xFFFE);
     Json::Value data;
-    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, data);
+    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, &data);
 
     ASSERT_TRUE(data["parameter"].isNull());
     SerialPort->Close();
@@ -157,7 +157,7 @@ TEST_F(TRPCContinuousReadTest, SkipsSupportedValues)
     TRPCDeviceRequest request(DeviceFactory.GetProtocolParams("modbus"), Device, DeviceTemplate, false);
     auto registerList = MakeRegisterList(0x1234);
     Json::Value data;
-    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, data);
+    MarkUnsupportedRegisterItems(*SerialPort, request, registerList, &data);
 
     ASSERT_TRUE(data["parameter"].isNull());
     SerialPort->Close();

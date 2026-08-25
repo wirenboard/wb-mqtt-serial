@@ -173,6 +173,21 @@ namespace
         return nullopt;
     }
 
+    std::vector<std::string> GetDependencies(const TAstNode* expression)
+    {
+        std::set<std::string> dependencies;
+        if (expression) {
+            if (expression->GetType() == TAstNodeType::Ident) {
+                dependencies.insert(expression->GetValue());
+            } else {
+                auto leftDeps = GetDependencies(expression->GetLeft());
+                dependencies.insert(leftDeps.begin(), leftDeps.end());
+                auto rightDeps = GetDependencies(expression->GetRight());
+                dependencies.insert(rightDeps.begin(), rightDeps.end());
+            }
+        }
+        return std::vector<std::string>(dependencies.begin(), dependencies.end());
+    }
 }
 
 TToken::TToken(TTokenType type, size_t pos, const std::string& value): Type(type), Value(value), Pos(pos)
@@ -488,18 +503,15 @@ bool Expressions::Eval(const Expressions::TAstNode* expr, const IParams& params)
     return res && res.value();
 }
 
-std::vector<std::string> Expressions::GetDependencies(const TAstNode* expression)
+std::vector<std::string> Expressions::GetDependencies(const std::string& expression, TExpressionsCache& cache)
 {
-    std::set<std::string> dependencies;
-    if (expression) {
-        if (expression->GetType() == TAstNodeType::Ident) {
-            dependencies.insert(expression->GetValue());
-        } else {
-            auto leftDeps = GetDependencies(expression->GetLeft());
-            dependencies.insert(leftDeps.begin(), leftDeps.end());
-            auto rightDeps = GetDependencies(expression->GetRight());
-            dependencies.insert(rightDeps.begin(), rightDeps.end());
-        }
+    if (expression.empty()) {
+        return {};
     }
-    return std::vector<std::string>(dependencies.begin(), dependencies.end());
+    auto it = cache.find(expression);
+    if (it == cache.end()) {
+        TParser parser;
+        it = cache.emplace(expression, parser.Parse(expression)).first;
+    }
+    return ::GetDependencies(it->second.get());
 }

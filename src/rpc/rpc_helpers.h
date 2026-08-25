@@ -41,11 +41,14 @@ bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& 
 /**
  * @brief Re-reads registers that returned all-0xFFFE to distinguish unsupported
  *        from actual values. Temporarily disables continuous read for accurate results.
+ *        A confirmed register is marked unsupported and its data value is replaced
+ *        with UNSUPPORTED_VALUE. Pass data as nullptr for register lists without
+ *        response data, for example condition parameter lists.
  */
 void MarkUnsupportedRegisterItems(TPort& port,
                                   TRPCDeviceRequest& request,
                                   TRPCRegisterList& registerList,
-                                  Json::Value& data);
+                                  Json::Value* data = nullptr);
 
 /**
  * @brief Validates an RPC request against a given JSON schema.

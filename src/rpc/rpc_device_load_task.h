@@ -9,14 +9,33 @@ public:
                           PDeviceTemplate deviceTemplate,
                           bool deviceFromConfig);
 
-    std::list<std::string> Channels;
-    std::list<std::string> Parameters;
+    std::set<std::string> Channels;
+    std::set<std::string> Parameters;
 
-    void ParseRequestItems(const Json::Value& items, std::list<std::string>& list);
+    void ParseRequestItems(const Json::Value& items, std::set<std::string>& list);
 
+    //! Registers to read: parameters referenced by the conditions of the requested channels and parameters
     TRPCRegisterList GetConditionParametersRegisterList();
+
+    /**
+     * @brief Builds the register list of the requested channels: only declarations with a true condition
+     *        are read. Conditions over parameters missing from conditionParams are evaluated with
+     *        an undefined value, a channel with false conditions is dropped. A null conditionParams
+     *        skips the condition evaluation.
+     */
     TRPCRegisterList GetChannelsRegisterList(const Json::Value& conditionParams = Json::Value());
-    TRPCRegisterList GetParametersRegisterList(const Json::Value& knownValues = Json::Value());
+
+    /**
+     * @brief Builds the register list of the requested parameters: the declaration with a true condition
+     *        acts and defines the value conversion. Conditions over parameters missing from
+     *        conditionParams are evaluated with an undefined value, a parameter with false conditions
+     *        is dropped. A parameter already read for condition evaluation is put into data instead
+     *        of the list. A null conditionParams skips the condition evaluation.
+     *
+     * @throws TRPCException if several declarations of a parameter match at once
+     */
+    TRPCRegisterList GetParametersRegisterList(const Json::Value& conditionParams = Json::Value(),
+                                               Json::Value* data = nullptr);
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadRequest> PRPCDeviceLoadRequest;

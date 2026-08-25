@@ -73,13 +73,7 @@ namespace
     void ValidateConditionAndAddDependencies(Json::Value& node, Expressions::TExpressionsCache& exprCache)
     {
         if (node.isMember("condition")) {
-            auto condition = node["condition"].asString();
-            auto itExpr = exprCache.find(condition);
-            if (itExpr == exprCache.end()) {
-                Expressions::TParser parser;
-                itExpr = exprCache.emplace(condition, parser.Parse(condition)).first;
-            }
-            const auto dependencies = Expressions::GetDependencies(itExpr->second.get());
+            const auto dependencies = Expressions::GetDependencies(node["condition"].asString(), exprCache);
             if (!dependencies.empty()) {
                 Json::Value dependenciesArray(Json::arrayValue);
                 for (const auto& dep: dependencies) {
@@ -179,15 +173,10 @@ namespace
     std::unordered_set<std::string> CollectConditionParameterIds(const Json::Value& deviceTemplate)
     {
         std::unordered_set<std::string> res;
-        std::unordered_set<std::string> processedConditions;
-        Expressions::TParser parser;
+        Expressions::TExpressionsCache exprCache;
         for (const auto& section: CONDITION_SECTIONS) {
             for (const auto& node: deviceTemplate[section]) {
-                auto condition = node["condition"].asString();
-                if (condition.empty() || !processedConditions.emplace(condition).second) {
-                    continue;
-                }
-                auto dependencies = Expressions::GetDependencies(parser.Parse(condition).get());
+                auto dependencies = Expressions::GetDependencies(node["condition"].asString(), exprCache);
                 res.insert(dependencies.begin(), dependencies.end());
             }
         }

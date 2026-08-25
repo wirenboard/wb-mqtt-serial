@@ -1,3 +1,38 @@
+wb-mqtt-serial (2.268.0) stable; urgency=medium
+
+  * Evaluate declaration conditions in device/Set and device/Load RPC: a
+    channel or parameter is written and a parameter is read by the
+    declaration whose condition is true, so condition variants with
+    different scales are converted right (wb-mai6, wb-mai2-cc,
+    oni-plc-w-ema-06u00). device/Set evaluates the conditions over the
+    request values and reads the missing condition parameters from the
+    device. An item with false conditions is skipped by device/Set and is
+    not included in the device/Load answer, an item with several matching
+    declarations rejects the request
+  * Skip a readonly or unknown parameter in a device/Set request instead of
+    rejecting the request
+  * Reject writing a read only channel in device/Set by the register type
+    too, not only by the "readonly" key: a write to an input or discrete
+    register used to reach the device and fail there
+  * Require numbers as device/Set parameter values, like the device
+    configuration schema does
+  * Do not fail device/Load and device/Set when a condition parameter got no
+    value: the device does not support the register or the value matches
+    the "error_value", "unsupported_value" or Wiren Board 0xFFFE marker. The
+    conditions over it are evaluated with an undefined value like in the
+    web interface: comparisons are false, "!=" is true, "isDefined" is false
+  * Return "unsupported" in the device/Load answer only for an item whose own
+    register was not read, list only channels in the readonly array and
+    read only the condition parameters of the requested items
+  * Check the Wiren Board 0xFFFE marker in device/LoadConfig before resolving
+    conditions, a parameter depending on an unsupported register is not
+    resolved by the number 65534
+  * Remove the register address from the readonly heating_options parameter
+    of the WBE2-I-OPENTHERM fw 1.7.3 template, readonly parameters only
+    organize the web interface
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Aug 2026 12:00:00 +0400
+
 wb-mqtt-serial (2.267.1) stable; urgency=medium
 
   * Restore continuous read register value after RPC requests

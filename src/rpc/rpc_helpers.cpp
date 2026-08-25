@@ -177,7 +177,7 @@ bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& 
 void MarkUnsupportedRegisterItems(TPort& port,
                                   TRPCDeviceRequest& request,
                                   TRPCRegisterList& registerList,
-                                  Json::Value& data)
+                                  Json::Value* data)
 {
     auto device = dynamic_cast<TModbusDevice*>(request.Device.get());
     if (device == nullptr) {
@@ -200,7 +200,10 @@ void MarkUnsupportedRegisterItems(TPort& port,
                     TRegisterValue value;
                     ReadModbusRegister(port, request, item.Register->GetConfig(), value);
                 } catch (const Modbus::TModbusExceptionError& err) {
-                    data[item.Id] = UNSUPPORTED_VALUE;
+                    item.Register->SetSupported(false);
+                    if (data != nullptr) {
+                        (*data)[item.Id] = UNSUPPORTED_VALUE;
+                    }
                 }
             }
         } catch (const TRegisterValueException& e) {
