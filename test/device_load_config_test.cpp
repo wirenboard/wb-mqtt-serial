@@ -367,8 +367,11 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ChecksUnsupportedValueMarkerBeforeCondi
     TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
     auto deviceTemplate = templates.GetTemplate("parameters_condition_variants");
     auto config = std::make_shared<TDeviceConfig>("test", "1", "modbus");
-    auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
-    // the 0xFFFE marker check and the template check run for Wiren Board devices only
+    // the 0xFFFE marker check runs for Wiren Board devices with continuous read enabled only,
+    // the template check runs for Wiren Board devices
+    Json::Value deviceJson = deviceTemplate->GetTemplate();
+    deviceJson["enable_wb_continuous_read"] = true;
+    auto device = protocolParams.factory->CreateDevice(deviceJson, config, protocolParams.protocol);
     device->SetWbDevice(true);
 
     TRPCDeviceParametersCache parametersCache;
@@ -390,6 +393,13 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ChecksUnsupportedValueMarkerBeforeCondi
     request->OnError = [&](auto, const std::string& message) { error = message; };
 
     auto port = std::make_shared<TFakeSerialPort>(*this, "<parameters_condition_variants>");
+    // continuous read is checked and enabled on session preparation
+    port->Expect({0x01, 0x03, 0x00, 0x72, 0x00, 0x01, 0x24, 0x11},
+                 {0x01, 0x03, 0x02, 0x00, 0x00, 0xB8, 0x44},
+                 "read continuous read state");
+    port->Expect({0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
+                 {0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
+                 "enable continuous read");
     // a Wiren Board device firmware version is requested on session preparation
     port->Expect({0x01, 0x03, 0x00, 0xFA, 0x00, 0x10, 0x64, 0x37}, {0x01, 0x83, 0x02, 0xC0, 0xF1}, "read fw version");
     // the template check reads the device model, the device answers "TESTDEV"
@@ -426,9 +436,10 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ChecksUnsupportedValueMarkerBeforeCondi
                  "disable continuous read");
     // the modbus exception confirms the device does not support the register
     port->Expect({0x01, 0x03, 0x00, 0x01, 0x00, 0x01, 0xD5, 0xCA}, {0x01, 0x83, 0x02, 0xC0, 0xF1}, "re-read mode");
+    // the continuous read state found on session preparation is restored
     port->Expect({0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
                  {0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
-                 "enable continuous read");
+                 "restore continuous read");
 
     TSerialClientDeviceAccessHandler accessHandler(nullptr);
     TRPCDeviceLoadConfigSerialClientTask task(request);

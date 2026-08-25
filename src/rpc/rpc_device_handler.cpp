@@ -423,7 +423,9 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
                           << "Failed to read " << std::to_string(range->RegisterList().size())
                           << " registers starting from <" << first->GetConfig()->ToString() + ">: " + e.what();
                 auto modbusDevice = dynamic_cast<TModbusDevice*>(device.get());
-                if (modbusDevice != nullptr && !modbusDevice->GetContinuousReadEnabled()) {
+                if (modbusDevice != nullptr &&
+                    modbusDevice->GetContinuousReadStatus() == TContinuousReadStatus::DISABLED)
+                {
                     for (const auto& reg: range->RegisterList()) {
                         reg->SetSupported(false);
                     }
