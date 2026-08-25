@@ -59,7 +59,7 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     Modbus::TRegisterCache ModbusCache;
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
     bool EnableWbContinuousRead;
-    bool ContinuousReadEnabled;
+    uint16_t ContinuousReadStatus;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
@@ -67,7 +67,7 @@ public:
                   PProtocol protocol);
 
     bool GetForceFrameTimeout();
-    bool GetContinuousReadEnabled();
+    uint16_t GetContinuousReadStatus();
 
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false) override;

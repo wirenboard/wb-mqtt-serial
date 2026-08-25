@@ -130,11 +130,11 @@ namespace Modbus // modbus protocol common utilities
                              bool breakOnError,
                              int shift = 0);
 
-    bool EnableWbContinuousRead(PSerialDevice device,
-                                IModbusTraits& traits,
-                                TPort& port,
-                                uint8_t slaveId,
-                                TRegisterCache& cache);
+    uint16_t EnableWbContinuousRead(PSerialDevice device,
+                                    IModbusTraits& traits,
+                                    TPort& port,
+                                    uint8_t slaveId,
+                                    TRegisterCache& cache);
 
     std::string ReadWbFwVersion(PSerialDevice device, IModbusTraits& traits, TPort& port, uint8_t slaveId);
 } // modbus protocol common utilities

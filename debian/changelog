@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.267.1) stable; urgency=medium
+
+  * Restore continuous read register value after RPC requests
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 25 Aug 2026 10:29:06 +0300
+
 wb-mqtt-serial (2.267.0) stable; urgency=medium
 
   * Add wb_time_sync_interval device parameter

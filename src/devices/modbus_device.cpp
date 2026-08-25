@@ -51,7 +51,7 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead),
-      ContinuousReadEnabled(false)
+      ContinuousReadStatus(0)
 {}
 
 bool TModbusDevice::GetForceFrameTimeout()
@@ -59,9 +59,9 @@ bool TModbusDevice::GetForceFrameTimeout()
     return ModbusTraits->GetForceFrameTimeout();
 }
 
-bool TModbusDevice::GetContinuousReadEnabled()
+uint16_t TModbusDevice::GetContinuousReadStatus()
 {
-    return ContinuousReadEnabled;
+    return ContinuousReadStatus;
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
@@ -74,7 +74,7 @@ void TModbusDevice::PrepareImpl(TPort& port)
     TSerialDevice::PrepareImpl(port);
     if (GetConnectionState() != TDeviceConnectionState::CONNECTED) {
         if (EnableWbContinuousRead) {
-            ContinuousReadEnabled =
+            ContinuousReadStatus =
                 Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
         }
         if (!IsWbDevice()) {
