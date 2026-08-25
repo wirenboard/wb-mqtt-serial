@@ -125,8 +125,9 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
 {
     TSerialClientParams params;
 
+    // SerialDriver is not created if config is not loaded
     auto deviceId = request["device_id"];
-    if (deviceId.isString()) {
+    if (SerialDriver && deviceId.isString()) {
         auto id = deviceId.asString();
         for (auto driver: SerialDriver->GetPortDrivers()) {
             for (auto device: driver->GetSerialClient()->GetDevices()) {
