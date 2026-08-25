@@ -104,7 +104,7 @@ clean:
 	-rm -rf $(TEST_DIR)/$(TEST_BIN)
 
 install:
-	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
+	install -d $(DESTDIR)/var/lib/wb-mqtt-serial/schemas
 	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 
 	install -Dm0644 config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
