@@ -80,8 +80,6 @@
             {
                 "id": "heating_options",
                 "title": "Heating Settings",
-                "address": 207,
-                "reg_type" : "holding",
                 "enum": [
                     1,
                     2,

@@ -1,0 +1,139 @@
+// testing template for device/Set with parameter declarations with the same id
+// and different conditions, like dimmer mode dependent setpoints of wb-led.
+// The declarations have different scales to check that the value is converted
+// using the acting declaration, like range dependent inputs of wb-mai6.
+// The "ov" declarations have overlapping conditions to check that a parameter
+// with several simultaneously matching declarations is rejected.
+// The read only "ro" declaration has a condition to check that its dependencies are not read.
+// The "mx" declarations depend on different parameters to check mixed condition outcomes.
+// The "hw" signature lets device/LoadConfig tests pass the template check
+// The write only "Setpoint" and "Level" channels mirror "sp" and "ov" for device/Set,
+// device/Load skips channels without an address
+{
+    "device_type": "parameters_condition_variants",
+    "hw": [
+        {
+            "signature": "TESTDEV"
+        }
+    ],
+    "device": {
+        "name": "parameters condition variants",
+        "id": "parameters condition variants",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            },
+            {
+                "name": "Setpoint",
+                "reg_type": "holding",
+                "write_address": 10,
+                "scale": 1,
+                "condition": "mode==0"
+            },
+            {
+                "name": "Setpoint",
+                "reg_type": "holding",
+                "write_address": 10,
+                "scale": 0.1,
+                "condition": "mode==1"
+            },
+            {
+                "name": "Level",
+                "reg_type": "holding",
+                "write_address": 11,
+                "condition": "mode==1"
+            },
+            {
+                "name": "Level",
+                "reg_type": "holding",
+                "write_address": 11,
+                "condition": "mode>0"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "mode",
+                "title": "mode",
+                "address": 1,
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "sp",
+                "title": "sp",
+                "address": 2,
+                "scale": 1,
+                "condition": "mode==0",
+                "enum": [0, 100],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "sp",
+                "title": "sp",
+                "address": 2,
+                "scale": 0.1,
+                "condition": "mode==1",
+                "enum": [0, 100, 4100],
+                "enum_titles": ["a", "b", "c"]
+            },
+            {
+                "id": "ov",
+                "title": "ov",
+                "address": 3,
+                "condition": "mode==1",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "ov",
+                "title": "ov",
+                "address": 3,
+                "condition": "mode>0",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "ro",
+                "title": "ro",
+                "address": 4,
+                "readonly": true,
+                "condition": "romode==1",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "romode",
+                "title": "romode",
+                "address": 5,
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "mx",
+                "title": "mx",
+                "address": 6,
+                "condition": "mode==1",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "mx",
+                "title": "mx",
+                "address": 6,
+                "condition": "other==1",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "other",
+                "title": "other",
+                "address": 7,
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            }
+        ]
+    }
+}
