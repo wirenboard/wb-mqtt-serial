@@ -27,9 +27,9 @@ void WriteModbusRegister(TPort& port,
                          const TRegisterValue& value);
 
 /**
- * @brief Writes continuous read register value (Wiren Board specific), 0 disables the mode.
+ * @brief Writes continuous read register value (Wiren Board specific).
  */
-void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, uint16_t value);
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, TContinuousReadStatus value);
 
 /**
  * @brief Checks if all 16-bit words in register value are 0xFFFE (unsupported marker).

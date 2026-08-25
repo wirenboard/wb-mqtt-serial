@@ -51,7 +51,7 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead),
-      ContinuousReadStatus(0)
+      ContinuousReadStatus(TContinuousReadStatus::DISABLED)
 {}
 
 bool TModbusDevice::GetForceFrameTimeout()
@@ -59,7 +59,7 @@ bool TModbusDevice::GetForceFrameTimeout()
     return ModbusTraits->GetForceFrameTimeout();
 }
 
-uint16_t TModbusDevice::GetContinuousReadStatus()
+TContinuousReadStatus TModbusDevice::GetContinuousReadStatus()
 {
     return ContinuousReadStatus;
 }

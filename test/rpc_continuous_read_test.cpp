@@ -88,7 +88,7 @@ TEST_F(TRPCContinuousReadTest, RestoresModeValue)
     CreateDevice(true);
     EnqueueHoldingRead(CONTINUOUS_READ_ADDRESS, 2);
     Device->Prepare(*SerialPort, TDevicePrepareMode::WITHOUT_SETUP);
-    ASSERT_EQ(Device->GetContinuousReadStatus(), 2);
+    ASSERT_EQ(Device->GetContinuousReadStatus(), TContinuousReadStatus::ENABLED);
 
     EnqueueHoldingWrite(CONTINUOUS_READ_ADDRESS, 0);
     EnqueueHoldingReadException(PARAMETER_ADDRESS);
@@ -112,7 +112,7 @@ TEST_F(TRPCContinuousReadTest, RestoresModeEnabledByDriver)
     EnqueueHoldingRead(CONTINUOUS_READ_ADDRESS, 0);
     EnqueueHoldingWrite(CONTINUOUS_READ_ADDRESS, 1);
     Device->Prepare(*SerialPort, TDevicePrepareMode::WITHOUT_SETUP);
-    ASSERT_EQ(Device->GetContinuousReadStatus(), 1);
+    ASSERT_EQ(Device->GetContinuousReadStatus(), TContinuousReadStatus::ENABLED_TEMPORARY);
 
     EnqueueHoldingWrite(CONTINUOUS_READ_ADDRESS, 0);
     EnqueueHoldingReadException(PARAMETER_ADDRESS);
@@ -134,7 +134,7 @@ TEST_F(TRPCContinuousReadTest, SkipsDisabledMode)
 {
     CreateDevice(false);
     Device->Prepare(*SerialPort, TDevicePrepareMode::WITHOUT_SETUP);
-    ASSERT_EQ(Device->GetContinuousReadStatus(), 0);
+    ASSERT_EQ(Device->GetContinuousReadStatus(), TContinuousReadStatus::DISABLED);
 
     TRPCDeviceRequest request(DeviceFactory.GetProtocolParams("modbus"), Device, DeviceTemplate, false);
     auto registerList = MakeRegisterList(0xFFFE);

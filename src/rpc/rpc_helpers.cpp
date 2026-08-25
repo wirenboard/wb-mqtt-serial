@@ -125,12 +125,12 @@ void WriteModbusRegister(TPort& port,
     }
 }
 
-void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, uint16_t value)
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, TContinuousReadStatus value)
 {
     std::string error;
     try {
         auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-        WriteModbusRegister(port, request, config, TRegisterValue(value));
+        WriteModbusRegister(port, request, config, TRegisterValue(static_cast<uint16_t>(value)));
     } catch (const Modbus::TErrorBase& err) {
         error = err.what();
     } catch (const TResponseTimeoutException& e) {
@@ -184,7 +184,7 @@ void MarkUnsupportedRegisterItems(TPort& port,
         return;
     }
     auto status = device->GetContinuousReadStatus();
-    if (status == 0) {
+    if (status == TContinuousReadStatus::DISABLED) {
         return;
     }
     auto enabled = true;
@@ -193,7 +193,7 @@ void MarkUnsupportedRegisterItems(TPort& port,
             if (item.CheckUnsupported && CheckUnsupportedValue(*item.Register->GetConfig(), item.Register->GetValue()))
             {
                 if (enabled) {
-                    SetContinuousRead(port, request, 0);
+                    SetContinuousRead(port, request, TContinuousReadStatus::DISABLED);
                     enabled = false;
                 }
                 try {

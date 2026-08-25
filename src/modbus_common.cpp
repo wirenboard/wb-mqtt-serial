@@ -144,7 +144,7 @@ namespace Modbus // modbus protocol common utilities
         auto continuousReadEnabled = false;
         auto forceFrameTimeout = false;
         if (device != nullptr) {
-            continuousReadEnabled = (device->GetContinuousReadStatus() != 0);
+            continuousReadEnabled = (device->GetContinuousReadStatus() != TContinuousReadStatus::DISABLED);
             forceFrameTimeout = device->GetForceFrameTimeout();
         }
 
@@ -996,11 +996,11 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    uint16_t ReadWbContinuousReadStatus(PSerialDevice device,
-                                        IModbusTraits& traits,
-                                        TPort& port,
-                                        uint8_t slaveId,
-                                        const TRegisterConfig& config)
+    TContinuousReadStatus ReadWbContinuousReadStatus(PSerialDevice device,
+                                                     IModbusTraits& traits,
+                                                     TPort& port,
+                                                     uint8_t slaveId,
+                                                     const TRegisterConfig& config)
     {
         try {
             auto value = Modbus::ReadRegister(traits,
@@ -1010,29 +1010,29 @@ namespace Modbus // modbus protocol common utilities
                                               device->DeviceConfig()->RequestDelay,
                                               device->GetResponseTimeout(port),
                                               device->GetFrameTimeout(port));
-            return value.Get<uint16_t>();
+            return static_cast<TContinuousReadStatus>(value.Get<uint16_t>());
         } catch (const Modbus::TErrorBase&) {
             RethrowSerialDeviceException(port);
         }
-        return 0;
+        return TContinuousReadStatus::DISABLED;
     }
 
-    uint16_t EnableWbContinuousRead(PSerialDevice device,
-                                    IModbusTraits& traits,
-                                    TPort& port,
-                                    uint8_t slaveId,
-                                    TRegisterCache& cache)
+    TContinuousReadStatus EnableWbContinuousRead(PSerialDevice device,
+                                                 IModbusTraits& traits,
+                                                 TPort& port,
+                                                 uint8_t slaveId,
+                                                 TRegisterCache& cache)
     {
         auto config = WbRegisters::GetRegisterConfig("continuous_read");
         try {
             auto value = ReadWbContinuousReadStatus(device, traits, port, slaveId, *config);
-            if (value != 1 && value != 2) {
-                value = 1;
+            if (value != TContinuousReadStatus::ENABLED_TEMPORARY && value != TContinuousReadStatus::ENABLED) {
+                value = TContinuousReadStatus::ENABLED_TEMPORARY;
                 Modbus::WriteRegister(traits,
                                       port,
                                       slaveId,
                                       *config,
-                                      TRegisterValue(value),
+                                      TRegisterValue(static_cast<uint16_t>(value)),
                                       cache,
                                       device->DeviceConfig()->RequestDelay,
                                       device->GetResponseTimeout(port),
@@ -1050,7 +1050,7 @@ namespace Modbus // modbus protocol common utilities
             // A firmware doesn't support continuous read
             LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
         }
-        return 0;
+        return TContinuousReadStatus::DISABLED;
     }
 
     std::string ReadWbFwVersion(PSerialDevice device, IModbusTraits& traits, TPort& port, uint8_t slaveId)
