@@ -2,6 +2,8 @@
 #include "rpc_port_driver_list.h"
 #include "templates_map.h"
 
+#include <set>
+
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
 
 class TRPCDeviceParametersCache
@@ -10,36 +12,36 @@ public:
     TRPCDeviceParametersCache() = default;
 
     /**
-     * Registes DeviceConnectionStateChanged callbacks to remove cached data if device connection lost.
+     * Registers DeviceConnectionStateChanged callbacks to remove cached data if device connection lost.
      */
     void RegisterCallbacks(PHandlerConfig handlerConfig);
 
     /**
-     * Creates cache item identifier string based on simlified port description and device address.
+     * Creates cache item identifier string based on simplified port description and device address.
      * For example: "/dev/ttyRS485-2:12" or "192.168.18.7:2321:33"
      */
     std::string GetId(const TPort& port, const std::string& slaveId) const;
 
     /**
-     * Puts device paramerers data into cache.
+     * Puts device parameters data into cache.
      * This method is thread safe.
      */
     void Add(const std::string& id, const Json::Value& value);
 
     /**
-     * Removes device paramerers data from cache.
+     * Removes device parameters data from cache.
      * This method is thread safe.
      */
     void Remove(const std::string& id);
 
     /**
-     * Returns true if cache contains device paramerers data or false overwise.
+     * Returns true if cache contains device parameters data or false otherwise.
      * This method is thread safe.
      */
     bool Contains(const std::string& id) const;
 
     /**
-     * Returns device paramerers data if cache contains it or defaultData overwise.
+     * Returns device parameters data if cache contains it or defaultData otherwise.
      * This method is thread safe.
      */
     const Json::Value& Get(const std::string& id, const Json::Value& defaultValue = Json::Value()) const;
@@ -152,40 +154,62 @@ typedef std::vector<TRPCRegister> TRPCRegisterList;
 /**
  * @brief Prepares device communication session.
  *
- * @param port - serial port refrence
+ * @param port - serial port reference
  * @param device - serial device object pointer
  * @param maxRetries - number of request retries in case of error
  */
 void PrepareSession(TPort& port, PSerialDevice device, int maxRetries = 0);
 
+//! Ends device communication session, a failure is only logged
+void EndSession(TPort& port, PSerialDevice device);
+
 /**
- * @brief Creates named PRegister map based on template items (channels/parameters) JSON array or object.
+ * @brief Creates named PRegister list based on a template channels JSON array,
+ *        every channel must have an "id" set by the caller. Channels without an address
+ *        and channels unsupported by the device firmware version are skipped.
+ *        Conditions are not evaluated and duplicate declarations of one id are not
+ *        merged, the caller selects the acting declarations.
+ *        Enums and ranges of Wiren Board device channels are checked for the unsupported
+ *        register value 0xFFFE to set the register list item CheckUnsupported flag.
  *
  * @param protocolParams - device protocol params for LoadRegisterConfig call
  * @param device - serial device object pointer for TRegister object creation
- * @param templateItems - device template items JSON array or object
- * @param knownItems - known items JSON object, where the key is the item id and the value is the known
- *                     item value, for example: {"baudrate": 96, "in1_mode": 2},
- *                     used to exclule known items from regiter list
- * @param fwVersion - device firmvare version string, used to exclude items unsupporterd by firmware
- * @param checkUnsupported - if set as true, template item's enums and ranges will be checked for presense of
- *                           default Wiren Board devices unsupported register value 0xFFFE,
- *                           to set register list item checkValue flag
+ * @param channels - device template channels JSON array
  *
  * @return TRPCRegisterList - named PRegister list
  */
-TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
-                                    const PSerialDevice& device,
-                                    const Json::Value& templateItems,
-                                    const Json::Value& knownItems = Json::Value(),
-                                    const std::string& fwVersion = std::string(),
-                                    bool checkUnsupported = false,
-                                    bool filterReadOnly = false);
+TRPCRegisterList CreateChannelsRegisterList(const TDeviceProtocolParams& protocolParams,
+                                            PSerialDevice device,
+                                            const Json::Value& channels);
 
 /**
- * @brief Reads TRPCRegisterList registers and puts valuet to JSON object.
+ * @brief Creates named PRegister list based on a template parameters JSON array or object.
+ *        Parameters without an address and parameters unsupported by the device firmware
+ *        version are skipped. Conditions are not evaluated and duplicate declarations
+ *        of one id are not merged, the caller selects the acting declarations.
+ *        Enums and ranges of Wiren Board device parameters are checked for the
+ *        unsupported register value 0xFFFE to set the register list item
+ *        CheckUnsupported flag.
  *
- * @param port - serial port refrence
+ * @param protocolParams - device protocol params for LoadRegisterConfig call
+ * @param device - serial device object pointer for TRegister object creation
+ * @param parameters - device template parameters JSON array or object
+ * @param knownValues - parameters with already known values are skipped, the key is
+ *                      the parameter id, for example: {"baudrate": 96, "in1_mode": 2}
+ * @param ids - ids of the parameters to take, an empty set takes parameters with any id
+ *
+ * @return TRPCRegisterList - named PRegister list
+ */
+TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& protocolParams,
+                                              PSerialDevice device,
+                                              const Json::Value& parameters,
+                                              const Json::Value& knownValues = Json::Value(),
+                                              const std::set<std::string>& ids = std::set<std::string>());
+
+/**
+ * @brief Reads TRPCRegisterList registers and puts value to JSON object.
+ *
+ * @param port - serial port reference
  * @param device - serial device object pointer
  * @param registerList - named PRegister map
  * @param maxRetries - number of request retries in case of error
@@ -193,3 +217,11 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
 void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& registerList, int maxRetries = 0);
 
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
+
+//! Returns true if the register got a value: the device supports it, the read left no error
+//! and the value is defined. The read error is also set for values matching the template
+//! "error_value" and "unsupported_value" markers
+bool RegisterGotValue(const TRPCRegister& item);
+
+//! Adds a value per register id, keeping the members that are not in the register list
+void MergeRegisterListValues(const TRPCRegisterList& registerList, Json::Value& values);
