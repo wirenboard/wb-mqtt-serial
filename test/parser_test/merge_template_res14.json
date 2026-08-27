@@ -1,0 +1,14 @@
+{
+    "device_type": "fw variants",
+    "id": "fw-variants_7",
+    "name": "fw variants 7",
+    "slave_id": 7,
+    "channels":
+    [
+        {
+            "name": "c1",
+            "reg_type": "input",
+            "address": "0x0501"
+        }
+    ]
+}

@@ -219,6 +219,47 @@ TEST_F(TDeviceTemplatesTest, ConditionSourceParameterEquivalentProperties)
     EXPECT_NO_THROW(templateMap.GetTemplate("parameters_condition_source_valid")->GetTemplate());
 }
 
+/**
+ * Checks parameter fw variants: declarations with the same id and condition and different fw versions
+ * are accepted if they differ only in enum values and a newer variant only adds values, whatever their order.
+ * Different register properties or write addresses, a removed enum value, an enum missing in one variant
+ * and equal fw versions are rejected with an error naming the parameter and the difference.
+ */
+TEST_F(TDeviceTemplatesTest, ParameterFwVariants)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_NO_THROW(templateMap.GetTemplate("parameters fw variants")->GetTemplate());
+
+    const std::unordered_map<std::string, std::string> expectedErrors = {
+        {"parameters_fw_variants_invalid_scale",
+         "File: test/device-templates/config-parameters-fw-variants-invalid-scale.json error: Parameter "
+         "\"p1\" has several declarations with different \"scale\" values (\"1\" and \"2\")."},
+        {"parameters_fw_variants_invalid_enum_removed",
+         "File: test/device-templates/config-parameters-fw-variants-invalid-enum-removed.json error: Parameter "
+         "\"p1\" fw variant \"2.2.0\" removes enum value \"1\" of fw variant \"\", fw variants may only add enum "
+         "values."},
+        {"parameters_fw_variants_invalid_enum_missing",
+         "File: test/device-templates/config-parameters-fw-variants-invalid-enum-missing.json error: Parameter "
+         "\"p1\" fw variants \"\" and \"2.2.0\" must both have \"enum\" or both have none."},
+        {"parameters_fw_variants_invalid_same_fw",
+         "File: test/device-templates/config-parameters-fw-variants-invalid-same-fw.json error: Parameter "
+         "\"p1\" has several declarations with the same \"fw\" value (\"2.2.0\") and the same condition."},
+        {"parameters_array_invalid_write_address",
+         "File: test/device-templates/config-parameters-array-invalid-write-address.json error: Parameter \"p1\" "
+         "has several declarations with different \"write_address\" values (\"9993\" and \"9994\")."},
+    };
+
+    for (const auto& [deviceType, expectedError]: expectedErrors) {
+        try {
+            templateMap.GetTemplate(deviceType)->GetTemplate();
+            ADD_FAILURE() << "Expect std::runtime_error for " << deviceType;
+        } catch (const std::runtime_error& e) {
+            ASSERT_STREQ(expectedError.c_str(), e.what());
+        }
+    }
+}
+
 TEST_F(TDeviceTemplatesTest, AlarmControlType)
 {
     TTemplateMap templateMap(GetTemplatesSchema());

@@ -203,6 +203,13 @@ TEST_F(TConfigParserTest, SetupCondition)
     PrintConfig(GetConfig("configs/parse_test_setup_condition.json"));
 }
 
+TEST_F(TConfigParserTest, ParametersFwVariants)
+{
+    // Check loading device template with parameter fw variants:
+    // values from the newest variants pass validation, a single setup item is created per parameter
+    PrintConfig(GetConfig("configs/parse_test_fw_variants.json"));
+}
+
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     auto commonDeviceSchema(GetCommonDeviceSchema());
@@ -236,7 +243,7 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
     TTemplateMap templateMap(GetTemplatesSchema());
     templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
 
-    for (auto i = 1; i <= 13; ++i) {
+    for (auto i = 1; i <= 14; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig,
