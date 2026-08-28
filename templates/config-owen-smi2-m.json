@@ -1,0 +1,417 @@
+{
+    "title": "owen_smi2_m_template_title",
+    "device_type": "owen-smi2-m",
+    "group": "g-control-panel",
+    "device": {
+        "name": "OWEN SMI2-M",
+        "id": "owen_smi2_m",
+        "groups": [
+            {
+                "title": "g_display",
+                "id": "g_display",
+                "order": 1
+            },
+            {
+                "title": "g_safety",
+                "id": "g_safety",
+                "order": 2
+            },
+            {
+                "title": "g_modbus",
+                "id": "g_modbus",
+                "order": 3
+            },
+            {
+                "title": "g_general",
+                "id": "g_general",
+                "order": 4
+            }
+        ],
+        "setup": [
+            {
+                "title": "Arm save-to-flash edge detector",
+                "address": 5000,
+                "value": 0
+            }
+        ],
+        "parameters": [
+            {
+                "id": "data_type",
+                "title": "data_type",
+                "description": "data_type_description",
+                "address": 4107,
+                "enum": [0, 4, 5],
+                "enum_titles": ["INT", "REAL", "STRING"],
+                "default": 0,
+                "group": "g_display",
+                "order": 1
+            },
+            {
+                "id": "slope_coefficient",
+                "title": "slope_coefficient",
+                "description": "slope_coefficient_description",
+                "address": 4111,
+                "format": "float",
+                "word_order": "little_endian",
+                "default": 1,
+                "min": -999,
+                "max": 9999,
+                "condition": "data_type!=5",
+                "group": "g_display",
+                "order": 2
+            },
+            {
+                "id": "offset_coefficient",
+                "title": "offset_coefficient",
+                "description": "offset_coefficient_description",
+                "address": 4109,
+                "format": "float",
+                "word_order": "little_endian",
+                "default": 0,
+                "min": -999,
+                "max": 9999,
+                "condition": "data_type!=5",
+                "group": "g_display",
+                "order": 3
+            },
+            {
+                "id": "string_length",
+                "title": "string_length",
+                "description": "string_length_description",
+                "address": 4249,
+                "default": 4,
+                "min": 4,
+                "max": 32,
+                "condition": "data_type==5",
+                "group": "g_display",
+                "order": 4
+            },
+            {
+                "id": "logic_enabled",
+                "title": "logic_enabled",
+                "description": "logic_enabled_description",
+                "address": 4300,
+                "enum": [0, 1],
+                "enum_titles": ["logic_enabled_enum_0", "logic_enabled_enum_1"],
+                "default": 0,
+                "group": "g_display",
+                "order": 5
+            },
+            {
+                "id": "safe_state_timeout",
+                "title": "safe_state_timeout",
+                "description": "safe_state_timeout_description",
+                "address": 4062,
+                "default": 0,
+                "min": 0,
+                "max": 60,
+                "group": "g_safety",
+                "order": 1
+            },
+            {
+                "id": "safe_state_color",
+                "title": "safe_state_color",
+                "address": 4065,
+                "enum": [0, 1, 2],
+                "enum_titles": ["safe_state_color_enum_0", "safe_state_color_enum_1", "safe_state_color_enum_2"],
+                "default": 0,
+                "group": "g_safety",
+                "order": 3
+            },
+            {
+                "id": "safe_state_blink",
+                "title": "safe_state_blink",
+                "address": 4066,
+                "enum": [0, 1],
+                "enum_titles": ["safe_state_blink_enum_0", "safe_state_blink_enum_1"],
+                "default": 0,
+                "group": "g_safety",
+                "order": 4
+            },
+            {
+                "id": "modbus_address",
+                "title": "modbus_address",
+                "address": 527,
+                "min": 1,
+                "max": 247,
+                "group": "g_modbus",
+                "order": 1
+            },
+            {
+                "id": "baud_rate",
+                "title": "baud_rate",
+                "address": 521,
+                "enum": [3, 4, 5, 6, 7, 8, 9, 10],
+                "enum_titles": ["2400", "4800", "9600", "14400", "19200", "38400", "57600", "115200"],
+                "group": "g_modbus",
+                "order": 2
+            },
+            {
+                "id": "parity",
+                "title": "parity",
+                "address": 524,
+                "enum": [0, 1, 2],
+                "enum_titles": ["N", "E", "O"],
+                "group": "g_modbus",
+                "order": 3
+            },
+            {
+                "id": "stop_bits",
+                "title": "stop_bits",
+                "address": 523,
+                "enum": [0, 1],
+                "enum_titles": ["1", "2"],
+                "group": "g_modbus",
+                "order": 4
+            }
+        ],
+        "channels": [
+            {
+                "name": "value_int",
+                "address": 4200,
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "condition": "data_type==0",
+                "group": "g_general"
+            },
+            {
+                "name": "value_real",
+                "address": 4206,
+                "format": "float",
+                "word_order": "little_endian",
+                "condition": "data_type==4",
+                "group": "g_general"
+            },
+            {
+                "name": "value_string",
+                "address": 4208,
+                "type": "text",
+                "format": "string8",
+                "string_data_size": 16,
+                "condition": "data_type==5",
+                "group": "g_general"
+            },
+            {
+                "name": "color",
+                "address": 4100,
+                "enum": ["0", "1", "2"],
+                "enum_titles": ["color_enum_0", "color_enum_1", "color_enum_2"],
+                "group": "g_general"
+            },
+            {
+                "name": "brightness",
+                "address": 4101,
+                "type": "range",
+                "min": 0,
+                "max": 100,
+                "units": "%",
+                "group": "g_general"
+            },
+            {
+                "name": "blink",
+                "address": 4102,
+                "type": "switch",
+                "group": "g_general"
+            },
+            {
+                "name": "blink_period",
+                "address": 4103,
+                "scale": 0.001,
+                "units": "s",
+                "min": 0.25,
+                "max": 3,
+                "group": "g_general"
+            },
+            {
+                "name": "display_mode",
+                "address": 4106,
+                "enum": ["0", "1", "2"],
+                "enum_titles": ["display_mode_enum_0", "display_mode_enum_1", "display_mode_enum_2"],
+                "group": "g_general"
+            },
+            {
+                "name": "scroll_period",
+                "address": 4105,
+                "scale": 0.001,
+                "units": "s",
+                "min": 0.1,
+                "max": 1.5,
+                "group": "g_general"
+            },
+            {
+                "name": "leading_zeros",
+                "address": 4104,
+                "enum": ["0", "1", "2", "3"],
+                "enum_titles": ["0", "1", "2", "3"],
+                "group": "g_general"
+            },
+            {
+                "name": "decimal_point",
+                "address": 4108,
+                "enum": ["0", "1", "2", "3"],
+                "enum_titles": ["----", "---.-", "--.--", "-.---"],
+                "group": "g_general"
+            },
+            {
+                "name": "alarm_zone_misconfig",
+                "address": "61620:26:1",
+                "format": "u32",
+                "word_order": "little_endian",
+                "type": "alarm",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "alarm_underrange",
+                "address": "61620:27:1",
+                "format": "u32",
+                "word_order": "little_endian",
+                "type": "alarm",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "alarm_overrange",
+                "address": "61620:28:1",
+                "format": "u32",
+                "word_order": "little_endian",
+                "type": "alarm",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "flash_resource",
+                "address": 61624,
+                "units": "%",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "cmd_save_settings",
+                "address": 5000,
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "g_general"
+            }
+        ],
+        "translations": {
+            "en": {
+                "owen_smi2_m_template_title": "OWEN SMI2-M",
+                "g_display": "Display",
+                "g_safety": "Safety Mode",
+                "g_modbus": "Modbus Settings",
+                "g_general": "General",
+
+                "data_type": "Data Type",
+                "data_type_description": "Value type shown on the display",
+                "slope_coefficient": "Slope Coefficient",
+                "slope_coefficient_description": "The displayed value is multiplied by this coefficient",
+                "offset_coefficient": "Offset Coefficient",
+                "offset_coefficient_description": "Added to the value after the slope coefficient is applied",
+                "string_length": "String Length",
+                "string_length_description": "Number of characters shown when the string is scrolled",
+                "logic_enabled": "Built-in Logic",
+                "logic_enabled_description": "Configured in Owen Configurator",
+                "logic_enabled_enum_0": "Disabled",
+                "logic_enabled_enum_1": "Enabled",
+
+                "safe_state_timeout": "Safe State Timeout (s)",
+                "safe_state_timeout_description": "Time without requests before the safe state screen is shown. 0 - disabled",
+                "safe_state_color": "Safe State Color",
+                "safe_state_color_enum_0": "Green",
+                "safe_state_color_enum_1": "Red",
+                "safe_state_color_enum_2": "Yellow",
+                "safe_state_blink": "Safe State Blink",
+                "safe_state_blink_enum_0": "Disabled",
+                "safe_state_blink_enum_1": "Enabled",
+
+                "modbus_address": "Device Address",
+                "baud_rate": "Baud Rate",
+                "parity": "Parity",
+                "stop_bits": "Stop Bits",
+
+                "value_int": "Value INT",
+                "value_real": "Value REAL",
+                "value_string": "Value STRING",
+                "color": "Color",
+                "color_enum_0": "Green",
+                "color_enum_1": "Red",
+                "color_enum_2": "Yellow",
+                "brightness": "Brightness",
+                "blink": "Blink",
+                "blink_period": "Blink Period",
+                "display_mode": "Display Mode",
+                "display_mode_enum_0": "Static",
+                "display_mode_enum_1": "Ticker",
+                "display_mode_enum_2": "Numeric Ticker",
+                "scroll_period": "Scroll Period",
+                "leading_zeros": "Leading Zeros",
+                "decimal_point": "Decimal Point Position",
+                "alarm_zone_misconfig": "Zone Misconfiguration Alarm",
+                "alarm_underrange": "Underrange Alarm",
+                "alarm_overrange": "Overrange Alarm",
+                "flash_resource": "Remaining Flash Memory Resource",
+                "cmd_save_settings": "Save Settings to Flash"
+            },
+            "ru": {
+                "owen_smi2_m_template_title": "ОВЕН СМИ2-М",
+                "g_display": "Дисплей",
+                "g_safety": "Безопасный режим",
+                "g_modbus": "Настройки Modbus",
+                "g_general": "Общее",
+
+                "data_type": "Тип переменной",
+                "data_type_description": "Тип значения, отображаемого на дисплее",
+                "slope_coefficient": "Коэффициент наклона",
+                "slope_coefficient_description": "Отображаемое значение умножается на этот коэффициент",
+                "offset_coefficient": "Коэффициент сдвига",
+                "offset_coefficient_description": "Прибавляется к значению после умножения на коэффициент наклона",
+                "string_length": "Длина строки",
+                "string_length_description": "Число символов, отображаемых при прокрутке бегущей строки",
+                "logic_enabled": "Встроенная логика",
+                "logic_enabled_description": "Настраивается в Owen Configurator",
+                "logic_enabled_enum_0": "Выключено",
+                "logic_enabled_enum_1": "Включено",
+
+                "safe_state_timeout": "Таймаут безопасного состояния (с)",
+                "safe_state_timeout_description": "Время без запросов до перехода в безопасное состояние. 0 - отключено",
+                "safe_state_color": "Цвет безопасного состояния",
+                "safe_state_color_enum_0": "Зеленый",
+                "safe_state_color_enum_1": "Красный",
+                "safe_state_color_enum_2": "Желтый",
+                "safe_state_blink": "Мигание безопасного состояния",
+                "safe_state_blink_enum_0": "Выключено",
+                "safe_state_blink_enum_1": "Включено",
+
+                "modbus_address": "Адрес устройства",
+                "baud_rate": "Скорость обмена",
+                "parity": "Контроль четности",
+                "stop_bits": "Стоп-биты",
+
+                "value_int": "Значение INT",
+                "value_real": "Значение REAL",
+                "value_string": "Значение STRING",
+                "color": "Цвет",
+                "color_enum_0": "Зеленый",
+                "color_enum_1": "Красный",
+                "color_enum_2": "Желтый",
+                "brightness": "Яркость",
+                "blink": "Мигание",
+                "blink_period": "Период мигания",
+                "display_mode": "Режим отображения",
+                "display_mode_enum_0": "Статичный",
+                "display_mode_enum_1": "Бегущая строка",
+                "display_mode_enum_2": "Числовая бегущая строка",
+                "scroll_period": "Период сдвига бегущей строки",
+                "leading_zeros": "Число ведущих нулей",
+                "decimal_point": "Положение десятичной точки",
+                "alarm_zone_misconfig": "Настройка зон",
+                "alarm_underrange": "Диапазон дисплея: ниже",
+                "alarm_overrange": "Диапазон дисплея: выше",
+                "flash_resource": "Остаток ресурса flash-памяти",
+                "cmd_save_settings": "Сохранить настройки во flash-память"
+            }
+        }
+    }
+}
