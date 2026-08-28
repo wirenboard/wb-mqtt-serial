@@ -1,8 +1,17 @@
-wb-mqtt-serial (2.268.1) stable; urgency=medium
+wb-mqtt-serial (2.269.1) stable; urgency=medium
 
   * Fix crash on RPC request with device_id when config is not loaded
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 25 Aug 2026 13:00:00 +0400
+
+wb-mqtt-serial (2.269.0) stable; urgency=medium
+
+  * Allow several declarations of a device template parameter with the same
+    id and different fw, so that a newer firmware can extend the enum of the
+    parameter. The template validator requires the declarations to read the
+    same register identically and rejects removed enum values
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Aug 2026 12:00:00 +0400
 
 wb-mqtt-serial (2.268.0) stable; urgency=medium
 

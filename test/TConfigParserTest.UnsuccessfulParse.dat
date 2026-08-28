@@ -54,6 +54,29 @@ File: test/configs/unsuccessful/unsuccessful-13.json error: Validation failed.
 Error 1
   context: <root>[ports][0][devices][0]
   desc: duplicate definition of parameter "param4" in device template
+Parsing config test/configs/unsuccessful/unsuccessful-14.json
+File: test/configs/unsuccessful/unsuccessful-14.json error: Validation failed.
+Error 1
+  context: <root>[ports][0][devices][0][p1]
+  desc: Failed to match against any enum values.
+Error 2
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against schema associated with property name 'p1'.
+
+Parsing config test/configs/unsuccessful/unsuccessful-15.json
+File: test/configs/unsuccessful/unsuccessful-15.json error: Validation failed.
+Error 1
+  context: <root>[ports][0][devices][0][p2]
+  desc: Expected number less than or equal to 10.000000
+Error 2
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against schema associated with property name 'p2'.
+
+Parsing config test/configs/unsuccessful/unsuccessful-17.json
+File: test/configs/unsuccessful/unsuccessful-17.json error: Validation failed.
+Error 1
+  context: <root>[ports][0][devices][0]
+  desc: duplicate definition of parameter "p2" in device template
 Parsing config test/configs/unsuccessful/unsuccessful-2.json
 File: test/configs/unsuccessful/unsuccessful-2.json error: Validation failed.
 Error 1

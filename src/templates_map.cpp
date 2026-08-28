@@ -1,8 +1,11 @@
 #include "templates_map.h"
 
+#include <algorithm>
 #include <filesystem>
+#include <map>
 #include <unordered_set>
 
+#include "common_utils.h"
 #include "expression_evaluator.h"
 #include "file_utils.h"
 #include "json_common.h"
@@ -19,13 +22,12 @@ namespace
     //! Template sections whose items may have a "condition"
     const std::vector<std::string> CONDITION_SECTIONS = {"channels", "setup", "parameters"};
 
-    //! Must be equal in all declarations of a parameter
+    //! Must be equal in all declarations of a parameter. The "fw" may differ (fw variants)
     const std::vector<std::string> COMMON_PARAMETER_PROPERTIES = {SerialConfig::WRITE_ADDRESS_PROPERTY_NAME,
-                                                                  SerialConfig::ADDRESS_PROPERTY_NAME,
-                                                                  SerialConfig::FW_VERSION_PROPERTY_NAME};
+                                                                  SerialConfig::ADDRESS_PROPERTY_NAME};
 
     //! Define how a register is read and converted, must be equal in all declarations
-    //! of a parameter used in conditions. Kept in sync with LoadRegisterConfig
+    //! of a parameter used in conditions and in all fw variants of a parameter. Kept in sync with LoadRegisterConfig
     const std::vector<std::string> REGISTER_READING_PROPERTIES =
         {"reg_type", "format", "scale", "offset", "round_to", "word_order", "byte_order"};
 
@@ -196,6 +198,22 @@ namespace
         }
     }
 
+    //! Throws if the declarations of the parameter differ in any of the properties, values are compared as written
+    void CheckEqualProperties(const std::string& id,
+                              const Json::Value& a,
+                              const Json::Value& b,
+                              const std::vector<std::string>& propertyNames)
+    {
+        for (const auto& propertyName: propertyNames) {
+            auto aValue = a[propertyName].asString();
+            auto bValue = b[propertyName].asString();
+            if (aValue != bValue) {
+                throw std::runtime_error("Parameter \"" + id + "\" has several declarations with different \"" +
+                                         propertyName + "\" values (\"" + aValue + "\" and \"" + bValue + "\").");
+            }
+        }
+    }
+
     void ValidateParameterProperties(const Json::Value& deviceTemplate)
     {
         const Json::Value& parameters = deviceTemplate["parameters"];
@@ -217,13 +235,61 @@ namespace
                                      REGISTER_READING_PROPERTIES.begin(),
                                      REGISTER_READING_PROPERTIES.end());
             }
-            for (const auto& propertyName: propertyNames) {
-                auto firstValue = firstDeclaration[propertyName].asString();
-                auto value = parameter[propertyName].asString();
-                if (firstValue != value) {
-                    throw std::runtime_error("Parameter \"" + id + "\" has several declarations with different \"" +
-                                             propertyName + "\" values (\"" + firstValue + "\" and \"" + value +
-                                             "\").");
+            CheckEqualProperties(id, firstDeclaration, parameter, propertyNames);
+        }
+    }
+
+    bool EnumContains(const Json::Value& enumValues, const Json::Value& value)
+    {
+        return std::any_of(enumValues.begin(), enumValues.end(), [&value](const Json::Value& item) {
+            return item.asString() == value.asString();
+        });
+    }
+
+    //! Checks fw variants of parameters: the declarations with the same id and condition and different "fw".
+    //! The device firmware version is unknown during config validation and setup creation,
+    //! so the variants must define the same register and value conversion and differ only in the enum values,
+    //! a variant with a higher "fw" may only add values. The addresses are checked for all declarations
+    //! of a parameter by ValidateParameterProperties
+    void ValidateParameterFwVariants(const Json::Value& deviceTemplate)
+    {
+        const Json::Value& parameters = deviceTemplate["parameters"];
+        if (!parameters.isArray()) {
+            return;
+        }
+        auto getFw = [](const Json::Value& declaration) {
+            return declaration[SerialConfig::FW_VERSION_PROPERTY_NAME].asString();
+        };
+        std::map<std::pair<std::string, std::string>, std::vector<const Json::Value*>> groups;
+        for (const auto& parameter: parameters) {
+            groups[{parameter["id"].asString(), parameter["condition"].asString()}].push_back(&parameter);
+        }
+        for (auto& [key, declarations]: groups) {
+            const auto& id = key.first;
+            std::stable_sort(declarations.begin(),
+                             declarations.end(),
+                             [&getFw](const Json::Value* a, const Json::Value* b) {
+                                 return util::CompareVersionStrings(getFw(*a), getFw(*b)) < 0;
+                             });
+            for (size_t i = 1; i < declarations.size(); ++i) {
+                const auto& previous = *declarations[i - 1];
+                const auto& declaration = *declarations[i];
+                if (getFw(previous) == getFw(declaration)) {
+                    throw std::runtime_error("Parameter \"" + id + "\" has several declarations with the same \"" +
+                                             SerialConfig::FW_VERSION_PROPERTY_NAME + "\" value (\"" +
+                                             getFw(declaration) + "\") and the same condition.");
+                }
+                CheckEqualProperties(id, previous, declaration, REGISTER_READING_PROPERTIES);
+                if (previous.isMember("enum") != declaration.isMember("enum")) {
+                    throw std::runtime_error("Parameter \"" + id + "\" fw variants \"" + getFw(previous) + "\" and \"" +
+                                             getFw(declaration) + "\" must both have \"enum\" or both have none.");
+                }
+                for (const auto& value: previous["enum"]) {
+                    if (!EnumContains(declaration["enum"], value)) {
+                        throw std::runtime_error("Parameter \"" + id + "\" fw variant \"" + getFw(declaration) +
+                                                 "\" removes enum value \"" + value.asString() + "\" of fw variant \"" +
+                                                 getFw(previous) + "\", fw variants may only add enum values.");
+                    }
                 }
             }
         }
@@ -255,6 +321,7 @@ namespace
         ValidateTemplateSections(root["device"], root["device"].get("protocol", "modbus").asString());
         // Check declarations with the same id (for parameters declared as array)
         ValidateParameterProperties(root["device"]);
+        ValidateParameterFwVariants(root["device"]);
         // Check that channels refer to valid subdevices and they are not nested too deep
         if (root["device"].isMember("subdevices")) {
             TSubDevicesTemplateMap subdevices(root["device_type"].asString(), root["device"]);

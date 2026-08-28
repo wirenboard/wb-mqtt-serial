@@ -1,3 +1,4 @@
+#include "fake_serial_device.h"
 #include "fake_serial_port.h"
 #include "port/feature_port.h"
 #include "rpc/rpc_device_set_task.h"
@@ -5,6 +6,7 @@
 #include "rpc/rpc_helpers.h"
 #include "templates_map.h"
 #include "test_utils.h"
+#include <set>
 #include <wblib/testing/testlog.h>
 
 using namespace WBMQTT::Testing;
@@ -386,4 +388,27 @@ TEST_F(TRPCDeviceSetTaskTest, RejectsAmbiguousAndUnknownChannels)
     // "Temperature" is an input register, read only by the register type without a "readonly" key
     EXPECT_THROW(MakeRequest("parameters_condition_variants", {}, {{"Temperature", 1}})->GetChannelDeclarations(),
                  TRPCException);
+}
+
+/**
+ * Checks that the acting fw variants of a parameter give a single setup item of a device/Set request:
+ * declarations with the same condition and different "fw" form a chain and act together,
+ * the value is written once. A parameter declared only for a newer firmware is written as well.
+ */
+TEST_F(TRPCDeviceSetTaskTest, CreatesSingleSetupItemPerParameter)
+{
+    auto items = MakeParametersSetupItems("parameters_fw_variants", {{"p1", 1}, {"p2", 3}}, Json::Value());
+    std::set<std::string> names;
+    for (const auto& item: items) {
+        names.insert(item->Name);
+    }
+    EXPECT_EQ(names, (std::set<std::string>{"p1", "p2"}));
+
+    // the "p3" fw variants share the condition, both act when it is true
+    Json::Value conditionValues;
+    conditionValues["mode"] = 1;
+    items = MakeParametersSetupItems("parameters_fw_variants", {{"p3", 1}}, conditionValues);
+    ASSERT_EQ(items.size(), 1u);
+    EXPECT_EQ((*items.begin())->Name, "p3");
+    EXPECT_EQ((*items.begin())->RawValue.Get<uint64_t>(), 1u);
 }

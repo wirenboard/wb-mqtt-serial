@@ -33,6 +33,8 @@ public:
      * @brief Keeps the declaration with a true condition of every channel or parameter. Conditions over
      *        parameters missing from conditionValues are evaluated with an undefined value.
      *        An item without a true condition is skipped and is not an error.
+     *        A chain of fw variants of an item (the same condition and pairwise different "fw")
+     *        is not ambiguous and acts as its first matched declaration, the variants define the same register.
      *
      * @param kind - "Channel" or "Parameter" for the error message
      * @throws TRPCException if several declarations of an item match at once

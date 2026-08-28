@@ -1,0 +1,67 @@
+{
+    "device_type": "parameters fw variants",
+    "device": {
+        "name": "parameters fw variants",
+        "id": "parameters fw variants",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            // the newer variant of "p1" is declared first, the order of declarations must not matter
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 20,
+                "fw": "2.2.0",
+                "enum": [0, 1, 2],
+                "enum_titles": ["zero", "one", "two"],
+                "default": 1
+            },
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 20,
+                "enum": [0, 1],
+                "enum_titles": ["zero", "one"],
+                "default": 0
+            },
+            {
+                "id": "p2",
+                "title": "p2",
+                "address": 21,
+                "condition": "p1==2",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "p2",
+                "title": "p2",
+                "address": 21,
+                "fw": "2.4.0",
+                "condition": "p1==2",
+                "enum": [0, 1, 5],
+                "enum_titles": ["a", "b", "c"]
+            },
+            {
+                "id": "p3",
+                "title": "p3",
+                "address": 22,
+                "min": 1,
+                "max": 5
+            },
+            {
+                "id": "p3",
+                "title": "p3",
+                "address": 22,
+                "fw": "3.0.0",
+                "min": 1,
+                "max": 10
+            }
+        ]
+    }
+}

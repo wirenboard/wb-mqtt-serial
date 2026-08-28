@@ -135,20 +135,25 @@ Json::Value TRPCDeviceSetRequest::SelectActingDeclarations(const std::string& ki
 {
     TJsonParams exprParams(conditionValues);
     Expressions::TExpressionsCache exprCache;
-    std::set<std::string> matched;
+    TActiveParameterDeclarations matched;
     Json::Value acting(Json::arrayValue);
     for (const auto& item: declarations) {
         if (!CheckCondition(item, exprParams, &exprCache)) {
             continue;
         }
         auto id = item["id"].asString();
-        // a template error, config validation reports it as a duplicate definition
-        if (!matched.emplace(id).second) {
+        auto first = matched.GetNewest(id) == nullptr;
+        // Several matched declarations of an item are allowed only as a chain of fw variants,
+        // the chain acts as its first declaration since the variants define the same register.
+        // Anything else is a template error, config validation reports it as a duplicate definition
+        if (!matched.Add(id, item)) {
             throw TRPCException(kind + " \"" + id +
                                     "\" is ambiguous: several declarations match the condition parameter values",
                                 TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
-        acting.append(item);
+        if (first) {
+            acting.append(item);
+        }
     }
     return acting;
 }

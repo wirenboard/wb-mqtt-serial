@@ -185,8 +185,10 @@ TRPCRegisterList CreateChannelsRegisterList(const TDeviceProtocolParams& protoco
 /**
  * @brief Creates named PRegister list based on a template parameters JSON array or object.
  *        Parameters without an address and parameters unsupported by the device firmware
- *        version are skipped. Conditions are not evaluated and duplicate declarations
+ *        version are skipped. Conditions are not evaluated and condition variants
  *        of one id are not merged, the caller selects the acting declarations.
+ *        The fw variants of one id and condition give a single register, the group is read
+ *        if any of its declarations is supported by the device firmware version.
  *        Enums and ranges of Wiren Board device parameters are checked for the
  *        unsupported register value 0xFFFE to set the register list item
  *        CheckUnsupported flag.
