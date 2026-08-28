@@ -189,6 +189,7 @@
                 "type": "text",
                 "format": "string8",
                 "string_data_size": 16,
+                "byte_order": "little_endian",
                 "condition": "data_type==5",
                 "group": "g_general"
             },
