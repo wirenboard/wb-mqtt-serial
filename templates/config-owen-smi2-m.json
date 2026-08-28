@@ -306,9 +306,9 @@
                 "data_type": "Data Type",
                 "data_type_description": "Value type shown on the display",
                 "slope_coefficient": "Slope Coefficient",
-                "slope_coefficient_description": "The displayed value is multiplied by this coefficient",
+                "slope_coefficient_description": "Display = value * slope + offset. A slope other than 1 makes the value a float, and the decimal point stops shifting digits: 235 with slope 0.1 is shown as 23.5",
                 "offset_coefficient": "Offset Coefficient",
-                "offset_coefficient_description": "Added to the value after the slope coefficient is applied",
+                "offset_coefficient_description": "Display = value * slope + offset. A non-zero offset makes the value a float, and the decimal point stops shifting digits: 2600 with offset 1 is shown as 2601.00, not 26.01",
                 "string_length": "String Length",
                 "string_length_description": "Number of characters shown when the string is scrolled",
                 "logic_enabled": "Built-in Logic",
@@ -352,7 +352,7 @@
                 "alarm_underrange": "Underrange Alarm",
                 "alarm_overrange": "Overrange Alarm",
                 "flash_resource": "Remaining Flash Memory Resource",
-                "cmd_save_settings": "Save Settings to Flash"
+                "cmd_save_settings": "Save Settings To Flash"
             },
             "ru": {
                 "owen_smi2_m_template_title": "ОВЕН СМИ2-М",
@@ -364,9 +364,9 @@
                 "data_type": "Тип переменной",
                 "data_type_description": "Тип значения, отображаемого на дисплее",
                 "slope_coefficient": "Коэффициент наклона",
-                "slope_coefficient_description": "Отображаемое значение умножается на этот коэффициент",
+                "slope_coefficient_description": "На дисплее = значение * наклон + сдвиг. Наклон, отличный от 1, делает значение дробным, и точка перестает сдвигать разряды: 235 с наклоном 0.1 покажет 23.5",
                 "offset_coefficient": "Коэффициент сдвига",
-                "offset_coefficient_description": "Прибавляется к значению после умножения на коэффициент наклона",
+                "offset_coefficient_description": "На дисплее = значение * наклон + сдвиг. Ненулевой сдвиг делает значение дробным, и точка перестает сдвигать разряды: 2600 со сдвигом 1 покажет 2601.00, а не 26.01",
                 "string_length": "Длина строки",
                 "string_length_description": "Число символов, отображаемых при прокрутке бегущей строки",
                 "logic_enabled": "Встроенная логика",
