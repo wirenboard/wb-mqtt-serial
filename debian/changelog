@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.269.1) stable; urgency=medium
+
+  * Do not report an unknown parity value as "U" in port/Scan RPC response.
+    If the parity register holds an unexpected value, the parity field is
+    omitted from the device settings, as for a register that was not read,
+    and read_serial_params_error is reported
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 28 Aug 2026 12:00:00 +0400
+
 wb-mqtt-serial (2.269.0) stable; urgency=medium
 
   * Allow several declarations of a device template parameter with the same
