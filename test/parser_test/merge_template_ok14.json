@@ -1,0 +1,6 @@
+// device template with parameter fw variants, no parameters in config,
+// the default of the first declaration is used for condition evaluation like for any parameter
+{
+    "device_type" : "fw variants",
+    "slave_id": 7
+}

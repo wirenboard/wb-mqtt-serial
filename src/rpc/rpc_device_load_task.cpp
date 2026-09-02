@@ -5,23 +5,15 @@
 
 namespace
 {
-    void ReadRegisters(PPort port,
-                       PRPCDeviceLoadRequest rpcRequest,
-                       TRPCRegisterList& registerList,
-                       Json::Value& data,
-                       Json::Value& readonlyList)
+    void ReadRegisters(PPort port, PRPCDeviceLoadRequest rpcRequest, TRPCRegisterList& registerList, Json::Value& data)
     {
         ReadRegisterList(*port, rpcRequest->Device, registerList);
         for (const auto& item: registerList) {
-            data[item.Id] =
-                (item.Register->IsSupported() && !item.Register->GetErrorState().test(TRegister::TError::ReadError))
-                    ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
-                    : UNSUPPORTED_VALUE;
-            if (item.Register->GetConfig()->AccessType == TRegisterConfig::EAccessType::READ_ONLY) {
-                readonlyList.append(item.Id);
-            }
+            data[item.Id] = RegisterGotValue(item)
+                                ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
+                                : UNSUPPORTED_VALUE;
         }
-        MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, data);
+        MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, &data);
     }
 
     void ExecRPCRequest(PPort port, PRPCDeviceLoadRequest rpcRequest)
@@ -32,46 +24,46 @@ namespace
 
         PrepareSession(*port, rpcRequest->Device);
 
-        // Step 1: Read parameters that are referenced by channel conditions
-        Json::Value conditionParamValues(Json::objectValue);
-        auto condParamRegList = rpcRequest->GetConditionParametersRegisterList();
-        if (!condParamRegList.empty()) {
+        Json::Value result(Json::objectValue);
+        try {
+            // Step 1: Read parameters that are referenced by conditions of the requested items.
+            Json::Value conditionParamValues(Json::objectValue);
+            auto condParamRegList = rpcRequest->GetConditionParametersRegisterList();
             ReadRegisterList(*port, rpcRequest->Device, condParamRegList);
-            for (const auto& item: condParamRegList) {
-                if (item.Register->IsSupported()) {
-                    conditionParamValues[item.Id] =
-                        RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue());
+            MarkUnsupportedRegisterItems(*port, *rpcRequest, condParamRegList);
+            MergeRegisterListValues(condParamRegList, conditionParamValues);
+
+            // Step 2: Read channels, filtering by condition using actual parameter values
+            Json::Value readonlyList(Json::arrayValue);
+            Json::Value channelData(Json::objectValue);
+            auto channelRegList = rpcRequest->GetChannelsRegisterList(conditionParamValues);
+            ReadRegisters(port, rpcRequest, channelRegList, channelData);
+            for (const auto& item: channelRegList) {
+                if (item.Register->GetConfig()->AccessType == TRegisterConfig::EAccessType::READ_ONLY) {
+                    readonlyList.append(item.Id);
                 }
             }
-        }
-
-        // Step 2: Read channels, filtering by condition using actual parameter values
-        Json::Value readonlyList(Json::arrayValue);
-        Json::Value result(Json::objectValue);
-        auto channelRegList = rpcRequest->GetChannelsRegisterList(conditionParamValues);
-        if (!channelRegList.empty()) {
-            Json::Value channelData(Json::objectValue);
-            ReadRegisters(port, rpcRequest, channelRegList, channelData, readonlyList);
-            result["channels"] = channelData;
-        }
-
-        // Step 3: Read explicitly requested parameters, reusing values already
-        // read for condition evaluation to avoid duplicate Modbus reads
-        Json::Value paramData(Json::objectValue);
-        for (const auto& id: rpcRequest->Parameters) {
-            if (conditionParamValues.isMember(id)) {
-                paramData[id] = conditionParamValues[id];
+            if (!channelData.empty()) {
+                result["channels"] = channelData;
             }
-        }
-        auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues);
-        if (!paramRegList.empty()) {
-            ReadRegisters(port, rpcRequest, paramRegList, paramData, readonlyList);
-            result["parameters"] = paramData;
-        }
 
-        if (!readonlyList.empty()) {
-            result["readonly"] = readonlyList;
+            // Step 3: Read explicitly requested parameters, reusing values already
+            // read for condition evaluation to avoid duplicate Modbus reads
+            Json::Value paramData(Json::objectValue);
+            auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues, &paramData);
+            ReadRegisters(port, rpcRequest, paramRegList, paramData);
+            if (!paramData.empty()) {
+                result["parameters"] = paramData;
+            }
+
+            if (!readonlyList.empty()) {
+                result["readonly"] = readonlyList;
+            }
+        } catch (...) {
+            EndSession(*port, rpcRequest->Device);
+            throw;
         }
+        EndSession(*port, rpcRequest->Device);
 
         rpcRequest->OnResult(result);
     }
@@ -84,65 +76,47 @@ TRPCDeviceLoadRequest::TRPCDeviceLoadRequest(const TDeviceProtocolParams& protoc
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig)
 {}
 
-void TRPCDeviceLoadRequest::ParseRequestItems(const Json::Value& items, std::list<std::string>& list)
+void TRPCDeviceLoadRequest::ParseRequestItems(const Json::Value& items, std::set<std::string>& list)
 {
     for (const auto& item: items) {
-        auto id = item.asString();
-        if (std::find(list.begin(), list.end(), id) == list.end()) {
-            list.push_back(id);
-        }
+        list.insert(item.asString());
     }
 }
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetConditionParametersRegisterList()
 {
-    auto channels = DeviceTemplate->GetTemplate()["channels"];
-    auto params = DeviceTemplate->GetTemplate()["parameters"];
-
-    // Collect all parameter names referenced in channel conditions
+    // Collect the parameter names referenced by conditions of the requested channels and parameters,
+    // an empty channel list requests all channels
     std::set<std::string> neededParams;
     Expressions::TExpressionsCache exprCache;
-    Expressions::TParser parser;
-    for (const auto& ch: channels) {
-        if (!ch.isMember("condition") || ch["condition"].asString().empty()) {
+    auto allChannels = Channels.empty();
+    for (const auto& ch: DeviceTemplate->GetTemplate()["channels"]) {
+        if (ch["address"].isNull()) { // write only channel
             continue;
         }
-        auto cond = ch["condition"].asString();
-        auto itExpr = exprCache.find(cond);
-        if (itExpr == exprCache.end()) {
-            itExpr = exprCache.emplace(cond, parser.Parse(cond)).first;
+        if (!allChannels && !Channels.count(ch["name"].asString())) {
+            continue;
         }
-        auto deps = Expressions::GetDependencies(itExpr->second.get());
+        auto deps = Expressions::GetDependencies(ch["condition"].asString(), exprCache);
         neededParams.insert(deps.begin(), deps.end());
     }
-
-    if (neededParams.empty()) {
-        return {};
-    }
-
-    // Build register list for the needed parameters
-    Json::Value items(Json::arrayValue);
+    const auto& params = DeviceTemplate->GetTemplate()["parameters"];
     for (auto it = params.begin(); it != params.end(); ++it) {
-        auto item = *it;
-        if (item["address"].isNull() || !item.get("enabled", true).asBool()) {
+        const auto& item = *it;
+        if (item["address"].isNull()) {
             continue;
         }
         auto id = params.isObject() ? it.key().asString() : item["id"].asString();
-        if (neededParams.count(id)) {
-            if (params.isObject()) {
-                item["id"] = id;
-            }
-            items.append(item);
+        if (!Parameters.count(id)) {
+            continue;
         }
+        auto deps = Expressions::GetDependencies(item["condition"].asString(), exprCache);
+        neededParams.insert(deps.begin(), deps.end());
     }
-
-    // nullptr checks is needed for tests
-    return CreateRegisterList(ProtocolParams,
-                              Device,
-                              items,
-                              Json::Value(),
-                              Device ? Device->GetWbFwVersion() : std::string(),
-                              Device && Device->IsWbDevice());
+    if (neededParams.empty()) {
+        return {};
+    }
+    return CreateParametersRegisterList(ProtocolParams, Device, params, Json::Value(), neededParams);
 }
 
 TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Value& conditionParams)
@@ -150,76 +124,91 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList(const Json::Valu
     auto notFound = Channels;
     auto allChannels = Channels.empty();
     Json::Value items(Json::arrayValue);
-    for (auto item: DeviceTemplate->GetTemplate()["channels"]) {
+    for (const auto& item: DeviceTemplate->GetTemplate()["channels"]) {
         if (item["address"].isNull()) { // write only channel
             continue;
         }
         auto id = item["name"].asString();
-        if (allChannels || std::find(Channels.begin(), Channels.end(), id) != Channels.end()) {
-            item["id"] = id;
-            items.append(item);
-            notFound.remove(id);
+        if (allChannels || Channels.count(id)) {
+            auto channel = item;
+            channel["id"] = id;
+            items.append(channel);
+            notFound.erase(id);
         }
     }
     if (!notFound.empty()) {
-        throw TRPCException("Channel \"" + notFound.front() + "\" is disabled, write only or not found in \"" +
+        throw TRPCException("Channel \"" + *notFound.begin() + "\" is write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    // Filter channels by condition using actual device parameter values
-    if (!conditionParams.empty()) {
-        TJsonParams jsonParams(conditionParams);
+    // Filter channels by condition using actual device parameter values,
+    // conditions over parameters without a value are evaluated with an undefined value
+    if (!conditionParams.isNull()) {
         Expressions::TExpressionsCache cache;
+        TJsonParams exprParams(conditionParams);
         Json::Value filtered(Json::arrayValue);
         for (const auto& item: items) {
-            if (CheckCondition(item, jsonParams, &cache)) {
+            if (CheckCondition(item, exprParams, &cache)) {
                 filtered.append(item);
             }
         }
         items = filtered;
     }
 
-    // nullptr checks is needed for tests
-    return CreateRegisterList(ProtocolParams,
-                              Device,
-                              items,
-                              Json::Value(),
-                              Device ? Device->GetWbFwVersion() : std::string(),
-                              Device && Device->IsWbDevice());
+    return CreateChannelsRegisterList(ProtocolParams, Device, items);
 }
 
-TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Value& knownValues)
+TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList(const Json::Value& conditionParams, Json::Value* data)
 {
-    auto params = DeviceTemplate->GetTemplate()["parameters"];
+    const auto& params = DeviceTemplate->GetTemplate()["parameters"];
+    auto notFound = Parameters;
+    Expressions::TExpressionsCache cache;
+    TJsonParams exprParams(conditionParams);
+    TActiveParameterDeclarations matched;
     Json::Value items(Json::arrayValue);
     for (auto it = params.begin(); it != params.end(); ++it) {
         auto item = *it;
-        if (item["address"].isNull() || !item.get("enabled", true).asBool()) {
+        if (item["address"].isNull()) {
             continue;
         }
         auto id = params.isObject() ? it.key().asString() : item["id"].asString();
-        if (std::find(Parameters.begin(), Parameters.end(), id) != Parameters.end()) {
-            if (params.isObject()) {
-                item["id"] = id;
-            }
-            items.append(item);
-            Parameters.remove(id);
+        if (!Parameters.count(id)) {
+            continue;
         }
+        notFound.erase(id);
+        if (!conditionParams.isNull()) {
+            // conditions over parameters without a value are evaluated with an undefined value
+            if (!CheckCondition(item, exprParams, &cache)) {
+                continue;
+            }
+            // A chain of fw variants is not ambiguous, CreateParametersRegisterList merges it into one register.
+            // Anything else is a template error, config validation reports it as a duplicate definition
+            if (!matched.Add(id, *it)) {
+                throw TRPCException("Parameter \"" + id +
+                                        "\" is ambiguous: several declarations match the condition parameter values",
+                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
+        }
+        if (conditionParams.isMember(id)) {
+            // already read for condition evaluation, declarations of such a parameter read identically
+            if (data != nullptr) {
+                (*data)[id] = conditionParams[id];
+            }
+            continue;
+        }
+        if (params.isObject()) {
+            item["id"] = id;
+        }
+        items.append(item);
     }
-    if (!Parameters.empty()) {
-        throw TRPCException("Parameter \"" + Parameters.front() + "\" is disabled, write only or not found in \"" +
+    if (!notFound.empty()) {
+        throw TRPCException("Parameter \"" + *notFound.begin() + "\" is write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    // nullptr checks is needed for tests
-    return CreateRegisterList(ProtocolParams,
-                              Device,
-                              items,
-                              knownValues,
-                              Device ? Device->GetWbFwVersion() : std::string(),
-                              Device && Device->IsWbDevice());
+    return CreateParametersRegisterList(ProtocolParams, Device, items);
 }
 
 PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,

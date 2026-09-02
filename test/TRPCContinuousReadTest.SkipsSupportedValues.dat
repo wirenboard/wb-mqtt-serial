@@ -1,0 +1,6 @@
+Open()
+Sleep(20000)
+EnqueueHoldingRead()
+>> 01 03 00 72 00 01 24 11
+<< 01 03 02 00 02 39 85
+Close()

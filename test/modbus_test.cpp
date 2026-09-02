@@ -1100,9 +1100,26 @@ TEST_F(TModbusContinuousRegisterReadTest, Supported)
     }
 }
 
+TEST_F(TModbusContinuousRegisterReadTest, AlreadyEnabled)
+{
+    EnqueueContinuousReadEnableResponse(TContinuousReadState::ENABLED);
+    EnqueueContinuousReadHoldingResponse();
+    EnqueueContinuousReadCoilResponse(false);
+    Note() << "LoopOnce() [one by one]";
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
+    EnqueueContinuousReadHoldingResponse(false);
+    EnqueueContinuousReadCoilResponse(false);
+    Note() << "LoopOnce() [continuous]";
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
 TEST_F(TModbusContinuousRegisterReadTest, NotSupported)
 {
-    EnqueueContinuousReadEnableResponse(false);
+    EnqueueContinuousReadEnableResponse(TContinuousReadState::UNSUPPORTED);
     EnqueueContinuousReadHoldingResponse();
     EnqueueContinuousReadCoilResponse();
     Note() << "LoopOnce() [one by one]";

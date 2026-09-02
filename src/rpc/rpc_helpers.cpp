@@ -1,4 +1,5 @@
 #include "rpc_helpers.h"
+#include "devices/modbus_device.h"
 #include "log.h"
 #include "modbus_base.h"
 #include "modbus_common.h"
@@ -124,12 +125,12 @@ void WriteModbusRegister(TPort& port,
     }
 }
 
-void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled)
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, TContinuousReadStatus value)
 {
     std::string error;
     try {
         auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-        WriteModbusRegister(port, request, config, TRegisterValue(enabled));
+        WriteModbusRegister(port, request, config, TRegisterValue(static_cast<uint16_t>(value)));
     } catch (const Modbus::TErrorBase& err) {
         error = err.what();
     } catch (const TResponseTimeoutException& e) {
@@ -176,28 +177,39 @@ bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& 
 void MarkUnsupportedRegisterItems(TPort& port,
                                   TRPCDeviceRequest& request,
                                   TRPCRegisterList& registerList,
-                                  Json::Value& data)
+                                  Json::Value* data)
 {
-    auto continuousRead = true;
+    auto device = dynamic_cast<TModbusDevice*>(request.Device.get());
+    if (device == nullptr) {
+        return;
+    }
+    auto status = device->GetContinuousReadStatus();
+    if (status == TContinuousReadStatus::DISABLED) {
+        return;
+    }
+    auto enabled = true;
     for (const auto& item: registerList) {
         try {
             if (item.CheckUnsupported && CheckUnsupportedValue(*item.Register->GetConfig(), item.Register->GetValue()))
             {
-                if (continuousRead) {
-                    SetContinuousRead(port, request, false);
-                    continuousRead = false;
+                if (enabled) {
+                    SetContinuousRead(port, request, TContinuousReadStatus::DISABLED);
+                    enabled = false;
                 }
                 try {
                     TRegisterValue value;
                     ReadModbusRegister(port, request, item.Register->GetConfig(), value);
                 } catch (const Modbus::TModbusExceptionError& err) {
-                    data[item.Id] = UNSUPPORTED_VALUE;
+                    item.Register->SetSupported(false);
+                    if (data != nullptr) {
+                        (*data)[item.Id] = UNSUPPORTED_VALUE;
+                    }
                 }
             }
         } catch (const TRegisterValueException& e) {
         }
     }
-    if (!continuousRead) {
-        SetContinuousRead(port, request, true);
+    if (!enabled) {
+        SetContinuousRead(port, request, status);
     }
 }

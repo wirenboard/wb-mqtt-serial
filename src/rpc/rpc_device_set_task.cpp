@@ -1,6 +1,9 @@
 #include "rpc_device_set_task.h"
 #include "config_merge_template.h"
+#include "expression_evaluator.h"
 #include "rpc_helpers.h"
+
+#include <set>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -12,34 +15,40 @@ namespace
             return;
         }
 
-        TDeviceSetupItems setupItems;
-        rpcRequest->GetChannelsSetupItems(setupItems);
-        rpcRequest->GetParametersSetupItems(setupItems);
-        if (setupItems.empty()) {
+        // 1. Template declarations of the requested channels and parameters, every condition variant
+        auto channelDeclarations = rpcRequest->GetChannelDeclarations();
+        auto parameterDeclarations = rpcRequest->GetParameterDeclarations();
+        if (channelDeclarations.empty() && parameterDeclarations.empty()) {
             rpcRequest->OnResult(Json::Value(Json::objectValue));
+            return;
         }
+
+        PrepareSession(*port, rpcRequest->Device);
 
         std::string error;
         try {
-            rpcRequest->Device->Prepare(*port, TDevicePrepareMode::WITHOUT_SETUP);
-        } catch (const TSerialDeviceException& e) {
-            error = std::string("Failed to prepare session: ") + e.what();
-            LOG(Warn) << port->GetDescription() << " " << rpcRequest->Device->ToString() << ": " << error;
-            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-        }
+            // 2. The request parameters are the condition inputs, the missing condition parameters are read
+            Json::Value conditionValues(rpcRequest->Parameters);
+            auto registerList =
+                rpcRequest->GetConditionParametersRegisterList(channelDeclarations, parameterDeclarations);
+            ReadRegisterList(*port, rpcRequest->Device, registerList);
+            MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList);
+            MergeRegisterListValues(registerList, conditionValues);
 
-        try {
-            rpcRequest->Device->WriteSetupRegisters(*port, setupItems, true);
+            // 3. The declaration with a true condition acts, an item without one is skipped
+            auto channels = rpcRequest->SelectActingDeclarations("Channel", channelDeclarations, conditionValues);
+            auto parameters = rpcRequest->SelectActingDeclarations("Parameter", parameterDeclarations, conditionValues);
+
+            // 4. Write
+            rpcRequest->Device->WriteSetupRegisters(*port, rpcRequest->CreateSetupItems(channels, parameters), true);
         } catch (const TSerialDeviceException& e) {
             error = e.what();
+        } catch (...) {
+            EndSession(*port, rpcRequest->Device);
+            throw;
         }
 
-        try {
-            rpcRequest->Device->EndSession(*port);
-        } catch (const TSerialDeviceException& e) {
-            LOG(Warn) << port->GetDescription() << rpcRequest->Device->ToString()
-                      << " unable to end session: " << e.what();
-        }
+        EndSession(*port, rpcRequest->Device);
 
         if (!error.empty()) {
             LOG(Warn) << port->GetDescription() << rpcRequest->Device->ToString() << ": " << error;
@@ -57,65 +66,130 @@ TRPCDeviceSetRequest::TRPCDeviceSetRequest(const TDeviceProtocolParams& protocol
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig)
 {}
 
-void TRPCDeviceSetRequest::ParseRequestItems(const Json::Value& items,
-                                             std::unordered_map<std::string, std::string>& map)
+Json::Value TRPCDeviceSetRequest::GetChannelDeclarations()
 {
-    for (auto it = items.begin(); it != items.end(); ++it) {
-        map[it.key().asString()] = (*it).asString();
-    }
-}
-
-void TRPCDeviceSetRequest::GetChannelsSetupItems(TDeviceSetupItems& setupItems)
-{
-    for (auto item: DeviceTemplate->GetTemplate()["channels"]) {
-        if (item["readonly"].asBool()) {
+    Json::Value notFound(Channels);
+    Json::Value declarations(Json::arrayValue);
+    for (const auto& item: DeviceTemplate->GetTemplate()["channels"]) {
+        auto name = item["name"].asString();
+        if (!Channels.isMember(name) || IsReadOnly(item)) {
             continue;
         }
-        auto id = item["name"].asString();
-        if (Channels.count(id)) {
-            setupItems.insert(CreateSetupItem(id, item, Channels[id]));
-            Channels.erase(id);
-        }
+        notFound.removeMember(name);
+        auto declaration = item;
+        declaration["id"] = name;
+        declarations.append(declaration);
     }
-    if (!Channels.empty()) {
-        throw TRPCException("Channel \"" + Channels.begin()->first + "\" is read only or not found in \"" +
+    if (!notFound.empty()) {
+        throw TRPCException("Channel \"" + notFound.getMemberNames().front() + "\" is read only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
+    return declarations;
 }
 
-void TRPCDeviceSetRequest::GetParametersSetupItems(TDeviceSetupItems& setupItems)
+Json::Value TRPCDeviceSetRequest::GetParameterDeclarations()
 {
-    auto params = DeviceTemplate->GetTemplate()["parameters"];
+    const auto& params = DeviceTemplate->GetTemplate()["parameters"];
+    Json::Value declarations(Json::arrayValue);
     for (auto it = params.begin(); it != params.end(); ++it) {
-        auto item = *it;
-        if (item["readonly"].asBool()) {
+        auto id = params.isObject() ? it.key().asString() : (*it)["id"].asString();
+        // read only declarations are never written, so their conditions are not evaluated
+        if ((*it)["readonly"].asBool() || !Parameters.isMember(id)) {
             continue;
         }
-        auto id = params.isObject() ? it.key().asString() : item["id"].asString();
-        if (Parameters.count(id)) {
-            setupItems.insert(CreateSetupItem(id, item, Parameters[id]));
-            Parameters.erase(id);
-        }
+        auto item = *it;
+        item["id"] = id;
+        declarations.append(item);
     }
-    if (!Parameters.empty()) {
-        throw TRPCException("Parameter \"" + Parameters.begin()->first + "\" is read only or not found in \"" +
-                                DeviceTemplate->Type + "\" device template",
-                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
+    return declarations;
 }
 
-PDeviceSetupItem TRPCDeviceSetRequest::CreateSetupItem(const std::string& id,
-                                                       const Json::Value& data,
-                                                       const std::string& value)
+TRPCRegisterList TRPCDeviceSetRequest::GetConditionParametersRegisterList(const Json::Value& channels,
+                                                                          const Json::Value& parameters)
 {
-    auto config = LoadRegisterConfig(data,
-                                     *ProtocolParams.protocol->GetRegTypes(),
-                                     std::string(),
-                                     *ProtocolParams.factory,
-                                     ProtocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
-                                     0);
-    auto itemConfig = std::make_shared<TDeviceSetupItemConfig>(id, config.RegisterConfig, value);
+    std::set<std::string> neededParams;
+    Expressions::TExpressionsCache exprCache;
+    for (const auto* declarations: {&channels, &parameters}) {
+        for (const auto& item: *declarations) {
+            auto deps = Expressions::GetDependencies(item["condition"].asString(), exprCache);
+            neededParams.insert(deps.begin(), deps.end());
+        }
+    }
+    for (const auto& name: Parameters.getMemberNames()) {
+        neededParams.erase(name);
+    }
+    if (neededParams.empty()) {
+        return {};
+    }
+    return CreateParametersRegisterList(ProtocolParams,
+                                        Device,
+                                        DeviceTemplate->GetTemplate()["parameters"],
+                                        Json::Value(),
+                                        neededParams);
+}
+
+Json::Value TRPCDeviceSetRequest::SelectActingDeclarations(const std::string& kind,
+                                                           const Json::Value& declarations,
+                                                           const Json::Value& conditionValues)
+{
+    TJsonParams exprParams(conditionValues);
+    Expressions::TExpressionsCache exprCache;
+    TActiveParameterDeclarations matched;
+    Json::Value acting(Json::arrayValue);
+    for (const auto& item: declarations) {
+        if (!CheckCondition(item, exprParams, &exprCache)) {
+            continue;
+        }
+        auto id = item["id"].asString();
+        auto first = matched.GetNewest(id) == nullptr;
+        // Several matched declarations of an item are allowed only as a chain of fw variants,
+        // the chain acts as its first declaration since the variants define the same register.
+        // Anything else is a template error, config validation reports it as a duplicate definition
+        if (!matched.Add(id, item)) {
+            throw TRPCException(kind + " \"" + id +
+                                    "\" is ambiguous: several declarations match the condition parameter values",
+                                TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+        if (first) {
+            acting.append(item);
+        }
+    }
+    return acting;
+}
+
+TDeviceSetupItems TRPCDeviceSetRequest::CreateSetupItems(const Json::Value& channels, const Json::Value& parameters)
+{
+    TDeviceSetupItems setupItems;
+    for (const auto& item: channels) {
+        setupItems.insert(CreateSetupItem(item, Channels[item["id"].asString()].asString()));
+    }
+    for (const auto& item: parameters) {
+        setupItems.insert(CreateSetupItem(item, Parameters[item["id"].asString()].asString()));
+    }
+    return setupItems;
+}
+
+PRegisterConfig TRPCDeviceSetRequest::GetRegisterConfig(const Json::Value& declaration)
+{
+    return LoadRegisterConfig(declaration,
+                              *ProtocolParams.protocol->GetRegTypes(),
+                              std::string(),
+                              *ProtocolParams.factory,
+                              ProtocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                              0)
+        .RegisterConfig;
+}
+
+bool TRPCDeviceSetRequest::IsReadOnly(const Json::Value& declaration)
+{
+    return GetRegisterConfig(declaration)->AccessType == TRegisterConfig::EAccessType::READ_ONLY;
+}
+
+PDeviceSetupItem TRPCDeviceSetRequest::CreateSetupItem(const Json::Value& declaration, const std::string& value)
+{
+    auto itemConfig =
+        std::make_shared<TDeviceSetupItemConfig>(declaration["id"].asString(), GetRegisterConfig(declaration), value);
     return std::make_shared<TDeviceSetupItem>(itemConfig, Device);
 }
 
@@ -129,8 +203,8 @@ PRPCDeviceSetRequest ParseRPCDeviceSetRequest(const Json::Value& request,
 {
     auto res = std::make_shared<TRPCDeviceSetRequest>(protocolParams, device, deviceTemplate, deviceFromConfig);
     res->ParseSettings(request, onResult, onError);
-    res->ParseRequestItems(request["channels"], res->Channels);
-    res->ParseRequestItems(request["parameters"], res->Parameters);
+    res->Channels = request["channels"];
+    res->Parameters = request["parameters"];
     return res;
 }
 

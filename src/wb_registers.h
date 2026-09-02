@@ -14,12 +14,15 @@ namespace WbRegisters
     const std::string FW_SIGNATURE_REGISTER_NAME = "fw_signature";
     const std::string FW_VERSION_REGISTER_NAME = "fw_version";
     const std::string SN_REGISTER_NAME = "sn";
-    const std::string MWAC_UNIXTIME_REGISTER_NAME = "mwac_unixtime";
-
-    const uint16_t COUNTINUOUS_READ_DISABLED = 0;
-    const uint16_t COUNTINUOUS_READ_ENABLED_TEMPORARY = 1;
-    const uint16_t COUNTINUOUS_READ_ENABLED = 2;
+    const std::string LOCAL_TIME_REGISTER_NAME = "local_time";
 
     PRegisterConfig GetRegisterConfig(const std::string& name);
 
 } // namespace
+
+enum class TContinuousReadStatus : uint16_t
+{
+    DISABLED = 0,
+    ENABLED_TEMPORARY = 1,
+    ENABLED = 2
+};

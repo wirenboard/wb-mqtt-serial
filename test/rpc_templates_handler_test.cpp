@@ -173,6 +173,62 @@ TEST_F(TRPCTemplatesHandlerTest, UploadNewType)
     EXPECT_EQ((UserTemplatesDir / "uploaded-device.json").string(), deviceTemplate->GetFilePath());
 }
 
+TEST_F(TRPCTemplatesHandlerTest, UploadTypeWithParameterFwVariants)
+{
+    auto templateJson = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    Json::Value parameter;
+    parameter["id"] = "p1";
+    parameter["title"] = "p1";
+    parameter["address"] = 10;
+    parameter["enum"].append(0);
+    parameter["enum"].append(1);
+    parameter["enum_titles"].append("a");
+    parameter["enum_titles"].append("b");
+    templateJson["device"]["parameters"].append(parameter);
+    parameter["fw"] = "2.2.0";
+    parameter["enum"].append(2);
+    parameter["enum_titles"].append("c");
+    templateJson["device"]["parameters"].append(parameter);
+
+    auto response = Upload(MakeUploadRequest(SerializeJson(templateJson), "uploaded-device.json"));
+    GetSingleType(response, "Custom devices");
+    EXPECT_NO_THROW(Templates->GetTemplate(NEW_TYPE)->GetTemplate());
+}
+
+TEST_F(TRPCTemplatesHandlerTest, UploadParameterFwVariantsMismatch)
+{
+    // A schema-valid template where fw variants of a parameter differ not only in enum values
+    // must be rejected by the same check as on template load
+    auto templateJson = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    Json::Value parameter;
+    parameter["id"] = "p1";
+    parameter["title"] = "p1";
+    parameter["address"] = 10;
+    parameter["scale"] = 1;
+    parameter["enum"].append(0);
+    parameter["enum"].append(1);
+    parameter["enum_titles"].append("a");
+    parameter["enum_titles"].append("b");
+    templateJson["device"]["parameters"].append(parameter);
+    parameter["fw"] = "2.2.0";
+    parameter["scale"] = 2;
+    parameter["enum"].append(2);
+    parameter["enum_titles"].append("c");
+    templateJson["device"]["parameters"].append(parameter);
+
+    try {
+        Upload(MakeUploadRequest(SerializeJson(templateJson), "uploaded-device.json"));
+        ADD_FAILURE() << "Expect an exception";
+    } catch (const std::exception& e) {
+        EXPECT_NE(std::string(e.what()).find("Parameter \"p1\" has several declarations with different \"scale\" "
+                                             "values (\"1\" and \"2\")."),
+                  std::string::npos)
+            << e.what();
+    }
+    EXPECT_TRUE(ListUserTemplatesDir().empty());
+    EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
+}
+
 TEST_F(TRPCTemplatesHandlerTest, UploadNewTypeTranslatedGroupName)
 {
     auto response = Upload(
@@ -410,6 +466,41 @@ TEST_F(TRPCTemplatesHandlerTest, UploadInvalidCondition)
     root["device"]["channels"][0]["condition"] = "a b";
 
     EXPECT_THROW(Upload(MakeUploadRequest(SerializeJson(root), "invalid-condition.json")), std::exception);
+    EXPECT_TRUE(ListUserTemplatesDir().empty());
+    EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
+}
+
+TEST_F(TRPCTemplatesHandlerTest, UploadConditionSourceParameterMismatch)
+{
+    // A schema-valid template where declarations of a parameter used in conditions
+    // differ in register reading and conversion properties must be rejected
+    auto root = MakeTemplateJson(NEW_TYPE, "Uploaded device");
+    root["device"]["channels"][0]["condition"] = "mode==1";
+    Json::Value sel;
+    sel["id"] = "sel";
+    sel["title"] = "sel";
+    sel["address"] = 1;
+    root["device"]["parameters"].append(sel);
+    Json::Value mode;
+    mode["id"] = "mode";
+    mode["title"] = "mode";
+    mode["address"] = 2;
+    mode["scale"] = 1;
+    mode["condition"] = "sel==0";
+    root["device"]["parameters"].append(mode);
+    mode["scale"] = 2;
+    mode["condition"] = "sel==1";
+    root["device"]["parameters"].append(mode);
+
+    try {
+        Upload(MakeUploadRequest(SerializeJson(root), "condition-source.json"));
+        ADD_FAILURE() << "Expect an exception";
+    } catch (const std::exception& e) {
+        EXPECT_NE(std::string(e.what()).find("Parameter \"mode\" has several declarations with different \"scale\" "
+                                             "values (\"1\" and \"2\")."),
+                  std::string::npos)
+            << e.what();
+    }
     EXPECT_TRUE(ListUserTemplatesDir().empty());
     EXPECT_THROW(Templates->GetTemplate(NEW_TYPE), std::out_of_range);
 }

@@ -1,8 +1,88 @@
-wb-mqtt-serial (2.265.0) stable; urgency=medium
+wb-mqtt-serial (2.270.0) stable; urgency=medium
 
   * Add max_publish_interval option for devices and channels
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 18 Aug 2026 13:45:09 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 02 Sep 2026 09:36:41 +0300
+
+wb-mqtt-serial (2.269.1) stable; urgency=medium
+
+  * Do not report an unknown parity value as "U" in port/Scan RPC response.
+    If the parity register holds an unexpected value, the parity field is
+    omitted from the device settings, as for a register that was not read,
+    and read_serial_params_error is reported
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 28 Aug 2026 12:00:00 +0400
+
+wb-mqtt-serial (2.269.0) stable; urgency=medium
+
+  * Allow several declarations of a device template parameter with the same
+    id and different fw, so that a newer firmware can extend the enum of the
+    parameter. The template validator requires the declarations to read the
+    same register identically and rejects removed enum values
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Aug 2026 12:00:00 +0400
+
+wb-mqtt-serial (2.268.0) stable; urgency=medium
+
+  * Evaluate declaration conditions in device/Set and device/Load RPC: a
+    channel or parameter is written and a parameter is read by the
+    declaration whose condition is true, so condition variants with
+    different scales are converted right (wb-mai6, wb-mai2-cc,
+    oni-plc-w-ema-06u00). device/Set evaluates the conditions over the
+    request values and reads the missing condition parameters from the
+    device. An item with false conditions is skipped by device/Set and is
+    not included in the device/Load answer, an item with several matching
+    declarations rejects the request
+  * Skip a readonly or unknown parameter in a device/Set request instead of
+    rejecting the request
+  * Reject writing a read only channel in device/Set by the register type
+    too, not only by the "readonly" key: a write to an input or discrete
+    register used to reach the device and fail there
+  * Require numbers as device/Set parameter values, like the device
+    configuration schema does
+  * Do not fail device/Load and device/Set when a condition parameter got no
+    value: the device does not support the register or the value matches
+    the "error_value", "unsupported_value" or Wiren Board 0xFFFE marker. The
+    conditions over it are evaluated with an undefined value like in the
+    web interface: comparisons are false, "!=" is true, "isDefined" is false
+  * Return "unsupported" in the device/Load answer only for an item whose own
+    register was not read, list only channels in the readonly array and
+    read only the condition parameters of the requested items
+  * Check the Wiren Board 0xFFFE marker in device/LoadConfig before resolving
+    conditions, a parameter depending on an unsupported register is not
+    resolved by the number 65534
+  * Remove the register address from the readonly heating_options parameter
+    of the WBE2-I-OPENTHERM fw 1.7.3 template, readonly parameters only
+    organize the web interface
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Aug 2026 12:00:00 +0400
+
+wb-mqtt-serial (2.267.1) stable; urgency=medium
+
+  * Restore continuous read register value after RPC requests
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 25 Aug 2026 10:29:06 +0300
+
+wb-mqtt-serial (2.267.0) stable; urgency=medium
+
+  * Add wb_time_sync_interval device parameter
+  * Rename unixtime control type to local_time
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Aug 2026 10:30:49 +0300
+
+wb-mqtt-serial (2.266.0) stable; urgency=medium
+
+  * Do not write continuous read register if continuous read is already enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 24 Aug 2026 10:21:35 +0300
+
+wb-mqtt-serial (2.265.0) stable; urgency=medium
+
+  * Check that declarations of a parameter used in conditions read and convert
+    the register identically. A device template violating the rule is rejected
+    on first use and on templates/Upload
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Aug 2026 12:00:00 +0400
 
 wb-mqtt-serial (2.264.3) stable; urgency=medium
 

@@ -773,7 +773,7 @@
       "title": "Control type",
       "enum": [
         "switch", "wo-switch", "pushbutton", "range", "rgb", "text",
-        "w1-id", "value", "alarm", "unixtime",
+        "w1-id", "value", "alarm", "local_time",
         "temperature", "rel_humidity",
         "atmospheric_pressure", "rainfall", "wind_speed", "power",
         "power_consumption", "voltage", "water_flow",
@@ -792,7 +792,7 @@
           "1-wire device identifier",
           "value",
           "alarm",
-          "unixtime",
+          "local_time",
           "temperature (deprecated, use value with units)",
           "rel_humidity (deprecated, use value with units)",
           "atmospheric_pressure (deprecated, use value with units)",
@@ -1215,6 +1215,14 @@
           "type": "boolean",
           "default": false,
           "propertyOrder": 10
+        },
+        "wb_time_sync_interval": {
+          "title": "Time synchronization interval (hours)",
+          "description": "wb_time_sync_interval_desc",
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 11
         }
       }
     }
