@@ -2,19 +2,19 @@
 
 CONFFILE=/etc/wb-mqtt-serial.conf
 
-config_is_usable() {
+config_is_blank() {
     if [ ! -s "$1" ]; then
-        return 1
+        return 0
     fi
 
     if [ "$(tr -d '\0' < "$1" | wc -c)" -eq 0 ]; then
-        return 1
+        return 0
     fi
 
-    return 0
+    return 1
 }
 
-if config_is_usable "$CONFFILE"; then
+if ! config_is_blank "$CONFFILE"; then
     exit 0
 fi
 
