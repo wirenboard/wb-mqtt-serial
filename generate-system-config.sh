@@ -2,7 +2,21 @@
 
 CONFFILE=/etc/wb-mqtt-serial.conf
 
-[ -s "$CONFFILE" ] && exit 0
+config_is_usable() {
+    if [ ! -s "$1" ]; then
+        return 1
+    fi
+
+    if [ "$(tr -d '\0' < "$1" | wc -c)" -eq 0 ]; then
+        return 1
+    fi
+
+    return 0
+}
+
+if config_is_usable "$CONFFILE"; then
+    exit 0
+fi
 
 . /usr/lib/wb-utils/wb_env.sh
 
@@ -29,4 +43,4 @@ else
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default"
 fi
 
-cp "$BOARD_CONF" "$CONFFILE"
+cat "$BOARD_CONF" > "$CONFFILE"

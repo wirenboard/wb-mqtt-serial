@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.270.2) stable; urgency=medium
+
+  * Regenerate the system config when its content is all NUL bytes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 03 Sep 2026 15:22:12 +0000
+
 wb-mqtt-serial (2.270.1) stable; urgency=medium
 
   * Remove max_publish_interval from the channels settings table schema
