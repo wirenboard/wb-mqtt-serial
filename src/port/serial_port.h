@@ -34,7 +34,12 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
-    const TSerialPortSettings& GetSettings() const;
+    /**
+     * @brief Returns the settings the port was configured with.
+     *        The settings in use may temporarily differ, they are changed by port/Setup and
+     *        during firmware update, and restored afterwards
+     */
+    TSerialPortSettings GetInitialSettings() const;
 
 private:
     TSerialPortSettings Settings;
