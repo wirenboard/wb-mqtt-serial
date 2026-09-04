@@ -1,12 +1,78 @@
 #include "rpc_helpers.h"
 #include "devices/modbus_device.h"
+#include "json_common.h"
 #include "log.h"
 #include "modbus_base.h"
 #include "modbus_common.h"
+#include "port/serial_port.h"
+#include "port/tcp_port.h"
 #include "rpc_exception.h"
 #include "wb_registers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
+
+namespace
+{
+    const std::string MODBUS_TCP_MODE = "modbus-tcp";
+
+    //! The suffix is added to a protocol name of a device on a Modbus TCP port.
+    //! It describes the port transport, not the device protocol, so it is stripped in the response
+    const std::string TCP_TRANSPORT_SUFFIX = "-tcp";
+
+    /**
+     * @brief Makes a JSON object with the connection settings of the port.
+     *        The settings are taken as they are configured, the settings a serial port is working
+     *        with may temporarily differ during port/Setup and firmware update.
+     *
+     * @param addressKey name of the field with the address of a TCP port, "address" in the
+     *                   ports/Load response and "ip" in the ports/List response, as the requests
+     *                   of the other methods name it
+     */
+    Json::Value MakePortJson(const TFeaturePort& port, const std::string& addressKey)
+    {
+        Json::Value res;
+        const auto& basePort = *port.GetBasePort();
+        if (const auto* serialPort = dynamic_cast<const TSerialPort*>(&basePort)) {
+            auto settings = serialPort->GetInitialSettings();
+            res["path"] = settings.Device;
+            res["baud_rate"] = settings.BaudRate;
+            res["data_bits"] = settings.DataBits;
+            res["parity"] = std::string(1, settings.Parity);
+            res["stop_bits"] = settings.StopBits;
+        } else if (const auto* tcpPort = dynamic_cast<const TTcpPort*>(&basePort)) {
+            const auto& settings = tcpPort->GetInitialSettings();
+            res[addressKey] = settings.Address;
+            res["port"] = settings.Port;
+        }
+        if (port.IsModbusTcp()) {
+            res["mode"] = MODBUS_TCP_MODE;
+        }
+        return res;
+    }
+
+    Json::Value MakeDeviceJson(const TSerialDevice& device)
+    {
+        const auto& deviceConfig = *device.DeviceConfig();
+
+        Json::Value res;
+        res["device_id"] = deviceConfig.Id;
+        // A hexadecimal address is reported as written in the configuration.
+        // A device configured without an address, for broadcast mode, has none to report
+        if (!deviceConfig.SlaveId.empty()) {
+            res["slave_id"] = deviceConfig.SlaveId;
+        }
+        // Devices configured without a template have no device type
+        if (!deviceConfig.DeviceType.empty()) {
+            res["device_type"] = deviceConfig.DeviceType;
+        }
+        std::string protocol(device.Protocol()->GetName());
+        if (protocol.ends_with(TCP_TRANSPORT_SUFFIX)) {
+            protocol.erase(protocol.size() - TCP_TRANSPORT_SUFFIX.size());
+        }
+        res["protocol"] = protocol;
+        return res;
+    }
+}
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request)
 {
@@ -47,9 +113,19 @@ Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::s
     }
 }
 
+uint32_t GetModbusSlaveId(const TSerialDevice& device)
+{
+    const auto* slaveId = dynamic_cast<const TUInt32SlaveId*>(&device);
+    if (slaveId == nullptr) {
+        throw TRPCException("Device protocol \"" + device.Protocol()->GetName() + "\" has no Modbus address",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+    return slaveId->SlaveId;
+}
+
 void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value)
 {
-    auto slaveId = static_cast<uint8_t>(std::stoi(request.Device->DeviceConfig()->SlaveId));
+    auto slaveId = GetModbusSlaveId(*request.Device);
     auto traits = MakeModbusTraits(request.ProtocolParams.protocol->GetName());
     for (int i = 0; i <= MAX_RPC_RETRIES; ++i) {
         try {
@@ -88,7 +164,7 @@ void WriteModbusRegister(TPort& port,
                          PRegisterConfig registerConfig,
                          const TRegisterValue& value)
 {
-    auto slaveId = static_cast<uint8_t>(std::stoi(request.Device->DeviceConfig()->SlaveId));
+    auto slaveId = GetModbusSlaveId(*request.Device);
     auto traits = MakeModbusTraits(request.ProtocolParams.protocol->GetName());
     Modbus::TRegisterCache cache;
     for (int i = 0; i <= MAX_RPC_RETRIES; ++i) {
@@ -212,4 +288,28 @@ void MarkUnsupportedRegisterItems(TPort& port,
     if (!enabled) {
         SetContinuousRead(port, request, status);
     }
+}
+
+Json::Value MakePortConfigsResponse(const THandlerConfig& config)
+{
+    Json::Value res(Json::arrayValue);
+    for (const auto& portConfig: config.PortConfigs) {
+        res.append(MakePortJson(*portConfig->Port, "address"));
+    }
+    return res;
+}
+
+Json::Value MakePortsListResponse(const THandlerConfig& config)
+{
+    Json::Value res;
+    auto& ports = MakeArray("ports", res);
+    for (const auto& portConfig: config.PortConfigs) {
+        auto port = MakePortJson(*portConfig->Port, "ip");
+        auto& devices = MakeArray("devices", port);
+        for (const auto& device: portConfig->Devices) {
+            devices.append(MakeDeviceJson(*device->Device));
+        }
+        ports.append(std::move(port));
+    }
+    return res;
 }

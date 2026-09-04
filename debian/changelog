@@ -1,3 +1,19 @@
+wb-mqtt-serial (2.271.0) stable; urgency=medium
+
+  * Add ports/List RPC. It returns the list of ports and devices polled on them
+    in a single request, with the device ids used in MQTT topics and the port
+    connection settings, so that other requests can be built from the response
+  * Fix requests addressing a device by device_id for devices whose slave_id is
+    written in hexadecimal in the configuration. device/Load, device/Set and
+    port/Load used to send such a request to slave 0 instead of the device
+  * Fix a service crash on a request addressing a device by device_id when the
+    configuration has failed to load. Such a request is answered with an error now
+  * ports/Load no longer reports ports of a configuration that has failed to load
+    half way through, it reports the ports the poll is running with
+  * Deprecate ports/Load, it is going to be removed. Use ports/List instead
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 03 Sep 2026 12:00:00 +0400
+
 wb-mqtt-serial (2.270.1) stable; urgency=medium
 
   * Remove max_publish_interval from the channels settings table schema

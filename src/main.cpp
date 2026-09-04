@@ -19,7 +19,6 @@
 #include "device_template_generator.h"
 #include "files_watcher.h"
 #include "port/serial_port.h"
-#include "rpc/rpc_config.h"
 #include "rpc/rpc_config_handler.h"
 #include "rpc/rpc_device_handler.h"
 #include "rpc/rpc_fw_update_handler.h"
@@ -312,7 +311,6 @@ int main(int argc, char* argv[])
                                                  RPC_TEMPLATES_DELETE_REQUEST_SCHEMA_FULL_FILE_PATH);
         RegisterTemplatesRpcHandlers(rpcTemplatesHandler, rpcServer);
 
-        PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
         PHandlerConfig handlerConfig;
 
         try {
@@ -320,7 +318,6 @@ int main(int argc, char* argv[])
                                        deviceFactory,
                                        *commonDeviceSchema,
                                        *templates,
-                                       rpcConfig,
                                        portsSchema,
                                        protocolSchemasMap);
         } catch (const exception& e) {
@@ -358,7 +355,7 @@ int main(int argc, char* argv[])
         auto rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                 RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                 RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                                rpcConfig,
+                                                                handlerConfig,
                                                                 serialClientTaskRunner,
                                                                 parametersCache,
                                                                 rpcServer);

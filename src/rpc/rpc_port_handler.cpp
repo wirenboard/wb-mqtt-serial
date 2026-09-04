@@ -1,4 +1,5 @@
 #include "rpc_port_handler.h"
+#include "json_common.h"
 #include "rpc_helpers.h"
 #include "rpc_port_load_modbus_serial_client_task.h"
 #include "rpc_port_load_raw_serial_client_task.h"
@@ -10,14 +11,14 @@
 TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
                                  const std::string& requestPortSetupSchemaFilePath,
                                  const std::string& requestPortScanSchemaFilePath,
-                                 PRPCConfig rpcConfig,
+                                 PHandlerConfig handlerConfig,
                                  TSerialClientTaskRunner& serialClientTaskRunner,
                                  TRPCDeviceParametersCache& parametersCache,
                                  WBMQTT::PMqttRpcServer rpcServer)
     : RequestPortLoadSchema(LoadRPCRequestSchema(requestPortLoadSchemaFilePath, "port/Load")),
       RequestPortSetupSchema(LoadRPCRequestSchema(requestPortSetupSchemaFilePath, "port/Setup")),
       RequestPortScanSchema(LoadRPCRequestSchema(requestPortScanSchemaFilePath, "port/Scan")),
-      RPCConfig(rpcConfig),
+      HandlerConfig(handlerConfig),
       SerialClientTaskRunner(serialClientTaskRunner),
       ParametersCache(parametersCache)
 {
@@ -29,6 +30,7 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
                                              std::placeholders::_2,
                                              std::placeholders::_3));
     rpcServer->RegisterMethod("ports", "Load", std::bind(&TRPCPortHandler::LoadPorts, this, std::placeholders::_1));
+    rpcServer->RegisterMethod("ports", "List", std::bind(&TRPCPortHandler::ListPorts, this, std::placeholders::_1));
     rpcServer->RegisterAsyncMethod("port",
                                    "Setup",
                                    std::bind(&TRPCPortHandler::PortSetup,
@@ -61,7 +63,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
             rpcRequest->OnResult = onResult;
             rpcRequest->OnError = onError;
             if (clientParams.Device) {
-                rpcRequest->SlaveId = std::stoul(clientParams.Device->DeviceConfig()->SlaveId);
+                rpcRequest->SlaveId = GetModbusSlaveId(*clientParams.Device);
                 rpcRequest->Protocol = protocol;
             }
             SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCPortLoadModbusSerialClientTask>(rpcRequest));
@@ -106,5 +108,18 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
 
 Json::Value TRPCPortHandler::LoadPorts(const Json::Value& request)
 {
-    return RPCConfig->GetPortConfigs();
+    if (!HandlerConfig) {
+        return Json::Value(Json::arrayValue);
+    }
+    return MakePortConfigsResponse(*HandlerConfig);
+}
+
+Json::Value TRPCPortHandler::ListPorts(const Json::Value& request)
+{
+    if (!HandlerConfig) {
+        Json::Value res;
+        MakeArray("ports", res);
+        return res;
+    }
+    return MakePortsListResponse(*HandlerConfig);
 }

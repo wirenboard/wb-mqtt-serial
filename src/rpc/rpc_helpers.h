@@ -6,6 +6,7 @@
 #include "port/serial_port_settings.h"
 #include "register.h"
 #include "rpc_device_handler.h"
+#include "serial_config.h"
 
 constexpr int MAX_RPC_RETRIES = 2;
 constexpr auto UNSUPPORTED_VALUE = "unsupported";
@@ -16,6 +17,13 @@ std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& proto
 /**
  * @brief Reads a Modbus register with retry logic.
  */
+/**
+ * @brief Returns the Modbus address the device is polled with.
+ *
+ * @throws TRPCException If the device's protocol has no Modbus address
+ */
+uint32_t GetModbusSlaveId(const TSerialDevice& device);
+
 void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value);
 
 /**
@@ -70,3 +78,23 @@ void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema);
  * @throws std::runtime_error If the schema file cannot be read.
  */
 Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::string& rpcName);
+
+/**
+ * @brief Makes a response for the service ports/Load RPC: connection settings of the ports
+ *        the poll is running with, without the devices.
+ *
+ * @param config the configuration the poll is running with
+ * @return an array with an element per port
+ */
+Json::Value MakePortConfigsResponse(const THandlerConfig& config);
+
+/**
+ * @brief Makes a response for the public ports/List RPC: ports of the configuration the poll is
+ *        running with and the devices polled on them.
+ *        Ports and devices disabled in the configuration file are not loaded, so they are not
+ *        reported. No data exchange with devices is performed.
+ *
+ * @param config the configuration the poll is running with
+ * @return {"ports": [...]}
+ */
+Json::Value MakePortsListResponse(const THandlerConfig& config);

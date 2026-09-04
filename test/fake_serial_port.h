@@ -87,7 +87,6 @@ protected:
 
     PFakeSerialPort SerialPort;
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig rpcConfig;
 };
 
 class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest

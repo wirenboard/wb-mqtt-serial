@@ -18,7 +18,6 @@ class TConfigParserTest: public TLoggedFixture
 {
 protected:
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig RPCConfig = std::make_shared<TRPCConfig>();
 
     void SetUp()
     {
@@ -163,18 +162,7 @@ protected:
 
     PHandlerConfig GetConfig(const std::string& filePath)
     {
-        auto commonDeviceSchema(GetCommonDeviceSchema());
-        auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
-        TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
-        TTemplateMap templateMap(GetTemplatesSchema());
-        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
-        return LoadConfig(GetDataFilePath(filePath),
-                          DeviceFactory,
-                          commonDeviceSchema,
-                          templateMap,
-                          RPCConfig,
-                          portsSchema,
-                          protocolSchemas);
+        return LoadTestConfig(filePath, DeviceFactory);
     }
 };
 
@@ -231,13 +219,8 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         [&](const std::string& fname) {
             Emit() << "Parsing config " << fname;
             try {
-                PHandlerConfig config = LoadConfig(fname,
-                                                   DeviceFactory,
-                                                   commonDeviceSchema,
-                                                   templateMap,
-                                                   RPCConfig,
-                                                   portsSchema,
-                                                   protocolSchemas);
+                PHandlerConfig config =
+                    LoadConfig(fname, DeviceFactory, commonDeviceSchema, templateMap, portsSchema, protocolSchemas);
             } catch (const std::exception& e) {
                 Emit() << e.what();
             }

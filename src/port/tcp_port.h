@@ -25,6 +25,9 @@ public:
     std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
     std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override;
 
+    //! Returns the settings the port was configured with, they are never changed
+    const TTcpPortSettings& GetInitialSettings() const;
+
 private:
     void OnReadyEmptyFd() override;
 
