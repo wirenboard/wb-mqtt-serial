@@ -15,15 +15,15 @@ TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& requ
 std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
 
 /**
- * @brief Reads a Modbus register with retry logic.
- */
-/**
  * @brief Returns the Modbus address the device is polled with.
  *
  * @throws TRPCException If the device's protocol has no Modbus address
  */
 uint32_t GetModbusSlaveId(const TSerialDevice& device);
 
+/**
+ * @brief Reads a Modbus register with retry logic.
+ */
 void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig registerConfig, TRegisterValue& value);
 
 /**
