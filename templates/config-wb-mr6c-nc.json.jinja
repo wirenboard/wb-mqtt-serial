@@ -71,11 +71,17 @@
                 "title": "Safety Mode",
                 "id": "g_safety"
             },
+            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
+                {% if safety_fw -%}
+                "fw": "{{safety_fw}}",
+                "description": "safety_behaviour_input_state_description",
+                {% endif -%}
                 "group": "g_safety"
             },
+            {% endfor -%}
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
@@ -356,7 +362,6 @@
                 "default": 0,
                 {% if safety_fw -%}
                 "fw": "{{safety_fw}}",
-                "description": "safety_behaviour_input_state_description",
                 {% endif -%}
                 {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
