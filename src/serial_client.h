@@ -28,6 +28,7 @@ public:
     TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,
                                          std::chrono::milliseconds readEventsPeriod,
                                          util::TGetNowFn nowFn,
+                                         util::TGetSystemTimeFn systemTimeFn = std::chrono::system_clock::now,
                                          size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback regCallback);
@@ -51,6 +52,7 @@ private:
     util::TSpentTimeMeter SpentTime;
     bool LastCycleWasTooSmallToPoll;
     util::TGetNowFn NowFn;
+    util::TGetSystemTimeFn SystemTimeFn;
 };
 
 class ISerialClientTask

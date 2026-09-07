@@ -1,0 +1,23 @@
+Open()
+Sleep(20000)
+read continuous read state()
+>> 01 03 00 72 00 01 24 11
+<< 01 03 02 00 00 B8 44
+enable continuous read()
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11
+read fw version()
+>> 01 03 00 FA 00 10 64 37
+<< 01 83 02 C0 F1
+read mode()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 FF FE 78 34
+disable continuous read()
+>> 01 06 00 72 00 00 29 D1
+<< 01 06 00 72 00 00 29 D1
+re-read mode()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 83 02 C0 F1
+restore continuous read()
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11

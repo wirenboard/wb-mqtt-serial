@@ -1,0 +1,26 @@
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "parameters fw variants",
+                    "slave_id": 2,
+                    "p1": 2,
+                    "p2": 5,
+                    "p3": 7
+                },
+                {
+                    // values from the base (oldest) variants pass validation against the newest variants,
+                    // "p2" condition is false, so its value is not validated and not written
+                    "device_type" : "parameters fw variants",
+                    "slave_id": 3,
+                    "p1": 1,
+                    "p2": 99,
+                    "p3": 3
+                }
+            ]
+        }
+    ]
+}

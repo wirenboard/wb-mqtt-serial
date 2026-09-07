@@ -46,7 +46,8 @@ public:
                               std::chrono::milliseconds maxPollingTime,
                               bool readAtLeastOneRegister,
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                              TRegisterCallback callback);
+                              TRegisterCallback callback,
+                              util::TGetSystemTimeFn systemTimeFn);
 
     void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
     void ResumePoll(PSerialDevice device);

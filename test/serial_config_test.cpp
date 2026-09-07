@@ -18,7 +18,6 @@ class TConfigParserTest: public TLoggedFixture
 {
 protected:
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig RPCConfig = std::make_shared<TRPCConfig>();
 
     void SetUp()
     {
@@ -98,6 +97,9 @@ protected:
                         }
                         Emit() << "Precision: " << device_channel->Precision;
                         Emit() << "ReadOnly: " << device_channel->ReadOnly;
+                        if (device_channel->MaxPublishInterval >= MaxPublishIntervalLowLimit) {
+                            Emit() << "MaxPublishInterval: " << device_channel->MaxPublishInterval.count();
+                        }
                         if (!device_channel->Registers.empty()) {
                             Emit() << "Registers:";
                         }
@@ -160,18 +162,7 @@ protected:
 
     PHandlerConfig GetConfig(const std::string& filePath)
     {
-        auto commonDeviceSchema(GetCommonDeviceSchema());
-        auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
-        TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
-        TTemplateMap templateMap(GetTemplatesSchema());
-        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
-        return LoadConfig(GetDataFilePath(filePath),
-                          DeviceFactory,
-                          commonDeviceSchema,
-                          templateMap,
-                          RPCConfig,
-                          portsSchema,
-                          protocolSchemas);
+        return LoadTestConfig(filePath, DeviceFactory);
     }
 };
 
@@ -183,6 +174,11 @@ TEST_F(TConfigParserTest, Parse)
 TEST_F(TConfigParserTest, ParseRateLimit)
 {
     PrintConfig(GetConfig("configs/parse_test_rate_limit.json"));
+}
+
+TEST_F(TConfigParserTest, ParseMaxPublishInterval)
+{
+    PrintConfig(GetConfig("configs/parse_test_max_publish_interval.json"));
 }
 
 TEST_F(TConfigParserTest, SameSetupItems)
@@ -203,6 +199,13 @@ TEST_F(TConfigParserTest, SetupCondition)
     PrintConfig(GetConfig("configs/parse_test_setup_condition.json"));
 }
 
+TEST_F(TConfigParserTest, ParametersFwVariants)
+{
+    // Check loading device template with parameter fw variants:
+    // values from the newest variants pass validation, a single setup item is created per parameter
+    PrintConfig(GetConfig("configs/parse_test_fw_variants.json"));
+}
+
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     auto commonDeviceSchema(GetCommonDeviceSchema());
@@ -216,13 +219,8 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         [&](const std::string& fname) {
             Emit() << "Parsing config " << fname;
             try {
-                PHandlerConfig config = LoadConfig(fname,
-                                                   DeviceFactory,
-                                                   commonDeviceSchema,
-                                                   templateMap,
-                                                   RPCConfig,
-                                                   portsSchema,
-                                                   protocolSchemas);
+                PHandlerConfig config =
+                    LoadConfig(fname, DeviceFactory, commonDeviceSchema, templateMap, portsSchema, protocolSchemas);
             } catch (const std::exception& e) {
                 Emit() << e.what();
             }
@@ -236,7 +234,7 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
     TTemplateMap templateMap(GetTemplatesSchema());
     templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
 
-    for (auto i = 1; i <= 13; ++i) {
+    for (auto i = 1; i <= 14; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig,

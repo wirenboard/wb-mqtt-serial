@@ -1,4 +1,5 @@
 #include "config_merge_template.h"
+#include "common_utils.h"
 #include "expression_evaluator.h"
 #include "log.h"
 #include "serial_config.h"
@@ -52,13 +53,18 @@ void AppendSetupItems(Json::Value& deviceTemplate,
 
     if (deviceTemplate.isMember("parameters")) {
         Json::Value& templateParameters = deviceTemplate["parameters"];
+        // The fw variants of a parameter (declarations with the same id and condition and different "fw")
+        // define the same register and value conversion, so one setup item per parameter is enough
+        std::unordered_set<std::string> setupParameters;
         for (auto it = templateParameters.begin(); it != templateParameters.end(); ++it) {
             auto name = templateParameters.isArray() ? (*it)["id"].asString() : it.name();
             if (config.isMember(name)) {
                 auto& cfgItem = config[name];
                 if (cfgItem.isNumeric()) {
                     // Readonly parameters are used now only for web-interface organization.
-                    if (!it->get("readonly", false).asBool() && CheckCondition(*it, params, exprs)) {
+                    if (!it->get("readonly", false).asBool() && CheckCondition(*it, params, exprs) &&
+                        setupParameters.insert(name).second)
+                    {
                         Json::Value item(*it);
                         item["value"] = cfgItem;
                         newSetup.append(item);
@@ -336,4 +342,28 @@ bool CheckCondition(const std::string& cond, const TJsonParams& params, TExpress
 bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)
 {
     return CheckCondition(item["condition"].asString(), params, exprs);
+}
+
+bool TActiveParameterDeclarations::Add(const std::string& id, const Json::Value& declaration)
+{
+    auto condition = declaration["condition"].asString();
+    auto fw = declaration[SerialConfig::FW_VERSION_PROPERTY_NAME].asString();
+    auto insertRes = Chains.emplace(id, TChain{condition, {fw}, &declaration});
+    if (insertRes.second) {
+        return true;
+    }
+    auto& chain = insertRes.first->second;
+    if (chain.Condition != condition || !chain.FwVersions.emplace(fw).second) {
+        return false;
+    }
+    if (util::CompareVersionStrings(fw, (*chain.Newest)[SerialConfig::FW_VERSION_PROPERTY_NAME].asString()) > 0) {
+        chain.Newest = &declaration;
+    }
+    return true;
+}
+
+const Json::Value* TActiveParameterDeclarations::GetNewest(const std::string& id) const
+{
+    auto it = Chains.find(id);
+    return it == Chains.end() ? nullptr : it->second.Newest;
 }

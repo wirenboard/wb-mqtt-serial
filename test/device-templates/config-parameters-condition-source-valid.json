@@ -1,0 +1,57 @@
+// "mode" is used in conditions and its declarations differ only in enum, that is allowed.
+// "sp" is not used in conditions, so its declarations may differ in scale
+{
+    "device_type": "parameters_condition_source_valid",
+    "device": {
+        "name": "parameters condition source valid",
+        "id": "parameters condition source valid",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "condition": "mode==1"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "sel",
+                "title": "sel",
+                "address": 1
+            },
+            {
+                "id": "mode",
+                "title": "mode",
+                "address": 2,
+                "scale": 1,
+                "condition": "sel==0",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "mode",
+                "title": "mode",
+                "address": 2,
+                "scale": 1,
+                "condition": "sel==1",
+                "enum": [0, 1, 2],
+                "enum_titles": ["a", "b", "c"]
+            },
+            {
+                "id": "sp",
+                "title": "sp",
+                "address": 4,
+                "scale": 1,
+                "condition": "mode==0"
+            },
+            {
+                "id": "sp",
+                "title": "sp",
+                "address": 4,
+                "scale": 2,
+                "condition": "mode==1"
+            }
+        ]
+    }
+}

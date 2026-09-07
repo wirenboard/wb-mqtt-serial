@@ -17,6 +17,9 @@
 
 typedef std::unordered_map<std::string, std::string> TTitleTranslations;
 
+const std::chrono::seconds MaxPublishIntervalDisabled(0);
+const std::chrono::seconds MaxPublishIntervalLowLimit(5);
+
 struct TDeviceChannelConfig
 {
     std::string MqttId; // MQTT topic name. If empty Name is used
@@ -31,6 +34,7 @@ struct TDeviceChannelConfig
     bool ReadOnly = false;
     bool Hidden = false;
     std::string Units;
+    std::chrono::seconds MaxPublishInterval = MaxPublishIntervalDisabled;
     std::vector<PRegister> Registers;
 
     TDeviceChannelConfig(const std::string& type = "text",
@@ -81,6 +85,7 @@ const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
 const std::chrono::seconds DefaultMaxWriteFailTime(600);
+const std::chrono::hours TimeSyncDisabled(0);
 
 struct TDeviceConfig
 {
@@ -135,6 +140,9 @@ struct TDeviceConfig
     //! in the polling list and are continuously reported with ReadError
     //! instead of being permanently excluded.
     bool ContinuePollingOnIllegalModbusException = false;
+
+    //! Interval of device time synchronization, zero or less disables synchronization
+    std::chrono::hours TimeSyncInterval = TimeSyncDisabled;
 
     explicit TDeviceConfig(const std::string& name = "",
                            const std::string& slave_id = "",
@@ -224,6 +232,13 @@ public:
     void WriteRegister(TPort& port, PRegister reg, uint64_t value);
 
     /**
+     * @brief Write local time corresponding to now to the device
+     *        if the synchronization interval has elapsed.
+     *        Does nothing if synchronization is disabled or the device doesn't support it.
+     */
+    void SyncTime(TPort& port, std::chrono::system_clock::time_point now);
+
+    /**
      * Reads multiple registers.
      * Throws exceptions inherited from TSerialDeviceException.
      */
@@ -287,6 +302,7 @@ protected:
     virtual void PrepareImpl(TPort& port);
     virtual TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg);
     virtual void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value);
+    virtual void WriteTimeImpl(TPort& port, time_t deviceTime);
 
 private:
     PDeviceConfig _DeviceConfig;
@@ -298,6 +314,9 @@ private:
     bool SporadicOnly;
     bool WbDevice;
     std::string WbFwVersion;
+
+    std::chrono::system_clock::time_point LastTimeSync;
+    bool TimeSyncUnsupported;
 
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;

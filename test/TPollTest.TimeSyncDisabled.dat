@@ -1,0 +1,24 @@
+Open()
+0: Cycle
+Sleep(1000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+11000: <modbus:1:(type 0): 1>
+11000: Cycle end
+
+11000: Cycle
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+21000: <modbus:1:(type 0): 1>
+21000: Cycle end
+
+21000: Cycle
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+31000: <modbus:1:(type 0): 1>
+31000: Cycle end
+
+Close()

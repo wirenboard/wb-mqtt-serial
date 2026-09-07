@@ -15,8 +15,13 @@ struct TDeviceChannel: public TDeviceChannelConfig
 
     std::string Describe() const;
 
-    void UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy);
-    void UpdateError(WBMQTT::TDeviceDriver& deviceDriver);
+    void UpdateValueAndError(const WBMQTT::PDriverTx& tx, const WBMQTT::TPublishParameters& publishPolicy);
+    void UpdateError(const WBMQTT::PDriverTx& tx);
+
+    /* Publish value if it hasn't been published during MaxPublishInterval.
+       Returns true if the value has been published
+    */
+    bool PublishIfExpired(const WBMQTT::PDriverTx& tx, std::chrono::steady_clock::time_point now);
 
     bool HasValuesOfAllRegisters() const;
 
@@ -28,8 +33,8 @@ struct TDeviceChannel: public TDeviceChannelConfig
 private:
     std::string GetTextValue() const;
     std::string GetErrorText() const;
-    void PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value, const std::string& error);
-    void PublishError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error);
+    void PublishValueAndError(const WBMQTT::PDriverTx& tx, const std::string& value, const std::string& error);
+    void PublishError(const WBMQTT::PDriverTx& tx, const std::string& error);
 
     /* Wiren Board devices reset press counters to 0 after reboot.
        Do not publish these very first zeroes to not trigger unexpected wb-rules whenChanged actions
@@ -60,6 +65,10 @@ public:
 
     void SetUpDevices();
     void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());
+
+    //! Publish values of channels with expired MaxPublishInterval
+    void PublishExpiredValues(std::chrono::steady_clock::time_point now);
+
     void ClearDevices() noexcept;
     void OnValueRead(PRegister reg);
 

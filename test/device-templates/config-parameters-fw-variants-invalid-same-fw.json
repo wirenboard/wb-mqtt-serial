@@ -1,0 +1,34 @@
+// invalid parameter fw variants: same fw
+{
+    "device_type": "parameters_fw_variants_invalid_same_fw",
+    "device": {
+        "name": "parameters fw variants invalid same fw",
+        "id": "parameters fw variants invalid same fw",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 20,
+                "fw": "2.2.0",
+                "enum": [0, 1],
+                "enum_titles": ["zero", "one"]
+            },
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 20,
+                "fw": "2.2.0",
+                "enum": [0, 1, 2],
+                "enum_titles": ["zero", "one", "two"]
+            }
+        ]
+    }
+}

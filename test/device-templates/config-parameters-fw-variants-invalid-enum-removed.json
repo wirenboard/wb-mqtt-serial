@@ -1,0 +1,33 @@
+// invalid parameter fw variants: enum removed
+{
+    "device_type": "parameters_fw_variants_invalid_enum_removed",
+    "device": {
+        "name": "parameters fw variants invalid enum removed",
+        "id": "parameters fw variants invalid enum removed",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 20,
+                "enum": [0, 1],
+                "enum_titles": ["zero", "one"]
+            },
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 20,
+                "fw": "2.2.0",
+                "enum": [0, 2],
+                "enum_titles": ["zero", "two"]
+            }
+        ]
+    }
+}

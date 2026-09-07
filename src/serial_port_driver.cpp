@@ -16,6 +16,11 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial port driver] "
 
+namespace
+{
+    const auto MaxPublishTimePerCycle = std::chrono::milliseconds(10);
+}
+
 TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
                                      PPortConfig portConfig,
                                      const WBMQTT::TPublishParameters& publishPolicy,
@@ -153,7 +158,8 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         {
             publishPolicy.Policy = TPublishParameters::PublishAll;
         }
-        it->second->UpdateValueAndError(*MqttDriver, publishPolicy);
+        auto tx = MqttDriver->BeginTx();
+        it->second->UpdateValueAndError(tx, publishPolicy);
     }
 }
 
@@ -164,8 +170,8 @@ void TSerialPortDriver::UpdateError(PRegister reg)
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-
-    it->second->UpdateError(*MqttDriver);
+    auto tx = MqttDriver->BeginTx();
+    it->second->UpdateError(tx);
 }
 
 void TSerialPortDriver::OnDeviceConnectionStateChanged(PSerialDevice device)
@@ -195,6 +201,22 @@ void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)
     } catch (const TSerialDeviceException& e) {
         LOG(Error) << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
+    }
+    PublishExpiredValues(now);
+}
+
+void TSerialPortDriver::PublishExpiredValues(std::chrono::steady_clock::time_point now)
+{
+    auto start = std::chrono::steady_clock::now();
+    auto tx = MqttDriver->BeginTx();
+    for (const auto& deviceChannels: DeviceToChannelsMap) {
+        for (const auto& channel: deviceChannels.second) {
+            if (channel->PublishIfExpired(tx, now) &&
+                std::chrono::steady_clock::now() >= start + MaxPublishTimePerCycle)
+            {
+                return;
+            }
+        }
     }
 }
 
@@ -299,8 +321,7 @@ std::string TDeviceChannel::Describe() const
     return "channel '" + name + "' of device '" + DeviceId + "'";
 }
 
-void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
-                                         const WBMQTT::TPublishParameters& publishPolicy)
+void TDeviceChannel::UpdateValueAndError(const WBMQTT::PDriverTx& tx, const WBMQTT::TPublishParameters& publishPolicy)
 {
     std::string value;
     try {
@@ -312,14 +333,14 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
         if (::Debug.IsEnabled()) {
             LOG(Debug) << "Trying to publish " << Describe() << " with undefined value";
         }
-        UpdateError(deviceDriver);
+        UpdateError(tx);
         return;
     }
     auto error = GetErrorText();
     bool errorIsChanged = (CachedErrorText != error);
     if (ShouldNotPublishPressCounter()) {
         if (errorIsChanged) {
-            PublishError(deviceDriver, error);
+            PublishError(tx, error);
         }
         CachedCurrentValue = value;
         return;
@@ -328,16 +349,16 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
     switch (publishPolicy.Policy) {
         case TPublishParameters::PublishOnlyOnChange: {
             if (CachedCurrentValue != value) {
-                PublishValueAndError(deviceDriver, value, error);
+                PublishValueAndError(tx, value, error);
             } else {
                 if (errorIsChanged) {
-                    PublishError(deviceDriver, error);
+                    PublishError(tx, error);
                 }
             }
             break;
         }
         case TPublishParameters::PublishAll: {
-            PublishValueAndError(deviceDriver, value, error);
+            PublishValueAndError(tx, value, error);
             break;
         }
         case TPublishParameters::PublishSomeUnchanged: {
@@ -345,16 +366,27 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
             if (errorIsChanged || (CachedCurrentValue != value) ||
                 (now - LastControlUpdate >= publishPolicy.PublishUnchangedInterval))
             {
-                PublishValueAndError(deviceDriver, value, error);
+                PublishValueAndError(tx, value, error);
             }
             break;
         }
     }
 }
 
-void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver)
+bool TDeviceChannel::PublishIfExpired(const WBMQTT::PDriverTx& tx, std::chrono::steady_clock::time_point now)
 {
-    PublishError(deviceDriver, GetErrorText());
+    if (MaxPublishInterval >= MaxPublishIntervalLowLimit && now - LastControlUpdate >= MaxPublishInterval &&
+        HasValuesOfAllRegisters() && !ShouldNotPublishPressCounter())
+    {
+        UpdateValueAndError(tx, {TPublishParameters::PublishAll, std::chrono::milliseconds(0)});
+        return true;
+    }
+    return false;
+}
+
+void TDeviceChannel::UpdateError(const WBMQTT::PDriverTx& tx)
+{
+    PublishError(tx, GetErrorText());
 }
 
 std::string TDeviceChannel::GetErrorText() const
@@ -380,7 +412,7 @@ std::string TDeviceChannel::GetErrorText() const
     return errorText;
 }
 
-void TDeviceChannel::PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
+void TDeviceChannel::PublishValueAndError(const WBMQTT::PDriverTx& tx,
                                           const std::string& value,
                                           const std::string& error)
 {
@@ -395,17 +427,13 @@ void TDeviceChannel::PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
     CachedCurrentValue = value;
     CachedErrorText = error;
     LastControlUpdate = std::chrono::steady_clock::now();
-    {
-        auto tx = deviceDriver.BeginTx();
-        Control->UpdateRawValueAndError(tx, value, error).Sync();
-    }
+    Control->UpdateRawValueAndError(tx, value, error).Sync();
 }
 
-void TDeviceChannel::PublishError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error)
+void TDeviceChannel::PublishError(const WBMQTT::PDriverTx& tx, const std::string& error)
 {
     if (CachedErrorText.empty() || (CachedErrorText != error)) {
         CachedErrorText = error;
-        auto tx = deviceDriver.BeginTx();
         Control->SetError(tx, error).Sync();
     }
 }

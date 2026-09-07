@@ -14,6 +14,13 @@ public:
         UNSUPPORTED
     };
 
+    enum class TContinuousReadState
+    {
+        DISABLED,
+        ENABLED,
+        UNSUPPORTED
+    };
+
     void EnqueueCoilReadResponse(uint8_t exception = 0);
     void EnqueueCoilOneByOneReadResponse(uint8_t exception = 0);
 
@@ -97,7 +104,7 @@ public:
 
     /*--------------------------------------*/
 
-    void EnqueueContinuousReadEnableResponse(bool ok = true);
+    void EnqueueContinuousReadEnableResponse(TContinuousReadState state = TContinuousReadState::DISABLED);
     void EnqueueContinuousReadHoldingResponse(bool separated = true, bool unsupported = false);
     void EnqueueContinuousReadCoilResponse(bool separated = true);
 

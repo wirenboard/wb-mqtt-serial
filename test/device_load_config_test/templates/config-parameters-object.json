@@ -30,7 +30,6 @@
             },
             "p4": {
                 "title": "p4",
-                "address": 2004,
                 "readonly": true
             },
             "p5": {

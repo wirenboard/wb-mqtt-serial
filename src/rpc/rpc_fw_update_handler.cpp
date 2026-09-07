@@ -5,6 +5,7 @@
 #include "rpc_fw_update_task.h"
 
 #include <algorithm>
+#include <chrono>
 
 #ifndef __EMSCRIPTEN__
 #include "rpc_fw_get_firmware_info_task.h"
@@ -164,6 +165,16 @@ TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& serialClientTaskRunner,
 
     RegisterRpcMethods(rpcServer);
     rpcServer->Start();
+}
+
+void TRPCFwUpdateHandler::Stop()
+{
+    if (!Mqtt) {
+        return;
+    }
+    if (!Mqtt->PublishSynced(WBMQTT::TMqttMessage(STATE_TOPIC, "", 1, true)).WaitFor(std::chrono::seconds(1))) {
+        LOG(Warn) << "Unable to cleanup topic '" << STATE_TOPIC << "': timed out";
+    }
 }
 
 TRPCFwUpdateHandler::TRPCFwUpdateHandler(ITaskRunner& taskRunner,

@@ -6,12 +6,20 @@
 #include "port/serial_port_settings.h"
 #include "register.h"
 #include "rpc_device_handler.h"
+#include "serial_config.h"
 
 constexpr int MAX_RPC_RETRIES = 2;
 constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
 std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
+
+/**
+ * @brief Returns the Modbus address the device is polled with.
+ *
+ * @throws TRPCException If the device's protocol has no Modbus address
+ */
+uint32_t GetModbusSlaveId(const TSerialDevice& device);
 
 /**
  * @brief Reads a Modbus register with retry logic.
@@ -27,9 +35,9 @@ void WriteModbusRegister(TPort& port,
                          const TRegisterValue& value);
 
 /**
- * @brief Sets continuous read register on/off (Wiren Board specific).
+ * @brief Writes continuous read register value (Wiren Board specific).
  */
-void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, bool enabled);
+void SetContinuousRead(TPort& port, TRPCDeviceRequest& request, TContinuousReadStatus value);
 
 /**
  * @brief Checks if all 16-bit words in register value are 0xFFFE (unsupported marker).
@@ -41,11 +49,14 @@ bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& 
 /**
  * @brief Re-reads registers that returned all-0xFFFE to distinguish unsupported
  *        from actual values. Temporarily disables continuous read for accurate results.
+ *        A confirmed register is marked unsupported and its data value is replaced
+ *        with UNSUPPORTED_VALUE. Pass data as nullptr for register lists without
+ *        response data, for example condition parameter lists.
  */
 void MarkUnsupportedRegisterItems(TPort& port,
                                   TRPCDeviceRequest& request,
                                   TRPCRegisterList& registerList,
-                                  Json::Value& data);
+                                  Json::Value* data = nullptr);
 
 /**
  * @brief Validates an RPC request against a given JSON schema.
@@ -67,3 +78,23 @@ void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema);
  * @throws std::runtime_error If the schema file cannot be read.
  */
 Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::string& rpcName);
+
+/**
+ * @brief Makes a response for the service ports/Load RPC: connection settings of the ports
+ *        the poll is running with, without the devices.
+ *
+ * @param config the configuration the poll is running with
+ * @return an array with an element per port
+ */
+Json::Value MakePortConfigsResponse(const THandlerConfig& config);
+
+/**
+ * @brief Makes a response for the public ports/List RPC: ports of the configuration the poll is
+ *        running with and the devices polled on them.
+ *        Ports and devices disabled in the configuration file are not loaded, so they are not
+ *        reported. No data exchange with devices is performed.
+ *
+ * @param config the configuration the poll is running with
+ * @return {"ports": [...]}
+ */
+Json::Value MakePortsListResponse(const THandlerConfig& config);

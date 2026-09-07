@@ -206,7 +206,8 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TFeaturePort& port,
                                                        std::chrono::milliseconds maxPollingTime,
                                                        bool readAtLeastOneRegister,
                                                        TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                       TRegisterCallback callback)
+                                                       TRegisterCallback callback,
+                                                       util::TGetSystemTimeFn systemTimeFn)
 {
     RescheduleDisconnectedDevices();
     RescheduleDevicesWithSpendedPoll(spentTime.GetStartTime());
@@ -251,6 +252,10 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TFeaturePort& port,
     }
 
     res.Device = reader.GetDevice()->GetDevice();
+
+    if (res.Device->GetConnectionState() == TDeviceConnectionState::CONNECTED) {
+        res.Device->SyncTime(port, systemTimeFn());
+    }
 
     for (auto& reg: range->RegisterList()) {
         if (callback) {

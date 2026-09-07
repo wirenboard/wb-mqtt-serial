@@ -1,0 +1,70 @@
+// testing template for register list creation with parameter fw variants:
+// declarations with the same id and different fw
+{
+    "device_type": "parameters_fw_variants",
+    "device": {
+        "name": "parameters fw variants",
+        "id": "parameters fw variants",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "mode",
+                "title": "mode",
+                "address": 1000,
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 1001,
+                "scale": 1,
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 1001,
+                "fw": "2.2.0",
+                "scale": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": ["a", "b", "c"]
+            },
+            {
+                "id": "p2",
+                "title": "p2",
+                "address": 1002,
+                "fw": "2.4.0",
+                "min": 0,
+                "max": 5
+            },
+            {
+                "id": "p3",
+                "title": "p3",
+                "address": 1003,
+                "scale": 1,
+                "condition": "mode==1",
+                "enum": [0, 1],
+                "enum_titles": ["a", "b"]
+            },
+            {
+                "id": "p3",
+                "title": "p3",
+                "address": 1003,
+                "fw": "2.2.0",
+                "scale": 1,
+                "condition": "mode==1",
+                "enum": [0, 1, 2],
+                "enum_titles": ["a", "b", "c"]
+            }
+        ]
+    }
+}

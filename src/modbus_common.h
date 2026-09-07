@@ -4,6 +4,7 @@
 
 #include "modbus_base.h"
 #include "serial_device.h"
+#include "wb_registers.h"
 
 namespace Modbus // modbus protocol common utilities
 {
@@ -130,11 +131,11 @@ namespace Modbus // modbus protocol common utilities
                              bool breakOnError,
                              int shift = 0);
 
-    bool EnableWbContinuousRead(PSerialDevice device,
-                                IModbusTraits& traits,
-                                TPort& port,
-                                uint8_t slaveId,
-                                TRegisterCache& cache);
+    TContinuousReadStatus EnableWbContinuousRead(PSerialDevice device,
+                                                 IModbusTraits& traits,
+                                                 TPort& port,
+                                                 uint8_t slaveId,
+                                                 TRegisterCache& cache);
 
     std::string ReadWbFwVersion(PSerialDevice device, IModbusTraits& traits, TPort& port, uint8_t slaveId);
 } // modbus protocol common utilities

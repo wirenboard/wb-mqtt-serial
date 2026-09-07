@@ -140,21 +140,33 @@ namespace
                                     TExpressionsCache& exprCache)
     {
         TJsonParams exprParams(config);
-        if (deviceTemplate.isMember("parameters")) {
-            const auto& params = deviceTemplate["parameters"];
-            for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
-                auto name = params.isArray() ? (*it)["id"].asString() : it.name();
-                if (CheckCondition(*it, exprParams, &exprCache)) {
-                    if (properties.isMember(name)) {
-                        throw std::runtime_error("Validation failed.\nError 1\n  context: <root>\n  desc: "
-                                                 "duplicate definition of parameter \"" +
-                                                 name + "\" in device template");
-                    }
-                    properties[name] = MakeParameterSchema(*it);
-                    if (IsRequiredSetupRegister(*it)) {
-                        requiredArray.append(name);
-                    }
-                }
+        if (!deviceTemplate.isMember("parameters")) {
+            return;
+        }
+        const auto& params = deviceTemplate["parameters"];
+        // Device firmware version is unknown during config file validation, so the declaration with the highest
+        // "fw" of a chain of fw variants is used: its enum includes the values of the older ones
+        std::vector<std::string> names;
+        TActiveParameterDeclarations activeParameters;
+        for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
+            auto name = params.isArray() ? (*it)["id"].asString() : it.name();
+            if (!CheckCondition(*it, exprParams, &exprCache)) {
+                continue;
+            }
+            if (!activeParameters.GetNewest(name)) {
+                names.push_back(name);
+            }
+            if (!activeParameters.Add(name, *it)) {
+                throw std::runtime_error("Validation failed.\nError 1\n  context: <root>\n  desc: "
+                                         "duplicate definition of parameter \"" +
+                                         name + "\" in device template");
+            }
+        }
+        for (const auto& name: names) {
+            const auto& declaration = *activeParameters.GetNewest(name);
+            properties[name] = MakeParameterSchema(declaration);
+            if (IsRequiredSetupRegister(declaration)) {
+                requiredArray.append(name);
             }
         }
     }

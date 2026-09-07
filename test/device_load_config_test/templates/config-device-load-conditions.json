@@ -1,9 +1,12 @@
-// testing template for GetConditionParametersRegisterList and GetChannelsRegisterList with condition filtering
+// testing template for GetConditionParametersRegisterList and GetChannelsRegisterList with condition filtering.
+// "Disabled Channel" is disabled by default in config, it must still be read by device/Load.
+// The "mode!=1" condition of "Mode Not One" is true when "mode" got no value
 {
     "device_type": "device_load_conditions",
     "device": {
         "name": "device load conditions",
         "id": "device_load_conditions",
+        "enable_wb_continuous_read": true,
         "parameters": [
             {
                 "id": "mode",
@@ -14,8 +17,7 @@
             {
                 "id": "variant",
                 "title": "Variant",
-                "address": 101,
-                "readonly": true
+                "address": 101
             },
             {
                 "id": "unrelated",
@@ -45,6 +47,18 @@
                 "name": "Write Only",
                 "reg_type": "holding",
                 "write_address": 203
+            },
+            {
+                "name": "Disabled Channel",
+                "reg_type": "input",
+                "address": 204,
+                "enabled": false
+            },
+            {
+                "name": "Mode Not One",
+                "reg_type": "input",
+                "address": 205,
+                "condition": "mode!=1"
             }
         ]
     }
