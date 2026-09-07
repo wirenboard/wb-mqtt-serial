@@ -366,7 +366,7 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
                                                             data["device"].get("protocol", "modbus").asString(),
                                                             Validator,
                                                             filePath);
-    deviceTemplate->SetTitle(GetTranslations(data.get("title", "").asString(), data["device"]));
+    deviceTemplate->SetTitle(GetTranslations(deviceType, data.get("title", "").asString(), data["device"]));
     deviceTemplate->SetGroup(data.get("group", "").asString());
     if (data.get("deprecated", false).asBool()) {
         deviceTemplate->SetDeprecated();

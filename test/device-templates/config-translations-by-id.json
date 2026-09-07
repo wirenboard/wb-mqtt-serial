@@ -1,0 +1,38 @@
+{
+    "device_type": "translations_by_id",
+    "device": {
+        "name": "Device",
+        "id": "device",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "address": 0,
+                "group": "group1"
+            }
+        ],
+        "parameters": {
+            "param1": {
+                "address": 1,
+                "group": "group1"
+            }
+        },
+        "groups": [
+            {
+                "id": "group1"
+            }
+        ],
+        "translations": {
+            "en": {
+                "translations_by_id": "Device with translations by id",
+                "group1": "Group 1",
+                "param1": "Parameter 1"
+            },
+            "ru": {
+                "translations_by_id": "Устройство с переводами по id",
+                "group1": "Группа 1",
+                "param1": "Параметр 1"
+            }
+        }
+    }
+}

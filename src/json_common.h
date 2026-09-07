@@ -20,6 +20,16 @@ Json::Value& Append(Json::Value& array);
 //  }
 Json::Value MakeSingleValueProperty(const std::string& value);
 
-std::unordered_map<std::string, std::string> GetTranslations(const std::string& key, const Json::Value& deviceTemplate);
+/**
+ * @brief Get translations of an object's title.
+ *        Translation is searched by "id" first, then by "title" for backward compatibility.
+ *
+ * @param id object's identifier, "device_type" for device templates
+ * @param title object's title in English, deprecated
+ * @param schema JSON with "translations" object
+ */
+std::unordered_map<std::string, std::string> GetTranslations(const std::string& id,
+                                                             const std::string& title,
+                                                             const Json::Value& schema);
 
 void AppendParams(Json::Value& dst, const Json::Value& src);

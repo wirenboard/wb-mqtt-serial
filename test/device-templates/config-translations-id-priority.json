@@ -1,0 +1,25 @@
+{
+    "device_type": "translations_id_priority",
+    "title": "Old title",
+    "device": {
+        "name": "Device",
+        "id": "device",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "address": 0
+            }
+        ],
+        "translations": {
+            "en": {
+                "translations_id_priority": "Title by id",
+                "Old title": "Title by old title"
+            },
+            "ru": {
+                "translations_id_priority": "Название по id",
+                "Old title": "Название по старому title"
+            }
+        }
+    }
+}
