@@ -29,11 +29,11 @@ TEST(TTemplateTitleTest, TranslationsByTitle)
     EXPECT_EQ("Устройство с переводами по title", deviceTemplate->GetTitle("ru"));
 }
 
-TEST(TTemplateTitleTest, IdHasPriorityOverTitle)
+TEST(TTemplateTitleTest, TitleHasPriorityOverDeviceType)
 {
-    auto deviceTemplate = MakeTemplateMap()->GetTemplate("translations_id_priority");
-    EXPECT_EQ("Title by id", deviceTemplate->GetTitle());
-    EXPECT_EQ("Название по id", deviceTemplate->GetTitle("ru"));
+    auto deviceTemplate = MakeTemplateMap()->GetTemplate("translations_title_priority");
+    EXPECT_EQ("Title by title", deviceTemplate->GetTitle());
+    EXPECT_EQ("Название по title", deviceTemplate->GetTitle("ru"));
 }
 
 TEST(TTemplateTitleTest, NoTitleAndTranslations)

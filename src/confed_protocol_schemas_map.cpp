@@ -52,8 +52,8 @@ void TProtocolConfedSchemasMap::AddFolder(const std::string& protocolTemplatesFo
                 auto filePath = protocolTemplatesFolder + "/" + name;
                 auto schema = WBMQTT::JSON::Parse(filePath);
                 std::string type = schema["properties"]["protocol"]["enum"][0].asString();
-                std::string title = schema.get("title", "").asString();
-                TProtocolConfedSchema pr(type, GetTranslations(type, title, schema), filePath);
+                std::string title = schema.get("title", type).asString();
+                TProtocolConfedSchema pr(type, GetTranslations(title, schema), filePath);
                 Schemas.insert({type, pr});
             } catch (const std::exception& e) {
                 LOG(Error) << "Failed to parse " << name << "\n" << e.what();

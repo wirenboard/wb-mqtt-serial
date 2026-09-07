@@ -1,5 +1,5 @@
 {
-    "device_type": "translations_id_priority",
+    "device_type": "translations_title_priority",
     "title": "Old title",
     "device": {
         "name": "Device",
@@ -13,12 +13,12 @@
         ],
         "translations": {
             "en": {
-                "translations_id_priority": "Title by id",
-                "Old title": "Title by old title"
+                "translations_title_priority": "Title by device_type",
+                "Old title": "Title by title"
             },
             "ru": {
-                "translations_id_priority": "Название по id",
-                "Old title": "Название по старому title"
+                "translations_title_priority": "Название по device_type",
+                "Old title": "Название по title"
             }
         }
     }

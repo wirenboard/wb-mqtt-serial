@@ -25,31 +25,23 @@ Json::Value MakeSingleValueProperty(const std::string& value)
     return res;
 }
 
-std::unordered_map<std::string, std::string> GetTranslations(const std::string& id,
-                                                             const std::string& title,
-                                                             const Json::Value& schema)
+std::unordered_map<std::string, std::string> GetTranslations(const std::string& key, const Json::Value& schema)
 {
     std::unordered_map<std::string, std::string> res;
-    if (id.empty() && title.empty()) {
+    if (key.empty()) {
         return res;
     }
     if (schema.isMember("translations")) {
         const auto& translations = schema["translations"];
         for (Json::ValueConstIterator it = translations.begin(); it != translations.end(); ++it) {
-            std::string tr;
-            if (!id.empty()) {
-                tr = it->get(id, std::string()).asString();
-            }
-            if (tr.empty() && !title.empty()) {
-                tr = it->get(title, std::string()).asString();
-            }
+            std::string tr = it->get(key, std::string()).asString();
             if (!tr.empty()) {
                 res.emplace(it.name(), tr);
             }
         }
     }
     if (!res.count("en")) {
-        res.emplace("en", title.empty() ? id : title);
+        res.emplace("en", key);
     }
     return res;
 }
