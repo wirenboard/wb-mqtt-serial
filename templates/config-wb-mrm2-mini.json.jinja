@@ -129,7 +129,6 @@
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
-                "description": "safety_behaviour_description",
                 "group": "g_safety"
             },
             {
@@ -455,6 +454,7 @@
                 "default": 0,
                 {% if safety_fw -%}
                 "fw": "{{safety_fw}}",
+                "description": "safety_behaviour_input_state_description",
                 {% endif -%}
                 {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
@@ -1092,7 +1092,7 @@
             "en": {
                 "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-channel relay)",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only",
-                "safety_behaviour_description": "Option \"Switch output according to input state\" works for latching switch mode only",
+                "safety_behaviour_input_state_description": "Option \"Switch output according to input state\" works for latching switch mode only",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
@@ -1251,7 +1251,7 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
-                "safety_behaviour_description": "Вариант \"Установить выход согласно состоянию входа\" применим только для режима \"Переключатель с фиксацией\"",
+                "safety_behaviour_input_state_description": "Вариант \"Установить выход согласно состоянию входа\" применим только для режима \"Переключатель с фиксацией\"",
                 "Don't change output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
                 "Switch output according to input state": "Установить выход согласно состоянию входа",
