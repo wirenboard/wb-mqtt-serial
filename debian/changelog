@@ -1,3 +1,16 @@
+wb-mqtt-serial (2.274.0) stable; urgency=medium
+
+  * ONOKOM-add-templates-for-AKKO-devices (external contribution):
+    - add templates for AKKO devices
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Mon, 07 Sep 2026 14:45:09 +0300
+
+wb-mqtt-serial (2.273.0) stable; urgency=medium
+
+  * Add OWEN SMI2-M LED indicator template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 07 Sep 2026 14:45:09 +0300
+
 wb-mqtt-serial (2.272.0) stable; urgency=medium
 
   * Search titles translations by device_type for device templates and by id for groups and parameters
