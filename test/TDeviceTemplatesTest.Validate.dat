@@ -47,6 +47,54 @@ AKKO
 	Set top limit  =>  Set top limit
 	Stop  =>  Stop
 	Type  =>  Type
+AKKO CM-1-MB-R8
+	Close  =>  Close
+	Close Limit  =>  Close Limit
+	Current Position  =>  Current Position
+	Current State  =>  Current State
+	Curtain connected  =>  Curtain connected
+	FW Version  =>  FW Version
+	Factory Reset  =>  Factory Reset
+	HW Version  =>  HW Version
+	Hand Drive  =>  Hand Drive
+	Invert Direction  =>  Invert Direction
+	Lock  =>  Lock
+	Low-current switch type  =>  Low-current switch type
+	Motor version  =>  Motor version
+	Open  =>  Open
+	Open Limit  =>  Open Limit
+	PROTO Version  =>  PROTO Version
+	Power switch type  =>  Power switch type
+	Reset Limits  =>  Reset Limits
+	Serial  =>  Serial
+	Signature  =>  Signature
+	Stop  =>  Stop
+	Target Position  =>  Target Position
+	Target State  =>  Target State
+AKKO CM-3-MB-R8
+	Close  =>  Close
+	Close Limit  =>  Close Limit
+	Current Position  =>  Current Position
+	Current State  =>  Current State
+	Curtain connected  =>  Curtain connected
+	FW Version  =>  FW Version
+	Factory Reset  =>  Factory Reset
+	HW Version  =>  HW Version
+	Hand Drive  =>  Hand Drive
+	Invert Direction  =>  Invert Direction
+	Lock  =>  Lock
+	Low-current switch type  =>  Low-current switch type
+	Motor version  =>  Motor version
+	Open  =>  Open
+	Open Limit  =>  Open Limit
+	PROTO Version  =>  PROTO Version
+	Power switch type  =>  Power switch type
+	Reset Limits  =>  Reset Limits
+	Serial  =>  Serial
+	Signature  =>  Signature
+	Stop  =>  Stop
+	Target Position  =>  Target Position
+	Target State  =>  Target State
 APC_series
 	Batteries Quantity  =>  Batteries Quantity
 	Battery Charge  =>  Battery Charge
@@ -24846,7 +24894,7 @@ WB-MDM3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-小ross Offset (us)  =>  Zero-小ross Offset (us)
+	Zero-裷oss Offset (us)  =>  Zero-裷oss Offset (us)
 WB-MDM3-since-fw-2.12
 	AC on L-N  =>  AC on L-N
 	Channel 1  =>  Channel 1
@@ -31627,7 +31675,7 @@ tpl1_wb_mdm3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-小ross Offset (us)  =>  Zero-小ross Offset (us)
+	Zero-裷oss Offset (us)  =>  Zero-裷oss Offset (us)
 tpl1_wb_mir_v2
 	Command 1 recording  =>  Learn to ROM1
 	Command 1 size  =>  ROM1 size
