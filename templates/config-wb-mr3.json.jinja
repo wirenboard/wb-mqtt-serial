@@ -177,10 +177,11 @@
             }
         ],
 
-        "parameters": {
+        "parameters": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% if in_num == 0 -%}
-            "in{{in_num}}_mode": {
+            {
+                "id": "in{{in_num}}_mode",
                 "title": "Mode",
                 "address": 16,
                 "reg_type": "holding",
@@ -196,7 +197,8 @@
                 "order": 1
             },
             {% else -%}
-            "in{{in_num}}_mode": {
+            {
+                "id": "in{{in_num}}_mode",
                 "title": "Mode",
                 "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
@@ -214,7 +216,8 @@
                 "order": 1
             },
             {% endif -%}
-            "in{{in_num}}_debounce_ms": {
+            {
+                "id": "in{{in_num}}_debounce_ms",
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 {% if in_num == 0 -%}
@@ -229,7 +232,8 @@
                 "group": "g_in{{in_num}}",
                 "order": 2
             },
-            "in{{in_num}}_lp_hold_time": {
+            {
+                "id": "in{{in_num}}_lp_hold_time",
                 "group": "gg_in{{in_num}}_press_params",
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
@@ -245,7 +249,8 @@
                 "max": 5000,
                 "condition": "in{{in_num}}_mode==6"
             },
-            "in{{in_num}}_secp_waiting_time": {
+            {
+                "id": "in{{in_num}}_secp_waiting_time",
                 "group": "gg_in{{in_num}}_press_params",
                 "title": "secp_waiting_time_title",
                 "description": "secp_waiting_time_description",
@@ -264,7 +269,8 @@
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {% set curtain_num = (out_num + 1) // 2 -%}
             {% set curtain_cond = "&&(isDefined(curtain"~curtain_num~"_mode)==0||curtain"~curtain_num~"_mode==0)" if curtain_num <= CURTAINS_NUMBER else "" -%}
-            "in{{in_num}}_out{{out_num}}_actions": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_actions",
                 "group": "gg_in{{in_num}}_mapping_matrix_actions",
                 "title": "Output {{out_num}}",
                 "order": {{out_num}},
@@ -299,7 +305,8 @@
                 ],
                 "condition": "in{{in_num}}_mode==4{{curtain_cond}}"
             },
-            "in{{in_num}}_out{{out_num}}_sp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_sp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -314,7 +321,8 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6{{curtain_cond}}"
             },
-            "in{{in_num}}_out{{out_num}}_lp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_lp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -329,7 +337,8 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6{{curtain_cond}}"
             },
-            "in{{in_num}}_out{{out_num}}_dp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_dp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -344,7 +353,8 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6{{curtain_cond}}"
             },
-            "in{{in_num}}_out{{out_num}}_slp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_slp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -362,7 +372,8 @@
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-            "in{{in_num}}_curtain{{curtain_num}}_sp": {
+            {
+                "id": "in{{in_num}}_curtain{{curtain_num}}_sp",
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -374,7 +385,8 @@
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
-            "in{{in_num}}_curtain{{curtain_num}}_lp": {
+            {
+                "id": "in{{in_num}}_curtain{{curtain_num}}_lp",
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -386,7 +398,8 @@
                 "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
-            "in{{in_num}}_curtain{{curtain_num}}_dp": {
+            {
+                "id": "in{{in_num}}_curtain{{curtain_num}}_dp",
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -398,7 +411,8 @@
                 "enum_titles": ["no action", "open", "close", "open/close", "stop"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
-            "in{{in_num}}_curtain{{curtain_num}}_slp": {
+            {
+                "id": "in{{in_num}}_curtain{{curtain_num}}_slp",
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -414,7 +428,8 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {% set curtain_num = (out_num + 1) // 2 -%}
-            "out{{out_num}}_safe_state": {
+            {
+                "id": "out{{out_num}}_safe_state",
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
                 "order": {{out_num}},
@@ -430,7 +445,8 @@
                     "On"
                 ]
             },
-            "out{{out_num}}_safety_behaviour": {
+            {
+                "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_behaviour",
                 "order": {{out_num}},
@@ -447,7 +463,8 @@
                     "Switch output according to input state"
                 ]
             },
-            "out{{out_num}}_safety_input_control": {
+            {
+                "id": "out{{out_num}}_safety_input_control",
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_input_control",
                 "order": {{out_num}},
@@ -464,7 +481,8 @@
                     "Enable only in safety mode"
                 ]
             },
-            "out{{out_num}}_startup_delay_params": {
+            {
+                "id": "out{{out_num}}_startup_delay_params",
                 "title": "Output {{out_num}}",
                 "group": "gg_startup_delay_params",
                 "address": {{1728 + out_num - 1}},
@@ -477,7 +495,8 @@
                 "fw": "1.24.0",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            "out{{out_num}}_restart_delay_params": {
+            {
+                "id": "out{{out_num}}_restart_delay_params",
                 "title": "Output {{out_num}}",
                 "group": "gg_restart_delay_params",
                 "address": {{1736 + out_num - 1}},
@@ -490,7 +509,8 @@
                 "fw": "1.24.0",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
-            "out{{out_num}}_timer_mode_selection": {
+            {
+                "id": "out{{out_num}}_timer_mode_selection",
                 "title": "Function",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num}},
@@ -509,7 +529,8 @@
                 "fw": "1.25.0",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            "out{{out_num}}_on_delay_params": {
+            {
+                "id": "out{{out_num}}_on_delay_params",
                 "title": "Timeout (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -523,7 +544,8 @@
                 "description": "on_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
             },
-            "out{{out_num}}_off_delay_params": {
+            {
+                "id": "out{{out_num}}_off_delay_params",
                 "title": "Timeout (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -537,7 +559,8 @@
                 "description": "off_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
             },
-            "out{{out_num}}_on_pulse_params": {
+            {
+                "id": "out{{out_num}}_on_pulse_params",
                 "title": "Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -551,7 +574,8 @@
                 "description": "on_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==3"
             },
-            "out{{out_num}}_off_pulse_params": {
+            {
+                "id": "out{{out_num}}_off_pulse_params",
                 "title": "Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -565,7 +589,8 @@
                 "description": "off_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==4"
             },
-            "out{{out_num}}_cyclic_on_time_params": {
+            {
+                "id": "out{{out_num}}_cyclic_on_time_params",
                 "title": "On Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -579,7 +604,8 @@
                 "description": "cyclic_on_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
-            "out{{out_num}}_cyclic_off_time_params": {
+            {
+                "id": "out{{out_num}}_cyclic_off_time_params",
                 "title": "Off Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 2}},
@@ -594,7 +620,8 @@
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
-            "outputs_restore_state": {
+            {
+                "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
                 "address": 6,
@@ -605,7 +632,8 @@
                 "order": 1,
                 "group": "g_outputs"
             },
-            "safety_timer_s": {
+            {
+                "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
                 "description": "poll_timeout_description",
@@ -617,7 +645,8 @@
                 "default": 10
             },
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-            "curtain{{curtain_num}}_mode": {
+            {
+                "id": "curtain{{curtain_num}}_mode",
                 "title": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1280 + curtain_num - 1 }},
@@ -631,7 +660,8 @@
                 ],
                 "order": 1
             },
-            "curtain{{curtain_num}}_open_time": {
+            {
+                "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
                 "description": "curtain_zero_time_description",
                 "group": "gg_curtain_{{curtain_num}}",
@@ -645,7 +675,8 @@
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_close_time": {
+            {
+                "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
                 "description": "curtain_zero_time_description",
                 "group": "gg_curtain_{{curtain_num}}",
@@ -659,7 +690,8 @@
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_deadtime": {
+            {
+                "id": "curtain{{curtain_num}}_deadtime",
                 "title": "Dead time (ms)",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1336 + curtain_num - 1 }},
@@ -671,7 +703,8 @@
                 "order": 4,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_safety_action": {
+            {
+                "id": "curtain{{curtain_num}}_safety_action",
                 "title": "Action when safety mode is activated",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1288 + curtain_num - 1}},
@@ -687,7 +720,8 @@
                 "order": 5,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_powerup_action": {
+            {
+                "id": "curtain{{curtain_num}}_powerup_action",
                 "title": "Power up action",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1284 + curtain_num - 1}},
@@ -703,7 +737,8 @@
                 "order": 6,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_safety_input_control": {
+            {
+                "id": "curtain{{curtain_num}}_safety_input_control",
                 "title": "Curtain {{curtain_num}}",
                 "group": "gg_safety_input_control",
                 "order": {{curtain_num}},
@@ -719,7 +754,8 @@
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
-            "baud_rate": {
+            {
+                "id": "baud_rate",
                     "title": "Baud rate",
                     "description": "baud_rate_description",
                     "address": 110,
@@ -736,7 +772,7 @@
                     "group": "g_general",
                     "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
