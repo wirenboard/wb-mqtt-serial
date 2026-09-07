@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.270.2) stable; urgency=medium
+
+  * ONOKOM-add-templates-for-AKKO-devices (external contribution):
+    - add templates for AKKO devices
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Wed, 09 Sep 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.270.1) stable; urgency=medium
 
   * Remove max_publish_interval from the channels settings table schema
