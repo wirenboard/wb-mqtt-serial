@@ -579,7 +579,7 @@ namespace
     }
 
 #ifndef __EMSCRIPTEN__
-    PFeaturePort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenSerialPort(const Json::Value& port_data)
     {
         TSerialPortSettings settings(port_data["path"].asString());
 
@@ -593,29 +593,23 @@ namespace
 
         auto port = std::make_shared<TSerialPort>(settings);
 
-        rpcConfig->AddSerialPort(settings);
-
         return std::make_shared<TFeaturePort>(port, false);
     }
 
-    PFeaturePort OpenTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenTcpPort(const Json::Value& port_data)
     {
         TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
         auto port = std::make_shared<TTcpPort>(settings);
 
-        rpcConfig->AddTCPPort(settings);
-
         return std::make_shared<TFeaturePort>(port, false);
     }
 
-    PFeaturePort OpenModbusTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenModbusTcpPort(const Json::Value& port_data)
     {
         TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
         auto port = std::make_shared<TTcpPort>(settings);
-
-        rpcConfig->AddModbusTCPPort(settings);
 
         return std::make_shared<TFeaturePort>(port, true, port_data["connected_to_mge"].asBool());
     }
@@ -625,7 +619,6 @@ namespace
                   const Json::Value& port_data,
                   const std::string& id_prefix,
                   TTemplateMap& templates,
-                  PRPCConfig rpcConfig,
                   TSerialDeviceFactory& deviceFactory,
                   TPortFactoryFn portFactory)
     {
@@ -637,12 +630,10 @@ namespace
         Get(port_data, "guard_interval_us", port_config->RequestDelay);
         port_config->ReadRateLimit = GetReadRateLimit(port_data);
 
-        auto port_type = port_data.get("port_type", "serial").asString();
-
         Get(port_data, "connection_timeout_ms", port_config->OpenCloseSettings.MaxFailTime);
         Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
-        port_config->Port = portFactory(port_data, rpcConfig);
+        port_config->Port = portFactory(port_data);
 
         std::chrono::milliseconds responseTimeout = RESPONSE_TIMEOUT_NOT_SET;
         Get(port_data, "response_timeout_ms", responseTimeout);
@@ -672,17 +663,17 @@ void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value&
 }
 
 #ifndef __EMSCRIPTEN__
-PFeaturePort DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig)
+PFeaturePort DefaultPortFactory(const Json::Value& port_data)
 {
     auto port_type = port_data.get("port_type", "serial").asString();
     if (port_type == "serial") {
-        return OpenSerialPort(port_data, rpcConfig);
+        return OpenSerialPort(port_data);
     }
     if (port_type == "tcp") {
-        return OpenTcpPort(port_data, rpcConfig);
+        return OpenTcpPort(port_data);
     }
     if (port_type == "modbus tcp") {
-        return OpenModbusTcpPort(port_data, rpcConfig);
+        return OpenModbusTcpPort(port_data);
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
@@ -729,7 +720,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& commonDeviceSchema,
                           TTemplateMap& templates,
-                          PRPCConfig rpcConfig,
                           const Json::Value& portsSchema,
                           TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory)
@@ -767,7 +757,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  array[index],
                  "wb-modbus-" + std::to_string(index) + "-",
                  templates,
-                 rpcConfig,
                  deviceFactory,
                  portFactory);
     }
