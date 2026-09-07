@@ -1,9 +1,20 @@
 wb-mqtt-serial (2.274.0) stable; urgency=medium
 
-  * WB-MR and WB-MRWM templates: add option to safety behaviour - switch output according to input state
+  * WB-MR and WB-MRWM templates: add option to safety behaviour - switch
+    output according to input state. The option is declared as an fw variant
+    of the parameter, so it is offered only for firmwares that have it:
+    1.27.0 for WB-MR3, WB-MR6C, WB-MR6C/NC, WB-MR6C v.3 and WB-MRM2-mini,
+    1.26.0 for WB-MRWM2
+  * WB-MR and WB-MRWM templates: declare parameters as an array, an object
+    cannot hold the two declarations of the safety behaviour parameter. The
+    declarations themselves are unchanged, the parameters are written to a
+    device in template order instead of alphabetical order now
+  * WB-MRM2-mini-NC template: declare the output parameters once instead of
+    once per input, the repeated declarations were overriding each other as
+    object keys
   * WB-MRWM template: remove reg 5
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 10 Aug 2026 11:15:51 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 07 Sep 2026 18:30:00 +0300
 
 wb-mqtt-serial (2.273.0) stable; urgency=medium
 

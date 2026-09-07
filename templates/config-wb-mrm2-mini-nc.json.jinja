@@ -1,6 +1,7 @@
 {% set OUTPUTS_NUMBER = 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 2 -%}
 {% set FIRST_INPUT = 1 -%}
+{% set SAFETY_ACCORDING_TO_INPUT_FW = "1.27.0" -%}
 {
     "title": "WB-MRM2-mini-NC_template_title",
     "device_type": "WB-MRM2-mini-NC-inputs",
@@ -351,6 +352,7 @@
                     "Off"
                 ]
             },
+            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
             {
                 "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
@@ -359,13 +361,17 @@
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2],
+                {% if safety_fw -%}
+                "fw": "{{safety_fw}}",
+                {% endif -%}
+                {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
                     "Don't change output state",
-                    "Switch output to safety state",
-                    "Switch output according to input state"
+                    "Switch output to safety state"{% if safety_fw %},
+                    "Switch output according to input state"{% endif %}
                 ]
             },
+            {% endfor -%}
             {
                 "id": "out{{out_num}}_safety_input_control",
                 "title": "Output {{out_num}}",

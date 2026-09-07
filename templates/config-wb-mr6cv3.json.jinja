@@ -3,6 +3,7 @@
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
 {% set CURTAINS_MMATRIX_OUTPUTS_NUMBER = MMATRIX_OUTPUTS_NUMBER // 2 -%}
 {% set FIRST_INPUT = 0 -%}
+{% set SAFETY_ACCORDING_TO_INPUT_FW = "1.27.0" -%}
 {
     "title": "WB-MR6Cv3_template_title",
     "device_type": "WB-MR6C v.3",
@@ -451,6 +452,7 @@
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
+            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
             {
                 "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
@@ -458,14 +460,18 @@
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2],
+                {% if safety_fw -%}
+                "fw": "{{safety_fw}}",
+                {% endif -%}
+                {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
                     "Don't change output state",
-                    "Switch output to safety state",
-                    "Switch output according to input state"
+                    "Switch output to safety state"{% if safety_fw %},
+                    "Switch output according to input state"{% endif %}
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
+            {% endfor -%}
             {
                 "id": "out{{out_num}}_safety_input_control",
                 "title": "Output {{out_num}}",
