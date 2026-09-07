@@ -30677,6 +30677,23 @@ mst24_v1
 	speed  =>  speed
 	status  =>  status
 	voltage  =>  voltage
+owen-smi2-m
+	alarm_overrange  =>  alarm_overrange
+	alarm_underrange  =>  alarm_underrange
+	alarm_zone_misconfig  =>  alarm_zone_misconfig
+	blink  =>  blink
+	blink_period  =>  blink_period
+	brightness  =>  brightness
+	cmd_save_settings  =>  cmd_save_settings
+	color  =>  color
+	decimal_point  =>  decimal_point
+	display_mode  =>  display_mode
+	flash_resource  =>  flash_resource
+	leading_zeros  =>  leading_zeros
+	scroll_period  =>  scroll_period
+	value_int  =>  value_int
+	value_real  =>  value_real
+	value_string  =>  value_string
 pulsar-heat
 	Delta temperature  =>  Delta temperature
 	Device temperature  =>  Device temperature
