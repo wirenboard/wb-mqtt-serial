@@ -17,13 +17,6 @@ namespace
     const std::string STOCK_TYPE = "TestDeviceOverride"; // present only in stock templates
     const std::string NEW_TYPE = "UploadedDevice";
 
-    std::string SerializeJson(const Json::Value& value)
-    {
-        Json::StreamWriterBuilder builder;
-        builder["indentation"] = "  ";
-        return Json::writeString(builder, value);
-    }
-
     Json::Value MakeTemplateJson(const std::string& deviceType,
                                  const std::string& title,
                                  const std::string& group = std::string())

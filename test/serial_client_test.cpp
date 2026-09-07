@@ -103,7 +103,6 @@ protected:
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig rpcConfig;
 
     bool HasSetupRegisters = false;
     TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
@@ -1110,15 +1109,13 @@ void TSerialClientIntegrationTest::SetUp()
     AddRegisterType(CommonDeviceSchema, "fake");
     TTemplateMap t;
 
-    Config = LoadConfig(
-        GetDataFilePath("configs/config-test.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/config-test.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
 
     FixFakeDevices(Config);
 }
@@ -1524,7 +1521,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     TTemplateMap t;
 
-    auto factory = [=, this](const Json::Value& port_data, PRPCConfig rpcConfig) -> PFeaturePort {
+    auto factory = [=, this](const Json::Value& port_data) -> PFeaturePort {
         auto path = port_data["path"].asString();
         return std::make_shared<TFeaturePort>(std::make_shared<TFakeSerialPort>(*this, path, false), false);
     };
@@ -1533,7 +1530,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             CommonDeviceSchema,
                             t,
-                            rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
                             factory),
@@ -1543,7 +1539,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             CommonDeviceSchema,
                             t,
-                            rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
                             factory),
@@ -1553,7 +1548,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             CommonDeviceSchema,
                             t,
-                            rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
                             factory),
@@ -1563,7 +1557,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                                DeviceFactory,
                                CommonDeviceSchema,
                                t,
-                               rpcConfig,
                                PortsSchema,
                                *ProtocolSchemas,
                                factory));
@@ -1628,15 +1621,13 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
 {
     TTemplateMap t;
 
-    Config = LoadConfig(
-        GetDataFilePath("configs/config-rpc-test.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/config-rpc-test.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     FilterConfig("RPCTest");
@@ -1698,15 +1689,13 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool miss, bool pollIntervalTest)
 {
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_1_device.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     if (pollIntervalTest) {
@@ -1801,15 +1790,13 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 {
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_2_devices.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2032,15 +2019,13 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
     // The test simulates reconnection on EBADF error after writing first setup register
     // The behavior is a result of bad hwconf setup
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_ebadf.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2064,15 +2049,13 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
 {
     // The test simulates EBADF error during register write after receiving a message from /on topic
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_ebadf.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2094,15 +2077,13 @@ TEST_F(TSerialClientIntegrationTest, ReconnectAfterNetworkDisconnect)
     // A socket is alive, writes are successful, reads fail with timeout
     // The logic must close an reopen port
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_network.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_network.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
