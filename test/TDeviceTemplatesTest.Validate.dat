@@ -24894,7 +24894,7 @@ WB-MDM3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Ð¡ross Offset (us)  =>  Zero-Ð¡ross Offset (us)
+	Zero-Сross Offset (us)  =>  Zero-Сross Offset (us)
 WB-MDM3-since-fw-2.12
 	AC on L-N  =>  AC on L-N
 	Channel 1  =>  Channel 1
@@ -31675,7 +31675,7 @@ tpl1_wb_mdm3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Ð¡ross Offset (us)  =>  Zero-Ð¡ross Offset (us)
+	Zero-Сross Offset (us)  =>  Zero-Сross Offset (us)
 tpl1_wb_mir_v2
 	Command 1 recording  =>  Learn to ROM1
 	Command 1 size  =>  ROM1 size
