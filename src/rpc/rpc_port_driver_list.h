@@ -1,6 +1,5 @@
 #pragma once
 
-#include "rpc_config.h"
 #include "rpc_exception.h"
 #include "serial_driver.h"
 

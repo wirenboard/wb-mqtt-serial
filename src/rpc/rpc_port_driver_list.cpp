@@ -126,7 +126,7 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
     TSerialClientParams params;
 
     auto deviceId = request["device_id"];
-    if (deviceId.isString()) {
+    if (SerialDriver && deviceId.isString()) {
         auto id = deviceId.asString();
         for (auto driver: SerialDriver->GetPortDrivers()) {
             for (auto device: driver->GetSerialClient()->GetDevices()) {
