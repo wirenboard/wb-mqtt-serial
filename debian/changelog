@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.272.0) stable; urgency=medium
+
+  * Search titles translations by device_type for device templates and by id for groups and parameters
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 07 Sep 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.271.0) stable; urgency=medium
 
   * Add ports/List RPC. It returns the list of ports and devices polled on them
