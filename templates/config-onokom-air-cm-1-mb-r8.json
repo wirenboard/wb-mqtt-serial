@@ -12,25 +12,25 @@
         "id": "AKKO CM-1-MB-R8",
         "groups": [
             {
-                "title": "Control",
+                "title": "control",
                 "id": "control",
                 "order": 1
             },
             {
-                "title": "Settings",
+                "title": "settings",
                 "id": "settings",
                 "order": 2
             },
             {
-                "title": "HW Info",
+                "title": "hw_info",
                 "id": "hw_info",
                 "order": 3
             }
         ],
         "parameters": [
             {
-                "title": "Show modes as range",
-                "id": "Show_modes_as_range",
+                "title": "show_modes_as_range",
+                "id": "show_modes_as_range",
                 "group": "control",
                 "reg_type": "coil",
                 "address": 95,
@@ -40,16 +40,16 @@
                     2
                 ],
                 "enum_titles": [
-                    "Slider",
-                    "Drop-down list",
-                    "Buttons"
+                    "slider",
+                    "drop_down_list",
+                    "buttons"
                 ],
                 "default": 0,
                 "order": 1
             },
             {
-                "title": "Show control switch as range",
-                "id": "Show_control_switch_as_range",
+                "title": "show_control_switch_as_range",
+                "id": "show_control_switch_as_range",
                 "group": "settings",
                 "reg_type": "coil",
                 "address": 92,
@@ -58,14 +58,14 @@
                     1
                 ],
                 "enum_titles": [
-                    "No",
-                    "Yes"
+                    "no",
+                    "yes"
                 ],
                 "order": 2
             },
             {
-                "title": "Show power switch as range",
-                "id": "Show_power_switch_as_range",
+                "title": "show_power_switch_as_range",
+                "id": "show_power_switch_as_range",
                 "group": "settings",
                 "reg_type": "coil",
                 "address": 94,
@@ -74,15 +74,15 @@
                     1
                 ],
                 "enum_titles": [
-                    "No",
-                    "Yes"
+                    "no",
+                    "yes"
                 ],
                 "order": 3
             }
         ],
         "channels": [
             {
-                "name": "Current State",
+                "name": "current_state",
                 "group": "control",
                 "reg_type": "holding",
                 "address": 32,
@@ -97,13 +97,13 @@
                     2
                 ],
                 "enum_titles": [
-                    "Stopped",
-                    "Opening",
-                    "Closing"
+                    "stopped",
+                    "opening",
+                    "closing"
                 ]
             },
             {
-                "name": "Target State",
+                "name": "target_state",
                 "group": "control",
                 "reg_type": "holding",
                 "address": 1,
@@ -112,10 +112,10 @@
                 "sporadic": true,
                 "min": 0,
                 "max": 2,
-                "condition": "Show_modes_as_range==0"
+                "condition": "show_modes_as_range==0"
             },
             {
-                "name": "Target State",
+                "name": "target_state",
                 "group": "control",
                 "reg_type": "holding",
                 "address": 1,
@@ -128,44 +128,44 @@
                     2
                 ],
                 "enum_titles": [
-                    "Close",
-                    "Open",
-                    "Stop"
+                    "close",
+                    "open",
+                    "stop"
                 ],
-                "condition": "Show_modes_as_range==1"
+                "condition": "show_modes_as_range==1"
             },
             {
-                "name": "Open",
+                "name": "open",
                 "type": "pushbutton",
                 "group": "control",
                 "reg_type": "holding",
                 "address": "1",
                 "on_value":"1",
-                "condition": "Show_modes_as_range==2",
+                "condition": "show_modes_as_range==2",
                 "enabled": true
             },
             {
-                "name": "Stop",
+                "name": "stop",
                 "type": "pushbutton",
                 "group": "control",
                 "reg_type": "holding",
                 "address": "1",
                 "on_value":"2",
-                "condition": "Show_modes_as_range==2",
+                "condition": "show_modes_as_range==2",
                 "enabled": true
             },
             {
-                "name": "Close",
+                "name": "close",
                 "type": "pushbutton",
                 "group": "control",
                 "reg_type": "holding",
                 "address": "1",
                 "on_value":"0",
-                "condition": "Show_modes_as_range==2",
+                "condition": "show_modes_as_range==2",
                 "enabled": true
             },
             {
-                "name": "Current Position",
+                "name": "current_position",
                 "group": "control",
                 "reg_type": "holding",
                 "address": 3,
@@ -179,7 +179,7 @@
                 "enabled": true
             },
             {
-                "name": "Target Position",
+                "name": "target_position",
                 "group": "control",
                 "reg_type": "holding",
                 "address": 5,
@@ -192,7 +192,7 @@
                 "enabled": true
             },
             {
-                "name": "Hand Drive",
+                "name": "hand_drive",
                 "group": "control",
                 "reg_type": "coil",
                 "address": 4,
@@ -200,7 +200,7 @@
                 "enabled": false
             },
             {
-                "name": "Lock",
+                "name": "lock",
                 "group": "control",
                 "reg_type": "coil",
                 "address": 9,
@@ -208,7 +208,7 @@
                 "readonly": false
             },
             {
-                "name": "Invert Direction",
+                "name": "invert_direction",
                 "group": "settings",
                 "reg_type": "coil",
                 "address": 6,
@@ -216,7 +216,7 @@
                 "enabled": false
             },
             {
-                "name": "Close Limit",
+                "name": "close_limit",
                 "type": "pushbutton",
                 "group": "settings",
                 "reg_type": "holding",
@@ -225,7 +225,7 @@
                 "enabled": false
             },
             {
-                "name": "Open Limit",
+                "name": "open_limit",
                 "type": "pushbutton",
                 "group": "settings",
                 "reg_type": "holding",
@@ -234,7 +234,7 @@
                 "enabled": false
             },
             {
-                "name": "Reset Limits",
+                "name": "reset_limits",
                 "type": "pushbutton",
                 "group": "settings",
                 "reg_type": "holding",
@@ -243,7 +243,7 @@
                 "enabled": false
             },
             {
-                "name": "Factory Reset",
+                "name": "factory_reset",
                 "type": "pushbutton",
                 "group": "settings",
                 "reg_type": "holding",
@@ -252,7 +252,7 @@
                 "enabled": false
             },
             {
-                "name": "Curtain connected",
+                "name": "curtain_connected",
                 "group": "hw_info",
                 "reg_type": "coil",
                 "address": 20,
@@ -261,7 +261,7 @@
                 "readonly": true
             },
             {
-                "name": "Low-current switch type",
+                "name": "low_current_switch_type",
                 "group": "settings",
                 "reg_type": "holding",
                 "address": 7,
@@ -270,10 +270,10 @@
                 "enabled": false,
                 "min": 1,
                 "max": 4,
-                "condition": "Show_control_switch_as_range==1"
+                "condition": "show_control_switch_as_range==1"
             },
             {
-                "name": "Low-current switch type",
+                "name": "low_current_switch_type",
                 "group": "settings",
                 "reg_type": "holding",
                 "address": 7,
@@ -287,15 +287,15 @@
                     4
                 ],
                 "enum_titles": [
-                    "Double button with return (default)",
-                    "Double button without return",
-                    "DC246 electronic circuit breaker",
-                    "Single cyclic button"
+                    "double_button_with_return_default",
+                    "double_button_without_return",
+                    "dc246_electronic_circuit_breaker",
+                    "single_cyclic_button"
                 ],
-                "condition": "Show_control_switch_as_range!=1"
+                "condition": "show_control_switch_as_range!=1"
             },
             {
-                "name": "Power switch type",
+                "name": "power_switch_type",
                 "group": "settings",
                 "reg_type": "holding",
                 "address": 9,
@@ -304,10 +304,10 @@
                 "enabled": false,
                 "min": 0,
                 "max": 2,
-                "condition": "Show_power_switch_as_range==1"
+                "condition": "show_power_switch_as_range==1"
             },
             {
-                "name": "Power switch type",
+                "name": "power_switch_type",
                 "group": "settings",
                 "reg_type": "holding",
                 "address": 9,
@@ -320,14 +320,14 @@
                     2
                 ],
                 "enum_titles": [
-                    "Double non—return button (default)",
-                    "Hotel mode (card switch)",
-                    "Double non-return button"
+                    "double_non_return_button_default",
+                    "hotel_mode_card switch",
+                    "double_non_return_button"
                 ],
-                "condition": "Show_power_switch_as_range!=1"
+                "condition": "show_power_switch_as_range!=1"
             },
             {
-                "name": "Motor version",
+                "name": "motor_version",
                 "group": "hw_info",
                 "reg_type": "holding",
                 "address": 6,
@@ -400,7 +400,7 @@
                 ]
             },
             {
-                "name": "HW Version",
+                "name": "hw_version",
                 "group": "hw_info",
                 "address": 200,
                 "reg_type": "holding",
@@ -412,7 +412,7 @@
                 "sporadic": true
             },
             {
-                "name": "FW Version",
+                "name": "fw_version",
                 "group": "hw_info",
                 "address": 250,
                 "reg_type": "holding",
@@ -424,7 +424,7 @@
                 "sporadic": true
             },
             {
-                "name": "PROTO Version",
+                "name": "proto_version",
                 "group": "hw_info",
                 "address": 400,
                 "reg_type": "input",
@@ -436,7 +436,7 @@
                 "sporadic": true
             },
             {
-                "name": "Signature",
+                "name": "signature",
                 "group": "hw_info",
                 "address": 290,
                 "reg_type": "input",
@@ -448,7 +448,7 @@
                 "readonly": true
             },
             {
-                "name": "Serial",
+                "name": "serial",
                 "enabled": false,
                 "reg_type": "holding",
                 "address": 270,
@@ -464,54 +464,54 @@
             },
             "ru": {
                 "template_title": "AKKO CM-1-MB-R8 (мотор раздвижных штор)",
-                "Show modes as range": "Отображать желательное cостояние шторы",
-                "Control": "Управление",
-                "Current State": "Текущее состояние",
-                "Target State": "Желаемое состояние",
-                "Current Position": "Текущее положение",
-                "Target Position": "Желаемое положение",
-                "Open": "Открыть",
-                "Close": "Закрыть",
-                "Stop": "Остановить",
-                "Hand Drive": "Управление рукой",
-                "Lock": "Блокировать управление",
-                "Slider": "Ползунок",
-                "Drop-down list": "Выпадающий список",
-                "Buttons": "Кнопки",
-                "Settings": "Настройки",
-                "Show control switch as range": "Отображать слаботочный выключатель как ползунок",
-                "Show power switch as range": "Отображать силовой выключатель как ползунок",
-                "Control switch": "Слаботочный вход:",
-                "Low-current switch type": "Слаботочный вход",
-                "Double button with return (default)": "Двойная (с возвратом)",
-                "Double button without return": "Двойная (без возврата)",
-                "DC246 electronic circuit breaker": "DC246",
-                "Single cyclic button": "Одиночная циклическая",
-                "Power switch": "Силовой вход:",
-                "Power switch type": "Силовой вход",
-                "Double non—return button (default)": "Двойная (без возврата)",
-                "Hotel mode (card switch)": "Гостиничный режим",
-                "Double non-return button": "Двойная (с возвратом)",
-                "Invert Direction": "Инверсия движения",
-                "Close Limit": "Концевое положение закрытия",
-                "Open Limit": "Концевое положение открытия",
-                "Reset Limits": "Сбросить концевые положения",
-                "Factory Reset": "Сбросить до зовадских",
-                "HW Info": "Данные модуля",
-                "Curtain connected": "Штора подключена",
-                "Motor version": "Версия мотора",
-                "HW Version": "Версия устройства",
-                "FW Version": "Версия прошивки",
-                "PROTO Version": "Версия протокола",
-                "Signature": "Сигнатура устройства",
-                "Serial": "Серийный номер",
-                "Stopped": "Остановлен",
-                "Opened": "Открыто",
-                "Closed": "Закрыто",
-                "Opening": "Открывается",
-                "Closing": "Закрывается",
-                "No": "Нет",
-                "Yes": "Да"
+                "show_modes_as_range": "Отображать желательное cостояние шторы",
+                "control": "Управление",
+                "current_state": "Текущее состояние",
+                "target_state": "Желаемое состояние",
+                "current_position": "Текущее положение",
+                "target_position": "Желаемое положение",
+                "open": "Открыть",
+                "close": "Закрыть",
+                "stop": "Остановить",
+                "hand_drive": "Управление рукой",
+                "lock": "Блокировать управление",
+                "slider": "Ползунок",
+                "drop_down_list": "Выпадающий список",
+                "buttons": "Кнопки",
+                "settings": "Настройки",
+                "show_control_switch_as_range": "Отображать слаботочный выключатель как ползунок",
+                "show_power_switch_as_range": "Отображать силовой выключатель как ползунок",
+                "control_switch": "Слаботочный вход:",
+                "low_current_switch_type": "Слаботочный вход",
+                "double_button_with_return_default": "Двойная (с возвратом)",
+                "double_button_without_return": "Двойная (без возврата)",
+                "dc246_electronic_circuit_breaker": "DC246",
+                "single_cyclic_button": "Одиночная циклическая",
+                "power_switch": "Силовой вход:",
+                "power_switch_type": "Силовой вход",
+                "double_non_return_button_default": "Двойная (без возврата)",
+                "hotel_mode_card switch": "Гостиничный режим",
+                "double_non_return_button": "Двойная (с возвратом)",
+                "invert_direction": "Инверсия движения",
+                "close_limit": "Концевое положение закрытия",
+                "open_limit": "Концевое положение открытия",
+                "reset_limits": "Сбросить концевые положения",
+                "factory_reset": "Сбросить до зовадских",
+                "hw_info": "Данные модуля",
+                "curtain_connected": "Штора подключена",
+                "motor_version": "Версия мотора",
+                "hw_version": "Версия устройства",
+                "fw_version": "Версия прошивки",
+                "proto_version": "Версия протокола",
+                "signature": "Сигнатура устройства",
+                "serial": "Серийный номер",
+                "stopped": "Остановлен",
+                "opened": "Открыто",
+                "closed": "Закрыто",
+                "opening": "Открывается",
+                "closing": "Закрывается",
+                "no": "Нет",
+                "yes": "Да"
             }
         }
     }
