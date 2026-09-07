@@ -8,7 +8,7 @@ public:
     TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
                     const std::string& requestPortSetupSchemaFilePath,
                     const std::string& requestPortScanSchemaFilePath,
-                    PRPCConfig rpcConfig,
+                    PHandlerConfig handlerConfig,
                     TSerialClientTaskRunner& serialClientTaskRunner,
                     TRPCDeviceParametersCache& parametersCache,
                     WBMQTT::PMqttRpcServer rpcServer);
@@ -17,7 +17,7 @@ private:
     Json::Value RequestPortLoadSchema;
     Json::Value RequestPortSetupSchema;
     Json::Value RequestPortScanSchema;
-    PRPCConfig RPCConfig;
+    PHandlerConfig HandlerConfig;
     TSerialClientTaskRunner& SerialClientTaskRunner;
     TRPCDeviceParametersCache& ParametersCache;
 
@@ -31,6 +31,7 @@ private:
                   WBMQTT::TMqttRpcServer::TResultCallback onResult,
                   WBMQTT::TMqttRpcServer::TErrorCallback onError);
     Json::Value LoadPorts(const Json::Value& request);
+    Json::Value ListPorts(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCPortHandler> PRPCPortHandler;
