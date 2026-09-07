@@ -43,4 +43,5 @@ else
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default"
 fi
 
-cat "$BOARD_CONF" > "$CONFFILE"
+CONFIG_TARGET="$(readlink -f "$CONFFILE")" || exit 1
+rsync --archive --ignore-times --fsync "$BOARD_CONF" "$CONFIG_TARGET"
