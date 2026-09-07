@@ -201,6 +201,18 @@ namespace
         return std::make_optional(res);
     }
 
+    std::chrono::seconds GetMaxPublishInterval(const Json::Value& data, std::chrono::seconds defaultValue)
+    {
+        auto res = defaultValue;
+        Get(data, "max_publish_interval", res);
+        if (res > MaxPublishIntervalDisabled && res < MaxPublishIntervalLowLimit) {
+            LOG(Warn) << "\"max_publish_interval\" is set to " << MaxPublishIntervalLowLimit.count() << " instead of "
+                      << res.count();
+            res = MaxPublishIntervalLowLimit;
+        }
+        return std::max(res, MaxPublishIntervalDisabled);
+    }
+
     struct TLoadingContext
     {
         // Full path to loaded item composed from device and channels names
@@ -213,6 +225,8 @@ namespace
         size_t stride = 0;
         TTitleTranslations translated_name_prefixes;
         const Json::Value* translations = nullptr;
+
+        std::chrono::seconds max_publish_interval = MaxPublishIntervalDisabled;
 
         TLoadingContext(const IDeviceFactory& f, const IRegisterAddress& base_address)
             : factory(f),
@@ -411,6 +425,7 @@ namespace
         }
 
         Get(channel_data, "units", channel->Units);
+        channel->MaxPublishInterval = GetMaxPublishInterval(channel_data, context.max_publish_interval);
 
         if (IsSerialNumberChannel(channel_data) && registers.size()) {
             deviceWithChannels.Device->SetSnRegister(registers[0]->GetConfig());
@@ -444,6 +459,7 @@ namespace
 
         TLoadingContext newContext(context.factory, *baseAddress);
         newContext.translations = context.translations;
+        newContext.max_publish_interval = GetMaxPublishInterval(channel_data, context.max_publish_interval);
         auto name = channel_data["name"].asString();
         newContext.name_prefix = name;
         if (!context.name_prefix.empty()) {
@@ -1006,6 +1022,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     TLoadingContext context(*protocolParams.factory,
                             protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress());
     context.translations = loadParams.Translations;
+    context.max_publish_interval = GetMaxPublishInterval(*cfg, MaxPublishIntervalDisabled);
     auto regTypes = protocolParams.protocol->GetRegTypes();
     LoadSetupItems(*deviceWithChannels->Device, *cfg, *regTypes, context);
     LoadChannels(*deviceWithChannels, *cfg, params.Defaults.ReadRateLimit, *regTypes, context);

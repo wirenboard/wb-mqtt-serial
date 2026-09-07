@@ -1279,6 +1279,40 @@ TEST_F(TModbusPushbuttonPublishTest, DuplicateValues)
     }
 }
 
+class TModbusMaxPublishIntervalTest: public TSerialDeviceIntegrationTest
+{
+protected:
+    void SetUp() override
+    {
+        TSerialDeviceIntegrationTest::SetUp();
+        SetMode(E_Normal);
+    }
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-max-publish-interval-test.json";
+    }
+};
+
+// Check that a channel value is published after max_publish_interval even if it hasn't changed,
+// and channels with zero max_publish_interval are not published
+TEST_F(TModbusMaxPublishIntervalTest, PublishUnchangedValues)
+{
+    auto driver = SerialDriver->GetPortDrivers().front();
+    auto& regs = driver->GetSerialClient()->GetDevices().front()->GetRegisters();
+    for (auto reg: regs) {
+        reg->SetValue(TRegisterValue{1});
+        driver->OnValueRead(reg);
+    }
+
+    auto now = std::chrono::steady_clock::now();
+
+    Note() << "PublishExpiredValues() [interval is not expired]";
+    driver->PublishExpiredValues(now + std::chrono::seconds(9));
+
+    Note() << "PublishExpiredValues() [interval is expired]";
+    driver->PublishExpiredValues(now + std::chrono::seconds(11));
+}
+
 class TModbusUnsupportedChannelTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:

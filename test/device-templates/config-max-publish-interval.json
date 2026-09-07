@@ -1,0 +1,33 @@
+{
+    "device_type": "max_publish_interval_test",
+    "device": {
+        "name": "max publish interval",
+        "id": "max-publish-interval",
+        "max_publish_interval": 10,
+        "channels": [
+            {
+                "name": "Inherited",
+                "reg_type": "input",
+                "address": 1
+            },
+            {
+                "name": "Own",
+                "reg_type": "input",
+                "address": 2,
+                "max_publish_interval": 20
+            },
+            {
+                "name": "Disabled",
+                "reg_type": "input",
+                "address": 3,
+                "max_publish_interval": 0
+            },
+            {
+                "name": "Clamped",
+                "reg_type": "input",
+                "address": 4,
+                "max_publish_interval": 2
+            }
+        ]
+    }
+}

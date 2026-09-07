@@ -34,13 +34,6 @@ namespace
         return sn;
     }
 
-    std::string GetParityChar(uint64_t parity)
-    {
-        const std::unordered_map<uint64_t, std::string> parityMap = {{0, "N"}, {1, "O"}, {2, "E"}};
-        auto it = parityMap.find(parity);
-        return (it != parityMap.end() ? it->second : "U");
-    }
-
     void AppendError(Json::Value& errorsJson, const std::string& id, const std::string& message)
     {
         Json::Value errorJson;
@@ -96,7 +89,20 @@ namespace
             serialParamsReadError = e.what();
         }
         try {
-            cfgJson["parity"] = GetParityChar(reader.Read<uint64_t>(WbRegisters::PARITY_REGISTER_NAME, 3));
+            auto parity = reader.Read<uint64_t>(WbRegisters::PARITY_REGISTER_NAME, 3);
+            switch (parity) {
+                case 0:
+                    cfgJson["parity"] = "N";
+                    break;
+                case 1:
+                    cfgJson["parity"] = "O";
+                    break;
+                case 2:
+                    cfgJson["parity"] = "E";
+                    break;
+                default:
+                    serialParamsReadError = "unexpected parity register value " + std::to_string(parity);
+            }
         } catch (const std::exception& e) {
             serialParamsReadError = e.what();
         }
