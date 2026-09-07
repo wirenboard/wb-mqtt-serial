@@ -13,7 +13,6 @@
 
 #include "confed_protocol_schemas_map.h"
 #include "port/feature_port.h"
-#include "rpc/rpc_config.h"
 #include "serial_device.h"
 #include "templates_map.h"
 
@@ -59,9 +58,9 @@ public:
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
-typedef std::function<PFeaturePort(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
+typedef std::function<PFeaturePort(const Json::Value& config)> TPortFactoryFn;
 
-PFeaturePort DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
+PFeaturePort DefaultPortFactory(const Json::Value& port_data);
 
 class IRegisterAddressFactory
 {
@@ -245,7 +244,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& commonDeviceSchema,
                           TTemplateMap& templates,
-                          PRPCConfig rpcConfig,
                           const Json::Value& portsSchema,
                           TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory = DefaultPortFactory);

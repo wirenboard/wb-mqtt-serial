@@ -267,9 +267,10 @@ std::string TSerialPort::GetDescription(bool verbose) const
     return Settings.Device;
 }
 
-const TSerialPortSettings& TSerialPort::GetSettings() const
+TSerialPortSettings TSerialPort::GetInitialSettings() const
 {
-    return Settings;
+    // The path is never changed, only the connection settings are
+    return TSerialPortSettings(Settings.Device, InitialSettings);
 }
 
 void TSerialPort::WaitForSecondStopBit()
