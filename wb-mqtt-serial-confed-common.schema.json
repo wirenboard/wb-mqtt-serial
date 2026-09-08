@@ -304,10 +304,22 @@
             }
           }
         },
+        "write_reg_type": {
+          "$ref": "#/definitions/write_reg_type",
+          "title": "Write register type",
+          "propertyOrder": 8,
+          "options": {
+            "grid_columns": 3,
+            "wb": {
+              "show_editor": true,
+              "omit_default": true
+            }
+          }
+        },
         "format": {
           "$ref": "#/definitions/format",
-          "title": "Format", 
-          "propertyOrder": 8,
+          "title": "Format",
+          "propertyOrder": 9,
           "options": {
             "grid_columns": 3,
             "wb": {
@@ -319,7 +331,7 @@
         "units": {
           "type": "string",
           "title": "Units",
-          "propertyOrder": 9,
+          "propertyOrder": 10,
           "options": {
             "grid_columns": 3,
             "wb": {
@@ -331,7 +343,7 @@
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_num",
-          "propertyOrder": 13,
+          "propertyOrder": 14,
           "format": "wb-serial-number",
           "options": {
             "grid_columns": 3,
@@ -346,7 +358,7 @@
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 10,
+          "propertyOrder": 11,
           "options": {
             "grid_columns": 3,
             "dependencies": {
@@ -363,7 +375,7 @@
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 11,
+          "propertyOrder": 12,
           "options": {
             "grid_columns": 3,
             "dependencies": {
@@ -380,7 +392,7 @@
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 12,
+          "propertyOrder": 13,
           "minimum": 0,
           "options": {
             "grid_columns": 3,
@@ -394,7 +406,7 @@
           "title": "Read-only",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 14,
+          "propertyOrder": 15,
           "options": {
             "grid_columns": 12,
             "wb": {
@@ -407,7 +419,7 @@
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 18,
+          "propertyOrder": 19,
           "format": "wb-serial-int",
           "options": {
             "grid_columns": 3,
@@ -421,7 +433,7 @@
           "title": "'Off' value",
           "description": "Value corresponding to the 'Off' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 19,
+          "propertyOrder": 20,
           "format": "wb-serial-int",
           "options": {
             "grid_columns": 3,
@@ -446,7 +458,7 @@
               "allow_undefined": true
             }
           },
-          "propertyOrder": 15
+          "propertyOrder": 16
         },
         "read_rate_limit_ms": {
           "type": "integer",
@@ -454,7 +466,7 @@
           "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 16
+          "propertyOrder": 17
         },
         "max_publish_interval": {
           "type": "integer",
@@ -462,12 +474,12 @@
           "description": "max_publish_interval_desc",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 17
+          "propertyOrder": 18
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 20,
+          "propertyOrder": 21,
           "$ref": "#/definitions/serial_int",
           "format": "wb-serial-int",
           "options": {
@@ -481,7 +493,7 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 21,
+          "propertyOrder": 22,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
@@ -499,7 +511,7 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "title": "Word order",
-          "propertyOrder": 22,
+          "propertyOrder": 23,
           "options": {
             "grid_columns": 6,
             "wb": {
@@ -511,7 +523,7 @@
         "byte_order": {
           "$ref": "#/definitions/byte_order",
           "title": "Byte order",
-          "propertyOrder": 23,
+          "propertyOrder": 24,
           "options": {
             "grid_columns": 6,
             "wb": {
@@ -526,7 +538,7 @@
           "description": "string_data_size_description",
           "minimum": 1,
           "default": 1,
-          "propertyOrder": 24,
+          "propertyOrder": 25,
           "options": {
             "dependencies": {
               "format": "string"
@@ -542,7 +554,7 @@
           "description": "sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 25,
+          "propertyOrder": 26,
           "options": {
             "grid_columns": 6,
             "wb": {
@@ -556,7 +568,7 @@
           "description": "semi_sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 26,
+          "propertyOrder": 27,
           "options": {
             "grid_columns": 6,
             "wb": {
@@ -569,13 +581,13 @@
           "title": "List of values",
           "type": "array",
           "items": { "type": "string" },
-          "propertyOrder": 27
+          "propertyOrder": 28
         },
         "enum_titles": {
           "title": "List of value titles",
           "type": "array",
           "items": { "type": "string" },
-          "propertyOrder": 28
+          "propertyOrder": 29
         },
         "device_type": {
           "not": {},
@@ -586,7 +598,7 @@
           "description": "hidden_channel_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 29,
+          "propertyOrder": 30,
           "options": {
             "wb": {
               "show_editor": true,
@@ -820,6 +832,15 @@
                "press_counter",
                // obis_* are deprecated, use item_*, temperature and power_factor
                "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
+    },
+    "write_reg_type": {
+      "type": "string",
+      "title": "Write register type",
+      "enum": ["", "coil", "holding", "holding_single", "holding_multi"],
+      "default": "",
+      "options": {
+        "enum_titles": ["Not set", "coil", "holding", "holding_single", "holding_multi"]
+      }
     },
     "format": {
       "type": "string",
@@ -1313,6 +1334,8 @@
       "This name is displayed both in UI and used as part of MQTT topic": "Отображается в интерфейсе и используется как часть топика в MQTT",
       "Control type": "Тип канала",
       "Register type": "Тип регистра",
+      "Write register type": "Тип регистра для записи",
+      "Not set": "Не задан",
       "Format": "Формат",
       "Signed 16-bit integer": "16-битное целое со знаком",
       "Unsigned 16-bit integer": "16-битное целое без знака", 

@@ -185,7 +185,7 @@ namespace
                                               const TRegisterTypeMap& typeMap,
                                               const TRegisterType& readType)
     {
-        if (itemData.isMember("write_reg_type")) {
+        if (HasNoEmptyProperty(itemData, "write_reg_type")) {
             std::string type = itemData["write_reg_type"].asString();
             try {
                 return typeMap.Find(type);
