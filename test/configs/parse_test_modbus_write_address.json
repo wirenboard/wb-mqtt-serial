@@ -22,6 +22,15 @@
                             "write_address" : 115,
                             "type": "value",
                             "format": "u16"
+                        },
+                        {
+                            "name" : "Input U16 with write_reg_type",
+                            "reg_type" : "input",
+                            "address" : 120,
+                            "write_reg_type" : "holding",
+                            "write_address" : 125,
+                            "type": "value",
+                            "format": "u16"
                         }
                     ]
                 }
