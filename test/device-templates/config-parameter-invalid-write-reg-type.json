@@ -1,0 +1,23 @@
+// testing template for a parameter with a read only "write_reg_type"
+{
+    "device_type": "parameter_invalid_write_reg_type",
+    "device": {
+        "name": "parameter invalid write reg type",
+        "id": "parameter invalid write reg type",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": {
+            "p1": {
+                "title": "p1",
+                "address": 2001,
+                "write_reg_type": "input"
+            }
+        }
+    }
+}

@@ -274,10 +274,10 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteRegisterType)
     auto devices = portConfigs[0]->Devices;
     EXPECT_FALSE(devices.empty());
     auto deviceChannels = devices[0]->Channels;
-    EXPECT_EQ(deviceChannels.size(), 2);
-    auto regs = deviceChannels[1]->Registers;
-    EXPECT_FALSE(regs.empty());
-    auto config = regs[0]->GetConfig();
+    // channels with read only write_reg_type and with bit address are ignored
+    EXPECT_EQ(deviceChannels.size(), 4);
+
+    auto config = deviceChannels[1]->Registers[0]->GetConfig();
     EXPECT_EQ(GetUint32RegisterAddress(config->GetAddress()), 120);
     EXPECT_EQ(GetUint32RegisterAddress(config->GetWriteAddress()), 125);
     EXPECT_EQ(config->Type, Modbus::REG_INPUT);
@@ -285,6 +285,21 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteRegisterType)
     EXPECT_EQ(config->TypeName, "input");
     EXPECT_EQ(config->WriteTypeName, "holding");
     EXPECT_EQ(config->AccessType, TRegisterConfig::EAccessType::READ_WRITE);
+
+    auto stringConfig = deviceChannels[2]->Registers[0]->GetConfig();
+    EXPECT_EQ(stringConfig->Type, Modbus::REG_HOLDING);
+    EXPECT_EQ(stringConfig->WriteType, Modbus::REG_HOLDING_MULTI);
+    EXPECT_EQ(stringConfig->WriteTypeName, "holding_multi");
+
+    auto emptyConfig = deviceChannels[3]->Registers[0]->GetConfig();
+    EXPECT_EQ(emptyConfig->Type, Modbus::REG_HOLDING);
+    EXPECT_EQ(emptyConfig->WriteType, Modbus::REG_HOLDING);
+    EXPECT_EQ(emptyConfig->WriteTypeName, "holding");
+}
+
+TEST_F(TConfigParserTest, ParseReadOnlyWriteRegisterType)
+{
+    EXPECT_THROW(GetConfig("configs/parse_test_invalid_write_reg_type.json"), std::runtime_error);
 }
 
 TEST_F(TConfigParserTest, ParseReadonlyParameters)

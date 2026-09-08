@@ -1162,9 +1162,10 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
                                                                 stride,
                                                                 RegisterFormatByteWidth(regType.DefaultFormat));
 
-    if ((regType.DefaultFormat == RegisterFormat::String || regType.DefaultFormat == RegisterFormat::String8) &&
-        registerDesc.DataWidth == 0)
-    {
+    auto isString =
+        (regType.DefaultFormat == RegisterFormat::String || regType.DefaultFormat == RegisterFormat::String8);
+
+    if (isString && registerDesc.DataWidth == 0) {
         throw TConfigParserException(readonlyOverrideErrorMessagePrefix +
                                      ": String size is not set for register string format");
     }
@@ -1176,7 +1177,7 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
             throw TConfigParserException(readonlyOverrideErrorMessagePrefix + ": register type \"" + writeRegType.Name +
                                          "\" can't be used for writing");
         }
-        if (registerDesc.DataWidth != 0) {
+        if (!isString && registerDesc.DataWidth != 0) {
             throw TConfigParserException(readonlyOverrideErrorMessagePrefix +
                                          ": \"write_reg_type\" is not allowed for registers with bit offset/width");
         }
