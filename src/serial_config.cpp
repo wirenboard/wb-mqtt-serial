@@ -181,6 +181,21 @@ namespace
         return typeMap.GetDefaultType();
     }
 
+    const TRegisterType& GetWriteRegisterType(const Json::Value& itemData,
+                                              const TRegisterTypeMap& typeMap,
+                                              const TRegisterType& readType)
+    {
+        if (itemData.isMember("write_reg_type")) {
+            std::string type = itemData["write_reg_type"].asString();
+            try {
+                return typeMap.Find(type);
+            } catch (...) {
+                throw TConfigParserException("invalid write register type: " + type);
+            }
+        }
+        return readType;
+    }
+
     std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
@@ -1114,6 +1129,8 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
 {
     TLoadRegisterConfigResult res;
     TRegisterType regType = GetRegisterType(registerData, typeMap);
+    TRegisterType writeRegType = GetWriteRegisterType(registerData, typeMap, regType);
+
     res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
 
     if (registerData.isMember("format")) {
@@ -1139,18 +1156,6 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
         sporadicMode = TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING;
     }
 
-    bool readonly = ReadChannelsReadonlyProperty(registerData,
-                                                 "readonly",
-                                                 regType.ReadOnly,
-                                                 readonlyOverrideErrorMessagePrefix,
-                                                 regType.Name);
-    // For compatibility with old configs
-    readonly = ReadChannelsReadonlyProperty(registerData,
-                                            "channel_readonly",
-                                            readonly,
-                                            readonlyOverrideErrorMessagePrefix,
-                                            regType.Name);
-
     auto registerDesc =
         factory.GetRegisterAddressFactory().LoadRegisterAddress(registerData,
                                                                 deviceBaseAddress,
@@ -1164,6 +1169,31 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
                                      ": String size is not set for register string format");
     }
 
+    // Registers with a separate type for writing are always writable
+    auto readonly = false;
+    if (writeRegType.Index != regType.Index) {
+        if (writeRegType.ReadOnly) {
+            throw TConfigParserException(readonlyOverrideErrorMessagePrefix + ": register type \"" + writeRegType.Name +
+                                         "\" can't be used for writing");
+        }
+        if (registerDesc.DataWidth != 0) {
+            throw TConfigParserException(readonlyOverrideErrorMessagePrefix +
+                                         ": \"write_reg_type\" is not allowed for registers with bit offset/width");
+        }
+    } else {
+        readonly = ReadChannelsReadonlyProperty(registerData,
+                                                "readonly",
+                                                regType.ReadOnly,
+                                                readonlyOverrideErrorMessagePrefix,
+                                                regType.Name);
+        // For compatibility with old configs
+        readonly = ReadChannelsReadonlyProperty(registerData,
+                                                "channel_readonly",
+                                                readonly,
+                                                readonlyOverrideErrorMessagePrefix,
+                                                regType.Name);
+    }
+
     res.RegisterConfig = TRegisterConfig::Create(regType.Index,
                                                  registerDesc,
                                                  regType.DefaultFormat,
@@ -1175,6 +1205,11 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
                                                  regType.Name,
                                                  regType.DefaultWordOrder,
                                                  regType.DefaultByteOrder);
+
+    if (writeRegType.Index != regType.Index) {
+        res.RegisterConfig->WriteType = writeRegType.Index;
+        res.RegisterConfig->WriteTypeName = writeRegType.Name;
+    }
 
     if (registerData.isMember("error_value")) {
         res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(registerData["error_value"], "error_value")};
