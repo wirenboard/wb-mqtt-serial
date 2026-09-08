@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.273.1) stable; urgency=medium
+
+  * Drop configs for unsupported boards
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 08 Sep 2026 10:20:00 +0400
+
 wb-mqtt-serial (2.273.0) stable; urgency=medium
 
   * Add OWEN SMI2-M LED indicator template
