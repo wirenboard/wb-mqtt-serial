@@ -274,8 +274,8 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteRegisterType)
     auto devices = portConfigs[0]->Devices;
     EXPECT_FALSE(devices.empty());
     auto deviceChannels = devices[0]->Channels;
-    // channels with read only write_reg_type and with bit address are ignored
-    EXPECT_EQ(deviceChannels.size(), 4);
+    // the channel with bit address and write_reg_type is ignored
+    EXPECT_EQ(deviceChannels.size(), 3);
 
     auto config = deviceChannels[1]->Registers[0]->GetConfig();
     EXPECT_EQ(GetUint32RegisterAddress(config->GetAddress()), 120);
@@ -290,11 +290,6 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteRegisterType)
     EXPECT_EQ(stringConfig->Type, Modbus::REG_HOLDING);
     EXPECT_EQ(stringConfig->WriteType, Modbus::REG_HOLDING_MULTI);
     EXPECT_EQ(stringConfig->WriteTypeName, "holding_multi");
-
-    auto emptyConfig = deviceChannels[3]->Registers[0]->GetConfig();
-    EXPECT_EQ(emptyConfig->Type, Modbus::REG_HOLDING);
-    EXPECT_EQ(emptyConfig->WriteType, Modbus::REG_HOLDING);
-    EXPECT_EQ(emptyConfig->WriteTypeName, "holding");
 }
 
 TEST_F(TConfigParserTest, ParseReadOnlyWriteRegisterType)

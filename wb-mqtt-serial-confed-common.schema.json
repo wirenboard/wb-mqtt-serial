@@ -312,7 +312,7 @@
             "grid_columns": 3,
             "wb": {
               "show_editor": true,
-              "allow_clear": true
+              "allow_undefined": true
             }
           }
         },
