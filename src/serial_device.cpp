@@ -332,6 +332,16 @@ void TSerialDevice::SetDisconnected()
     SetConnectionState(TDeviceConnectionState::DISCONNECTED);
 }
 
+bool TSerialDevice::HasRegistersToPoll() const
+{
+    for (const auto& reg: Registers) {
+        if (reg->GetConfig()->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
+            return true;
+        }
+    }
+    return false;
+}
+
 PRegister TSerialDevice::AddRegister(PRegisterConfig config)
 {
     auto reg = std::make_shared<TRegister>(shared_from_this(), config);

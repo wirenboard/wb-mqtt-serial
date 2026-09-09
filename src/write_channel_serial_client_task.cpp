@@ -19,9 +19,11 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
         return ISerialClientTask::TRunResult::OK;
     }
 
-    if (!port->IsOpen() || !Handler->Register()->IsSupported() ||
-        Handler->Register()->Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED)
-    {
+    auto device = Handler->Register()->Device();
+    auto isDisconnected =
+        device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED && device->HasRegistersToPoll();
+
+    if (!port->IsOpen() || !Handler->Register()->IsSupported() || isDisconnected) {
         Handler->Register()->SetError(TRegister::TError::WriteError);
         if (ErrorCallback) {
             ErrorCallback(Handler->Register());
@@ -44,7 +46,7 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
         return ISerialClientTask::TRunResult::OK;
     }
 
-    if (lastAccessedDevice.PrepareToAccess(*port, Handler->Register()->Device())) {
+    if (lastAccessedDevice.PrepareToAccess(*port, device)) {
         Handler->Flush(*port);
     } else {
         Handler->Register()->SetError(TRegister::TError::WriteError);

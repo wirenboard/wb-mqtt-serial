@@ -33,6 +33,13 @@ namespace
     {
         return ConvertFromRawValue(*reg->GetConfig(), reg->GetValue());
     }
+
+    const IRegisterAddress& GetAddress(PRegister reg)
+    {
+        const auto& config = *reg->GetConfig();
+        return config.AccessType == TRegisterConfig::EAccessType::WRITE_ONLY ? config.GetWriteAddress()
+                                                                             : config.GetAddress();
+    }
 }
 
 class TSerialClientTest: public TLoggedFixture
@@ -63,7 +70,7 @@ class TSerialClientTest: public TLoggedFixture
             what = "no";
         }
         Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->GetConfig()->TypeName << ": "
-               << reg->GetConfig()->GetAddress() << ">: " << what << " error";
+               << GetAddress(reg) << ">: " << what << " error";
         LastRegErrors[reg] = reg->GetErrorState();
     }
 
@@ -159,7 +166,7 @@ void TSerialClientTest::SetUp()
         std::string value = GetTextValue(reg);
         bool unchanged = (LastRegValues.count(reg) && LastRegValues[reg] == value);
         Emit() << "Read Callback: <" << reg->Device()->ToString() << ":" << reg->GetConfig()->TypeName << ": "
-               << reg->GetConfig()->GetAddress() << "> becomes " << value << (unchanged ? " [unchanged]" : "");
+               << GetAddress(reg) << "> becomes " << value << (unchanged ? " [unchanged]" : "");
         LastRegValues[reg] = value;
         if (!reg->GetErrorState().count()) {
             EmitErrorMsg(reg);
@@ -1011,6 +1018,32 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
         Note() << "Cycle() [reconnected]";
         SerialClient->Cycle();
     }
+    EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());
+    EXPECT_EQ(42, Device->Registers[20]);
+    EXPECT_FALSE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+}
+
+TEST_F(TSerialClientTest, WriteOnlyDeviceReconnectsOnWrite)
+{
+    // A device with write-only registers only is never polled,
+    // so a write is the only thing which can reconnect it
+
+    TRegisterDesc regDesc;
+    regDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(20);
+    PRegister reg20 = Device->AddRegister(TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, regDesc));
+    SerialClient->AddDevice(Device);
+    Device->DeviceConfig()->DeviceTimeout = std::chrono::milliseconds(0);
+
+    Device->BlockWriteFor(20, true);
+    SerialClient->SetTextValue(reg20, "42");
+    Note() << "Cycle() [write is blocked]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+
+    Device->BlockWriteFor(20, false);
+    Note() << "Cycle() [write is retried]";
+    SerialClient->Cycle();
     EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());
     EXPECT_EQ(42, Device->Registers[20]);
     EXPECT_FALSE(reg20->GetErrorState().test(TRegister::TError::WriteError));

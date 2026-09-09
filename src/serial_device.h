@@ -263,6 +263,13 @@ public:
     TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();
 
+    /**
+     * @brief Returns true if the device has registers to poll.
+     *        A device without them can't restore connection state by polling,
+     *        writing to its registers is the only way to communicate with it.
+     */
+    bool HasRegistersToPoll() const;
+
     bool GetSupportsHoles() const;
     void SetSupportsHoles(bool supportsHoles);
 
