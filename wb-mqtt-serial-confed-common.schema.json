@@ -312,7 +312,7 @@
             "grid_columns": 3,
             "wb": {
               "show_editor": true,
-              "omit_default": true
+              "allow_clear": true
             }
           }
         },
@@ -836,11 +836,7 @@
     "write_reg_type": {
       "type": "string",
       "title": "Write register type",
-      "enum": ["", "coil", "holding", "holding_single", "holding_multi"],
-      "default": "",
-      "options": {
-        "enum_titles": ["Not set", "coil", "holding", "holding_single", "holding_multi"]
-      }
+      "enum": ["coil", "holding", "holding_single", "holding_multi"]
     },
     "format": {
       "type": "string",
@@ -1335,7 +1331,6 @@
       "Control type": "Тип канала",
       "Register type": "Тип регистра",
       "Write register type": "Тип регистра для записи",
-      "Not set": "Не задан",
       "Format": "Формат",
       "Signed 16-bit integer": "16-битное целое со знаком",
       "Unsigned 16-bit integer": "16-битное целое без знака", 
