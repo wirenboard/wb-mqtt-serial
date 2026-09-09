@@ -1000,6 +1000,7 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
     EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());
 
     Device->BlockReadFor(20, true);
+    Device->BlockWriteFor(20, true);
     for (int i = 0; i < 3; ++i) {
         Note() << "Cycle() [read blocked]";
         SerialClient->Cycle();
@@ -1013,6 +1014,7 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
     EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
 
     Device->BlockReadFor(20, false);
+    Device->BlockWriteFor(20, false);
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     for (int i = 0; i < 3; ++i) {
         Note() << "Cycle() [reconnected]";
@@ -1025,9 +1027,6 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
 
 TEST_F(TSerialClientTest, WriteOnlyDeviceReconnectsOnWrite)
 {
-    // A device with write-only registers only is never polled,
-    // so a write is the only thing which can reconnect it
-
     TRegisterDesc regDesc;
     regDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(20);
     PRegister reg20 = Device->AddRegister(TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, regDesc));
@@ -1047,7 +1046,7 @@ TEST_F(TSerialClientTest, WriteOnlyDeviceReconnectsOnWrite)
     EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
     EXPECT_NE(42, Device->Registers[20]);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    Device->SetLastWriteTime(std::chrono::steady_clock::now() - std::chrono::minutes(1));
     Note() << "Cycle() [write is retried]";
     SerialClient->Cycle();
     EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());

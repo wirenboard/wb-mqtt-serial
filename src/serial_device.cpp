@@ -332,16 +332,6 @@ void TSerialDevice::SetDisconnected()
     SetConnectionState(TDeviceConnectionState::DISCONNECTED);
 }
 
-bool TSerialDevice::HasRegistersToPoll() const
-{
-    for (const auto& reg: Registers) {
-        if (reg->GetConfig()->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
-            return true;
-        }
-    }
-    return false;
-}
-
 PRegister TSerialDevice::AddRegister(PRegisterConfig config)
 {
     auto reg = std::make_shared<TRegister>(shared_from_this(), config);
@@ -354,16 +344,6 @@ const std::list<PRegister>& TSerialDevice::GetRegisters() const
     return Registers;
 }
 
-std::chrono::steady_clock::time_point TSerialDevice::GetLastPrepareTime() const
-{
-    return LastPrepareTime;
-}
-
-void TSerialDevice::SetLastPrepareTime(std::chrono::steady_clock::time_point prepareTime)
-{
-    LastPrepareTime = prepareTime;
-}
-
 std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
 {
     return LastReadTime;
@@ -372,6 +352,16 @@ std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
 void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTime)
 {
     LastReadTime = readTime;
+}
+
+std::chrono::steady_clock::time_point TSerialDevice::GetLastWriteTime() const
+{
+    return LastWriteTime;
+}
+
+void TSerialDevice::SetLastWriteTime(std::chrono::steady_clock::time_point writeTime)
+{
+    LastWriteTime = writeTime;
 }
 
 void TSerialDevice::AddOnConnectionStateChangedCallback(TSerialDevice::TDeviceCallback callback)

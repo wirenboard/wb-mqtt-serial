@@ -7,7 +7,10 @@ using namespace std::chrono_literals;
 
 namespace
 {
-    const auto DISCONNECTED_WRITE_INTERVAL = 1s;
+    // A device which is not polled can be reconnected only by writing to it,
+    // but writes retried in every cycle occupy the port and slow down other requests,
+    // so a disconnected device is accessed not more often than once per interval
+    const auto DISCONNECTED_WRITE_INTERVAL = 5s;
 }
 
 TWriteChannelSerialClientTask::TWriteChannelSerialClientTask(PRegisterHandler handler,
@@ -27,11 +30,10 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
     }
 
     auto device = Handler->Register()->Device();
-    auto now = std::chrono::steady_clock::now();
     auto isDisconnected = device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED;
-    auto skipPrepare = device->HasRegistersToPoll() || now - device->GetLastPrepareTime() < DISCONNECTED_WRITE_INTERVAL;
-
-    if (!port->IsOpen() || !Handler->Register()->IsSupported() || (isDisconnected && skipPrepare)) {
+    auto skipWrite =
+        std::chrono::steady_clock::now() - device->GetLastWriteTime() < DISCONNECTED_WRITE_INTERVAL;
+    if (!port->IsOpen() || !Handler->Register()->IsSupported() || (isDisconnected && skipWrite)) {
         Handler->Register()->SetError(TRegister::TError::WriteError);
         if (ErrorCallback) {
             ErrorCallback(Handler->Register());
@@ -54,7 +56,6 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
         return ISerialClientTask::TRunResult::OK;
     }
 
-    device->SetLastPrepareTime(now);
     if (lastAccessedDevice.PrepareToAccess(*port, device)) {
         Handler->Flush(*port);
     } else {
@@ -69,5 +70,7 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
             ReadCallback(Handler->Register());
         }
     }
+
+    device->SetLastWriteTime(std::chrono::steady_clock::now());
     return Handler->NeedToFlush() ? ISerialClientTask::TRunResult::RETRY : ISerialClientTask::TRunResult::OK;
 }
