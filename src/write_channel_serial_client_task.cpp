@@ -3,6 +3,13 @@
 
 #define LOG(logger) logger.Log() << "[serial client] "
 
+using namespace std::chrono_literals;
+
+namespace
+{
+    const auto DISCONNECTED_WRITE_INTERVAL = 1s;
+}
+
 TWriteChannelSerialClientTask::TWriteChannelSerialClientTask(PRegisterHandler handler,
                                                              TRegisterCallback readCallback,
                                                              TRegisterCallback errorCallback)
@@ -20,10 +27,11 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
     }
 
     auto device = Handler->Register()->Device();
-    auto isDisconnected =
-        device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED && device->HasRegistersToPoll();
+    auto now = std::chrono::steady_clock::now();
+    auto isDisconnected = device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED;
+    auto skipPrepare = device->HasRegistersToPoll() || now - device->GetLastPrepareTime() < DISCONNECTED_WRITE_INTERVAL;
 
-    if (!port->IsOpen() || !Handler->Register()->IsSupported() || isDisconnected) {
+    if (!port->IsOpen() || !Handler->Register()->IsSupported() || (isDisconnected && skipPrepare)) {
         Handler->Register()->SetError(TRegister::TError::WriteError);
         if (ErrorCallback) {
             ErrorCallback(Handler->Register());
@@ -46,6 +54,7 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
         return ISerialClientTask::TRunResult::OK;
     }
 
+    device->SetLastPrepareTime(now);
     if (lastAccessedDevice.PrepareToAccess(*port, device)) {
         Handler->Flush(*port);
     } else {

@@ -1042,6 +1042,12 @@ TEST_F(TSerialClientTest, WriteOnlyDeviceReconnectsOnWrite)
     EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
 
     Device->BlockWriteFor(20, false);
+    Note() << "Cycle() [write attempts are rate limited]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_NE(42, Device->Registers[20]);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     Note() << "Cycle() [write is retried]";
     SerialClient->Cycle();
     EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());

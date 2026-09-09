@@ -354,6 +354,16 @@ const std::list<PRegister>& TSerialDevice::GetRegisters() const
     return Registers;
 }
 
+std::chrono::steady_clock::time_point TSerialDevice::GetLastPrepareTime() const
+{
+    return LastPrepareTime;
+}
+
+void TSerialDevice::SetLastPrepareTime(std::chrono::steady_clock::time_point prepareTime)
+{
+    LastPrepareTime = prepareTime;
+}
+
 std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
 {
     return LastReadTime;
