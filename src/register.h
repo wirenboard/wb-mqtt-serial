@@ -206,6 +206,7 @@ class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 
 public:
     int Type;
+    int WriteType;
     RegisterFormat Format;
     double Scale;
     double Offset;
@@ -229,6 +230,7 @@ public:
 
     std::string FwVersion;
     std::string TypeName;
+    std::string WriteTypeName;
 
     // Minimal interval between register reads, if ReadPeriod is not set
     std::optional<std::chrono::milliseconds> ReadRateLimit;

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.274.0) stable; urgency=medium
+
+  * Add register write type option for Modbus device channels and parameters
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Sep 2026 14:11:44 +0300
+
 wb-mqtt-serial (2.273.1) stable; urgency=medium
 
   * Drop configs for unsupported boards
