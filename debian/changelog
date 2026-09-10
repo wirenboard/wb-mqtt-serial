@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.268.0+wb100) stable; urgency=medium
+wb-mqtt-serial (2.268.0-wb100) stable; urgency=medium
 
   * Regenerate the system config when its content is all NUL bytes
 
