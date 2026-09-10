@@ -31,8 +31,7 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
 
     auto device = Handler->Register()->Device();
     auto isDisconnected = device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED;
-    auto skipWrite =
-        std::chrono::steady_clock::now() - device->GetLastWriteTime() < DISCONNECTED_WRITE_INTERVAL;
+    auto skipWrite = std::chrono::steady_clock::now() - device->GetLastWriteTime() < DISCONNECTED_WRITE_INTERVAL;
     if (!port->IsOpen() || !Handler->Register()->IsSupported() || (isDisconnected && skipWrite)) {
         Handler->Register()->SetError(TRegister::TError::WriteError);
         if (ErrorCallback) {
