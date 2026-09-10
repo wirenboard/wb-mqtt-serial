@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.275.0) stable; urgency=medium
+
+  * ONOKOM templates update (external contribution):
+    - add templates for AKKO devices
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Mon, 07 Sep 2026 14:45:09 +0300
 wb-mqtt-serial (2.274.2) stable; urgency=medium
 
   * Regenerate the system config when its content is all NUL bytes
@@ -5462,3 +5468,4 @@ wb-homa-modbus (1.9) stable; urgency=medium
   * report errors via controls/<control>/meta/error
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 15 May 2015 10:52:29 +0000
+ 
