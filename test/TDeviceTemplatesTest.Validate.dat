@@ -47,54 +47,6 @@ AKKO
 	Set top limit  =>  Set top limit
 	Stop  =>  Stop
 	Type  =>  Type
-AKKO CM-1-MB-R8
-	close  =>  close
-	close_limit  =>  close_limit
-	current_position  =>  current_position
-	current_state  =>  current_state
-	curtain_connected  =>  curtain_connected
-	factory_reset  =>  factory_reset
-	fw_version  =>  fw_version
-	hand_drive  =>  hand_drive
-	hw_version  =>  hw_version
-	invert_direction  =>  invert_direction
-	lock  =>  lock
-	low_current_switch_type  =>  low_current_switch_type
-	motor_version  =>  motor_version
-	open  =>  open
-	open_limit  =>  open_limit
-	power_switch_type  =>  power_switch_type
-	proto_version  =>  proto_version
-	reset_limits  =>  reset_limits
-	serial  =>  serial
-	signature  =>  signature
-	stop  =>  stop
-	target_position  =>  target_position
-	target_state  =>  target_state
-AKKO CM-3-MB-R8
-	close  =>  close
-	close_limit  =>  close_limit
-	current_position  =>  current_position
-	current_tate  =>  current_tate
-	curtain_connected  =>  curtain_connected
-	factory_reset  =>  factory_reset
-	fw_version  =>  fw_version
-	hand_drive  =>  hand_drive
-	hw_version  =>  hw_version
-	invert_direction  =>  invert_direction
-	lock  =>  lock
-	low_current_switch_type  =>  low_current_switch_type
-	motor_version  =>  motor_version
-	open  =>  open
-	open_limit  =>  open_limit
-	power_switch_type  =>  power_switch_type
-	proto_version  =>  proto_version
-	reset_limits  =>  reset_limits
-	serial  =>  serial
-	signature  =>  signature
-	stop  =>  stop
-	target_position  =>  target_position
-	target_state  =>  target_state
 APC_series
 	Batteries Quantity  =>  Batteries Quantity
 	Battery Charge  =>  Battery Charge
@@ -24963,7 +24915,7 @@ WB-MDM3-since-fw-2.12
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Сross Offset (us)  =>  Zero-Сross Offset (us)
+	Zero-Cross Offset (us)  =>  Zero-Cross Offset (us)
 WB-MIR
 	External Temperature Sensor  =>  External Temperature Sensor
 	Input Voltage  =>  Input Voltage
@@ -28540,6 +28492,27 @@ WinDeco
 XY-MD0X
 	humidity  =>  humidity
 	temperature  =>  temperature
+akko-cm-1-mb-r8
+	cmd_close  =>  cmd_close
+	cmd_close_limit  =>  cmd_close_limit
+	cmd_factory_reset  =>  cmd_factory_reset
+	cmd_lock  =>  cmd_lock
+	cmd_manual_control  =>  cmd_manual_control
+	cmd_open  =>  cmd_open
+	cmd_open_limit  =>  cmd_open_limit
+	cmd_reset_limits  =>  cmd_reset_limits
+	cmd_stop  =>  cmd_stop
+	cmd_target_position  =>  cmd_target_position
+	cmd_target_state  =>  cmd_target_state
+	fw  =>  fw
+	hw_version  =>  hw_version
+	proto_version  =>  proto_version
+	signature  =>  signature
+	sn  =>  sn
+	state_current_position  =>  state_current_position
+	state_current_state  =>  state_current_state
+	state_curtain_connected  =>  state_curtain_connected
+	state_motor_version  =>  state_motor_version
 carel_ir33
 	Auxiliary On-Off  =>  Auxiliary On-Off
 	Auxiliary Relay Status  =>  Auxiliary Relay Status
