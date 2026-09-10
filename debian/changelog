@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.275.0) stable; urgency=medium
 
-  * ONOKOM-add-templates-for-AKKO-devices (external contribution):
+  * ONOKOM templates update (external contribution):
     - add templates for AKKO devices
 
  -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Mon, 07 Sep 2026 14:45:09 +0300
