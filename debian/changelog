@@ -1,9 +1,32 @@
-wb-mqtt-serial (2.274.0) stable; urgency=medium
+wb-mqtt-serial (2.275.0) stable; urgency=medium
 
   * ONOKOM-add-templates-for-AKKO-devices (external contribution):
     - add templates for AKKO devices
 
  -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Mon, 07 Sep 2026 14:45:09 +0300
+wb-mqtt-serial (2.274.2) stable; urgency=medium
+
+  * Regenerate the system config when its content is all NUL bytes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 10 Sep 2026 10:22:12 +0000
+
+wb-mqtt-serial (2.274.1) stable; urgency=medium
+
+  * Fix writing to devices which have no registers to poll
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 09 Sep 2026 12:30:00 +0300
+
+wb-mqtt-serial (2.274.0) stable; urgency=medium
+
+  * Add register write type option for Modbus device channels and parameters
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Sep 2026 14:11:44 +0300
+
+wb-mqtt-serial (2.273.1) stable; urgency=medium
+
+  * Drop configs for unsupported boards
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 08 Sep 2026 10:20:00 +0400
 
 wb-mqtt-serial (2.273.0) stable; urgency=medium
 

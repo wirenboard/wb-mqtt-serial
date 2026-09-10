@@ -34,6 +34,7 @@ protected:
 
     PRegister ModbusHoldingU16WithAddressWrite;
     PRegister ModbusHoldingU16WithWriteBitOffset;
+    PRegister ModbusInputU16WithHoldingWrite;
 
     PRegister ModbusHoldingStringRead;
     PRegister ModbusHoldingStringWrite;
@@ -86,6 +87,16 @@ void TModbusTest::SetUp()
 
     ModbusHoldingU16WithWriteBitOffset =
         ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+
+    TRegisterDesc regWriteRegTypeDesc;
+    regWriteRegTypeDesc.Address = std::make_shared<TUint32RegisterAddress>(130);
+    regWriteRegTypeDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(135);
+
+    auto inputWithHoldingWriteConfig =
+        TRegisterConfig::Create(Modbus::REG_INPUT, regWriteRegTypeDesc, RegisterFormat::U16);
+    inputWithHoldingWriteConfig->WriteType = Modbus::REG_HOLDING;
+    inputWithHoldingWriteConfig->WriteTypeName = "holding";
+    ModbusInputU16WithHoldingWrite = ModbusDev->AddRegister(inputWithHoldingWriteConfig);
 
     TRegisterDesc regStringDesc;
     regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
@@ -239,6 +250,29 @@ TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
     EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetConfig()->GetWriteAddress()), 115);
 
     EXPECT_NO_THROW(ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU16WithAddressWrite, 0x119C));
+}
+
+TEST_F(TModbusTest, ReadInputRegiterWithHoldingWriteRegType)
+{
+    EnqueueInputReadU16ResponseWithWriteRegType();
+
+    auto range = ModbusDev->CreateRegisterRange();
+    range->Add(*SerialPort, ModbusInputU16WithHoldingWrite, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, range);
+    auto registerList = range->RegisterList();
+    EXPECT_EQ(registerList.size(), 1);
+    auto reg = registerList.front();
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 130);
+    EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+    EXPECT_EQ(reg->GetValue(), 0x15);
+}
+
+TEST_F(TModbusTest, WriteInputRegiterWithHoldingWriteRegType)
+{
+    EnqueueHoldingWriteU16ResponseWithWriteRegType();
+    EXPECT_EQ(GetUint32RegisterAddress(ModbusInputU16WithHoldingWrite->GetConfig()->GetWriteAddress()), 135);
+
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(*SerialPort, ModbusInputU16WithHoldingWrite, 0x119C));
 }
 
 TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
