@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.274.2) stable; urgency=medium
+
+  * Regenerate the system config when its content is all NUL bytes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 10 Sep 2026 10:22:12 +0000
+
 wb-mqtt-serial (2.274.1) stable; urgency=medium
 
   * Fix writing to devices which have no registers to poll
