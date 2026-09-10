@@ -354,6 +354,16 @@ void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTi
     LastReadTime = readTime;
 }
 
+std::chrono::steady_clock::time_point TSerialDevice::GetLastWriteTime() const
+{
+    return LastWriteTime;
+}
+
+void TSerialDevice::SetLastWriteTime(std::chrono::steady_clock::time_point writeTime)
+{
+    LastWriteTime = writeTime;
+}
+
 void TSerialDevice::AddOnConnectionStateChangedCallback(TSerialDevice::TDeviceCallback callback)
 {
     ConnectionStateChangedCallbacks.push_back(callback);

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.274.1) stable; urgency=medium
+
+  * Fix writing to devices which have no registers to poll
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 09 Sep 2026 12:30:00 +0300
+
 wb-mqtt-serial (2.274.0) stable; urgency=medium
 
   * Add register write type option for Modbus device channels and parameters
