@@ -75,7 +75,7 @@
           "type": "string"
         }
       },
-      "required": ["title", "id"]
+      "required": ["id"]
     },
 
     "groups": {
@@ -127,8 +127,7 @@
             "description": {
               "type": "string"
             }
-          },
-          "required": ["title"]
+          }
         },
         {
           "anyOf": [

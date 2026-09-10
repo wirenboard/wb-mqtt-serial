@@ -144,6 +144,11 @@ TReadFrameResult TTcpPort::ReadFrame(uint8_t* buf,
     return TReadFrameResult();
 }
 
+const TTcpPortSettings& TTcpPort::GetInitialSettings() const
+{
+    return Settings;
+}
+
 std::string TTcpPort::GetDescription(bool verbose) const
 {
     if (verbose) {

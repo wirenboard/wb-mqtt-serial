@@ -349,15 +349,13 @@ void TSerialDeviceIntegrationTest::SetUp()
     auto portsSchema = WBMQTT::JSON::Parse(GetDataFilePath("../wb-mqtt-serial-ports.schema.json"));
     TProtocolConfedSchemasMap protocolSchemas(GetDataFilePath("../protocols"), CommonDeviceSchema);
 
-    Config = LoadConfig(
-        GetDataFilePath(ConfigPath()),
-        DeviceFactory,
-        CommonDeviceSchema,
-        *it->second,
-        rpcConfig,
-        portsSchema,
-        protocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(SerialPort, false); });
+    Config = LoadConfig(GetDataFilePath(ConfigPath()),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        *it->second,
+                        portsSchema,
+                        protocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(SerialPort, false); });
 
     std::filesystem::remove(DB_PATH);
     MqttBroker = NewFakeMqttBroker(*this);

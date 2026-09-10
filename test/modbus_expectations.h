@@ -67,6 +67,9 @@ public:
     void EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions(uint8_t exception = 0);
     void EnqueueHoldingReadU16ResponseWithOffsetWriteOptions(uint8_t exception = 0);
 
+    void EnqueueInputReadU16ResponseWithWriteRegType(uint8_t exception = 0);
+    void EnqueueHoldingWriteU16ResponseWithWriteRegType(uint8_t exception = 0);
+
     void EnqueueCoilWriteMultipleResponse(uint8_t exception = 0);
     void EnqueueHoldingWriteS64Response(uint8_t exception = 0);
 

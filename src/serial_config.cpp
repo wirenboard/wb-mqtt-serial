@@ -181,6 +181,21 @@ namespace
         return typeMap.GetDefaultType();
     }
 
+    const TRegisterType& GetWriteRegisterType(const Json::Value& itemData,
+                                              const TRegisterTypeMap& typeMap,
+                                              const TRegisterType& readType)
+    {
+        if (HasNoEmptyProperty(itemData, "write_reg_type")) {
+            std::string type = itemData["write_reg_type"].asString();
+            try {
+                return typeMap.Find(type);
+            } catch (...) {
+                throw TConfigParserException("invalid write register type: " + type);
+            }
+        }
+        return readType;
+    }
+
     std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
@@ -579,7 +594,7 @@ namespace
     }
 
 #ifndef __EMSCRIPTEN__
-    PFeaturePort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenSerialPort(const Json::Value& port_data)
     {
         TSerialPortSettings settings(port_data["path"].asString());
 
@@ -593,29 +608,23 @@ namespace
 
         auto port = std::make_shared<TSerialPort>(settings);
 
-        rpcConfig->AddSerialPort(settings);
-
         return std::make_shared<TFeaturePort>(port, false);
     }
 
-    PFeaturePort OpenTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenTcpPort(const Json::Value& port_data)
     {
         TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
         auto port = std::make_shared<TTcpPort>(settings);
 
-        rpcConfig->AddTCPPort(settings);
-
         return std::make_shared<TFeaturePort>(port, false);
     }
 
-    PFeaturePort OpenModbusTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
+    PFeaturePort OpenModbusTcpPort(const Json::Value& port_data)
     {
         TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
         auto port = std::make_shared<TTcpPort>(settings);
-
-        rpcConfig->AddModbusTCPPort(settings);
 
         return std::make_shared<TFeaturePort>(port, true, port_data["connected_to_mge"].asBool());
     }
@@ -625,7 +634,6 @@ namespace
                   const Json::Value& port_data,
                   const std::string& id_prefix,
                   TTemplateMap& templates,
-                  PRPCConfig rpcConfig,
                   TSerialDeviceFactory& deviceFactory,
                   TPortFactoryFn portFactory)
     {
@@ -637,12 +645,10 @@ namespace
         Get(port_data, "guard_interval_us", port_config->RequestDelay);
         port_config->ReadRateLimit = GetReadRateLimit(port_data);
 
-        auto port_type = port_data.get("port_type", "serial").asString();
-
         Get(port_data, "connection_timeout_ms", port_config->OpenCloseSettings.MaxFailTime);
         Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
-        port_config->Port = portFactory(port_data, rpcConfig);
+        port_config->Port = portFactory(port_data);
 
         std::chrono::milliseconds responseTimeout = RESPONSE_TIMEOUT_NOT_SET;
         Get(port_data, "response_timeout_ms", responseTimeout);
@@ -672,17 +678,17 @@ void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value&
 }
 
 #ifndef __EMSCRIPTEN__
-PFeaturePort DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig)
+PFeaturePort DefaultPortFactory(const Json::Value& port_data)
 {
     auto port_type = port_data.get("port_type", "serial").asString();
     if (port_type == "serial") {
-        return OpenSerialPort(port_data, rpcConfig);
+        return OpenSerialPort(port_data);
     }
     if (port_type == "tcp") {
-        return OpenTcpPort(port_data, rpcConfig);
+        return OpenTcpPort(port_data);
     }
     if (port_type == "modbus tcp") {
-        return OpenModbusTcpPort(port_data, rpcConfig);
+        return OpenModbusTcpPort(port_data);
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
@@ -729,7 +735,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& commonDeviceSchema,
                           TTemplateMap& templates,
-                          PRPCConfig rpcConfig,
                           const Json::Value& portsSchema,
                           TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory)
@@ -767,7 +772,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  array[index],
                  "wb-modbus-" + std::to_string(index) + "-",
                  templates,
-                 rpcConfig,
                  deviceFactory,
                  portFactory);
     }
@@ -1125,6 +1129,8 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
 {
     TLoadRegisterConfigResult res;
     TRegisterType regType = GetRegisterType(registerData, typeMap);
+    TRegisterType writeRegType = GetWriteRegisterType(registerData, typeMap, regType);
+
     res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
 
     if (registerData.isMember("format")) {
@@ -1150,29 +1156,43 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
         sporadicMode = TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING;
     }
 
-    bool readonly = ReadChannelsReadonlyProperty(registerData,
-                                                 "readonly",
-                                                 regType.ReadOnly,
-                                                 readonlyOverrideErrorMessagePrefix,
-                                                 regType.Name);
-    // For compatibility with old configs
-    readonly = ReadChannelsReadonlyProperty(registerData,
-                                            "channel_readonly",
-                                            readonly,
-                                            readonlyOverrideErrorMessagePrefix,
-                                            regType.Name);
-
     auto registerDesc =
         factory.GetRegisterAddressFactory().LoadRegisterAddress(registerData,
                                                                 deviceBaseAddress,
                                                                 stride,
                                                                 RegisterFormatByteWidth(regType.DefaultFormat));
 
-    if ((regType.DefaultFormat == RegisterFormat::String || regType.DefaultFormat == RegisterFormat::String8) &&
-        registerDesc.DataWidth == 0)
-    {
+    auto isString =
+        (regType.DefaultFormat == RegisterFormat::String || regType.DefaultFormat == RegisterFormat::String8);
+
+    if (isString && registerDesc.DataWidth == 0) {
         throw TConfigParserException(readonlyOverrideErrorMessagePrefix +
                                      ": String size is not set for register string format");
+    }
+
+    // Registers with a separate type for writing are always writable
+    auto readonly = false;
+    if (writeRegType.Index != regType.Index) {
+        if (writeRegType.ReadOnly) {
+            throw TConfigParserException(readonlyOverrideErrorMessagePrefix + ": register type \"" + writeRegType.Name +
+                                         "\" can't be used for writing");
+        }
+        if (!isString && registerDesc.DataWidth != 0) {
+            throw TConfigParserException(readonlyOverrideErrorMessagePrefix +
+                                         ": \"write_reg_type\" is not allowed for registers with bit offset/width");
+        }
+    } else {
+        readonly = ReadChannelsReadonlyProperty(registerData,
+                                                "readonly",
+                                                regType.ReadOnly,
+                                                readonlyOverrideErrorMessagePrefix,
+                                                regType.Name);
+        // For compatibility with old configs
+        readonly = ReadChannelsReadonlyProperty(registerData,
+                                                "channel_readonly",
+                                                readonly,
+                                                readonlyOverrideErrorMessagePrefix,
+                                                regType.Name);
     }
 
     res.RegisterConfig = TRegisterConfig::Create(regType.Index,
@@ -1186,6 +1206,11 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
                                                  regType.Name,
                                                  regType.DefaultWordOrder,
                                                  regType.DefaultByteOrder);
+
+    if (writeRegType.Index != regType.Index) {
+        res.RegisterConfig->WriteType = writeRegType.Index;
+        res.RegisterConfig->WriteTypeName = writeRegType.Name;
+    }
 
     if (registerData.isMember("error_value")) {
         res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(registerData["error_value"], "error_value")};

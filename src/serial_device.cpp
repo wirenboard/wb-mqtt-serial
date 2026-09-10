@@ -59,8 +59,8 @@ bool TDeviceSetupItemComparePredicate::operator()(const PDeviceSetupItem& a, con
     if (a->Device && a->Device->DeviceConfig()->PreserveSetupOrder) {
         return a->Order < b->Order;
     }
-    if (a->RegisterConfig->Type != b->RegisterConfig->Type) {
-        return a->RegisterConfig->Type < b->RegisterConfig->Type;
+    if (a->RegisterConfig->WriteType != b->RegisterConfig->WriteType) {
+        return a->RegisterConfig->WriteType < b->RegisterConfig->WriteType;
     }
     auto compare = a->RegisterConfig->GetWriteAddress().Compare(b->RegisterConfig->GetWriteAddress());
     if (compare == 0) {
@@ -352,6 +352,16 @@ std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
 void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTime)
 {
     LastReadTime = readTime;
+}
+
+std::chrono::steady_clock::time_point TSerialDevice::GetLastWriteTime() const
+{
+    return LastWriteTime;
+}
+
+void TSerialDevice::SetLastWriteTime(std::chrono::steady_clock::time_point writeTime)
+{
+    LastWriteTime = writeTime;
 }
 
 void TSerialDevice::AddOnConnectionStateChangedCallback(TSerialDevice::TDeviceCallback callback)

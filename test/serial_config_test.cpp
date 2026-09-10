@@ -6,6 +6,7 @@
 #include "config_schema_generator.h"
 #include "fake_serial_device.h"
 #include "file_utils.h"
+#include "modbus_common.h"
 #include "serial_config.h"
 #include "serial_device.h"
 #include "test_utils.h"
@@ -18,7 +19,6 @@ class TConfigParserTest: public TLoggedFixture
 {
 protected:
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig RPCConfig = std::make_shared<TRPCConfig>();
 
     void SetUp()
     {
@@ -163,18 +163,7 @@ protected:
 
     PHandlerConfig GetConfig(const std::string& filePath)
     {
-        auto commonDeviceSchema(GetCommonDeviceSchema());
-        auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
-        TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
-        TTemplateMap templateMap(GetTemplatesSchema());
-        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
-        return LoadConfig(GetDataFilePath(filePath),
-                          DeviceFactory,
-                          commonDeviceSchema,
-                          templateMap,
-                          RPCConfig,
-                          portsSchema,
-                          protocolSchemas);
+        return LoadTestConfig(filePath, DeviceFactory);
     }
 };
 
@@ -231,13 +220,8 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         [&](const std::string& fname) {
             Emit() << "Parsing config " << fname;
             try {
-                PHandlerConfig config = LoadConfig(fname,
-                                                   DeviceFactory,
-                                                   commonDeviceSchema,
-                                                   templateMap,
-                                                   RPCConfig,
-                                                   portsSchema,
-                                                   protocolSchemas);
+                PHandlerConfig config =
+                    LoadConfig(fname, DeviceFactory, commonDeviceSchema, templateMap, portsSchema, protocolSchemas);
             } catch (const std::exception& e) {
                 Emit() << e.what();
             }
@@ -281,6 +265,36 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
     EXPECT_FALSE(regs.empty());
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetConfig()->GetAddress()), 110);
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetConfig()->GetWriteAddress()), 115);
+}
+
+TEST_F(TConfigParserTest, ParseModbusDevideWithWriteRegisterType)
+{
+    auto portConfigs = GetConfig("configs/parse_test_modbus_write_address.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->Channels;
+    // the channel with bit address and write_reg_type is ignored
+    EXPECT_EQ(deviceChannels.size(), 3);
+
+    auto config = deviceChannels[1]->Registers[0]->GetConfig();
+    EXPECT_EQ(GetUint32RegisterAddress(config->GetAddress()), 120);
+    EXPECT_EQ(GetUint32RegisterAddress(config->GetWriteAddress()), 125);
+    EXPECT_EQ(config->Type, Modbus::REG_INPUT);
+    EXPECT_EQ(config->WriteType, Modbus::REG_HOLDING);
+    EXPECT_EQ(config->TypeName, "input");
+    EXPECT_EQ(config->WriteTypeName, "holding");
+    EXPECT_EQ(config->AccessType, TRegisterConfig::EAccessType::READ_WRITE);
+
+    auto stringConfig = deviceChannels[2]->Registers[0]->GetConfig();
+    EXPECT_EQ(stringConfig->Type, Modbus::REG_HOLDING);
+    EXPECT_EQ(stringConfig->WriteType, Modbus::REG_HOLDING_MULTI);
+    EXPECT_EQ(stringConfig->WriteTypeName, "holding_multi");
+}
+
+TEST_F(TConfigParserTest, ParseReadOnlyWriteRegisterType)
+{
+    EXPECT_THROW(GetConfig("configs/parse_test_invalid_write_reg_type.json"), std::runtime_error);
 }
 
 TEST_F(TConfigParserTest, ParseReadonlyParameters)

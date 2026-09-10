@@ -33,6 +33,13 @@ namespace
     {
         return ConvertFromRawValue(*reg->GetConfig(), reg->GetValue());
     }
+
+    const IRegisterAddress& GetAddress(PRegister reg)
+    {
+        const auto& config = *reg->GetConfig();
+        return config.AccessType == TRegisterConfig::EAccessType::WRITE_ONLY ? config.GetWriteAddress()
+                                                                             : config.GetAddress();
+    }
 }
 
 class TSerialClientTest: public TLoggedFixture
@@ -63,7 +70,7 @@ class TSerialClientTest: public TLoggedFixture
             what = "no";
         }
         Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->GetConfig()->TypeName << ": "
-               << reg->GetConfig()->GetAddress() << ">: " << what << " error";
+               << GetAddress(reg) << ">: " << what << " error";
         LastRegErrors[reg] = reg->GetErrorState();
     }
 
@@ -103,7 +110,6 @@ protected:
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig rpcConfig;
 
     bool HasSetupRegisters = false;
     TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
@@ -160,7 +166,7 @@ void TSerialClientTest::SetUp()
         std::string value = GetTextValue(reg);
         bool unchanged = (LastRegValues.count(reg) && LastRegValues[reg] == value);
         Emit() << "Read Callback: <" << reg->Device()->ToString() << ":" << reg->GetConfig()->TypeName << ": "
-               << reg->GetConfig()->GetAddress() << "> becomes " << value << (unchanged ? " [unchanged]" : "");
+               << GetAddress(reg) << "> becomes " << value << (unchanged ? " [unchanged]" : "");
         LastRegValues[reg] = value;
         if (!reg->GetErrorState().count()) {
             EmitErrorMsg(reg);
@@ -994,6 +1000,7 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
     EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());
 
     Device->BlockReadFor(20, true);
+    Device->BlockWriteFor(20, true);
     for (int i = 0; i < 3; ++i) {
         Note() << "Cycle() [read blocked]";
         SerialClient->Cycle();
@@ -1007,6 +1014,7 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
     EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
 
     Device->BlockReadFor(20, false);
+    Device->BlockWriteFor(20, false);
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     for (int i = 0; i < 3; ++i) {
         Note() << "Cycle() [reconnected]";
@@ -1015,6 +1023,62 @@ TEST_F(TSerialClientTest, WriteToDisconnectedDeviceRetriesAfterReconnect)
     EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());
     EXPECT_EQ(42, Device->Registers[20]);
     EXPECT_FALSE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+}
+
+TEST_F(TSerialClientTest, WriteOnlyDeviceReconnectsOnWrite)
+{
+    TRegisterDesc regDesc;
+    regDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(20);
+    PRegister reg20 = Device->AddRegister(TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, regDesc));
+    SerialClient->AddDevice(Device);
+    Device->DeviceConfig()->DeviceTimeout = std::chrono::milliseconds(0);
+
+    Device->BlockWriteFor(20, true);
+    SerialClient->SetTextValue(reg20, "42");
+    Note() << "Cycle() [write is blocked]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+
+    Device->BlockWriteFor(20, false);
+    Note() << "Cycle() [write attempts are rate limited]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_NE(42, Device->Registers[20]);
+
+    Device->SetLastWriteTime(std::chrono::steady_clock::now() - std::chrono::minutes(1));
+    Note() << "Cycle() [write is retried]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::CONNECTED, Device->GetConnectionState());
+    EXPECT_EQ(42, Device->Registers[20]);
+    EXPECT_FALSE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+}
+
+TEST_F(TSerialClientTest, WriteIsCancelledAfterMaxWriteFailTime)
+{
+    TRegisterDesc regDesc;
+    regDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(20);
+    PRegister reg20 = Device->AddRegister(TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, regDesc));
+    SerialClient->AddDevice(Device);
+    Device->DeviceConfig()->DeviceTimeout = std::chrono::milliseconds(0);
+
+    Device->BlockWriteFor(20, true);
+    SerialClient->SetTextValue(reg20, "42");
+    Note() << "Cycle() [write is blocked]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+
+    Device->DeviceConfig()->MaxWriteFailTime = std::chrono::seconds(-1);
+    Note() << "Cycle() [write fail time is over]";
+    SerialClient->Cycle();
+
+    Device->BlockWriteFor(20, false);
+    Device->SetLastWriteTime(std::chrono::steady_clock::now() - std::chrono::minutes(1));
+    Note() << "Cycle() [value is dropped, nothing is written]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_NE(42, Device->Registers[20]);
 }
 
 TEST_F(TSerialClientTestWithSetupRegisters, SetupOk)
@@ -1110,15 +1174,13 @@ void TSerialClientIntegrationTest::SetUp()
     AddRegisterType(CommonDeviceSchema, "fake");
     TTemplateMap t;
 
-    Config = LoadConfig(
-        GetDataFilePath("configs/config-test.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/config-test.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
 
     FixFakeDevices(Config);
 }
@@ -1524,7 +1586,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     TTemplateMap t;
 
-    auto factory = [=, this](const Json::Value& port_data, PRPCConfig rpcConfig) -> PFeaturePort {
+    auto factory = [=, this](const Json::Value& port_data) -> PFeaturePort {
         auto path = port_data["path"].asString();
         return std::make_shared<TFeaturePort>(std::make_shared<TFakeSerialPort>(*this, path, false), false);
     };
@@ -1533,7 +1595,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             CommonDeviceSchema,
                             t,
-                            rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
                             factory),
@@ -1543,7 +1604,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             CommonDeviceSchema,
                             t,
-                            rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
                             factory),
@@ -1553,7 +1613,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             CommonDeviceSchema,
                             t,
-                            rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
                             factory),
@@ -1563,7 +1622,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                                DeviceFactory,
                                CommonDeviceSchema,
                                t,
-                               rpcConfig,
                                PortsSchema,
                                *ProtocolSchemas,
                                factory));
@@ -1628,15 +1686,13 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
 {
     TTemplateMap t;
 
-    Config = LoadConfig(
-        GetDataFilePath("configs/config-rpc-test.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig rpcConfig) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/config-rpc-test.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     FilterConfig("RPCTest");
@@ -1698,15 +1754,13 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool miss, bool pollIntervalTest)
 {
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_1_device.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     if (pollIntervalTest) {
@@ -1801,15 +1855,13 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 {
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_2_devices.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2032,15 +2084,13 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
     // The test simulates reconnection on EBADF error after writing first setup register
     // The behavior is a result of bad hwconf setup
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_ebadf.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2064,15 +2114,13 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
 {
     // The test simulates EBADF error during register write after receiving a message from /on topic
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_ebadf.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2094,15 +2142,13 @@ TEST_F(TSerialClientIntegrationTest, ReconnectAfterNetworkDisconnect)
     // A socket is alive, writes are successful, reads fail with timeout
     // The logic must close an reopen port
     TTemplateMap t;
-    Config = LoadConfig(
-        GetDataFilePath("configs/reconnect_test_network.json"),
-        DeviceFactory,
-        CommonDeviceSchema,
-        t,
-        rpcConfig,
-        PortsSchema,
-        *ProtocolSchemas,
-        [=, this](const Json::Value&, PRPCConfig config) { return std::make_shared<TFeaturePort>(Port, false); });
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_network.json"),
+                        DeviceFactory,
+                        CommonDeviceSchema,
+                        t,
+                        PortsSchema,
+                        *ProtocolSchemas,
+                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
