@@ -1054,6 +1054,33 @@ TEST_F(TSerialClientTest, WriteOnlyDeviceReconnectsOnWrite)
     EXPECT_FALSE(reg20->GetErrorState().test(TRegister::TError::WriteError));
 }
 
+TEST_F(TSerialClientTest, WriteIsCancelledAfterMaxWriteFailTime)
+{
+    TRegisterDesc regDesc;
+    regDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(20);
+    PRegister reg20 = Device->AddRegister(TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, regDesc));
+    SerialClient->AddDevice(Device);
+    Device->DeviceConfig()->DeviceTimeout = std::chrono::milliseconds(0);
+
+    Device->BlockWriteFor(20, true);
+    SerialClient->SetTextValue(reg20, "42");
+    Note() << "Cycle() [write is blocked]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_TRUE(reg20->GetErrorState().test(TRegister::TError::WriteError));
+
+    Device->DeviceConfig()->MaxWriteFailTime = std::chrono::seconds(-1);
+    Note() << "Cycle() [write fail time is over]";
+    SerialClient->Cycle();
+
+    Device->BlockWriteFor(20, false);
+    Device->SetLastWriteTime(std::chrono::steady_clock::now() - std::chrono::minutes(1));
+    Note() << "Cycle() [value is dropped, nothing is written]";
+    SerialClient->Cycle();
+    EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Device->GetConnectionState());
+    EXPECT_NE(42, Device->Registers[20]);
+}
+
 TEST_F(TSerialClientTestWithSetupRegisters, SetupOk)
 {
     PRegister reg20 = Reg(20);
