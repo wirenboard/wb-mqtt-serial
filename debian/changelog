@@ -1,3 +1,23 @@
+wb-mqtt-serial (2.275.0) stable; urgency=medium
+
+  * WB-MR and WB-MRWM templates: add option to safety behaviour - switch
+    output according to input state. The option is declared as an fw variant of
+    the parameter and the note about it as an fw variant of the group, so both
+    are shown only for firmwares that have the option: 1.27.0 for WB-MR3,
+    WB-MR6C, WB-MR6C/NC, WB-MR6C v.3 and WB-MRM2-mini, 1.26.0 for WB-MRWM2.
+    Showing a group description by the device firmware version needs
+    wb-mqtt-homeui 2.255.0, the templates require it through Breaks
+  * WB-MR and WB-MRWM templates: declare parameters as an array, an object
+    cannot hold the two declarations of the safety behaviour parameter. The
+    declarations themselves are unchanged, the parameters are written to a
+    device in template order instead of alphabetical order now
+  * WB-MRM2-mini-NC template: declare the output parameters once instead of
+    once per input, the repeated declarations were overriding each other as
+    object keys
+  * WB-MRWM template: remove reg 5
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 07 Sep 2026 18:30:00 +0300
+
 wb-mqtt-serial (2.274.2) stable; urgency=medium
 
   * Regenerate the system config when its content is all NUL bytes
