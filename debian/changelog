@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1+wb100) stable; urgency=medium
+
+  * Regenerate the system config when its content is all NUL bytes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 10 Sep 2026 09:42:08 +0000
+
 wb-mqtt-serial (2.248.1-wb107) stable; urgency=medium
 
   * Fix write retry on a disconnected device
