@@ -2,7 +2,21 @@
 
 CONFFILE=/etc/wb-mqtt-serial.conf
 
-[ -s "$CONFFILE" ] && exit 0
+config_is_blank() {
+    if [ ! -s "$1" ]; then
+        return 0
+    fi
+
+    if [ "$(tr -d '\0' < "$1" | wc -c)" -eq 0 ]; then
+        return 0
+    fi
+
+    return 1
+}
+
+if ! config_is_blank "$CONFFILE"; then
+    exit 0
+fi
 
 . /usr/lib/wb-utils/wb_env.sh
 
@@ -18,15 +32,9 @@ elif of_machine_match "contactless,imx6ul-wirenboard670"; then
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb67"
 elif of_machine_match "contactless,imx6ul-wirenboard60"; then
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6"
-elif of_machine_match "contactless,imx28-wirenboard50"; then
-    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5"
-elif of_machine_match "contactless,imx23-wirenboard41" ||
-     of_machine_match "contactless,imx23-wirenboard32" ||
-     of_machine_match "contactless,imx23-wirenboard28";
-then
-    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234"
 else
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default"
 fi
 
-cp "$BOARD_CONF" "$CONFFILE"
+CONFIG_TARGET="$(readlink -f "$CONFFILE")" || exit 1
+rsync --archive --ignore-times --fsync "$BOARD_CONF" "$CONFIG_TARGET"

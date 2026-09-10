@@ -289,6 +289,9 @@ TRegisterConfig::TRegisterConfig(int type,
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 
+    WriteType = Type;
+    WriteTypeName = TypeName;
+
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
     if (!IsString() && Address.DataOffset >= maxOffset) {

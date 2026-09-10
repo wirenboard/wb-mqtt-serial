@@ -1,0 +1,15 @@
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "parameter_invalid_write_reg_type",
+                    "slave_id": 2,
+                    "p1": 1
+                }
+            ]
+        }
+    ]
+}

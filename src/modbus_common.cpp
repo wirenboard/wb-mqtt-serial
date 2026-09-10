@@ -43,8 +43,8 @@ namespace // general utilities
     // returns true if multi write needs to be done
     inline bool IsPacking(const TRegisterConfig& reg)
     {
-        return (reg.Type == Modbus::REG_HOLDING_MULTI) ||
-               ((reg.Type == Modbus::REG_HOLDING) && (GetModbusDataWidthIn16BitWords(reg) > 1));
+        return (reg.WriteType == Modbus::REG_HOLDING_MULTI) ||
+               ((reg.WriteType == Modbus::REG_HOLDING) && (GetModbusDataWidthIn16BitWords(reg) > 1));
     }
 
     inline bool IsPacking(const Modbus::TModbusRegisterRange& range)
@@ -699,11 +699,12 @@ namespace Modbus // modbus protocol common utilities
         Modbus::TRegisterCache tmpCache;
 
         LOG(Debug) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << " write "
-                   << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress();
+                   << GetModbusDataWidthIn16BitWords(reg) << " " << reg.WriteTypeName << "(s) @ "
+                   << reg.GetWriteAddress();
 
         EFunction fn;
         try {
-            fn = GetFunctionImpl(reg.Type, OperationType::OP_WRITE, reg.TypeName, IsPacking(reg));
+            fn = GetFunctionImpl(reg.WriteType, OperationType::OP_WRITE, reg.WriteTypeName, IsPacking(reg));
         } catch (const TSerialDeviceException& e) {
             throw TSerialDeviceException("failed to write register <" + reg.ToString() + ">: " + e.what());
         }
@@ -721,7 +722,7 @@ namespace Modbus // modbus protocol common utilities
                              requestDelay,
                              responseTimeout,
                              frameTimeout);
-        } else if (reg.Type == REG_COIL) {
+        } else if (reg.WriteType == REG_COIL) {
             const std::vector<uint8_t> on{0xFF, 0x00};
             const std::vector<uint8_t> off{0x00, 0x00};
             WriteTransaction(traits,
@@ -880,7 +881,9 @@ namespace Modbus // modbus protocol common utilities
             if (last) {
                 auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetWriteAddress());
                 auto lastWidth = GetModbusDataWidthIn16BitWords(*last->RegisterConfig);
-                if (item->RegisterConfig->Type != last->RegisterConfig->Type || address != lastAddress + lastWidth) {
+                if (item->RegisterConfig->WriteType != last->RegisterConfig->WriteType ||
+                    address != lastAddress + lastWidth)
+                {
                     break;
                 }
             }
@@ -951,7 +954,7 @@ namespace Modbus // modbus protocol common utilities
         }
         while (it != setupItems.end()) {
             auto item = *it;
-            if (maxRegs > 1 && item->RegisterConfig->Type == REG_HOLDING && !item->RegisterConfig->IsPartial()) {
+            if (maxRegs > 1 && item->RegisterConfig->WriteType == REG_HOLDING && !item->RegisterConfig->IsPartial()) {
                 it = WriteMultipleSetupRegisters(traits,
                                                  port,
                                                  slaveId,

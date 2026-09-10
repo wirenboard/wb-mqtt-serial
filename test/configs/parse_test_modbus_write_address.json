@@ -22,6 +22,32 @@
                             "write_address" : 115,
                             "type": "value",
                             "format": "u16"
+                        },
+                        {
+                            "name" : "Input U16 with write_reg_type",
+                            "reg_type" : "input",
+                            "address" : 120,
+                            "write_reg_type" : "holding",
+                            "write_address" : 125,
+                            "type": "value",
+                            "format": "u16"
+                        },
+                        {
+                            "name" : "String with write_reg_type",
+                            "reg_type" : "holding",
+                            "address" : 130,
+                            "write_reg_type" : "holding_multi",
+                            "type": "text",
+                            "format": "string",
+                            "string_data_size": 8
+                        },
+                        {
+                            "name" : "Ignored, write_reg_type with bit address",
+                            "reg_type" : "holding",
+                            "address" : "160:1:2",
+                            "write_reg_type" : "holding_multi",
+                            "type": "value",
+                            "format": "u16"
                         }
                     ]
                 }
