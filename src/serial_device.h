@@ -264,6 +264,9 @@ public:
     std::chrono::steady_clock::time_point GetLastReadTime() const;
     void SetLastReadTime(std::chrono::steady_clock::time_point readTime);
 
+    std::chrono::steady_clock::time_point GetLastWriteTime() const;
+    void SetLastWriteTime(std::chrono::steady_clock::time_point writeTime);
+
     void AddOnConnectionStateChangedCallback(TDeviceCallback callback);
 
     PRegister GetSnRegister() const;
@@ -295,6 +298,7 @@ private:
 
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
+    std::chrono::steady_clock::time_point LastWriteTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
     PRegister SnRegister;
 

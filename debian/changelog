@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1-wb108) stable; urgency=medium
+
+  * Fix writing to devices which have no registers to poll
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 09 Sep 2026 12:30:00 +0300
+
 wb-mqtt-serial (2.248.1-wb107) stable; urgency=medium
 
   * Fix write retry on a disconnected device
