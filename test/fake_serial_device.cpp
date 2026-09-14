@@ -123,7 +123,7 @@ void TFakeSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& re
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
 
         if (Blockings[addr].second) {
             throw TSerialDeviceTransientErrorException("write blocked");
@@ -146,11 +146,11 @@ void TFakeSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& re
             SetValue(&Registers[addr], reg.Get16BitWidth(), value.Get<uint64_t>());
         }
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
-                                      << reg.GetAddress() << "' value '" << value << "'";
+                                      << reg.GetWriteAddress() << "' value '" << value << "'";
 
     } catch (const exception& e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg.GetAddress()
-                                      << "' failed: '" << e.what() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '"
+                                      << reg.GetWriteAddress() << "' failed: '" << e.what() << "'";
 
         throw;
     }

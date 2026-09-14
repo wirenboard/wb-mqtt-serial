@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.268.0-wb101) stable; urgency=medium
+
+  * Fix writing to devices which have no registers to poll
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 14 Sep 2026 10:06:02 +0300
+
 wb-mqtt-serial (2.268.0-wb100) stable; urgency=medium
 
   * Regenerate the system config when its content is all NUL bytes
