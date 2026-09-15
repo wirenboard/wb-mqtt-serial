@@ -2,6 +2,8 @@ wb-mqtt-serial (2.275.0) stable; urgency=medium
 
   * Add group description variants for different device firmware versions in
     device templates
+  * Send the device firmware version and model in device/LoadConfig response
+    for templates without parameters
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 15 Sep 2026 12:00:00 +0300
 

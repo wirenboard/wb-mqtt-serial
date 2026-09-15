@@ -80,21 +80,22 @@ namespace
         }
 
         Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
-        if (templateParams.empty()) {
+        // A template without parameters still has a firmware version and a model to report
+        if (templateParams.empty() && !rpcRequest->Device->IsWbDevice()) {
             rpcRequest->OnResult(Json::Value(Json::objectValue));
             return;
         }
 
         std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
         std::string deviceModel;
-        Json::Value parameters;
+        Json::Value parameters(Json::objectValue);
         if (rpcRequest->DeviceFromConfig && !rpcRequest->Force) {
             if (rpcRequest->ParametersCache.Contains(id)) {
                 Json::Value cache = rpcRequest->ParametersCache.Get(id);
                 deviceModel = cache["model"].asString();
                 parameters = cache["parameters"];
             }
-            if (parameters.isNull()) {
+            if (parameters.empty()) {
                 LoadConfigParameters(port, rpcRequest, parameters);
             }
         }
