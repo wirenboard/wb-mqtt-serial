@@ -933,7 +933,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                 "group": "group2",
 
                 // Описание группы
-                "description": "Group description"
+                "description": "Group description",
+
+                // Группу можно объявить ещё раз с тем же "id", другим "fw" и другим "description",
+                // веб-конфигуратор покажет описание варианта, подходящего по прошивке устройства (с версии 2.275.0)
+                "fw": "1.2.3"
             },
             ...
         ]
