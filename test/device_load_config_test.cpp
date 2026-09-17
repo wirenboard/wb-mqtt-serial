@@ -511,6 +511,65 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ChecksUnsupportedValueMarkerBeforeCondi
 }
 
 /**
+ * Checks that device/LoadConfig answers with the firmware version and the model of a Wiren Board
+ * device whose template has no parameters. Before the fix the answer was an empty object.
+ */
+TEST_F(TRPCDeviceLoadConfigTaskExecTest, ReadsFirmwareOfTemplateWithoutParameters)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+    TTemplateMap templates(GetTemplatesSchema());
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templates.GetTemplate("no_parameters");
+    auto config = std::make_shared<TDeviceConfig>("test", "1", "modbus");
+    auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
+    device->SetWbDevice(true);
+
+    TRPCDeviceParametersCache parametersCache;
+    std::string configFileName;
+    auto request = std::make_shared<TRPCDeviceLoadConfigRequest>(protocolParams,
+                                                                 device,
+                                                                 deviceTemplate,
+                                                                 false,
+                                                                 configFileName,
+                                                                 parametersCache);
+    request->Force = true;
+    Json::Value result;
+    bool gotResult = false;
+    std::string error;
+    request->OnResult = [&](const Json::Value& data) {
+        result = data;
+        gotResult = true;
+    };
+    request->OnError = [&](auto, const std::string& message) { error = message; };
+
+    auto port = std::make_shared<TFakeSerialPort>(*this, "<no_parameters>");
+    // a Wiren Board device firmware version is requested on session preparation
+    port->Expect({0x01, 0x03, 0x00, 0xFA, 0x00, 0x10, 0x64, 0x37},
+                 {0x01, 0x03, 0x20, 0x00, 0x31, 0x00, 0x2E, 0x00, 0x32, 0x00, 0x2E, 0x00, 0x33,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x81, 0x21},
+                 "read fw version");
+    // the template check reads the device model, the device answers "TESTDEV"
+    port->Expect({0x01, 0x03, 0x00, 0xC8, 0x00, 0x14, 0xC4, 0x3B},
+                 {0x01, 0x03, 0x28, 0x00, 0x54, 0x00, 0x45, 0x00, 0x53, 0x00, 0x54, 0x00, 0x44, 0x00, 0x45,
+                  0x00, 0x56, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xB0, 0xE4},
+                 "read model");
+
+    TSerialClientDeviceAccessHandler accessHandler(nullptr);
+    TRPCDeviceLoadConfigSerialClientTask task(request);
+    task.Run(std::make_shared<TFeaturePort>(port, false), accessHandler, {});
+
+    ASSERT_TRUE(gotResult) << error;
+    EXPECT_EQ(result["fw"].asString(), "1.2.3");
+    EXPECT_EQ(result["model"].asString(), "TESTDEV");
+    EXPECT_TRUE(result["parameters"].empty());
+}
+
+/**
  * Checks that GetChannelsRegisterList without condition params returns all readable channels.
  */
 TEST(TDeviceLoadTest, GetChannelsRegisterListAllChannels)

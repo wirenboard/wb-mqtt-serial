@@ -260,6 +260,46 @@ TEST_F(TDeviceTemplatesTest, ParameterFwVariants)
     }
 }
 
+/**
+ * Checks group fw variants: declarations with the same id and different fw versions are accepted
+ * if they differ only in description, whatever their order. Equal fw versions, two declarations
+ * without fw and different group, order or ui_options are rejected with an error naming the group
+ * and the difference.
+ */
+TEST_F(TDeviceTemplatesTest, GroupFwVariants)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_NO_THROW(templateMap.GetTemplate("groups fw variants")->GetTemplate());
+
+    const std::unordered_map<std::string, std::string> expectedErrors = {
+        {"groups_fw_variants_invalid_same_fw",
+         "File: test/device-templates/config-groups-fw-variants-invalid-same-fw.json error: Group "
+         "\"g1\" has several declarations with the same \"fw\" value."},
+        {"groups_fw_variants_invalid_two_base",
+         "File: test/device-templates/config-groups-fw-variants-invalid-two-base.json error: Group "
+         "\"g1\" has several declarations with the same \"fw\" value."},
+        {"groups_fw_variants_invalid_group",
+         "File: test/device-templates/config-groups-fw-variants-invalid-group.json error: Group "
+         "\"gg1\" has several declarations with different \"group\" values."},
+        {"groups_fw_variants_invalid_order",
+         "File: test/device-templates/config-groups-fw-variants-invalid-order.json error: Group "
+         "\"g1\" has several declarations with different \"order\" values."},
+        {"groups_fw_variants_invalid_ui_options",
+         "File: test/device-templates/config-groups-fw-variants-invalid-ui-options.json error: Group "
+         "\"g1\" has several declarations with different \"ui_options\" values."},
+    };
+
+    for (const auto& [deviceType, expectedError]: expectedErrors) {
+        try {
+            templateMap.GetTemplate(deviceType)->GetTemplate();
+            ADD_FAILURE() << "Expect std::runtime_error for " << deviceType;
+        } catch (const std::runtime_error& e) {
+            ASSERT_STREQ(expectedError.c_str(), e.what());
+        }
+    }
+}
+
 TEST_F(TDeviceTemplatesTest, AlarmControlType)
 {
     TTemplateMap templateMap(GetTemplatesSchema());
