@@ -1,6 +1,7 @@
 {% set OUTPUTS_NUMBER = 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 2 -%}
 {% set FIRST_INPUT = 1 -%}
+{% set SAFETY_ACCORDING_TO_INPUT_FW = "1.27.0" -%}
 {
     "title": "WB-MRM2-mini-NC_template_title",
     "device_type": "WB-MRM2-mini-NC-inputs",
@@ -76,11 +77,17 @@
                 "title": "Safety Mode",
                 "id": "g_safety"
             },
+            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
+                {% if safety_fw -%}
+                "fw": "{{safety_fw}}",
+                "description": "safety_behaviour_input_state_description",
+                {% endif -%}
                 "group": "g_safety"
             },
+            {% endfor -%}
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
@@ -143,10 +150,11 @@
             }
         ],
 
-        "parameters": {
+        "parameters": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% if in_num == 0 -%}
-            "in{{in_num}}_mode": {
+            {
+                "id": "in{{in_num}}_mode",
                 "title": "Mode",
                 "address": 16,
                 "reg_type": "holding",
@@ -162,7 +170,8 @@
                 "order": 1
             },
             {% else -%}
-            "in{{in_num}}_mode": {
+            {
+                "id": "in{{in_num}}_mode",
                 "title": "Mode",
                 "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
@@ -180,7 +189,8 @@
                 "order": 1
             },
             {% endif -%}
-            "in{{in_num}}_debounce_ms": {
+            {
+                "id": "in{{in_num}}_debounce_ms",
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 {% if in_num == 0 -%}
@@ -195,7 +205,8 @@
                 "group": "g_in{{in_num}}",
                 "order": 2
             },
-            "in{{in_num}}_lp_hold_time": {
+            {
+                "id": "in{{in_num}}_lp_hold_time",
                 "group": "gg_in{{in_num}}_press_params",
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
@@ -211,7 +222,8 @@
                 "max": 5000,
                 "condition": "in{{in_num}}_mode==6"
             },
-            "in{{in_num}}_secp_waiting_time": {
+            {
+                "id": "in{{in_num}}_secp_waiting_time",
                 "group": "gg_in{{in_num}}_press_params",
                 "title": "secp_waiting_time_title",
                 "description": "secp_waiting_time_description",
@@ -228,7 +240,8 @@
                 "condition": "in{{in_num}}_mode==6"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "in{{in_num}}_out{{out_num}}_actions": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_actions",
                 "group": "gg_in{{in_num}}_mapping_matrix_actions",
                 "title": "Output {{out_num}}",
                 "order": {{out_num}},
@@ -263,7 +276,8 @@
                 ],
                 "condition": "in{{in_num}}_mode==4"
             },
-            "in{{in_num}}_out{{out_num}}_sp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_sp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -278,7 +292,8 @@
                 "enum_titles": ["no action", "set", "reset", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
-            "in{{in_num}}_out{{out_num}}_lp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_lp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -293,7 +308,8 @@
                 "enum_titles": ["no action", "set", "reset", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
-            "in{{in_num}}_out{{out_num}}_dp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_dp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -308,7 +324,8 @@
                 "enum_titles": ["no action", "set", "reset", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
-            "in{{in_num}}_out{{out_num}}_slp": {
+            {
+                "id": "in{{in_num}}_out{{out_num}}_slp",
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -323,7 +340,11 @@
                 "enum_titles": ["no action", "set", "reset", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
-            "out{{out_num}}_safe_state": {
+            {% endfor -%}
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "out{{out_num}}_safe_state",
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
                 "order": {{out_num}},
@@ -336,20 +357,28 @@
                     "Off"
                 ]
             },
-            "out{{out_num}}_safety_behaviour": {
+            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
+            {
+                "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_behaviour",
                 "order": {{out_num}},
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1],
+                {% if safety_fw -%}
+                "fw": "{{safety_fw}}",
+                {% endif -%}
+                {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
                     "Don't change output state",
-                    "Switch output to safety state"
+                    "Switch output to safety state"{% if safety_fw %},
+                    "Switch output according to input state"{% endif %}
                 ]
             },
-            "out{{out_num}}_safety_input_control": {
+            {% endfor -%}
+            {
+                "id": "out{{out_num}}_safety_input_control",
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_input_control",
                 "order": {{out_num}},
@@ -363,7 +392,8 @@
                     "Enable only in safety mode"
                 ]
             },
-            "out{{out_num}}_startup_delay_params": {
+            {
+                "id": "out{{out_num}}_startup_delay_params",
                 "title": "Output {{out_num}}",
                 "group": "gg_startup_delay_params",
                 "order": {{out_num}},
@@ -375,7 +405,8 @@
                 "default": 0,
                 "fw": "1.24.0"
             },
-            "out{{out_num}}_restart_delay_params": {
+            {
+                "id": "out{{out_num}}_restart_delay_params",
                 "title": "Output {{out_num}}",
                 "group": "gg_restart_delay_params",
                 "order": {{out_num}},
@@ -388,7 +419,8 @@
                 "fw": "1.24.0",
                 "condition": "isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0"
             },
-            "out{{out_num}}_timer_mode_selection": {
+            {
+                "id": "out{{out_num}}_timer_mode_selection",
                 "title": "Function",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num}},
@@ -406,7 +438,8 @@
                 ],
                 "fw": "1.25.0"
             },
-            "out{{out_num}}_on_delay_params": {
+            {
+                "id": "out{{out_num}}_on_delay_params",
                 "title": "Timeout (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -420,7 +453,8 @@
                 "description": "on_delay_description",
                 "condition": "out{{out_num}}_timer_mode_selection==1"
             },
-            "out{{out_num}}_off_delay_params": {
+            {
+                "id": "out{{out_num}}_off_delay_params",
                 "title": "Timeout (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -434,7 +468,8 @@
                 "description": "off_delay_description",
                 "condition": "out{{out_num}}_timer_mode_selection==2"
             },
-            "out{{out_num}}_on_pulse_params": {
+            {
+                "id": "out{{out_num}}_on_pulse_params",
                 "title": "Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -448,7 +483,8 @@
                 "description": "on_pulse_description",
                 "condition": "out{{out_num}}_timer_mode_selection==3"
             },
-            "out{{out_num}}_off_pulse_params": {
+            {
+                "id": "out{{out_num}}_off_pulse_params",
                 "title": "Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -462,7 +498,8 @@
                 "description": "off_pulse_description",
                 "condition": "out{{out_num}}_timer_mode_selection==4"
             },
-            "out{{out_num}}_cyclic_on_time_params": {
+            {
+                "id": "out{{out_num}}_cyclic_on_time_params",
                 "title": "On Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -476,7 +513,8 @@
                 "description": "cyclic_on_time_description",
                 "condition": "out{{out_num}}_timer_mode_selection==5"
             },
-            "out{{out_num}}_cyclic_off_time_params": {
+            {
+                "id": "out{{out_num}}_cyclic_off_time_params",
                 "title": "Off Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 2}},
@@ -491,8 +529,8 @@
                 "condition": "out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
-            {% endfor -%}
-            "outputs_restore_state": {
+            {
+                "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
                 "address": 6,
@@ -503,7 +541,8 @@
                 "order": 1,
                 "group": "g_outputs"
             },
-            "safety_timer_s": {
+            {
+                "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
                 "description": "poll_timeout_description",
@@ -514,7 +553,8 @@
                 "max": 65534,
                 "default": 10
             },
-            "baud_rate": {
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -531,7 +571,7 @@
                 "group": "g_general",
                 "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
@@ -819,6 +859,7 @@
             "en": {
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only",
+                "safety_behaviour_input_state_description": "Option \"Switch output according to input state\" works for latching switch mode only",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
@@ -966,8 +1007,10 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
+                "safety_behaviour_input_state_description": "Вариант \"Установить выход согласно состоянию входа\" применим только для режима \"Переключатель с фиксацией\"",
                 "Don't change output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Switch output according to input state": "Установить выход согласно состоянию входа",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",

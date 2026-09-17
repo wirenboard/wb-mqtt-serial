@@ -24846,7 +24846,6 @@ WB-MDM3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Cross Offset (us)  =>  Zero-Cross Offset (us)
 WB-MDM3-since-fw-2.12
 	AC on L-N  =>  AC on L-N
 	Channel 1  =>  Channel 1
@@ -28496,14 +28495,14 @@ akko-cm-1-mb-r8
 	cmd_close  =>  cmd_close
 	cmd_close_limit  =>  cmd_close_limit
 	cmd_factory_reset  =>  cmd_factory_reset
-	cmd_lock  =>  cmd_lock
-	cmd_manual_control  =>  cmd_manual_control
 	cmd_open  =>  cmd_open
 	cmd_open_limit  =>  cmd_open_limit
 	cmd_reset_limits  =>  cmd_reset_limits
 	cmd_stop  =>  cmd_stop
 	fw  =>  fw
 	hw_version  =>  hw_version
+	lock  =>  lock
+	manual_control  =>  manual_control
 	motor_version  =>  motor_version
 	position  =>  position
 	proto_version  =>  proto_version
@@ -31665,7 +31664,7 @@ tpl1_wb_mdm3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Cross Offset (us)  =>  Zero-Cross Offset (us)
+	Zero-�ross Offset (us)  =>  Zero-�ross Offset (us)
 tpl1_wb_mir_v2
 	Command 1 recording  =>  Learn to ROM1
 	Command 1 size  =>  ROM1 size

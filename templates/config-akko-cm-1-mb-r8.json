@@ -11,7 +11,7 @@
         }
     ],
     "device": {
-        "name": "AKKO-CM-1-MB-R8",
+        "name": "CM-1-MB-R8",
         "id": "akko_cm_1_mb_r8",
         "groups": [
             {
@@ -207,7 +207,7 @@
                 "sporadic": true
             },
             {
-                "name": "cmd_manual_control",
+                "name": "manual_control",
                 "group": "g_general",
                 "reg_type": "coil",
                 "address": 4,
@@ -215,7 +215,7 @@
                 "enabled": false
             },
             {
-                "name": "cmd_lock",
+                "name": "lock",
                 "group": "g_general",
                 "reg_type": "coil",
                 "address": 9,
@@ -409,8 +409,8 @@
                 "cmd_close": "Close",
                 "cmd_open": "Open",
                 "cmd_stop": "Stop",
-                "cmd_manual_control": "Manual Control",
-                "cmd_lock": "Lock Control",
+                "manual_control": "Manual Control",
+                "lock": "Lock Control",
                 "setup_state_display_enum_0": "Drop Down List",
                 "setup_state_display_enum_1": "Buttons",
                 "g_settings": "Settings",
@@ -712,20 +712,20 @@
                 "cmd_close": "Закрыть",
                 "cmd_open": "Открыть",
                 "cmd_stop": "Остановить",
-                "cmd_manual_control": "Ручное управление",
-                "cmd_lock": "Блокировать управление",
+                "manual_control": "Ручное управление",
+                "lock": "Блокировать управление",
                 "setup_state_display_enum_0": "Выпадающий список",
                 "setup_state_display_enum_1": "Кнопки",
                 "g_settings": "Настройки",
                 "low_current_switch": "Слаботочный вход",
-                "low_current_switch_enum_0": "Двойной (c возвратом)",
+                "low_current_switch_enum_0": "Двойной (с возвратом)",
                 "low_current_switch_enum_1": "Двойной (без возврата)",
                 "low_current_switch_enum_2": "DC246",
                 "low_current_switch_enum_3": "Одиночный циклический",
                 "current_switch": "Силовой вход",
                 "current_switch_enum_0": "Двойной (без возврата)",
                 "current_switch_enum_1": "Гостиничный режим",
-                "current_switch_enum_2": "Двойной (c возвратом)",
+                "current_switch_enum_2": "Двойной (с возвратом)",
                 "invert_direction": "Инверсия движения",
                 "cmd_close_limit": "Концевое положение закрытия",
                 "cmd_open_limit": "Концевое положение открытия",
