@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.277.0) stable; urgency=medium
+wb-mqtt-serial (2.276.1) stable; urgency=medium
 
   * dump_templates.py: always write the dump in UTF-8. The output is redirected
     into the TDeviceTemplatesTest.Validate golden file, so it must not depend on
