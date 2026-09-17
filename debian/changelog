@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.275.0) stable; urgency=medium
+wb-mqtt-serial (2.276.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add option to safety behaviour - switch
     output according to input state. The option is declared as an fw variant of
@@ -16,7 +16,16 @@ wb-mqtt-serial (2.275.0) stable; urgency=medium
     object keys
   * WB-MRWM template: remove reg 5
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 07 Sep 2026 18:30:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 17 Sep 2026 10:27:00 +0300
+
+wb-mqtt-serial (2.275.0) stable; urgency=medium
+
+  * Add group description variants for different device firmware versions in
+    device templates
+  * Send the device firmware version and model in device/LoadConfig response
+    for templates without parameters
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 15 Sep 2026 12:00:00 +0300
 
 wb-mqtt-serial (2.274.2) stable; urgency=medium
 

@@ -1,0 +1,31 @@
+// invalid group fw variants: same fw
+{
+    "device_type": "groups_fw_variants_invalid_same_fw",
+    "device": {
+        "name": "groups fw variants invalid same fw",
+        "id": "groups fw variants invalid same fw",
+        "groups": [
+            {
+                "id": "g1",
+                "title": "g1",
+                "fw": "2.2.0",
+                "description": "g1 for fw 2.2.0"
+            },
+            {
+                "id": "g1",
+                "title": "g1",
+                "fw": "2.2.0",
+                "description": "g1 for the same fw 2.2.0"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "group": "g1"
+            }
+        ]
+    }
+}

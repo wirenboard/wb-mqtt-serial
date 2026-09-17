@@ -1,0 +1,40 @@
+// invalid group fw variants: different parent group
+{
+    "device_type": "groups_fw_variants_invalid_group",
+    "device": {
+        "name": "groups fw variants invalid group",
+        "id": "groups fw variants invalid group",
+        "groups": [
+            {
+                "id": "g1",
+                "title": "g1"
+            },
+            {
+                "id": "g2",
+                "title": "g2"
+            },
+            {
+                "id": "gg1",
+                "title": "gg1",
+                "group": "g1",
+                "description": "gg1"
+            },
+            {
+                "id": "gg1",
+                "title": "gg1",
+                "group": "g2",
+                "fw": "2.2.0",
+                "description": "gg1 for fw 2.2.0"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "group": "gg1"
+            }
+        ]
+    }
+}

@@ -31,6 +31,9 @@ namespace
     const std::vector<std::string> REGISTER_READING_PROPERTIES =
         {"reg_type", "format", "scale", "offset", "round_to", "word_order", "byte_order"};
 
+    //! Must be equal in all declarations of a group. The "fw" and "description" may differ (fw variants)
+    const std::vector<std::string> COMMON_GROUP_PROPERTIES = {"group", "order", "ui_options", "title"};
+
     bool EndsWith(const string& str, const string& suffix)
     {
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
@@ -295,6 +298,43 @@ namespace
         }
     }
 
+    //! Throws if the declarations of the group differ in any of the properties
+    void CheckEqualGroupProperties(const std::string& id, const Json::Value& a, const Json::Value& b)
+    {
+        for (const auto& propertyName: COMMON_GROUP_PROPERTIES) {
+            if (a[propertyName] != b[propertyName]) {
+                throw std::runtime_error("Group \"" + id + "\" has several declarations with different \"" +
+                                         propertyName + "\" values.");
+            }
+        }
+    }
+
+    //! Checks fw variants of groups: the declarations with the same id and different "fw".
+    //! The variants describe the same group and may differ only in "description",
+    //! the declaration without "fw" is the variant for the oldest firmware
+    void ValidateGroupFwVariants(const Json::Value& deviceTemplate)
+    {
+        const Json::Value& groups = deviceTemplate["groups"];
+        if (!groups.isArray()) {
+            return;
+        }
+        std::map<std::string, std::vector<const Json::Value*>> declarationsById;
+        for (const auto& group: groups) {
+            declarationsById[group["id"].asString()].push_back(&group);
+        }
+        for (const auto& [id, declarations]: declarationsById) {
+            std::unordered_set<std::string> fwVersions;
+            for (const auto* declaration: declarations) {
+                auto fw = (*declaration)[SerialConfig::FW_VERSION_PROPERTY_NAME].asString();
+                if (!fwVersions.insert(fw).second) {
+                    throw std::runtime_error("Group \"" + id + "\" has several declarations with the same \"" +
+                                             SerialConfig::FW_VERSION_PROPERTY_NAME + "\" value.");
+                }
+                CheckEqualGroupProperties(id, *declarations.front(), *declaration);
+            }
+        }
+    }
+
     void TemplateUpdatedWarning(PDeviceTemplate deviceTemplate, const std::string& path)
     {
         LOG(Warn) << "Existing template data for device type '" << deviceTemplate->Type << "' (from file "
@@ -322,6 +362,7 @@ namespace
         // Check declarations with the same id (for parameters declared as array)
         ValidateParameterProperties(root["device"]);
         ValidateParameterFwVariants(root["device"]);
+        ValidateGroupFwVariants(root["device"]);
         // Check that channels refer to valid subdevices and they are not nested too deep
         if (root["device"].isMember("subdevices")) {
             TSubDevicesTemplateMap subdevices(root["device_type"].asString(), root["device"]);

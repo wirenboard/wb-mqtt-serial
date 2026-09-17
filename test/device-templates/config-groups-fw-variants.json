@@ -1,0 +1,54 @@
+{
+    "device_type": "groups fw variants",
+    "device": {
+        "name": "groups fw variants",
+        "id": "groups fw variants",
+        "groups": [
+            // the newer variant of "g1" is declared first, the order of declarations must not matter
+            {
+                "id": "g1",
+                "title": "g1",
+                "order": 1,
+                "fw": "2.4.0",
+                "description": "g1 for fw 2.4.0",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "id": "g1",
+                "title": "g1",
+                "order": 1,
+                "description": "g1",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "id": "g1",
+                "title": "g1",
+                "order": 1,
+                "fw": "2.2.0",
+                "description": "g1 for fw 2.2.0",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "group": "g1"
+            }
+        ]
+    }
+}
