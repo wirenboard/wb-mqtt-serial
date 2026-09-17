@@ -28502,17 +28502,17 @@ akko-cm-1-mb-r8
 	cmd_open_limit  =>  cmd_open_limit
 	cmd_reset_limits  =>  cmd_reset_limits
 	cmd_stop  =>  cmd_stop
-	cmd_target_position  =>  cmd_target_position
-	cmd_target_state  =>  cmd_target_state
 	fw  =>  fw
 	hw_version  =>  hw_version
+	motor_version  =>  motor_version
+	position  =>  position
 	proto_version  =>  proto_version
+	setpoint_position  =>  setpoint_position
+	setpoint_state  =>  setpoint_state
 	signature  =>  signature
 	sn  =>  sn
-	state_current_position  =>  state_current_position
-	state_current_state  =>  state_current_state
+	state_curtain  =>  state_curtain
 	state_curtain_connected  =>  state_curtain_connected
-	state_motor_version  =>  state_motor_version
 carel_ir33
 	Auxiliary On-Off  =>  Auxiliary On-Off
 	Auxiliary Relay Status  =>  Auxiliary Relay Status
