@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.277.0) stable; urgency=medium
+
+  * WB-MR and WB-MRWM templates: add the timer functions "On Pulse (Reset
+    Command)" and "Off Pulse (Reset Command)"
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 17 Sep 2026 14:00:00 +0300
+
 wb-mqtt-serial (2.276.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add option to safety behaviour - switch

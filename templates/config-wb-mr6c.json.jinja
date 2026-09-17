@@ -12,6 +12,7 @@
 {% set CURTAINS_MMATRIX_OUTPUTS_NUMBER = MMATRIX_OUTPUTS_NUMBER // 2 -%}
 {% set FIRST_INPUT = 0 -%}
 {% set SAFETY_ACCORDING_TO_INPUT_FW = "1.27.0" -%}
+{% set TIMER_AUTORESET_FW = "1.28.0" -%}
 {
     "title": "template_title",
     "device_type": "{{ device_type }}",
@@ -519,6 +520,8 @@
                 "fw": "1.24.0",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
+            {% for timer_fw in ["1.25.0", TIMER_AUTORESET_FW] -%}
+            {% set timer_autoreset = timer_fw == TIMER_AUTORESET_FW -%}
             {
                 "id": "out{{out_num}}_timer_mode_selection",
                 "title": "Function",
@@ -527,20 +530,21 @@
                 "address": {{1760 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3, 6, 4, 7, 5],
+                {% if timer_autoreset %}"enum": [0, 1, 2, 3, 6, 4, 7, 5],{% else %}"enum": [0, 1, 2, 3, 4, 5],{% endif %}
                 "enum_titles": [
                     "Not Used",
                     "On Delay",
                     "Off Delay",
-                    "On Pulse",
-                    "On Pulse (Reset Command)",
-                    "Off Pulse",
-                    "Off Pulse (Reset Command)",
+                    "On Pulse",{% if timer_autoreset %}
+                    "On Pulse (Reset Command)",{% endif %}
+                    "Off Pulse",{% if timer_autoreset %}
+                    "Off Pulse (Reset Command)",{% endif %}
                     "On/Off Cycle"
                 ],
-                "fw": "1.25.0",
+                "fw": "{{timer_fw}}",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
+            {% endfor -%}
             {
                 "id": "out{{out_num}}_on_delay_params",
                 "title": "Timeout (s)",
