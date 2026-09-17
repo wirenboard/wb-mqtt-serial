@@ -73,6 +73,10 @@
         },
         "group": {
           "type": "string"
+        },
+        "fw": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "required": ["id"]

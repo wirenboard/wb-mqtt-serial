@@ -1,0 +1,32 @@
+// invalid group fw variants: different order
+{
+    "device_type": "groups_fw_variants_invalid_order",
+    "device": {
+        "name": "groups fw variants invalid order",
+        "id": "groups fw variants invalid order",
+        "groups": [
+            {
+                "id": "g1",
+                "title": "g1",
+                "order": 1,
+                "description": "g1"
+            },
+            {
+                "id": "g1",
+                "title": "g1",
+                "order": 2,
+                "fw": "2.2.0",
+                "description": "g1 for fw 2.2.0"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "group": "g1"
+            }
+        ]
+    }
+}

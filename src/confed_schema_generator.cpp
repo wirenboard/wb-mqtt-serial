@@ -44,16 +44,15 @@ namespace
     //      "allOf": [
     //          { "$ref": PROTOCOL_PARAMETERS }
     //      ],
-    //      "format": "groups",
     //      "device": DEVICE_TEMPLATE,
     //      "properties": {
     //          "device_type": DEVICE_TYPE
     //      },
     //      "required": ["device_type", "slave_id"]
     //  }
-    Json::Value MakeDeviceWithGroupsTemplateSchema(TDeviceTemplate& deviceTemplate,
-                                                   TSerialDeviceFactory& deviceFactory,
-                                                   const Json::Value& commonDeviceSchema)
+    Json::Value MakeDeviceTemplateSchema(TDeviceTemplate& deviceTemplate,
+                                         TSerialDeviceFactory& deviceFactory,
+                                         const Json::Value& commonDeviceSchema)
     {
         auto protocol = GetProtocolName(deviceTemplate.GetTemplate());
         auto res = commonDeviceSchema;
@@ -65,7 +64,6 @@ namespace
         Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(protocol);
         allOf.append(MakeProtocolProperty());
 
-        res["format"] = "groups";
         res["device"] = deviceTemplate.GetTemplate();
         res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
         return res;
@@ -97,7 +95,7 @@ Json::Value GenerateSchemaForConfed(TDeviceTemplate& deviceTemplate,
 {
     auto schema = deviceTemplate.WithSubdevices()
                       ? Json::Value(Json::objectValue)
-                      : MakeDeviceWithGroupsTemplateSchema(deviceTemplate, deviceFactory, commonDeviceSchema);
+                      : MakeDeviceTemplateSchema(deviceTemplate, deviceFactory, commonDeviceSchema);
     AddUnitTypes(schema);
     return schema;
 }

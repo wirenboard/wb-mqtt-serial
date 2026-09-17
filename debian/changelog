@@ -1,3 +1,41 @@
+wb-mqtt-serial (2.276.0) stable; urgency=medium
+
+  * WB-MR and WB-MRWM templates: add option to safety behaviour - switch
+    output according to input state. The option is declared as an fw variant of
+    the parameter and the note about it as an fw variant of the group, so both
+    are shown only for firmwares that have the option: 1.27.0 for WB-MR3
+    (WB-MR3LV/x, WB-MR3HV/x, WB-MRWL3), WB-MR6C, WB-MR6C/NC, WB-MR6C v.3,
+    WB-MRM2-mini/NO and WB-MRM2-mini/NC, 1.26.0 for WB-MRWM2. Showing a group
+    description by the device firmware version needs wb-mqtt-homeui 2.259.0,
+    the templates require it through Breaks
+  * WB-MR6C v.3 template: the 1.27.0 variant of the safety behaviour group
+    description keeps the existing text and appends the note about the new
+    option, the editor shows the description of one variant only
+  * WB-MR and WB-MRWM templates: declare parameters as an array, an object
+    cannot hold the two declarations of the safety behaviour parameter. The
+    declarations themselves are unchanged and so is the order in which the
+    parameters are written to a device: setup registers are written sorted by
+    address, not in declaration order
+  * WB-MRM2-mini-NC template: declare the output parameters once instead of
+    once per input, the repeated declarations were overriding each other as
+    object keys
+  * WB-MRWM2 template: drop the setup item writing reg 5, the legacy input mode
+    register was removed from the WB-MRWM2 firmware in 1.26.0. The item made
+    the driver write a non-existent register, and since setup registers with
+    consecutive addresses go in one request, reg 6 (outputs state after power
+    on) was rejected together with it
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 17 Sep 2026 10:27:00 +0300
+
+wb-mqtt-serial (2.275.0) stable; urgency=medium
+
+  * Add group description variants for different device firmware versions in
+    device templates
+  * Send the device firmware version and model in device/LoadConfig response
+    for templates without parameters
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 15 Sep 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.274.2) stable; urgency=medium
 
   * Regenerate the system config when its content is all NUL bytes

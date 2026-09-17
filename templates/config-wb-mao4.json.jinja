@@ -104,25 +104,21 @@
             {
                 "title": "Light Scene {{ ls_number }}",
                 "id": "g_light_scene_{{ ls_number }}",
-                "fw": "2.5.0",
                 "description": "light_scenes_description"
             },
             {
                 "title": "Actions when Scene Light Turn On",
                 "id": "gg_ls_{{ ls_number }}_actions_turn_on",
-                "fw": "2.5.0",
                 "group": "g_light_scene_{{ ls_number }}"
             },
             {
                 "title": "Actions when Scene Light Turn Off",
                 "id": "gg_ls_{{ ls_number }}_actions_turn_off",
-                "fw": "2.5.0",
                 "group": "g_light_scene_{{ ls_number }}"
             },
             {
                 "title": "Light Scene {{ ls_number }} Channels",
                 "id": "gg_ls_{{ ls_number }}_channels",
-                "fw": "2.5.0",
                 "group": "g_light_scene_{{ ls_number }}",
                 "ui_options": {
                     "wb": {
@@ -147,18 +143,15 @@
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
-                "description": "g_safety_description",
-                "fw": "2.5.0"
+                "description": "g_safety_description"
             },
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "fw": "2.5.0"
+                "id": "g_power_up_behaviour"
             },
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
-                "fw": "2.5.0",
                 "description": "g_power_up_behaviour_description",
                 "group": "g_safety"
             },
@@ -166,20 +159,17 @@
             {
                 "title": "Channel {{ ch_number }} Switch",
                 "id": "gg_safety_mode_ch_{{ ch_number }}",
-                "fw": "2.5.0",
                 "group": "gg_safety_behaviour"
             },
             {
                 "title": "Channel {{ ch_number }} Switch",
                 "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
-                "fw": "2.5.0",
                 "group": "g_power_up_behaviour"
             },
             {% endfor -%}
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
-                "fw": "2.5.0",
                 "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
