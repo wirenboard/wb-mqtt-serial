@@ -24846,7 +24846,6 @@ WB-MDM3
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
-	Zero-Cross Offset (us)  =>  Zero-Cross Offset (us)
 WB-MDM3-since-fw-2.12
 	AC on L-N  =>  AC on L-N
 	Channel 1  =>  Channel 1
