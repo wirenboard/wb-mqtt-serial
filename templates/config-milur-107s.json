@@ -32,10 +32,6 @@
             {
                 "title": "Tariffs",
                 "id": "tariffs"
-            },
-            {
-                "title": "General",
-                "id": "general"
             }
         ],
         "channels": [
@@ -263,7 +259,6 @@
                 "Power": "Мощность",
                 "Energy": "Энергия",
                 "Tariffs": "Тарифы",
-                "General": "Общее",
                 "power_factor": "Коэффициент мощности",
                 "current_imbalance": "Небаланс токов",
                 "active_power_in": "Активная мощность прием",

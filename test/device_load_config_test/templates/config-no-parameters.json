@@ -1,0 +1,28 @@
+// testing template without parameters, the "hw" signature lets the template check pass
+{
+    "device_type": "no_parameters",
+    "hw": [
+        {
+            "signature": "TESTDEV"
+        }
+    ],
+    "device": {
+        "name": "no parameters",
+        "id": "no parameters",
+        "groups": [
+            {
+                "id": "g1",
+                "description": "g1"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "group": "g1"
+            }
+        ]
+    }
+}
