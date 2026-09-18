@@ -165,6 +165,11 @@ def print_channel(channel: Dict, mqtt_prefix: str, subdevices: SubdeviceMap, lev
 
 
 def main() -> int:
+    # The dump is redirected into a golden file compared byte for byte by
+    # TDeviceTemplatesTest.Validate, so the output encoding must not depend on the locale:
+    # on a non-UTF-8 stdout the non-ASCII characters some templates carry get mangled.
+    sys.stdout.reconfigure(encoding="utf-8")
+
     parser = argparse.ArgumentParser(
         description="Print device template structure in the same format as the Validate test."
     )
