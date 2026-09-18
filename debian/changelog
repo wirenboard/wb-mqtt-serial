@@ -1,11 +1,18 @@
-wb-mqtt-serial (2.276.1) stable; urgency=medium
+wb-mqtt-serial (2.277.1) stable; urgency=medium
 
   * dump_templates.py: always write the dump in UTF-8. The output is redirected
     into the TDeviceTemplatesTest.Validate golden file, so it must not depend on
     the locale: on a non-UTF-8 stdout the non-ASCII characters a few templates
     carry were mangled, and the golden file no longer matched the templates
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 17 Sep 2026 17:30:00 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 18 Sep 2026 13:00:00 +0300
+
+wb-mqtt-serial (2.277.0) stable; urgency=medium
+
+  * ONOKOM templates update (external contribution):
+    - add templates for AKKO devices
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Mon, 17 Sep 2026 14:45:09 +0300
 
 wb-mqtt-serial (2.276.0) stable; urgency=medium
 
