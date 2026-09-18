@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.277.0) stable; urgency=medium
+
+  * ONOKOM templates update (external contribution):
+    - add templates for AKKO devices
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Mon, 17 Sep 2026 14:45:09 +0300
+
 wb-mqtt-serial (2.276.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add "Switch output according to input state"
