@@ -11,7 +11,10 @@ wb-mqtt-serial (2.278.0) stable; urgency=medium
   * Handle press counters of the gtd_iot protocol (single_press_counter and
     long_press_counter) the same way as press_counter of Wiren Board devices:
     write their values to the database immediately and don't publish the zero
-    they are reset to when a panel reconnects
+    they are reset to when a panel reconnects. The counters are counted by the
+    service, so they start from zero after its restart too: this zero is not
+    published either, a counter register has no value until the first press,
+    so the control keeps the value published before the restart
 
  -- Evgeny Boger <boger@wirenboard.com>  Sat, 19 Sep 2026 15:00:00 +0300
 

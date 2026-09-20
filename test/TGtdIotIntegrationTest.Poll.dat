@@ -77,8 +77,14 @@ Publish: /devices/gtd_iot_24x_1/controls/backlight: '0' (QoS 1, retained)
 >> 01 03 13 10 00 01 81 4B
 << 01 03 00 01 00 00 14 0A
 Publish: /devices/gtd_iot_24x_1/controls/state_k1: '0' (QoS 1, retained)
-Publish: /devices/gtd_iot_24x_1/controls/count_single_k1: '0' (QoS 1, retained)
-Publish: /devices/gtd_iot_24x_1/controls/count_long_k1: '0' (QoS 1, retained)
+>>> LoopOnce()
+>> 01 03 10 08 00 01 01 08
+<< 01 03 10 08 00 00 C0 C8
+>>> LoopOnce()
+>> 01 03 10 0B 00 01 F1 08
+<< 01 03 00 02 00 00 E4 0A
+>> 01 03 13 10 00 01 81 4B
+<< 01 03 00 01 00 00 14 0A
 >>> LoopOnce()
 >> 01 03 10 08 00 01 01 08
 << 01 03 10 08 00 00 C0 C8

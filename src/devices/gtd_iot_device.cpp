@@ -60,6 +60,22 @@ namespace
         return type != HOLDING;
     }
 
+    /**
+     * Press counters are counted by the driver, not by the panel, so they are zero until the first press
+     * after a start of the service. Such a zero must not be published: rules would see it as a reset of the
+     * counter on every save of the configuration, which restarts the service. So a counter register is left
+     * without value until the first press: the driver publishes nothing for a register without value, the
+     * control keeps the value published before the restart and the first press publishes 1, just like
+     * a press counter of a Wiren Board device after a reboot of the device.
+     * A read error of such a register is not set either: it would be published and could not be cleared,
+     * because clearing is published only together with a value.
+     */
+    bool IsCounterWithoutPresses(const TRegister& reg)
+    {
+        return (reg.GetConfig()->Type == SINGLE_PRESS_COUNTER || reg.GetConfig()->Type == LONG_PRESS_COUNTER) &&
+               reg.GetValue().GetType() == TRegisterValue::ValueType::Undefined;
+    }
+
     size_t GetKeyStatusesPduSize(size_t keyCount)
     {
         return VALUE_POSITION + 2 * keyCount;
@@ -287,11 +303,16 @@ void TGtdIotDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool br
         }
         SetTransferResult(true);
         for (const auto& reg: regs) {
-            reg->SetValue(GetRegisterValue(*reg->GetConfig(), value));
+            auto regValue = GetRegisterValue(*reg->GetConfig(), value);
+            if (regValue != TRegisterValue{0} || !IsCounterWithoutPresses(*reg)) {
+                reg->SetValue(regValue);
+            }
         }
     } catch (const TSerialDeviceException& e) {
         for (const auto& reg: regs) {
-            reg->SetError(TRegister::TError::ReadError);
+            if (!IsCounterWithoutPresses(*reg)) {
+                reg->SetError(TRegister::TError::ReadError);
+            }
         }
         auto& logger = (GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
         LOG(logger) << "failed to read " << regs.front()->ToString() << ": " << e.what();

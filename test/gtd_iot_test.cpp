@@ -23,6 +23,7 @@ protected:
     void ExpectReadWithoutAnswer(uint16_t address, uint16_t count);
     void ExpectKeys(uint16_t keyCode, std::vector<uint16_t> statuses);
     void CheckKey(const TKeyRegisters& key, uint16_t status, uint16_t singlePresses, uint16_t longPresses);
+    void CheckCounter(const PRegister& counter, uint16_t presses);
 
     PSerialDevice Dev;
 
@@ -103,8 +104,18 @@ void TGtdIotDeviceTest::CheckKey(const TKeyRegisters& key,
                                  uint16_t longPresses)
 {
     EXPECT_EQ(TRegisterValue{status}, key.Status->GetValue());
-    EXPECT_EQ(TRegisterValue{singlePresses}, key.SinglePresses->GetValue());
-    EXPECT_EQ(TRegisterValue{longPresses}, key.LongPresses->GetValue());
+    CheckCounter(key.SinglePresses, singlePresses);
+    CheckCounter(key.LongPresses, longPresses);
+}
+
+// A counter has no value until the first press, so a counter without presses is a register without value
+void TGtdIotDeviceTest::CheckCounter(const PRegister& counter, uint16_t presses)
+{
+    if (presses == 0) {
+        EXPECT_EQ(TRegisterValue::ValueType::Undefined, counter->GetValue().GetType());
+    } else {
+        EXPECT_EQ(TRegisterValue{presses}, counter->GetValue());
+    }
 }
 
 TEST_F(TGtdIotDeviceTest, Read)
@@ -191,6 +202,44 @@ TEST_F(TGtdIotDeviceTest, Keys)
     ReadRange(keys);
 }
 
+TEST_F(TGtdIotDeviceTest, CountersWithoutPresses)
+{
+    // The counters are counted by the driver, so they are zero after its restart. This zero is not published:
+    // the counter registers have no value until the first press, the controls keep the stored values.
+    // The device timeout is counted from the last successful cycle, so the device is polled successfully
+    // first, otherwise the timeout is counted from the start of the steady clock and the result depends
+    // on the uptime of the machine
+    Dev->DeviceConfig()->DeviceTimeout = std::chrono::hours(1);
+    auto key1 = AddKey(0x1310);
+    std::vector<PRegister> keys{key1.Status, key1.SinglePresses, key1.LongPresses};
+
+    ExpectKeys(0, {});
+    ReadRange(keys);
+    CheckKey(key1, 0, 0, 0);
+    EXPECT_FALSE(key1.SinglePresses->GetErrorState().test(TRegister::ReadError));
+    EXPECT_FALSE(key1.LongPresses->GetErrorState().test(TRegister::ReadError));
+
+    // A failed poll doesn't set the error of a counter without value: the error would be published and
+    // could not be cleared, because the counter has no value to publish it with
+    ExpectReadWithoutAnswer(0x100B, 1);
+    ReadRange(keys);
+    EXPECT_TRUE(key1.Status->GetErrorState().test(TRegister::ReadError));
+    EXPECT_FALSE(key1.SinglePresses->GetErrorState().test(TRegister::ReadError));
+    EXPECT_FALSE(key1.LongPresses->GetErrorState().test(TRegister::ReadError));
+    ExpectKeys(0, {});
+    ReadRange(keys);
+    CheckKey(key1, 0, 0, 0);
+
+    // The first press gives the counter a value, from now on it is an ordinary register
+    ExpectKeys(0x0101, {});
+    ReadRange(keys);
+    CheckKey(key1, 1, 1, 0);
+    ExpectReadWithoutAnswer(0x100B, 1);
+    ReadRange(keys);
+    EXPECT_TRUE(key1.SinglePresses->GetErrorState().test(TRegister::ReadError));
+    EXPECT_FALSE(key1.LongPresses->GetErrorState().test(TRegister::ReadError));
+}
+
 TEST_F(TGtdIotDeviceTest, KeysOfNotAddedRegister)
 {
     // Registers made for RPC requests are not added to the device, statuses of all keys are read for them
@@ -223,7 +272,6 @@ TEST_F(TGtdIotDeviceTest, KeysReadError)
     ExpectReadWithoutAnswer(0x1310, KeyCount);
     ReadRange(keys);
     EXPECT_TRUE(key1.Status->GetErrorState().test(TRegister::ReadError));
-    EXPECT_TRUE(key1.SinglePresses->GetErrorState().test(TRegister::ReadError));
     ExpectKeys(0, {0});
     ReadRange(keys);
     CheckKey(key1, 1, 1, 0);
@@ -244,7 +292,10 @@ TEST_F(TGtdIotDeviceTest, KeysAfterDisconnect)
     EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Dev->GetConnectionState());
     ExpectKeys(0, {0});
     ReadRange(keys);
+    // The counters are back to zero, but they had no value, so there is nothing to publish
     CheckKey(key1, 0, 0, 0);
+    EXPECT_FALSE(key1.SinglePresses->GetErrorState().test(TRegister::ReadError));
+    EXPECT_FALSE(key1.LongPresses->GetErrorState().test(TRegister::ReadError));
 }
 
 TEST_F(TGtdIotDeviceTest, PollLimit)
@@ -339,7 +390,8 @@ TEST_F(TGtdIotIntegrationTest, Poll)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    // The panel has one key, so the key code is followed by the status of one key
+    // The panel has one key, so the key code is followed by the status of one key.
+    // The counters have no value until the first press, so only the state is published
     ExpectRequest({0x03, 0x10, 0x0B, 0x00, 0x01}, {0x03, 0x00, 0x02, 0x00, 0x00});
     ExpectRequest({0x03, 0x13, 0x10, 0x00, 0x01}, {0x03, 0x00, 0x01, 0x00, 0x00});
     Note() << "LoopOnce()";
@@ -349,7 +401,17 @@ TEST_F(TGtdIotIntegrationTest, Poll)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    // K1 is pressed and released between polls: the state shows the press and the counter is incremented
+    // Nothing has changed, so nothing is published
+    ExpectRequest({0x03, 0x10, 0x0B, 0x00, 0x01}, {0x03, 0x00, 0x02, 0x00, 0x00});
+    ExpectRequest({0x03, 0x13, 0x10, 0x00, 0x01}, {0x03, 0x00, 0x01, 0x00, 0x00});
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    ExpectRequest({0x03, 0x10, 0x08, 0x00, 0x01}, {0x03, 0x10, 0x08, 0x00, 0x00});
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    // K1 is pressed and released between polls: the state shows the press and the counter gets its first value
     ExpectRequest({0x03, 0x10, 0x0B, 0x00, 0x01}, {0x03, 0x00, 0x02, 0x01, 0x01});
     ExpectRequest({0x03, 0x13, 0x10, 0x00, 0x01}, {0x03, 0x00, 0x01, 0x00, 0x00});
     Note() << "LoopOnce()";
