@@ -188,10 +188,16 @@ TEST_F(TGtdIotDeviceTest, Keys)
 
 TEST_F(TGtdIotDeviceTest, KeysReadError)
 {
-    // The device is not marked as disconnected after a failed request
+    // The device is not marked as disconnected after a failed request. The timeout is counted from the
+    // last successful cycle, so the device must be polled successfully first, otherwise it is counted
+    // from the start of the steady clock and the result depends on the uptime of the machine
     Dev->DeviceConfig()->DeviceTimeout = std::chrono::hours(1);
     auto key1 = AddKey(0x1310);
     std::vector<PRegister> keys{key1.Status, key1.SinglePresses, key1.LongPresses};
+
+    ExpectKeys(0, {});
+    ReadRange(keys);
+    CheckKey(key1, 0, 0, 0);
 
     // Key code is read, but reading of statuses fails: the request is not repeated for other channels
     // and the key press is not lost
