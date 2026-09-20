@@ -1,6 +1,8 @@
-{% set KEYS_NUMBER = 6 -%}
+{% set KEYS_NUMBER = KEYS_NUMBER | default(6) -%}
+{% set device_type = "gtd-iot-24x-" ~ KEYS_NUMBER -%}
+{% set keys_ru = "кнопку" if KEYS_NUMBER == 1 else ("кнопки" if KEYS_NUMBER < 5 else "кнопок") -%}
 {
-    "device_type": "gtd-iot-24x",
+    "device_type": "{{ device_type }}",
     "group": "g-control-panel",
     "device": {
         "name": "GTD IOT 24X",
@@ -96,7 +98,7 @@
 
         "translations": {
             "en": {
-                "gtd-iot-24x": "GTD IOT 24X (1-6 key panel)",
+                "{{ device_type }}": "GTD IOT 24A/24X ({{ KEYS_NUMBER }}-key panel)",
                 "g_keys": "Keys",
                 "g_leds": "LEDs",
                 "led_control": "LED Control",
@@ -115,7 +117,7 @@
                 "backlight": "Backlight"
             },
             "ru": {
-                "gtd-iot-24x": "GTD IOT 24X (панель на 1-6 кнопок)",
+                "{{ device_type }}": "GTD IOT 24A/24X (панель на {{ KEYS_NUMBER }} {{ keys_ru }})",
                 "g_keys": "Кнопки",
                 "g_leds": "Светодиоды",
                 "led_control": "Управление светодиодами",

@@ -1,8 +1,8 @@
-#include "crc16.h"
 #include "devices/gtd_iot_device.h"
 #include "fake_serial_port.h"
+#include "modbus_expectations_base.h"
 
-class TGtdIotDeviceTest: public TSerialDeviceTest
+class TGtdIotDeviceTest: public TSerialDeviceTest, public TModbusExpectationsBase
 {
 protected:
     struct TKeyRegisters
@@ -18,12 +18,16 @@ protected:
     PRegister AddRegister(const std::string& type, uint32_t address);
     TKeyRegisters AddKey(uint32_t address);
     void ReadRange(const std::vector<PRegister>& regs);
+    std::vector<int> MakeReadRequest(uint16_t address, uint16_t count);
     void ExpectRead(uint16_t address, uint16_t header, const std::vector<uint16_t>& values);
     void ExpectReadWithoutAnswer(uint16_t address, uint16_t count);
     void ExpectKeys(uint16_t keyCode, std::vector<uint16_t> statuses);
     void CheckKey(const TKeyRegisters& key, uint16_t status, uint16_t singlePresses, uint16_t longPresses);
 
     PSerialDevice Dev;
+
+    //! Number of keys added by AddKey, their statuses are read with one request
+    size_t KeyCount = 0;
 };
 
 void TGtdIotDeviceTest::SetUp()
@@ -49,6 +53,7 @@ PRegister TGtdIotDeviceTest::AddRegister(const std::string& type, uint32_t addre
 
 TGtdIotDeviceTest::TKeyRegisters TGtdIotDeviceTest::AddKey(uint32_t address)
 {
+    KeyCount = std::max<size_t>(KeyCount, address - 0x1310 + 1);
     return {AddRegister("status", address),
             AddRegister("single_press_counter", address),
             AddRegister("long_press_counter", address)};
@@ -63,34 +68,20 @@ void TGtdIotDeviceTest::ReadRange(const std::vector<PRegister>& regs)
     Dev->ReadRegisterRange(*SerialPort, range);
 }
 
-namespace
+std::vector<int> TGtdIotDeviceTest::MakeReadRequest(uint16_t address, uint16_t count)
 {
-    void AddCrc(std::vector<int>& frame)
-    {
-        std::vector<uint8_t> bytes(frame.begin(), frame.end());
-        auto crc = CRC16::CalculateCRC16(bytes.data(), bytes.size());
-        frame.push_back(crc >> 8);
-        frame.push_back(crc & 0xFF);
-    }
-
-    std::vector<int> MakeReadRequest(uint16_t address, uint16_t count)
-    {
-        std::vector<int> request{0x01, 0x03, address >> 8, address & 0xFF, 0x00, count};
-        AddCrc(request);
-        return request;
-    }
+    return WrapPDU({0x03, address >> 8, address & 0xFF, 0x00, count});
 }
 
 // The response header is length or register address
 void TGtdIotDeviceTest::ExpectRead(uint16_t address, uint16_t header, const std::vector<uint16_t>& values)
 {
-    std::vector<int> response{0x01, 0x03, header >> 8, header & 0xFF};
+    std::vector<int> responsePdu{0x03, header >> 8, header & 0xFF};
     for (auto value: values) {
-        response.push_back(value >> 8);
-        response.push_back(value & 0xFF);
+        responsePdu.push_back(value >> 8);
+        responsePdu.push_back(value & 0xFF);
     }
-    AddCrc(response);
-    SerialPort->Expect(MakeReadRequest(address, values.size()), response);
+    SerialPort->Expect(MakeReadRequest(address, values.size()), WrapPDU(responsePdu));
 }
 
 void TGtdIotDeviceTest::ExpectReadWithoutAnswer(uint16_t address, uint16_t count)
@@ -98,12 +89,12 @@ void TGtdIotDeviceTest::ExpectReadWithoutAnswer(uint16_t address, uint16_t count
     SerialPort->Expect(MakeReadRequest(address, count), {});
 }
 
-// Key registers are read together: key code and then statuses of all keys
+// Key registers are read together: key code and then statuses of all configured keys
 void TGtdIotDeviceTest::ExpectKeys(uint16_t keyCode, std::vector<uint16_t> statuses)
 {
-    statuses.resize(TGtdIotDevice::MAX_KEYS);
+    statuses.resize(KeyCount);
     ExpectRead(0x100B, 2, {keyCode});
-    ExpectRead(0x1310, 8, statuses);
+    ExpectRead(0x1310, KeyCount, statuses);
 }
 
 void TGtdIotDeviceTest::CheckKey(const TKeyRegisters& key,
@@ -184,6 +175,33 @@ TEST_F(TGtdIotDeviceTest, Keys)
     ReadRange(keys);
     CheckKey(key1, 0, 2, 1);
     CheckKey(key2, 0, 1, 0);
+
+    // K3 is not configured, its bit of the key code is dropped
+    ExpectKeys(0x0404, {});
+    ReadRange(keys);
+    CheckKey(key1, 0, 2, 1);
+    CheckKey(key2, 0, 1, 0);
+
+    // The number of read statuses is taken from the device, so a range with a part of key registers
+    // and a key channel made write only by its type don't change the request
+    ExpectKeys(0, {});
+    ReadRange({key1.Status});
+    AddRegister("status", 0x1317)->GetConfig()->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
+    ExpectKeys(0, {});
+    ReadRange(keys);
+}
+
+TEST_F(TGtdIotDeviceTest, KeysOfNotAddedRegister)
+{
+    // Registers made for RPC requests are not added to the device, statuses of all keys are read for them
+    TRegisterDesc desc{std::make_shared<TUint32RegisterAddress>(0x1310)};
+    auto type = DeviceFactory.GetProtocol("gtd_iot")->GetRegTypes()->Find("status").Index;
+    auto key = std::make_shared<TRegister>(Dev, TRegisterConfig::Create(type, desc));
+    KeyCount = TGtdIotDevice::MAX_KEYS;
+
+    ExpectKeys(0x0101, {});
+    ReadRange({key});
+    EXPECT_EQ(TRegisterValue{1}, key->GetValue());
 }
 
 TEST_F(TGtdIotDeviceTest, KeysReadError)
@@ -202,7 +220,7 @@ TEST_F(TGtdIotDeviceTest, KeysReadError)
     // Key code is read, but reading of statuses fails: the request is not repeated for other channels
     // and the key press is not lost
     ExpectRead(0x100B, 2, {0x0101});
-    ExpectReadWithoutAnswer(0x1310, TGtdIotDevice::MAX_KEYS);
+    ExpectReadWithoutAnswer(0x1310, KeyCount);
     ReadRange(keys);
     EXPECT_TRUE(key1.Status->GetErrorState().test(TRegister::ReadError));
     EXPECT_TRUE(key1.SinglePresses->GetErrorState().test(TRegister::ReadError));
@@ -213,12 +231,15 @@ TEST_F(TGtdIotDeviceTest, KeysReadError)
 
 TEST_F(TGtdIotDeviceTest, KeysAfterDisconnect)
 {
+    // The device must be marked as disconnected after the first failed request regardless of the uptime
+    // of the machine, so the timeout counted from the start of the steady clock is disabled
+    Dev->DeviceConfig()->DeviceTimeout = std::chrono::milliseconds::zero();
     auto key1 = AddKey(0x1310);
     std::vector<PRegister> keys{key1.Status, key1.SinglePresses, key1.LongPresses};
 
     // The key was pressed while the panel was not polled, the press is dropped with the rest of the state
     ExpectRead(0x100B, 2, {0x0101});
-    ExpectReadWithoutAnswer(0x1310, TGtdIotDevice::MAX_KEYS);
+    ExpectReadWithoutAnswer(0x1310, KeyCount);
     ReadRange(keys);
     EXPECT_EQ(TDeviceConnectionState::DISCONNECTED, Dev->GetConnectionState());
     ExpectKeys(0, {0});
@@ -226,31 +247,23 @@ TEST_F(TGtdIotDeviceTest, KeysAfterDisconnect)
     CheckKey(key1, 0, 0, 0);
 }
 
-TEST_F(TGtdIotDeviceTest, KeyAddressOutOfRange)
-{
-    // Keys are K1...K8, their status registers are 0x1310...0x1317
-    auto key = AddRegister("status", 0x1318);
-    ReadRange({key});
-    EXPECT_TRUE(key->GetErrorState().test(TRegister::ReadError));
-    EXPECT_EQ(TRegisterAvailability::UNAVAILABLE, key->GetAvailable());
-}
-
 TEST_F(TGtdIotDeviceTest, PollLimit)
 {
-    // At 9600 baud one byte takes 11 bits: 16 bytes of one request are 19 ms, 46 bytes of keys requests are 53 ms
+    // At 9600 baud one byte takes 11 bits: 16 bytes of a register request are 19 ms.
+    // Keys need one more request of 14 + 2 bytes per key, so both requests of one key are 32 bytes, 37 ms
     auto key = AddRegister("status", 0x1310);
     auto led = AddRegister(0x1008, 0, 1);
     EXPECT_TRUE(Dev->CreateRegisterRange()->Add(*SerialPort, led, std::chrono::milliseconds(19)));
     EXPECT_FALSE(Dev->CreateRegisterRange()->Add(*SerialPort, led, std::chrono::milliseconds(18)));
-    EXPECT_TRUE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(53)));
-    EXPECT_FALSE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(52)));
+    EXPECT_TRUE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(37)));
+    EXPECT_FALSE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(36)));
 
     // Request delay is added for every request: one for a register and two for keys
     Dev->DeviceConfig()->RequestDelay = std::chrono::milliseconds(10);
     EXPECT_TRUE(Dev->CreateRegisterRange()->Add(*SerialPort, led, std::chrono::milliseconds(29)));
     EXPECT_FALSE(Dev->CreateRegisterRange()->Add(*SerialPort, led, std::chrono::milliseconds(28)));
-    EXPECT_TRUE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(73)));
-    EXPECT_FALSE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(72)));
+    EXPECT_TRUE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(57)));
+    EXPECT_FALSE(Dev->CreateRegisterRange()->Add(*SerialPort, key, std::chrono::milliseconds(56)));
 }
 
 TEST_F(TGtdIotDeviceTest, Write)
@@ -269,4 +282,76 @@ TEST_F(TGtdIotDeviceTest, Write)
     SerialPort->Expect({0x01, 0x06, 0x10, 0x08, 0x01, 0x02, 0x8C, 0x99},
                        {0x01, 0x06, 0x10, 0x08, 0x00, 0x02, 0x8D, 0x09});
     EXPECT_THROW(Dev->WriteRegister(*SerialPort, AddRegister(0x1008), 0x0102), TSerialDeviceTransientErrorException);
+}
+
+TEST(TGtdIotAddressTest, KeyAddressOutOfRange)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+    const auto& factory = deviceFactory.GetProtocolParams("gtd_iot").factory->GetRegisterAddressFactory();
+    auto loadAddress = [&factory](const std::string& regType, const std::string& property, const std::string& value) {
+        Json::Value regCfg;
+        regCfg["reg_type"] = regType;
+        regCfg[property] = value;
+        factory.LoadRegisterAddress(regCfg, factory.GetBaseRegisterAddress(), 0, 2);
+    };
+
+    // Keys are K1...K8, their status registers are 0x1310...0x1317
+    EXPECT_THROW(loadAddress("status", "address", "0x1318"), TConfigParserException);
+    EXPECT_NO_THROW(loadAddress("status", "address", "0x1317"));
+    EXPECT_NO_THROW(loadAddress("holding", "address", "0x1318"));
+    // A channel with only "write_address" has no address to check
+    EXPECT_NO_THROW(loadAddress("status", "write_address", "0x1318"));
+}
+
+class TGtdIotIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectationsBase
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-gtd-iot-test.json";
+    }
+
+    //! The template is built from a jinja file, so the generated one is used
+    std::string GetTemplatePath() const override
+    {
+        return "../build/templates/";
+    }
+
+    void TearDown() override
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    void ExpectRequest(const std::vector<int>& requestPdu, const std::vector<int>& responsePdu)
+    {
+        Expector()->Expect(WrapPDU(requestPdu), WrapPDU(responsePdu));
+    }
+};
+
+TEST_F(TGtdIotIntegrationTest, Poll)
+{
+    // One register range is read per cycle. Polling mode is written by a setup item,
+    // the panel answers with the echo of the request. LEDs and backlight are bits of one register
+    ExpectRequest({0x06, 0x10, 0x03, 0x00, 0x00}, {0x06, 0x10, 0x03, 0x00, 0x00});
+    ExpectRequest({0x03, 0x10, 0x08, 0x00, 0x01}, {0x03, 0x10, 0x08, 0x00, 0x00});
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    // The panel has one key, so the key code is followed by the status of one key
+    ExpectRequest({0x03, 0x10, 0x0B, 0x00, 0x01}, {0x03, 0x00, 0x02, 0x00, 0x00});
+    ExpectRequest({0x03, 0x13, 0x10, 0x00, 0x01}, {0x03, 0x00, 0x01, 0x00, 0x00});
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    ExpectRequest({0x03, 0x10, 0x08, 0x00, 0x01}, {0x03, 0x10, 0x08, 0x00, 0x00});
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    // K1 is pressed and released between polls: the state shows the press and the counter is incremented
+    ExpectRequest({0x03, 0x10, 0x0B, 0x00, 0x01}, {0x03, 0x00, 0x02, 0x01, 0x01});
+    ExpectRequest({0x03, 0x13, 0x10, 0x00, 0x01}, {0x03, 0x00, 0x01, 0x00, 0x00});
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
 }

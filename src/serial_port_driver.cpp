@@ -291,9 +291,9 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
         args.SetEnumValueTitles(it.first, it.second);
     }
 
-    if (std::any_of(channel->Registers.cbegin(),
-                    channel->Registers.cend(),
-                    [](const auto& reg) { return reg->GetConfig()->TypeName == "press_counter"; }))
+    if (std::any_of(channel->Registers.cbegin(), channel->Registers.cend(), [](const auto& reg) {
+            return WBMQTT::StringHasSuffix(reg->GetConfig()->TypeName, "press_counter");
+        }))
     {
         args.SetDurable();
     }
@@ -479,7 +479,7 @@ bool TDeviceChannel::HasValuesOfAllRegisters() const
 bool TDeviceChannel::ShouldNotPublishPressCounter() const
 {
     for (const auto& r: Registers) {
-        if (r->GetConfig()->TypeName == "press_counter" && !PublishNextZeroPressCounter) {
+        if (WBMQTT::StringHasSuffix(r->GetConfig()->TypeName, "press_counter") && !PublishNextZeroPressCounter) {
             try {
                 if (r->GetValue().Get<uint16_t>() == 0) {
                     return true;

@@ -25,11 +25,6 @@ private:
     Modbus::TModbusRTUTraits ModbusTraits;
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
 
-    //! Value of the register polled in current register range and the error of its reading
-    std::optional<uint16_t> ReadCache;
-    bool ReadAttempted = false;
-    std::string ReadErrorMessage;
-
     std::array<TKey, MAX_KEYS> Keys;
 
     //! Key code read before a failed read of key statuses
@@ -37,7 +32,14 @@ private:
 
     std::vector<uint8_t> ExecTransaction(TPort& port, const std::vector<uint8_t>& requestPdu, size_t responsePduSize);
     uint16_t ReadValue(TPort& port, uint16_t address);
-    uint16_t ReadKeys(TPort& port);
+    void ReadKeys(TPort& port);
+    TRegisterValue GetRegisterValue(const TRegisterConfig& reg, uint16_t value) const;
+
+    //! newPress is set if the key code has the bit of the key
+    static void UpdateKey(TKey& key, bool newPress, uint16_t status);
+
+    //! Number of keys to poll: the configured key with the highest address defines it
+    size_t GetKeyCount() const;
 
 public:
     TGtdIotDevice(PDeviceConfig config, PProtocol protocol);
@@ -48,6 +50,5 @@ public:
     void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false) override;
 
 protected:
-    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue) override;
 };

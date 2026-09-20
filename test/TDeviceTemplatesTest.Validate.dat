@@ -30480,7 +30480,77 @@ energomera_ce308_dlms
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
-gtd-iot-24x
+gtd-iot-24x-1
+	backlight  =>  backlight
+	count_long_k1  =>  count_long_k1
+	count_single_k1  =>  count_single_k1
+	led_k1  =>  led_k1
+	state_k1  =>  state_k1
+gtd-iot-24x-2
+	backlight  =>  backlight
+	count_long_k1  =>  count_long_k1
+	count_long_k2  =>  count_long_k2
+	count_single_k1  =>  count_single_k1
+	count_single_k2  =>  count_single_k2
+	led_k1  =>  led_k1
+	led_k2  =>  led_k2
+	state_k1  =>  state_k1
+	state_k2  =>  state_k2
+gtd-iot-24x-3
+	backlight  =>  backlight
+	count_long_k1  =>  count_long_k1
+	count_long_k2  =>  count_long_k2
+	count_long_k3  =>  count_long_k3
+	count_single_k1  =>  count_single_k1
+	count_single_k2  =>  count_single_k2
+	count_single_k3  =>  count_single_k3
+	led_k1  =>  led_k1
+	led_k2  =>  led_k2
+	led_k3  =>  led_k3
+	state_k1  =>  state_k1
+	state_k2  =>  state_k2
+	state_k3  =>  state_k3
+gtd-iot-24x-4
+	backlight  =>  backlight
+	count_long_k1  =>  count_long_k1
+	count_long_k2  =>  count_long_k2
+	count_long_k3  =>  count_long_k3
+	count_long_k4  =>  count_long_k4
+	count_single_k1  =>  count_single_k1
+	count_single_k2  =>  count_single_k2
+	count_single_k3  =>  count_single_k3
+	count_single_k4  =>  count_single_k4
+	led_k1  =>  led_k1
+	led_k2  =>  led_k2
+	led_k3  =>  led_k3
+	led_k4  =>  led_k4
+	state_k1  =>  state_k1
+	state_k2  =>  state_k2
+	state_k3  =>  state_k3
+	state_k4  =>  state_k4
+gtd-iot-24x-5
+	backlight  =>  backlight
+	count_long_k1  =>  count_long_k1
+	count_long_k2  =>  count_long_k2
+	count_long_k3  =>  count_long_k3
+	count_long_k4  =>  count_long_k4
+	count_long_k5  =>  count_long_k5
+	count_single_k1  =>  count_single_k1
+	count_single_k2  =>  count_single_k2
+	count_single_k3  =>  count_single_k3
+	count_single_k4  =>  count_single_k4
+	count_single_k5  =>  count_single_k5
+	led_k1  =>  led_k1
+	led_k2  =>  led_k2
+	led_k3  =>  led_k3
+	led_k4  =>  led_k4
+	led_k5  =>  led_k5
+	state_k1  =>  state_k1
+	state_k2  =>  state_k2
+	state_k3  =>  state_k3
+	state_k4  =>  state_k4
+	state_k5  =>  state_k5
+gtd-iot-24x-6
 	backlight  =>  backlight
 	count_long_k1  =>  count_long_k1
 	count_long_k2  =>  count_long_k2
