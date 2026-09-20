@@ -1,0 +1,138 @@
+{% set KEYS_NUMBER = 6 -%}
+{
+    "device_type": "gtd-iot-24x",
+    "group": "g-control-panel",
+    "device": {
+        "name": "GTD IOT 24X",
+        "id": "gtd_iot_24x",
+        "protocol": "gtd_iot",
+        "response_timeout_ms": 100,
+
+        "groups": [
+            {
+                "id": "g_keys",
+                "title": "g_keys",
+                "order": 1
+            },
+            {
+                "id": "g_leds",
+                "title": "g_leds",
+                "order": 2
+            }
+        ],
+
+        {#- The panel doesn't answer to reading of 0x1003, and the web configurator saves only parameters
+            changed by the user, so the mode is written by setup items with conditions on a readonly parameter -#}
+        "parameters": [
+            {
+                "id": "led_control",
+                "title": "led_control",
+                "description": "led_control_description",
+                "readonly": true,
+                "enum": [0, 1],
+                "enum_titles": ["led_control_enum_0", "led_control_enum_1"],
+                "default": 0,
+                "group": "g_leds"
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "Polling mode, LEDs are controlled by controller",
+                "reg_type": "holding",
+                "address": "0x1003",
+                "value": 0,
+                "condition": "led_control==0"
+            },
+            {
+                "title": "Polling mode, LEDs are toggled by keys",
+                "reg_type": "holding",
+                "address": "0x1003",
+                "value": 1,
+                "condition": "led_control==1"
+            }
+        ],
+
+        "channels": [
+            {% for key in range(1, KEYS_NUMBER + 1) -%}
+            {
+                "name": "state_k{{key}}",
+                "reg_type": "status",
+                "address": "0x131{{key - 1}}",
+                "enum": [0, 1, 2],
+                "enum_titles": ["state_k{{key}}_enum_0", "state_k{{key}}_enum_1", "state_k{{key}}_enum_2"],
+                "group": "g_keys"
+            },
+            {
+                "name": "count_single_k{{key}}",
+                "reg_type": "single_press_counter",
+                "address": "0x131{{key - 1}}",
+                "group": "g_keys"
+            },
+            {
+                "name": "count_long_k{{key}}",
+                "reg_type": "long_press_counter",
+                "address": "0x131{{key - 1}}",
+                "group": "g_keys"
+            },
+            {% endfor -%}
+            {% for key in range(1, KEYS_NUMBER + 1) -%}
+            {
+                "name": "led_k{{key}}",
+                "reg_type": "holding",
+                "address": "0x1008:{{key - 1}}:1",
+                "type": "switch",
+                "group": "g_leds"
+            },
+            {% endfor -%}
+            {
+                "name": "backlight",
+                "reg_type": "holding",
+                "address": "0x1008:8:1",
+                "type": "switch",
+                "group": "g_leds"
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "gtd-iot-24x": "GTD IOT 24X (1-6 key panel)",
+                "g_keys": "Keys",
+                "g_leds": "LEDs",
+                "led_control": "LED Control",
+                "led_control_description": "A key press can toggle its LED without the controller",
+                "led_control_enum_0": "By Controller",
+                "led_control_enum_1": "By Keys and Controller",
+                {% for key in range(1, KEYS_NUMBER + 1) -%}
+                "state_k{{key}}": "K{{key}} State",
+                "state_k{{key}}_enum_0": "Released",
+                "state_k{{key}}_enum_1": "Pressed",
+                "state_k{{key}}_enum_2": "Held",
+                "count_single_k{{key}}": "K{{key}} Single Press Counter",
+                "count_long_k{{key}}": "K{{key}} Long Press Counter",
+                "led_k{{key}}": "K{{key}} LED",
+                {% endfor -%}
+                "backlight": "Backlight"
+            },
+            "ru": {
+                "gtd-iot-24x": "GTD IOT 24X (панель на 1-6 кнопок)",
+                "g_keys": "Кнопки",
+                "g_leds": "Светодиоды",
+                "led_control": "Управление светодиодами",
+                "led_control_description": "Нажатие кнопки может переключать ее светодиод без контроллера",
+                "led_control_enum_0": "Контроллером",
+                "led_control_enum_1": "Кнопками и контроллером",
+                {% for key in range(1, KEYS_NUMBER + 1) -%}
+                "state_k{{key}}": "K{{key}}: состояние",
+                "state_k{{key}}_enum_0": "Отпущена",
+                "state_k{{key}}_enum_1": "Нажата",
+                "state_k{{key}}_enum_2": "Удерживается",
+                "count_single_k{{key}}": "K{{key}}: счетчик одиночных нажатий",
+                "count_long_k{{key}}": "K{{key}}: счетчик длинных нажатий",
+                "led_k{{key}}": "K{{key}}: светодиод",
+                {% endfor -%}
+                "backlight": "Подсветка"
+            }
+        }
+    }
+}
