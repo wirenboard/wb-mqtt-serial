@@ -2,6 +2,7 @@
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
 {% set FIRST_INPUT = 1 -%}
 {% set SAFETY_ACCORDING_TO_INPUT_FW = "1.26.0" -%}
+{% set TIMER_AUTORESET_FW = "1.27.0" -%}
 {
     "title": "WB-MRWM2-template-title",
     "device_type": "WB-MRWM2",
@@ -523,6 +524,8 @@
                 "fw": "1.21.0",
                 "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
+            {% for timer_fw in ["1.24.0", TIMER_AUTORESET_FW] -%}
+            {% set timer_autoreset = timer_fw == TIMER_AUTORESET_FW -%}
             {
                 "id": "out{{out_num}}_timer_mode_selection",
                 "title": "Function",
@@ -531,17 +534,20 @@
                 "address": {{1760 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5],
+                {% if timer_autoreset %}"enum": [0, 1, 2, 3, 6, 4, 7, 5],{% else %}"enum": [0, 1, 2, 3, 4, 5],{% endif %}
                 "enum_titles": [
                     "Not Used",
                     "On Delay",
                     "Off Delay",
-                    "On Pulse",
-                    "Off Pulse",
+                    "On Pulse",{% if timer_autoreset %}
+                    "On Pulse (Reset Command)",{% endif %}
+                    "Off Pulse",{% if timer_autoreset %}
+                    "Off Pulse (Reset Command)",{% endif %}
                     "On/Off Cycle"
                 ],
-                "fw": "1.24.0"
+                "fw": "{{timer_fw}}"
             },
+            {% endfor -%}
             {
                 "id": "out{{out_num}}_on_delay_params",
                 "title": "Timeout (s)",
@@ -585,7 +591,7 @@
                 "default": 3,
                 "fw": "1.24.0",
                 "description": "on_pulse_description",
-                "condition": "out{{out_num}}_timer_mode_selection==3"
+                "condition": "out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6"
             },
             {
                 "id": "out{{out_num}}_off_pulse_params",
@@ -600,7 +606,7 @@
                 "default": 3,
                 "fw": "1.24.0",
                 "description": "off_pulse_description",
-                "condition": "out{{out_num}}_timer_mode_selection==4"
+                "condition": "out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7"
             },
             {
                 "id": "out{{out_num}}_cyclic_on_time_params",
@@ -896,7 +902,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==4"
+                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6||out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7"
             },
             {
                 "name": "Timer K{{out_num}}",
@@ -1177,7 +1183,9 @@
                 "On Delay": "Задержка включения",
                 "Off Delay": "Задержка отключения",
                 "On Pulse": "Включить на время",
+                "On Pulse (Reset Command)": "Включить на время (со сбросом команды)",
                 "Off Pulse": "Отключить на время",
+                "Off Pulse (Reset Command)": "Отключить на время (со сбросом команды)",
                 "On/Off Cycle": "Цикл On/Off",
                 "On Time (s)": "Включено (с)",
                 "Off Time (s)": "Отключено (с)",
