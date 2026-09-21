@@ -1,8 +1,7 @@
 Open()
 SkipNoise()
-EnqueueWriteSingleRegister()
+EnqueueWriteSingleRegisterNoResponse()
 >> 2A 06 00 81 00 01 1E 39
-<< 2A 06 00 81 00 01 1E 39
 ApplySerialPortSettings(9600 8N2)
 EnqueueWriteMultipleRegisters()
 >> 2A 10 10 00 00 10 20 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 6F 49

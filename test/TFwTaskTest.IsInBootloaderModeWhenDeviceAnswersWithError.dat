@@ -1,0 +1,7 @@
+Open()
+EnqueueHoldingRead()
+>> 2A 03 01 4A 00 08 62 3D
+<< 2A 03 10 00 31 00 2E 00 35 00 2E 00 30 00 00 00 00 00 00 5A 2F
+EnqueueHoldingReadException()
+>> 2A 03 01 4A 00 07 22 39
+<< 2A 83 02 B0 F9

@@ -1,12 +1,44 @@
 // Cf. firmware_update.py:82 UpdateState class, firmware_update.py:61 DeviceUpdateInfo
 // Cf. firmware_update.py:209 UpdateNotifier class
 #include "rpc_fw_update_state.h"
+#include "rpc_fw_downloader.h"
+#include "serial_exc.h"
+
 #include <algorithm>
+
+TStateError MakeFwUpdateStateError(const std::exception& error)
+{
+    Json::Value metadata;
+    metadata["exception"] = error.what();
+    if (dynamic_cast<const TFwDownloadError*>(&error) != nullptr) {
+        return {"com.wb.serial_driver.download_error", "Failed to download file.", metadata};
+    }
+    if (dynamic_cast<const TResponseTimeoutException*>(&error) != nullptr) {
+        return {"com.wb.serial_driver.device.response_timeout_error", "Response timeout error", metadata};
+    }
+    return {"com.wb.serial_driver.generic_error", "Internal error. Check logs for more info", metadata};
+}
 
 // ============================================================
 //                     TDeviceUpdateInfo
 // Cf. firmware_update.py:61 DeviceUpdateInfo dataclass
 // ============================================================
+
+std::string GetFwSoftwareTypeName(EFwSoftwareType type)
+{
+    switch (type) {
+        case EFwSoftwareType::Firmware: {
+            return "firmware";
+        }
+        case EFwSoftwareType::Bootloader: {
+            return "bootloader";
+        }
+        case EFwSoftwareType::Component: {
+            return "component";
+        }
+    }
+    return "firmware";
+}
 
 // Cf. firmware_update.py:73 DeviceUpdateInfo.__eq__()
 bool TDeviceUpdateInfo::Matches(const TDeviceUpdateInfo& other) const

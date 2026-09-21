@@ -3,11 +3,11 @@
 #include <wblib/rpc.h>
 #include <wblib/wbmqtt.h>
 
-#include "port/serial_port_settings.h"
 #include "rpc_fw_downloader.h"
 #include "rpc_fw_update_state.h"
 #include "rpc_fw_update_task.h"
 #include "rpc_port_driver_list.h"
+#include "rpc_port_settings.h"
 
 class TRPCFwUpdateHandler
 {
@@ -25,9 +25,8 @@ public:
     struct TRequestParams
     {
         int SlaveId = 0;
-        std::string PortPath;
         std::string Protocol;
-        TSerialPortConnectionSettings PortSettings;
+        TRPCPortSettings PortSettings;
     };
 
     static TRequestParams ParseRequestParams(const Json::Value& request);
@@ -52,8 +51,6 @@ private:
     void Restore(const Json::Value& request,
                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
                  WBMQTT::TMqttRpcServer::TErrorCallback onError);
-
-    static Json::Value MakePortRequestJson(const TRequestParams& params);
 
     ITaskRunner& SerialClientTaskRunner;
     WBMQTT::PMqttClient Mqtt;

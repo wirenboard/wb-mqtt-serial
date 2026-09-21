@@ -5,9 +5,11 @@
 #include "rpc/rpc_fw_update_helpers.h"
 #include "rpc/rpc_fw_update_state.h"
 #include "rpc/rpc_fw_update_task.h"
+#include "rpc/rpc_helpers.h"
 
 #include "fake_serial_port.h"
 #include "modbus_expectations_base.h"
+#include "test_utils.h"
 
 #include <cstring>
 #include <filesystem>
@@ -270,12 +272,7 @@ protected:
     Json::Value ParseLastPayload()
     {
         EXPECT_FALSE(PublishLog.empty());
-        Json::CharReaderBuilder builder;
-        Json::Value root;
-        std::string errors;
-        std::istringstream stream(PublishLog.back().Payload);
-        Json::parseFromStream(builder, stream, &root, &errors);
-        return root;
+        return ParseJson(PublishLog.back().Payload);
     }
 };
 
@@ -750,6 +747,16 @@ protected:
         GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueHoldingRead");
     }
 
+    void EnqueueHoldingReadNoResponse(uint16_t addr, uint16_t count)
+    {
+        std::vector<int> request = {0x03,
+                                    static_cast<int>(addr >> 8),
+                                    static_cast<int>(addr & 0xFF),
+                                    static_cast<int>(count >> 8),
+                                    static_cast<int>(count & 0xFF)};
+        GetSerialPort()->ExpectNoResponse(WrapPDU(request), "EnqueueHoldingReadNoResponse");
+    }
+
     void EnqueueHoldingReadException(uint16_t addr, uint16_t count, uint8_t exceptionCode)
     {
         std::vector<int> request = {0x03,
@@ -798,38 +805,73 @@ protected:
         GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueInputRead");
     }
 
+    std::vector<int> MakeWriteSingleRegisterRequest(uint16_t addr, uint16_t value)
+    {
+        return {0x06,
+                static_cast<int>(addr >> 8),
+                static_cast<int>(addr & 0xFF),
+                static_cast<int>(value >> 8),
+                static_cast<int>(value & 0xFF)};
+    }
+
     void EnqueueWriteSingleRegister(uint16_t addr, uint16_t value)
     {
-        std::vector<int> request = {0x06,
-                                    static_cast<int>(addr >> 8),
-                                    static_cast<int>(addr & 0xFF),
-                                    static_cast<int>(value >> 8),
-                                    static_cast<int>(value & 0xFF)};
+        auto request = MakeWriteSingleRegisterRequest(addr, value);
         GetSerialPort()->Expect(WrapPDU(request), WrapPDU(request), "EnqueueWriteSingleRegister");
     }
 
-    void EnqueueWriteMultipleRegisters(uint16_t addr, uint16_t regCount, const std::vector<int>& writeData)
+    void EnqueueWriteSingleRegisterNoResponse(uint16_t addr, uint16_t value)
     {
-        auto byteCount = static_cast<int>(regCount * 2);
+        GetSerialPort()->ExpectNoResponse(WrapPDU(MakeWriteSingleRegisterRequest(addr, value)),
+                                          "EnqueueWriteSingleRegisterNoResponse");
+    }
+
+    void EnqueueWriteSingleRegisterException(uint16_t addr, uint16_t value, uint8_t exceptionCode)
+    {
+        std::vector<int> response = {0x86, static_cast<int>(exceptionCode)};
+        GetSerialPort()->Expect(WrapPDU(MakeWriteSingleRegisterRequest(addr, value)),
+                                WrapPDU(response),
+                                "EnqueueWriteSingleRegisterException");
+    }
+
+    std::vector<int> MakeWriteMultipleRegistersRequest(uint16_t addr,
+                                                       uint16_t regCount,
+                                                       const std::vector<int>& writeData)
+    {
         std::vector<int> request = {0x10,
                                     static_cast<int>(addr >> 8),
                                     static_cast<int>(addr & 0xFF),
                                     static_cast<int>(regCount >> 8),
                                     static_cast<int>(regCount & 0xFF),
-                                    byteCount};
+                                    static_cast<int>(regCount * 2)};
         request.insert(request.end(), writeData.begin(), writeData.end());
+        return request;
+    }
+
+    void EnqueueWriteMultipleRegisters(uint16_t addr, uint16_t regCount, const std::vector<int>& writeData)
+    {
         std::vector<int> response = {0x10,
                                      static_cast<int>(addr >> 8),
                                      static_cast<int>(addr & 0xFF),
                                      static_cast<int>(regCount >> 8),
                                      static_cast<int>(regCount & 0xFF)};
-        GetSerialPort()->Expect(WrapPDU(request), WrapPDU(response), "EnqueueWriteMultipleRegisters");
+        GetSerialPort()->Expect(WrapPDU(MakeWriteMultipleRegistersRequest(addr, regCount, writeData)),
+                                WrapPDU(response),
+                                "EnqueueWriteMultipleRegisters");
     }
 
-    void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
-                                      const std::string& version = "3.7.0",
-                                      const std::string& bootloader = "1.5.5",
-                                      const std::string& model = "WB-LED")
+    void EnqueueWriteMultipleRegistersNoResponse(uint16_t addr, uint16_t regCount, const std::vector<int>& writeData)
+    {
+        GetSerialPort()->ExpectNoResponse(WrapPDU(MakeWriteMultipleRegistersRequest(addr, regCount, writeData)),
+                                          "EnqueueWriteMultipleRegistersNoResponse");
+    }
+
+    //! Everything TFwGetInfoTask reads before the components
+    void EnqueueDeviceInfoReads(const std::string& signature = "wbled",
+                                const std::string& version = "3.7.0",
+                                const std::string& bootloader = "1.5.5",
+                                const std::string& model = "WB-LED",
+                                bool canPreservePortSettings = true)
     {
         EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
                            FwRegisters::FW_SIGNATURE_COUNT,
@@ -840,13 +882,66 @@ protected:
         EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
                            FwRegisters::BOOTLOADER_VERSION_COUNT,
                            EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
-        EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
+        if (canPreservePortSettings) {
+            EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
+        } else {
+            EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
+        }
         EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
                            FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                            EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    }
+
+    //! A device without components
+    void EnqueueBasicGetInfoResponses(const std::string& signature = "wbled",
+                                      const std::string& version = "3.7.0",
+                                      const std::string& bootloader = "1.5.5",
+                                      const std::string& model = "WB-LED",
+                                      bool canPreservePortSettings = true)
+    {
+        EnqueueDeviceInfoReads(signature, version, bootloader, model, canPreservePortSettings);
         EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
                                      FwRegisters::COMPONENTS_PRESENCE_COUNT,
                                      0x02);
+    }
+
+    void EnqueueComponentInfoReads(int number,
+                                   const std::string& signature,
+                                   const std::string& version,
+                                   const std::string& model)
+    {
+        auto offset = static_cast<uint16_t>(number * FwRegisters::COMPONENT_STEP);
+        EnqueueInputRead(FwRegisters::COMPONENT_SIGNATURE_BASE + offset,
+                         FwRegisters::COMPONENT_SIGNATURE_COUNT,
+                         EncodeStringAsRegs(signature, FwRegisters::COMPONENT_SIGNATURE_COUNT));
+        EnqueueInputRead(FwRegisters::COMPONENT_FW_VERSION_BASE + offset,
+                         FwRegisters::COMPONENT_FW_VERSION_COUNT,
+                         EncodeStringAsRegs(version, FwRegisters::COMPONENT_FW_VERSION_COUNT));
+        EnqueueInputRead(FwRegisters::COMPONENT_MODEL_BASE + offset,
+                         FwRegisters::COMPONENT_MODEL_COUNT,
+                         EncodeStringAsRegs(model, FwRegisters::COMPONENT_MODEL_COUNT));
+    }
+
+    //! A bootloader gives its version only as a whole and does not answer a partial read
+    void EnqueueBootloaderModeResponses(const std::string& bootloader = "1.5.0")
+    {
+        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_FULL_COUNT,
+                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_FULL_COUNT));
+        EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                                    FwRegisters::BOOTLOADER_VERSION_COUNT,
+                                    Modbus::GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND);
+    }
+
+    //! A device in the firmware mode answers a partial read of the bootloader version
+    void EnqueueFirmwareModeResponses(const std::string& bootloader = "1.5.0")
+    {
+        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_FULL_COUNT,
+                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_FULL_COUNT));
+        EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_COUNT,
+                           EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
     }
 
     virtual ~TFwModbusTestHelpers() = default;
@@ -895,6 +990,65 @@ protected:
 
 // ---- TFwGetInfoTask tests ----
 // Cf. firmware_update_test.py TestGetFirmwareInfo
+
+TEST_F(TFwTaskTest, HasDefaultPortSettings)
+{
+    EnqueueHoldingRead(110, 1, {0x00, 0x60}); // 96 * 100 = 9600 baud
+    EnqueueHoldingRead(111, 1, {0x00, 0x00}); // no parity
+
+    auto traits = MakeModbusTraits("modbus");
+    EXPECT_TRUE(HasDefaultPortSettings(*traits, *FeaturePort, SLAVE_ID));
+}
+
+TEST_F(TFwTaskTest, HasNoDefaultPortSettings)
+{
+    EnqueueHoldingRead(110, 1, {0x04, 0x80}); // 1152 * 100 = 115200 baud
+
+    auto traits = MakeModbusTraits("modbus");
+    EXPECT_FALSE(HasDefaultPortSettings(*traits, *FeaturePort, SLAVE_ID));
+}
+
+//! Such a device answers the bootloader on 9600 but with parity, which the bootloader does not use
+TEST_F(TFwTaskTest, HasNoDefaultPortSettingsWithParity)
+{
+    EnqueueHoldingRead(110, 1, {0x00, 0x60}); // 96 * 100 = 9600 baud
+    EnqueueHoldingRead(111, 1, {0x00, 0x02}); // even parity
+
+    auto traits = MakeModbusTraits("modbus");
+    EXPECT_FALSE(HasDefaultPortSettings(*traits, *FeaturePort, SLAVE_ID));
+}
+
+TEST_F(TFwTaskTest, HasNoDefaultPortSettingsWhenRegistersAreUnavailable)
+{
+    EnqueueHoldingReadException(110, 1, 0x02);
+
+    auto traits = MakeModbusTraits("modbus");
+    EXPECT_FALSE(HasDefaultPortSettings(*traits, *FeaturePort, SLAVE_ID));
+}
+
+//! A device sitting in its bootloader on a direct line does not answer a partial version read
+TEST_F(TFwTaskTest, IsInBootloaderModeWhenDeviceDoesNotAnswer)
+{
+    EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                       FwRegisters::BOOTLOADER_VERSION_FULL_COUNT,
+                       EncodeStringAsRegs("1.5.0", FwRegisters::BOOTLOADER_VERSION_FULL_COUNT));
+    EnqueueHoldingReadNoResponse(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT);
+
+    auto traits = MakeModbusTraits("modbus");
+    EXPECT_TRUE(IsInBootloaderMode(*traits, *FeaturePort, SLAVE_ID));
+}
+
+//! An error in the answer is not silence, such a device is not asked to restore its firmware
+TEST_F(TFwTaskTest, IsInBootloaderModeWhenDeviceAnswersWithError)
+{
+    EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
+                       FwRegisters::BOOTLOADER_VERSION_FULL_COUNT,
+                       EncodeStringAsRegs("1.5.0", FwRegisters::BOOTLOADER_VERSION_FULL_COUNT));
+    EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
+
+    auto traits = MakeModbusTraits("modbus");
+    EXPECT_THROW(IsInBootloaderMode(*traits, *FeaturePort, SLAVE_ID), Modbus::TModbusExceptionError);
+}
 
 TEST_F(TFwTaskTest, GetInfoSuccessfulRead)
 {
@@ -1027,6 +1181,42 @@ TEST_F(TFwTaskTest, GetInfoWithComponents)
     EXPECT_EQ(resultInfo.Components[0].Signature, "wbmwac_oc");
     EXPECT_EQ(resultInfo.Components[0].FwVersion, "1.0.0");
     EXPECT_EQ(resultInfo.Components[0].Model, "WBMWAC-OC");
+}
+
+//! A device may be unable to report its components right after switching on
+TEST_F(TFwTaskTest, GetInfoComponentsPresenceRetriedWhileDeviceIsBusy)
+{
+    EnqueueDeviceInfoReads("wbmwac", "2.0.0", "1.0.0", "WBMWAC-v2");
+
+    EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
+                                 FwRegisters::COMPONENTS_PRESENCE_COUNT,
+                                 0x06); // slave device busy
+    // Bits 3 and 7 are set
+    EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x88});
+
+    EnqueueComponentInfoReads(3, "wbmwac_oc", "1.0.0", "WBMWAC-OC");
+    EnqueueComponentInfoReads(7, "wbmwac_ai", "2.1.0", "WBMWAC-AI");
+
+    TFwDeviceInfo resultInfo;
+    bool gotResult = false;
+
+    auto task = std::make_shared<TFwGetInfoTask>(
+        SLAVE_ID,
+        "modbus",
+        [&](const TFwDeviceInfo& info) {
+            resultInfo = info;
+            gotResult = true;
+        },
+        [&](const std::string&) {});
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+
+    ASSERT_TRUE(gotResult);
+    ASSERT_EQ(resultInfo.Components.size(), 2u);
+    EXPECT_EQ(resultInfo.Components[0].Number, 3);
+    EXPECT_EQ(resultInfo.Components[0].Signature, "wbmwac_oc");
+    EXPECT_EQ(resultInfo.Components[1].Number, 7);
+    EXPECT_EQ(resultInfo.Components[1].Model, "WBMWAC-AI");
 }
 
 TEST_F(TFwTaskTest, GetInfoUnavailableComponent)
@@ -1189,8 +1379,7 @@ TEST_F(TFwTaskTest, GetInfoGarbageSignatureCleared)
 
 TEST_F(TFwTaskTest, GetInfoDeviceNotResponding)
 {
-    // Signature read times out (simulate by returning Modbus exception that causes timeout)
-    // The TFakeSerialPort can't easily simulate timeouts, so we use a disconnect
+    // TFakeSerialPort cannot simulate a timeout, a disconnect is used instead
     SerialPort->SimulateDisconnect(TFakeSerialPort::SilentReadAndWriteFailure);
 
     bool gotError = false;
@@ -1214,8 +1403,11 @@ TEST_F(TFwTaskTest, GetInfoDeviceNotResponding)
 // ---- TFwFlashTask tests ----
 // Cf. firmware_update_test.py TestFlashFw, TestRebootToBootloader, TestUpdateSoftware
 
+//! A device already in the bootloader is flashed on the settings of the request
 TEST_F(TFwTaskTest, FlashNoReboot)
 {
+    SerialPort->LogSerialPortSettings(true);
+
     // Create a small firmware: 32 bytes info + 136 bytes data (1 chunk)
     TParsedWBFW fw;
     fw.Info.assign(32, 0xAA);
@@ -1250,8 +1442,11 @@ TEST_F(TFwTaskTest, FlashNoReboot)
     EXPECT_EQ(lastProgress, 100);
 }
 
+//! Such a bootloader keeps the port settings of the firmware, the port is left as it is
 TEST_F(TFwTaskTest, FlashWithRebootPreserve)
 {
+    SerialPort->LogSerialPortSettings(true);
+
     // Test reboot with preserve port settings (register 131)
     TParsedWBFW fw;
     fw.Info.assign(32, 0x11);
@@ -1284,20 +1479,15 @@ TEST_F(TFwTaskTest, FlashWithRebootPreserve)
     EXPECT_TRUE(completed);
 }
 
+//! Such a bootloader starts with the factory port settings, the flashing has to switch to them
 TEST_F(TFwTaskTest, FlashWithRebootLegacy)
 {
-    // Test reboot without preserve (register 129), device doesn't respond (expected)
+    SerialPort->LogSerialPortSettings(true);
+
     TParsedWBFW fw;
     fw.Info.assign(32, 0x33);
     fw.Data.assign(136, 0x44);
 
-    // Expect write to register 129 (old reboot): device times out (simulated by exception)
-    // The task catches TResponseTimeoutException for this case
-    std::vector<int> request = {0x06, 0x00, 0x81, 0x00, 0x01};
-    // Simulate no response by returning nothing - use a Modbus exception that the code catches
-    // Actually, TFakeSerialPort will throw if no match found. Let's use the normal flow:
-    // The code has a try/catch for TResponseTimeoutException during legacy reboot.
-    // Let's just set up the expectation normally (device responds to reboot)
     EnqueueWriteSingleRegister(FwRegisters::REBOOT_TO_BOOTLOADER_ADDR, 1);
 
     // Info block
@@ -1322,6 +1512,69 @@ TEST_F(TFwTaskTest, FlashWithRebootLegacy)
 
     task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
     EXPECT_TRUE(completed);
+}
+
+//! The last firmwares reboot without answering, the port has to be switched to the factory
+//! settings all the same
+TEST_F(TFwTaskTest, FlashWithRebootLegacyWithoutResponse)
+{
+    SerialPort->LogSerialPortSettings(true);
+
+    TParsedWBFW fw;
+    fw.Info.assign(32, 0x33);
+    fw.Data.assign(136, 0x44);
+
+    EnqueueWriteSingleRegisterNoResponse(FwRegisters::REBOOT_TO_BOOTLOADER_ADDR, 1);
+
+    std::vector<int> infoData(fw.Info.begin(), fw.Info.end());
+    EnqueueWriteMultipleRegisters(FwRegisters::FW_INFO_BLOCK_ADDR, FwRegisters::FW_INFO_BLOCK_COUNT, infoData);
+
+    std::vector<int> dataChunk(fw.Data.begin(), fw.Data.end());
+    EnqueueWriteMultipleRegisters(FwRegisters::FW_DATA_BLOCK_ADDR, FwRegisters::FW_DATA_BLOCK_COUNT, dataChunk);
+
+    bool completed = false;
+
+    auto task = std::make_shared<TFwFlashTask>(
+        SLAVE_ID,
+        "modbus",
+        fw,
+        true,
+        false,
+        [&](int) {},
+        [&]() { completed = true; },
+        [&](const std::string&) {});
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+    EXPECT_TRUE(completed);
+}
+
+//! A device which refuses to reboot stays in the firmware mode, the port must keep its settings
+TEST_F(TFwTaskTest, FlashWithRebootLegacyRefused)
+{
+    SerialPort->LogSerialPortSettings(true);
+
+    TParsedWBFW fw;
+    fw.Info.assign(32, 0x33);
+    fw.Data.assign(136, 0x44);
+
+    EnqueueWriteSingleRegisterException(FwRegisters::REBOOT_TO_BOOTLOADER_ADDR, 1, 0x01);
+
+    bool completed = false;
+    bool gotError = false;
+
+    auto task = std::make_shared<TFwFlashTask>(
+        SLAVE_ID,
+        "modbus",
+        fw,
+        true,
+        false,
+        [&](int) {},
+        [&]() { completed = true; },
+        [&](const std::string&) { gotError = true; });
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+    EXPECT_FALSE(completed);
+    EXPECT_TRUE(gotError);
 }
 
 TEST_F(TFwTaskTest, FlashEmptyData)
@@ -1350,6 +1603,43 @@ TEST_F(TFwTaskTest, FlashEmptyData)
 
     task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
     EXPECT_TRUE(completed);
+    EXPECT_EQ(lastProgress, 100);
+}
+
+//! A device may miss a block, the write is repeated up to three times
+TEST_F(TFwTaskTest, FlashDataBlockTimeoutThenSuccess)
+{
+    TParsedWBFW fw;
+    fw.Info.assign(32, 0xAA);
+    fw.Data.assign(136, 0xBB);
+
+    std::vector<int> infoData(fw.Info.begin(), fw.Info.end());
+    EnqueueWriteMultipleRegisters(FwRegisters::FW_INFO_BLOCK_ADDR, FwRegisters::FW_INFO_BLOCK_COUNT, infoData);
+
+    std::vector<int> dataChunk(fw.Data.begin(), fw.Data.end());
+    EnqueueWriteMultipleRegistersNoResponse(FwRegisters::FW_DATA_BLOCK_ADDR,
+                                            FwRegisters::FW_DATA_BLOCK_COUNT,
+                                            dataChunk);
+    EnqueueWriteMultipleRegisters(FwRegisters::FW_DATA_BLOCK_ADDR, FwRegisters::FW_DATA_BLOCK_COUNT, dataChunk);
+
+    bool completed = false;
+    bool gotError = false;
+    int lastProgress = -1;
+
+    auto task = std::make_shared<TFwFlashTask>(
+        SLAVE_ID,
+        "modbus",
+        fw,
+        false,
+        false,
+        [&](int p) { lastProgress = p; },
+        [&]() { completed = true; },
+        [&](const std::string&) { gotError = true; });
+
+    task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
+
+    EXPECT_TRUE(completed);
+    EXPECT_FALSE(gotError);
     EXPECT_EQ(lastProgress, 100);
 }
 
@@ -1393,7 +1683,7 @@ TEST_F(TFwTaskTest, FlashMultipleChunks)
 
 TEST_F(TFwTaskTest, FlashPartialLastChunk)
 {
-    // 136 + 50 bytes = not aligned to chunk size, last chunk gets padded
+    // 136 + 50 bytes, the last chunk is shorter than the block size
     TParsedWBFW fw;
     fw.Info.assign(32, 0x77);
     fw.Data.assign(186, 0x88); // 136 + 50 bytes
@@ -1515,20 +1805,12 @@ protected:
                                                 "/test/state");
     }
 
-    // Helper: call MakePortRequestJson
-    static Json::Value CallMakePortRequestJson(int slaveId, const std::string& portPath, const std::string& protocol)
-    {
-        TRPCFwUpdateHandler::TRequestParams params;
-        params.SlaveId = slaveId;
-        params.PortPath = portPath;
-        params.Protocol = protocol;
-        return TRPCFwUpdateHandler::MakePortRequestJson(params);
-    }
-
     // Call the free function BuildFirmwareInfoResponse directly
-    Json::Value CallBuildFirmwareInfoResponse(const TFwDeviceInfo& info, const std::string& suite = "bullseye")
+    Json::Value CallBuildFirmwareInfoResponse(const TFwDeviceInfo& info,
+                                              const std::string& suite = "bullseye",
+                                              bool updatable = true)
     {
-        return BuildFirmwareInfoResponse(info, *Downloader, suite);
+        return BuildFirmwareInfoResponse(info, *Downloader, suite, updatable);
     }
 
     void SetupReleasesYaml(const std::string& yaml = "releases:\n"
@@ -1550,7 +1832,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsValid)
 
     auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
     EXPECT_EQ(params.SlaveId, 42);
-    EXPECT_EQ(params.PortPath, "/dev/ttyRS485-1");
+    EXPECT_EQ(std::get<TSerialPortSettings>(params.PortSettings).Device, "/dev/ttyRS485-1");
     EXPECT_EQ(params.Protocol, "modbus");
 }
 
@@ -1627,10 +1909,11 @@ TEST_F(FwHandlerTest, ParseRequestParamsPortSettings)
     request["port"]["stop_bits"] = 2;
 
     auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
-    EXPECT_EQ(params.PortSettings.BaudRate, 115200);
-    EXPECT_EQ(params.PortSettings.Parity, 'E');
-    EXPECT_EQ(params.PortSettings.DataBits, 8);
-    EXPECT_EQ(params.PortSettings.StopBits, 2);
+    auto settings = GetRPCPortConnectionSettings(params.PortSettings);
+    EXPECT_EQ(settings.BaudRate, 115200);
+    EXPECT_EQ(settings.Parity, 'E');
+    EXPECT_EQ(settings.DataBits, 8);
+    EXPECT_EQ(settings.StopBits, 2);
 }
 
 TEST_F(FwHandlerTest, ParseRequestParamsDefaultPortSettings)
@@ -1640,28 +1923,26 @@ TEST_F(FwHandlerTest, ParseRequestParamsDefaultPortSettings)
     request["port"]["path"] = "/dev/ttyRS485-1";
 
     auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
-    EXPECT_EQ(params.PortSettings.BaudRate, 9600);
-    EXPECT_EQ(params.PortSettings.Parity, 'N');
-    EXPECT_EQ(params.PortSettings.DataBits, 8);
-    EXPECT_EQ(params.PortSettings.StopBits, 1);
+    auto settings = GetRPCPortConnectionSettings(params.PortSettings);
+    EXPECT_EQ(settings.BaudRate, 9600);
+    EXPECT_EQ(settings.Parity, 'N');
+    EXPECT_EQ(settings.DataBits, 8);
+    EXPECT_EQ(settings.StopBits, 2);
 }
 
-// ---- MakePortRequestJson tests ----
+// ---- TCP port tests ----
 
-TEST_F(FwHandlerTest, MakePortRequestJson)
+TEST_F(FwHandlerTest, ParseRequestParamsModbusTcpPort)
 {
-    auto json = CallMakePortRequestJson(42, "/dev/ttyRS485-1", "modbus");
-    EXPECT_EQ(json["path"].asString(), "/dev/ttyRS485-1");
-    EXPECT_EQ(json["slave_id"].asString(), "42");
-    EXPECT_EQ(json["protocol"].asString(), "modbus");
-}
+    Json::Value request;
+    request["slave_id"] = 1;
+    request["port"]["address"] = "192.168.1.100";
+    request["port"]["port"] = 502;
+    request["protocol"] = "modbus-tcp";
 
-TEST_F(FwHandlerTest, MakePortRequestJsonModbusTcp)
-{
-    auto json = CallMakePortRequestJson(1, "192.168.1.100:502", "modbus-tcp");
-    EXPECT_EQ(json["path"].asString(), "192.168.1.100:502");
-    EXPECT_EQ(json["slave_id"].asString(), "1");
-    EXPECT_EQ(json["protocol"].asString(), "modbus-tcp");
+    auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
+    EXPECT_EQ(params.Protocol, "modbus-tcp");
+    EXPECT_TRUE(std::get<TRPCTcpPortSettings>(params.PortSettings).ModbusTcp);
 }
 
 // ---- Version comparison tests ----
@@ -1775,6 +2056,28 @@ TEST_F(FwHandlerTest, SanitizeVersionString)
     EXPECT_EQ(SanitizeVersionString(std::string("\xC0")), "");
 }
 
+// ---- Updatability over a port ----
+
+TEST(TFwUpdatableTest, SerialPortNeedsNoDefaultSettings)
+{
+    EXPECT_FALSE(RequiresDefaultPortSettings(false, "modbus", false));
+}
+
+TEST(TFwUpdatableTest, ModbusTcpPortNeedsNoDefaultSettings)
+{
+    EXPECT_FALSE(RequiresDefaultPortSettings(true, "modbus-tcp", false));
+}
+
+TEST(TFwUpdatableTest, BootloaderPreservingSettingsNeedsNoDefaultSettings)
+{
+    EXPECT_FALSE(RequiresDefaultPortSettings(true, "modbus", true));
+}
+
+TEST(TFwUpdatableTest, SerialOverTcpNeedsDefaultSettings)
+{
+    EXPECT_TRUE(RequiresDefaultPortSettings(true, "modbus", false));
+}
+
 // ---- BuildFirmwareInfoResponse tests ----
 
 TEST_F(FwHandlerTest, BuildResponseNonUpdatableSignature)
@@ -1793,6 +2096,21 @@ TEST_F(FwHandlerTest, BuildResponseNonUpdatableSignature)
     EXPECT_EQ(result["available_fw"].asString(), "");
     EXPECT_FALSE(result["fw_has_update"].asBool());
     EXPECT_EQ(result["model"].asString(), "WB-MSW v.3");
+}
+
+TEST_F(FwHandlerTest, BuildResponseDeviceIsNotUpdatable)
+{
+    SetupReleasesYaml();
+
+    TFwDeviceInfo info;
+    info.FwSignature = "wbled";
+    info.FwVersion = "3.6.1";
+
+    auto result = CallBuildFirmwareInfoResponse(info, "bullseye", false);
+
+    EXPECT_FALSE(result["can_update"].asBool());
+    EXPECT_EQ(result["available_fw"].asString(), "3.8.0");
+    EXPECT_TRUE(result["fw_has_update"].asBool());
 }
 
 TEST_F(FwHandlerTest, BuildResponseFirmwareAvailableNewer)
@@ -1876,6 +2194,33 @@ TEST_F(FwHandlerTest, BuildResponseWithComponents)
     EXPECT_TRUE(result["components"]["0"]["has_update"].asBool());
 }
 
+//! The update server may know nothing about a component, the response still describes it
+TEST_F(FwHandlerTest, BuildResponseComponentWithoutReleasedVersion)
+{
+    SetupReleasesYaml("releases:\n"
+                      "  wbmwac:\n"
+                      "    bullseye: fw/by-signature/wbmwac/bullseye/2.0.0.wbfw\n");
+    FakeHttp->SetTextResponse("https://fw-releases.wirenboard.com/boot/by-signature/release-versions.yaml",
+                              "releases:\n"
+                              "  wbmwac:\n"
+                              "    bullseye: boot/by-signature/wbmwac/main/1.0.0.wbfw\n");
+
+    TFwDeviceInfo info;
+    info.FwSignature = "wbmwac";
+    info.FwVersion = "2.0.0";
+    info.BootloaderVersion = "1.0.0";
+    info.DeviceModel = "WBMWAC-v2";
+    info.Components.push_back({0, "wbmwac_oc", "1.0.0", "WBMWAC-OC"});
+
+    auto result = CallBuildFirmwareInfoResponse(info);
+
+    ASSERT_TRUE(result["components"].isMember("0"));
+    EXPECT_EQ(result["components"]["0"]["model"].asString(), "WBMWAC-OC");
+    EXPECT_EQ(result["components"]["0"]["fw"].asString(), "1.0.0");
+    EXPECT_TRUE(result["components"]["0"]["available_fw"].asString().empty());
+    EXPECT_FALSE(result["components"]["0"]["has_update"].asBool());
+}
+
 TEST_F(FwHandlerTest, BuildResponseHttpError)
 {
     // No release YAML configured - HTTP will throw
@@ -1941,8 +2286,6 @@ TEST_F(FwHandlerTest, BuildResponseEmptySignatureNoS3)
     EXPECT_EQ(FakeHttp->GetRequestCount(indexUrl), 0); // never queried the release server
 }
 
-// A device on the latest firmware is still updatable (available_fw present),
-// even though there is no newer version.
 TEST_F(FwHandlerTest, BuildResponseUpdatableWhenBootloaderOnly)
 {
     // No firmware in the manifest for this signature, but a bootloader exists.
@@ -2230,9 +2573,9 @@ public:
         AccessHandler = std::make_unique<TSerialClientDeviceAccessHandler>(nullptr);
     }
 
-    void RunTask(const Json::Value& request, PSerialClientTask task) override
+    void RunTask(const TRPCPortSettings& portSettings, PSerialClientTask task) override
     {
-        SubmittedTasks.push_back({request, task});
+        SubmittedTasks.push_back({portSettings, task});
         if (Port) {
             task->Run(Port, *AccessHandler, EmptyDeviceList);
         }
@@ -2240,7 +2583,7 @@ public:
 
     struct SubmittedTask
     {
-        Json::Value Request;
+        TRPCPortSettings PortSettings;
         PSerialClientTask Task;
     };
     std::vector<SubmittedTask> SubmittedTasks;
@@ -2310,6 +2653,12 @@ protected:
     };
     std::vector<PublishRecord> PublishLog;
 
+    Json::Value ParseLastPublishedState()
+    {
+        EXPECT_FALSE(PublishLog.empty());
+        return ParseJson(PublishLog.back().Payload);
+    }
+
     // RPC callback helpers
     Json::Value LastResult;
     int LastErrorCode = 0;
@@ -2343,6 +2692,26 @@ protected:
         req["port"]["path"] = portPath;
         req["protocol"] = protocol;
         return req;
+    }
+
+    //! A device behind a converter, the driver talks Modbus RTU over a TCP connection
+    Json::Value MakeSerialOverTcpRequest(int slaveId = SLAVE_ID)
+    {
+        Json::Value req;
+        req["slave_id"] = slaveId;
+        req["port"]["address"] = "192.168.1.10";
+        req["port"]["port"] = 23;
+        req["protocol"] = "modbus";
+        return req;
+    }
+
+    //! The settings of the line behind a converter, the driver cannot change them
+    void EnqueuePortSettingsReads(bool factorySettings)
+    {
+        EnqueueHoldingRead(110, 1, factorySettings ? std::vector<int>{0x00, 0x60} : std::vector<int>{0x04, 0x80});
+        if (factorySettings) {
+            EnqueueHoldingRead(111, 1, {0x00, 0x00});
+        }
     }
 
     // --- Friend-access wrappers for private handler methods ---
@@ -2399,7 +2768,8 @@ protected:
                                     wbfwData);
     }
 
-    void EnqueueFlashExpectations(bool reboot = true, bool preserveSettings = true)
+    //! fillByte is the byte the downloaded file is filled with, see SetupFirmwareDownload
+    void EnqueueFlashExpectations(bool reboot = true, bool preserveSettings = true, int fillByte = 0xAA)
     {
         if (reboot && preserveSettings) {
             EnqueueWriteSingleRegister(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1);
@@ -2407,10 +2777,10 @@ protected:
             EnqueueWriteSingleRegister(FwRegisters::REBOOT_TO_BOOTLOADER_ADDR, 1);
         }
 
-        std::vector<int> infoData(32, 0xAA);
+        std::vector<int> infoData(32, fillByte);
         EnqueueWriteMultipleRegisters(FwRegisters::FW_INFO_BLOCK_ADDR, FwRegisters::FW_INFO_BLOCK_COUNT, infoData);
 
-        std::vector<int> dataChunk(136, 0xAA);
+        std::vector<int> dataChunk(136, fillByte);
         EnqueueWriteMultipleRegisters(FwRegisters::FW_DATA_BLOCK_ADDR, FwRegisters::FW_DATA_BLOCK_COUNT, dataChunk);
     }
 };
@@ -2419,6 +2789,9 @@ protected:
 
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
 {
+    // A request without port settings means the factory ones, 9600 8N2
+    SerialPort->LogSerialPortSettings(true);
+
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
@@ -2434,6 +2807,36 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
     EXPECT_EQ(LastResult["model"].asString(), "WB-LED");
     EXPECT_EQ(LastResult["available_bootloader"].asString(), "2.0.0");
     EXPECT_TRUE(LastResult["bootloader_has_update"].asBool());
+}
+
+//! Such a device would be lost after rebooting to a bootloader which starts on 9600 8N2
+TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSettings)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
+    EnqueuePortSettingsReads(false);
+
+    CallGetFirmwareInfo(MakeSerialOverTcpRequest());
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_EQ(LastResult["fw"].asString(), "3.6.1");
+    EXPECT_EQ(LastResult["available_fw"].asString(), "3.8.0");
+    EXPECT_FALSE(LastResult["can_update"].asBool());
+}
+
+//! The same device on the factory settings stays reachable in the bootloader
+TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithFactoryPortSettings)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
+    EnqueuePortSettingsReads(true);
+
+    CallGetFirmwareInfo(MakeSerialOverTcpRequest());
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_TRUE(LastResult["can_update"].asBool());
 }
 
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoWithoutNetwork)
@@ -2545,15 +2948,66 @@ TEST_F(FwHandlerIntegrationTest, UpdateFirmware)
     EXPECT_FALSE(GetUpdateInProgress());
 }
 
+//! Such a bootloader answers on the settings of the firmware, the update runs on the settings
+//! of the request from the first byte to the last
+TEST_F(FwHandlerIntegrationTest, UpdateFirmwareKeepsPortSettings)
+{
+    SerialPort->LogSerialPortSettings(true);
+
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueFlashExpectations(true, true);
+
+    auto request = MakeRequest();
+    request["type"] = "firmware";
+    request["port"]["baud_rate"] = 115200;
+    request["port"]["stop_bits"] = 1;
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_FALSE(GetUpdateInProgress());
+}
+
+//! A bootloader without register 131 starts on the factory settings whatever the device is
+//! configured to, so the firmware is written on 9600 8N2 and the port is given back afterwards
+TEST_F(FwHandlerIntegrationTest, UpdateFirmwareSwitchesPortToFactorySettings)
+{
+    SerialPort->LogSerialPortSettings(true);
+
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
+    EnqueueFlashExpectations(true, false);
+
+    auto request = MakeRequest();
+    request["type"] = "firmware";
+    request["port"]["baud_rate"] = 115200;
+    request["port"]["stop_bits"] = 1;
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_FALSE(GetUpdateInProgress());
+}
+
+//! A device stays in the bootloader after its update, so the firmware is written right after it
 TEST_F(FwHandlerIntegrationTest, UpdateBootloader)
 {
     SetupReleasesYaml();
     SetupBootloaderInfo("wbled", "2.0.0");
     std::vector<uint8_t> wbfwData(168, 0xBB);
     FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.0.0.wbfw", wbfwData);
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
 
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
-    EnqueueFlashExpectations(true, true);
+    EnqueueFlashExpectations(true, true, 0xBB);
+    EnqueueFlashExpectations(false, false, 0xAA);
 
     auto request = MakeRequest();
     request["type"] = "bootloader";
@@ -2564,6 +3018,166 @@ TEST_F(FwHandlerIntegrationTest, UpdateBootloader)
     ASSERT_FALSE(GotError);
     EXPECT_EQ(LastResult.asString(), "Ok");
     EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(ParseLastPublishedState()["devices"].empty());
+}
+
+//! Components are written without rebooting to the bootloader, so the port keeps its settings
+TEST_F(FwHandlerIntegrationTest, UpdateComponent)
+{
+    SerialPort->LogSerialPortSettings(true);
+
+    SetupReleasesYaml("releases:\n"
+                      "  wbled:\n"
+                      "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n"
+                      "  wbled_oc:\n"
+                      "    bullseye: fw/by-signature/wbled_oc/bullseye/1.1.0.wbfw\n");
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled_oc", "bullseye", "1.1.0");
+
+    EnqueueDeviceInfoReads("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
+    EnqueueComponentInfoReads(0, "wbled_oc", "1.0.0", "WB-LED-OC");
+    EnqueueFlashExpectations(false, false);
+
+    auto request = MakeRequest();
+    request["type"] = "component";
+    request["port"]["baud_rate"] = 115200;
+    request["port"]["stop_bits"] = 1;
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_EQ(LastResult.asString(), "Ok");
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(ParseLastPublishedState()["devices"].empty());
+}
+
+//! homeui advises to check the internet connection by this error id
+TEST_F(FwHandlerIntegrationTest, UpdateReportsDownloadError)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    FakeHttp->SetError("https://fw-releases.wirenboard.com/fw/by-signature/wbled/bullseye/3.8.0.wbfw",
+                       "Couldn't resolve host name");
+
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+
+    auto request = MakeRequest();
+    request["type"] = "firmware";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_FALSE(GetUpdateInProgress());
+
+    auto devices = ParseLastPublishedState()["devices"];
+    ASSERT_EQ(devices.size(), 1u);
+    EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.download_error");
+}
+
+//! homeui advises to restore the device by this error id, it is left in the bootloader
+TEST_F(FwHandlerIntegrationTest, UpdateReportsResponseTimeout)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueWriteSingleRegister(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1);
+    std::vector<int> infoData(32, 0xAA);
+    EnqueueWriteMultipleRegistersNoResponse(FwRegisters::FW_INFO_BLOCK_ADDR,
+                                            FwRegisters::FW_INFO_BLOCK_COUNT,
+                                            infoData);
+
+    auto request = MakeRequest();
+    request["type"] = "firmware";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_FALSE(GetUpdateInProgress());
+
+    auto devices = ParseLastPublishedState()["devices"];
+    ASSERT_EQ(devices.size(), 1u);
+    EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.device.response_timeout_error");
+}
+
+//! A component left with a record of its own would block every later request for the device
+TEST_F(FwHandlerIntegrationTest, UpdateComponentReportsDownloadError)
+{
+    SetupReleasesYaml("releases:\n"
+                      "  wbled:\n"
+                      "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n"
+                      "  wbled_oc:\n"
+                      "    bullseye: fw/by-signature/wbled_oc/bullseye/1.1.0.wbfw\n");
+    SetupBootloaderInfo();
+    FakeHttp->SetError("https://fw-releases.wirenboard.com/fw/by-signature/wbled_oc/bullseye/1.1.0.wbfw",
+                       "Couldn't resolve host name");
+
+    EnqueueDeviceInfoReads();
+    EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
+    EnqueueComponentInfoReads(0, "wbled_oc", "1.0.0", "WB-LED-OC");
+
+    auto request = MakeRequest();
+    request["type"] = "component";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_FALSE(GetUpdateInProgress());
+
+    auto devices = ParseLastPublishedState()["devices"];
+    ASSERT_EQ(devices.size(), 1u);
+    EXPECT_EQ(devices[0]["type"].asString(), "component");
+    EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.download_error");
+}
+
+TEST_F(FwHandlerIntegrationTest, UpdateOverSerialOverTcpIsRejected)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
+    EnqueuePortSettingsReads(false);
+
+    auto request = MakeSerialOverTcpRequest();
+    request["type"] = "firmware";
+
+    CallUpdate(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("Can't update firmware over TCP"), std::string::npos);
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(PublishLog.empty());
+}
+
+//! A component is written without rebooting to the bootloader, so the port settings do not matter
+TEST_F(FwHandlerIntegrationTest, UpdateComponentOverSerialOverTcpIsAllowed)
+{
+    SetupReleasesYaml("releases:\n"
+                      "  wbled:\n"
+                      "    bullseye: fw/by-signature/wbled/bullseye/3.8.0.wbfw\n"
+                      "  wbled_oc:\n"
+                      "    bullseye: fw/by-signature/wbled_oc/bullseye/1.1.0.wbfw\n");
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled_oc", "bullseye", "1.1.0");
+
+    EnqueueDeviceInfoReads("wbled", "3.6.1", "1.5.0", "WB-LED", false);
+    EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
+    EnqueueComponentInfoReads(0, "wbled_oc", "1.0.0", "WB-LED-OC");
+    EnqueueFlashExpectations(false, false);
+
+    auto request = MakeSerialOverTcpRequest();
+    request["type"] = "component";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(ParseLastPublishedState()["devices"].empty());
 }
 
 TEST_F(FwHandlerIntegrationTest, UpdateAlreadyInProgress)
@@ -2609,12 +3223,91 @@ TEST_F(FwHandlerIntegrationTest, UpdateBadRequest)
     EXPECT_FALSE(GetUpdateInProgress());
 }
 
+//! An unknown software type is rejected before the device is touched
+TEST_F(FwHandlerIntegrationTest, UpdateUnknownSoftwareType)
+{
+    auto request = MakeRequest();
+    request["type"] = "firmvare";
+
+    CallUpdate(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("Unknown software type"), std::string::npos);
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(PublishLog.empty());
+}
+
+//! The release server knows nothing about the device, the request fails instead of a silent stop
+TEST_F(FwHandlerIntegrationTest, UpdateWithoutReleasedFirmwareIsRejected)
+{
+    SetupReleasesYaml("releases:\n"
+                      "  wbmwac:\n"
+                      "    bullseye: fw/by-signature/wbmwac/bullseye/1.0.0.wbfw\n");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+
+    auto request = MakeRequest();
+    request["type"] = "firmware";
+
+    CallUpdate(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("Released binary not found"), std::string::npos);
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(PublishLog.empty());
+}
+
+//! A device stays in the bootloader after its update, so the firmware to write into it is taken beforehand
+TEST_F(FwHandlerIntegrationTest, UpdateBootloaderWithoutReleasedFirmwareIsRejected)
+{
+    SetupReleasesYaml("releases:\n"
+                      "  wbmwac:\n"
+                      "    bullseye: fw/by-signature/wbmwac/bullseye/1.0.0.wbfw\n");
+    SetupBootloaderInfo();
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+
+    auto request = MakeRequest();
+    request["type"] = "bootloader";
+
+    CallUpdate(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("Released binary not found"), std::string::npos);
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(PublishLog.empty());
+}
+
+//! The release server knows nothing about the component, the whole request fails
+TEST_F(FwHandlerIntegrationTest, UpdateComponentWithoutReleasedFirmwareIsRejected)
+{
+    SetupReleasesYaml();
+    EnqueueDeviceInfoReads("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
+    EnqueueComponentInfoReads(0, "wbled_oc", "1.0.0", "WB-LED-OC");
+
+    auto request = MakeRequest();
+    request["type"] = "component";
+
+    CallUpdate(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("Released binary not found"), std::string::npos);
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(PublishLog.empty());
+}
+
 // ---- Restore tests ----
 
 TEST_F(FwHandlerIntegrationTest, RestoreNormal)
 {
+    SerialPort->LogSerialPortSettings(true);
+
     SetupReleasesYaml();
     SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+    EnqueueBootloaderModeResponses();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
     EnqueueFlashExpectations(false, false);
 
@@ -2637,6 +3330,21 @@ TEST_F(FwHandlerIntegrationTest, RestoreAlreadyInProgress)
     EXPECT_NE(LastErrorMsg.find("already executing"), std::string::npos);
 
     SetUpdateInProgress(false);
+}
+
+//! A device which works normally has nothing to restore
+TEST_F(FwHandlerIntegrationTest, RestoreSkipsDeviceInFirmwareMode)
+{
+    SetupReleasesYaml();
+    EnqueueFirmwareModeResponses();
+
+    CallRestore(MakeRequest());
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_EQ(LastResult.asString(), "Ok");
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(PublishLog.empty());
 }
 
 TEST_F(FwHandlerIntegrationTest, RestoreGetInfoFails)
