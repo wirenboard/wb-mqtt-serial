@@ -36,7 +36,7 @@ private:
     void PublishValueAndError(const WBMQTT::PDriverTx& tx, const std::string& value, const std::string& error);
     void PublishError(const WBMQTT::PDriverTx& tx, const std::string& error);
 
-    /* Wiren Board devices reset press counters to 0 after reboot.
+    /* Press counters are reset to 0 by a reboot of a Wiren Board device and by a reconnect of a GTD IOT panel.
        Do not publish these very first zeroes to not trigger unexpected wb-rules whenChanged actions
     */
     bool ShouldNotPublishPressCounter() const;

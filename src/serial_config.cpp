@@ -33,6 +33,7 @@
 #include "devices/energomera_ce_device.h"
 #include "devices/energomera_iec_device.h"
 #include "devices/energomera_iec_mode_c_device.h"
+#include "devices/gtd_iot_device.h"
 #include "devices/iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
 #include "devices/lls_device.h"
@@ -1233,6 +1234,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 #ifndef __EMSCRIPTEN__
     TEnergomeraIecWithFastReadDevice::Register(deviceFactory);
     TEnergomeraIecModeCDevice::Register(deviceFactory);
+    TGtdIotDevice::Register(deviceFactory);
     TIVTMDevice::Register(deviceFactory);
     TLLSDevice::Register(deviceFactory);
     TMercury200Device::Register(deviceFactory);

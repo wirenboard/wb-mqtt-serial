@@ -1,3 +1,23 @@
+wb-mqtt-serial (2.279.0) stable; urgency=medium
+
+  * Add gtd_iot protocol and GTD IOT 24A/24X key panel templates. The panels
+    use Modbus RTU requests, but non-standard read responses. Only polling
+    mode is supported. For every key there are state, single press and long
+    press counter channels. Key code and statuses of the configured keys are
+    read together, so a key press is not lost if the key is released before
+    the next poll. The panels are made with 1 to 6 keys and there is
+    a template for every key count
+
+  * Handle press counters of the gtd_iot protocol (single_press_counter and
+    long_press_counter) the same way as press_counter of Wiren Board devices:
+    write their values to the database immediately and don't publish the zero
+    they are reset to when a panel reconnects. The counters are counted by the
+    service, so they start from zero after its restart too: this zero is not
+    published either, a counter register has no value until the first press,
+    so the control keeps the value published before the restart
+
+ -- Evgeny Boger <boger@wirenboard.com>  Tue, 22 Sep 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.278.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add the timer functions "On Pulse (Reset
