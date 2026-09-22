@@ -1,5 +1,6 @@
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
+{% set TIMER_AUTORESET_FW = "1.28.0" -%}
 {
     "title": "WB-MR6CU_template_title",
     "device_type": "WB-MR6CU",
@@ -127,8 +128,9 @@
             }
         ],
 
-        "parameters": {
-            "outputs_restore_state": {
+        "parameters": [
+            {
+                "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
@@ -138,7 +140,8 @@
                 "order": 1,
                 "group": "g_outputs"
             },
-            "safety_timer_s": {
+            {
+                "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
                 "description": "poll_timeout_description",
@@ -151,7 +154,8 @@
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {% set curtain_num = (out_num + 1) // 2 -%}
-            "out{{out_num}}_safe_state": {
+            {
+                "id": "out{{out_num}}_safe_state",
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
                 "order": {{out_num}},
@@ -165,7 +169,8 @@
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            "out{{out_num}}_safety_behaviour": {
+            {
+                "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_behaviour",
                 "order": {{out_num}},
@@ -179,7 +184,8 @@
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            "out{{out_num}}_startup_delay_params": {
+            {
+                "id": "out{{out_num}}_startup_delay_params",
                 "title": "Output {{out_num}}",
                 "group": "gg_startup_delay_params",
                 "address": {{1728 + out_num - 1}},
@@ -192,7 +198,8 @@
                 "fw": "1.24.0",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            "out{{out_num}}_restart_delay_params": {
+            {
+                "id": "out{{out_num}}_restart_delay_params",
                 "title": "Output {{out_num}}",
                 "group": "gg_restart_delay_params",
                 "address": {{1736 + out_num - 1}},
@@ -205,26 +212,33 @@
                 "fw": "1.24.0",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
-            "out{{out_num}}_timer_mode_selection": {
+            {% for timer_fw in ["1.25.0", TIMER_AUTORESET_FW] -%}
+            {% set timer_autoreset = timer_fw == TIMER_AUTORESET_FW -%}
+            {
+                "id": "out{{out_num}}_timer_mode_selection",
                 "title": "Function",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num}},
                 "address": {{1760 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5],
+                {% if timer_autoreset %}"enum": [0, 1, 2, 3, 6, 4, 7, 5],{% else %}"enum": [0, 1, 2, 3, 4, 5],{% endif %}
                 "enum_titles": [
                     "Not Used",
                     "On Delay",
                     "Off Delay",
-                    "On Pulse",
-                    "Off Pulse",
+                    "On Pulse",{% if timer_autoreset %}
+                    "On Pulse (Reset Command)",{% endif %}
+                    "Off Pulse",{% if timer_autoreset %}
+                    "Off Pulse (Reset Command)",{% endif %}
                     "On/Off Cycle"
                 ],
-                "fw": "1.25.0",
+                "fw": "{{timer_fw}}",
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            "out{{out_num}}_on_delay_params": {
+            {% endfor -%}
+            {
+                "id": "out{{out_num}}_on_delay_params",
                 "title": "Timeout (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -238,7 +252,8 @@
                 "description": "on_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
             },
-            "out{{out_num}}_off_delay_params": {
+            {
+                "id": "out{{out_num}}_off_delay_params",
                 "title": "Timeout (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -252,7 +267,8 @@
                 "description": "off_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
             },
-            "out{{out_num}}_on_pulse_params": {
+            {
+                "id": "out{{out_num}}_on_pulse_params",
                 "title": "Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -264,9 +280,10 @@
                 "default": 3,
                 "fw": "1.25.0",
                 "description": "on_pulse_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==3"
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6)"
             },
-            "out{{out_num}}_off_pulse_params": {
+            {
+                "id": "out{{out_num}}_off_pulse_params",
                 "title": "Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -278,9 +295,10 @@
                 "default": 3,
                 "fw": "1.25.0",
                 "description": "off_pulse_description",
-                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==4"
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7)"
             },
-            "out{{out_num}}_cyclic_on_time_params": {
+            {
+                "id": "out{{out_num}}_cyclic_on_time_params",
                 "title": "On Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
@@ -294,7 +312,8 @@
                 "description": "cyclic_on_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
-            "out{{out_num}}_cyclic_off_time_params": {
+            {
+                "id": "out{{out_num}}_cyclic_off_time_params",
                 "title": "Off Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 2}},
@@ -310,7 +329,8 @@
             },
             {% endfor -%}
             {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
-            "curtain{{curtain_num}}_mode": {
+            {
+                "id": "curtain{{curtain_num}}_mode",
                 "title": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1280 + curtain_num - 1 }},
@@ -323,7 +343,8 @@
                 ],
                 "order": 1
             },
-            "curtain{{curtain_num}}_open_time": {
+            {
+                "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
                 "description": "curtain_zero_time_description",
                 "group": "gg_curtain_{{curtain_num}}",
@@ -336,7 +357,8 @@
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_close_time": {
+            {
+                "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
                 "description": "curtain_zero_time_description",
                 "group": "gg_curtain_{{curtain_num}}",
@@ -349,7 +371,8 @@
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_deadtime": {
+            {
+                "id": "curtain{{curtain_num}}_deadtime",
                 "title": "Dead time (ms)",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1336 + curtain_num - 1 }},
@@ -360,7 +383,8 @@
                 "order": 4,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_safety_action": {
+            {
+                "id": "curtain{{curtain_num}}_safety_action",
                 "title": "Action when safety mode is activated",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1288 + curtain_num - 1}},
@@ -375,7 +399,8 @@
                 "order": 5,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_powerup_action": {
+            {
+                "id": "curtain{{curtain_num}}_powerup_action",
                 "title": "Power up action",
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1284 + curtain_num - 1}},
@@ -391,7 +416,8 @@
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
-            "baud_rate": {
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -408,7 +434,7 @@
                 "group": "g_general",
                 "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -504,7 +530,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==4"
+                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6||out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7"
             },
             {
                 "name": "Timer K{{out_num}}",
@@ -714,7 +740,9 @@
                 "On Delay": "Задержка включения",
                 "Off Delay": "Задержка отключения",
                 "On Pulse": "Включить на время",
+                "On Pulse (Reset Command)": "Включить на время (со сбросом команды)",
                 "Off Pulse": "Отключить на время",
+                "Off Pulse (Reset Command)": "Отключить на время (со сбросом команды)",
                 "On/Off Cycle": "Цикл On/Off",
                 "On Time (s)": "Включено (с)",
                 "Off Time (s)": "Отключено (с)",
@@ -724,7 +752,7 @@
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
                 "Curtain {{curtain_num}}": "Привод {{curtain_num}}",
                 "Curtain {{curtain_num}} Open": "Открыть привод {{curtain_num}}",
-                "Curtain {{curtain_num}} Close": "Закрыть привод {{curtain_num}}",                
+                "Curtain {{curtain_num}} Close": "Закрыть привод {{curtain_num}}",
                 "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления приводом {{curtain_num}}",
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",

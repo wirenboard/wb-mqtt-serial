@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.278.0) stable; urgency=medium
+wb-mqtt-serial (2.279.0) stable; urgency=medium
 
   * Add gtd_iot protocol and GTD IOT 24A/24X key panel templates. The panels
     use Modbus RTU requests, but non-standard read responses. Only polling
@@ -16,7 +16,14 @@ wb-mqtt-serial (2.278.0) stable; urgency=medium
     published either, a counter register has no value until the first press,
     so the control keeps the value published before the restart
 
- -- Evgeny Boger <boger@wirenboard.com>  Sat, 19 Sep 2026 15:00:00 +0300
+ -- Evgeny Boger <boger@wirenboard.com>  Tue, 22 Sep 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.278.0) stable; urgency=medium
+
+  * WB-MR and WB-MRWM templates: add the timer functions "On Pulse (Reset
+    Command)" and "Off Pulse (Reset Command)"
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 21 Sep 2026 09:00:00 +0300
 
 wb-mqtt-serial (2.277.1) stable; urgency=medium
 
