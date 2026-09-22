@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.278.1) stable; urgency=medium
+
+  * README: document RPC usage restrictions for bus access in the "direct port
+    read/write" section and reference them from the Modbus read/write section
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 22 Sep 2026 20:45:46 +0300
+
 wb-mqtt-serial (2.278.0) stable; urgency=medium
 
   * WB-MR and WB-MRWM templates: add the timer functions "On Pulse (Reset
