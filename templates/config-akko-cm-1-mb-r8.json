@@ -1,0 +1,477 @@
+{
+    "title": "akko-cm-1-mb-r8",
+    "device_type": "akko-cm-1-mb-r8",
+    "group": "g-curtain",
+    "hw": [
+        {
+            "signature": "CM-1-MB-R8"
+        },
+        {
+            "signature": "CM-3-MB-R8"
+        }
+    ],
+    "device": {
+        "name": "AKKO CM-1-MB-R8",
+        "id": "akko_cm_1_mb_r8",
+        "groups": [
+            {
+                "id": "g_general",
+                "title": "g_general",
+                "order": 1
+            },
+            {
+                "id": "g_settings",
+                "title": "g_settings",
+                "order": 2
+            },
+            {
+                "id": "g_hw_info",
+                "title": "g_hw_info",
+                "order": 3
+            }
+        ],
+        "parameters": [
+            {
+                "id": "setup_state_display",
+                "title": "setup_state_display",
+                "group": "g_general",
+                "readonly": true,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "setup_state_display_enum_0",
+                    "setup_state_display_enum_1"
+                ],
+                "default": 0,
+                "order": 0
+            },
+            {
+                "id": "invert_direction",
+                "title": "invert_direction",
+                "group": "g_general",
+                "reg_type": "coil",
+                "address": 6,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "invert_direction_enum_0",
+                    "invert_direction_enum_1"
+                ],
+                "default": 0,
+                "order": 1
+            },
+            {
+                "id": "low_current_switch",
+                "title": "low_current_switch",
+                "group": "g_settings",
+                "reg_type": "holding",
+                "address": 7,
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "enum_titles": [
+                    "low_current_switch_enum_0",
+                    "low_current_switch_enum_1",
+                    "low_current_switch_enum_2",
+                    "low_current_switch_enum_3"
+                ],
+                "default": 1,
+                "order": 2
+            },
+            {
+                "id": "current_switch",
+                "title": "current_switch",
+                "group": "g_settings",
+                "reg_type": "holding",
+                "address": 9,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "current_switch_enum_0",
+                    "current_switch_enum_1",
+                    "current_switch_enum_2"
+                ],
+                "default": 0,
+                "order": 3
+            }
+        ],
+        "channels": [
+            {
+                "name": "state_curtain",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 32,
+                "type": "value",
+                "format": "s16",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "state_curtain_enum_0",
+                    "state_curtain_enum_1",
+                    "state_curtain_enum_2"
+                ],
+                "readonly": true,
+                "sporadic": true,
+                "enabled": true
+            },
+            {
+                "name": "setpoint_state",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "setpoint_state_enum_0",
+                    "setpoint_state_enum_1",
+                    "setpoint_state_enum_2"
+                ],
+                "sporadic": true,
+                "condition": "setup_state_display==0"
+            },
+            {
+                "name": "cmd_open",
+                "type": "pushbutton",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"1",
+                "enabled": true,
+                "condition": "setup_state_display==1"
+            },
+            {
+                "name": "cmd_stop",
+                "type": "pushbutton",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"2",
+                "enabled": true,
+                "condition": "setup_state_display==1"
+            },
+            {
+                "name": "cmd_close",
+                "type": "pushbutton",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"0",
+                "condition": "setup_state_display==1",
+                "enabled": true
+            },
+            {
+                "name": "position",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 3,
+                "format": "s16",
+                "type": "value",
+                "min": 0,
+                "max": 100,
+                "units": "%",
+                "scale": 0.01,
+                "readonly": true,
+                "sporadic": true,
+                "enabled": true
+            },
+            {
+                "name": "setpoint_position",
+                "group": "g_general",
+                "reg_type": "holding",
+                "address": 5,
+                "type": "range",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "scale": 0.01,
+                "units": "%",
+                "enabled": true,
+                "sporadic": true
+            },
+            {
+                "name": "manual_control",
+                "group": "g_general",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "lock",
+                "group": "g_general",
+                "reg_type": "coil",
+                "address": 9,
+                "type": "switch",
+                "readonly": false
+            },
+            {
+                "name": "cmd_close_limit",
+                "type": "pushbutton",
+                "group": "g_settings",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"3",
+                "enabled": false
+            },
+            {
+                "name": "cmd_open_limit",
+                "type": "pushbutton",
+                "group": "g_settings",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"4",
+                "enabled": false
+            },
+            {
+                "name": "cmd_reset_limits",
+                "type": "pushbutton",
+                "group": "g_settings",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"5",
+                "enabled": false
+            },
+            {
+                "name": "cmd_factory_reset",
+                "type": "pushbutton",
+                "group": "g_settings",
+                "reg_type": "holding",
+                "address": 1,
+                "on_value":"6",
+                "enabled": false
+            },
+            {
+                "name": "state_curtain_connected",
+                "group": "g_hw_info",
+                "reg_type": "coil",
+                "address": 20,
+                "type": "switch",
+                "readonly": true,
+                "sporadic": true
+            },
+            {
+                "name": "motor_version",
+                "group": "g_hw_info",
+                "reg_type": "holding",
+                "address": 6,
+                "format": "s16",
+                "type": "value",
+                "enum": [
+                    0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+                    10,  11,  12,  13,  14,  15,  16,  17,  18,  19,
+                    20,  21,  22,  23,  24,  25,  26,  27,  28,  29,
+                    30,  31,  32,  33,  34,  35,  36,  37,  38,  39,
+                    40,  41,  42,  43,  44,  45,  46,  47,  48,  49,
+                    50,  51,  52,  53,  54,  55,  56,  57,  58,  59,
+                    60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+                    70,  71,  72,  73,  74,  75,  76,  77,  78,  79,
+                    80,  81,  82,  83,  84,  85,  86,  87,  88,  89,
+                    90,  91,  92,  93,  94,  95,  96,  97,  98,  99,
+                    100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+                    110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
+                    120, 121, 122, 123, 124, 125, 126, 127, 128, 129,
+                    130, 131, 132, 133, 134, 135, 136, 137, 138, 139,
+                    140, 141, 142, 143, 144, 145, 146, 147, 148, 149,
+                    150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+                    160, 161, 162, 163, 164, 165, 166, 167, 168, 169,
+                    170, 171, 172, 173, 174, 175, 176, 177, 178, 179,
+                    180, 181, 182, 183, 184, 185, 186, 187, 188, 189,
+                    190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
+                    200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
+                    210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
+                    220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
+                    230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
+                    240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
+                    250, 251, 252, 253, 254, 255
+                ],
+                "enum_titles": [
+                    "0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07", "0x08", "0x09", "0x0A", "0x0B", "0x0C", "0x0D", "0x0E", "0x0F", "0x10", "0x11", "0x12", "0x13", "0x14", "0x15", "0x16", "0x17", "0x18", "0x19", "0x1A", "0x1B", "0x1C", "0x1D",
+                    "0x1E", "0x1F", "0x20", "0x21", "0x22", "0x23", "0x24", "0x25", "0x26", "0x27", "0x28", "0x29", "0x2A", "0x2B", "0x2C", "0x2D", "0x2E", "0x2F", "0x30", "0x31", "0x32", "0x33", "0x34", "0x35", "0x36", "0x37", "0x38", "0x39", "0x3A", "0x3B", 
+                    "0x3C", "0x3D", "0x3E", "0x3F", "0x40", "0x41", "0x42", "0x43", "0x44", "0x45", "0x46", "0x47", "0x48", "0x49", "0x4A", "0x4B", "0x4C", "0x4D", "0x4E", "0x4F", "0x50", "0x51", "0x52", "0x53", "0x54", "0x55", "0x56", "0x57", "0x58", "0x59", 
+                    "0x5A", "0x5B", "0x5C", "0x5D", "0x5E", "0x5F", "0x60", "0x61", "0x62", "0x63", "0x64", "0x65", "0x66", "0x67", "0x68", "0x69", "0x6A", "0x6B", "0x6C", "0x6D", "0x6E", "0x6F", "0x70", "0x71", "0x72", "0x73", "0x74", "0x75", "0x76", "0x77",
+                    "0x78", "0x79", "0x7A", "0x7B", "0x7C", "0x7D", "0x7E", "0x7F", "0x80", "0x81", "0x82", "0x83", "0x84", "0x85", "0x86", "0x87", "0x88", "0x89", "0x8A", "0x8B", "0x8C", "0x8D", "0x8E", "0x8F", "0x90", "0x91", "0x92", "0x93", "0x94", "0x95",
+                    "0x96", "0x97", "0x98", "0x99", "0x9A", "0x9B", "0x9C", "0x9D", "0x9E", "0x9F", "0xA0", "0xA1", "0xA2", "0xA3", "0xA4", "0xA5", "0xA6", "0xA7", "0xA8", "0xA9", "0xAA", "0xAB", "0xAC", "0xAD", "0xAE", "0xAF", "0xB0", "0xB1", "0xB2", "0xB3",
+                    "0xB4", "0xB5", "0xB6", "0xB7", "0xB8", "0xB9", "0xBA", "0xBB", "0xBC", "0xBD", "0xBE", "0xBF", "0xC0", "0xC1", "0xC2", "0xC3", "0xC4", "0xC5", "0xC6", "0xC7", "0xC8", "0xC9", "0xCA", "0xCB", "0xCC", "0xCD", "0xCE", "0xCF", "0xD0", "0xD1",
+                    "0xD2", "0xD3", "0xD4", "0xD5", "0xD6", "0xD7", "0xD8", "0xD9", "0xDA", "0xDB", "0xDC", "0xDD", "0xDE", "0xDF", "0xE0", "0xE1", "0xE2", "0xE3", "0xE4", "0xE5", "0xE6", "0xE7", "0xE8", "0xE9", "0xEA", "0xEB", "0xEC", "0xED", "0xEE", "0xEF",
+                    "0xF0", "0xF1", "0xF2", "0xF3", "0xF4", "0xF5", "0xF6", "0xF7", "0xF8", "0xF9", "0xFA", "0xFB", "0xFC", "0xFD", "0xFE", "0xFF"
+                ],
+                "readonly": true,
+                "sporadic": true,                
+                "enabled": false
+            },
+            {
+                "name": "hw_version",
+                "group": "g_hw_info",
+                "address": 200,
+                "reg_type": "holding",
+                "format": "string",
+                "type": "text",
+                "string_data_size": 20,
+                "readonly": true,
+                "sporadic": true,
+                "enabled": false
+            },
+            {
+                "name": "fw",
+                "group": "g_hw_info",
+                "address": 250,
+                "reg_type": "holding",
+                "format": "string",
+                "type": "text",
+                "string_data_size": 16,
+                "readonly": true,
+                "sporadic": true,
+                "enabled": false
+            },
+            {
+                "name": "proto_version",
+                "group": "g_hw_info",
+                "address": 400,
+                "reg_type": "input",
+                "format": "string",
+                "type": "text",
+                "string_data_size": 16,
+                "readonly": true,
+                "sporadic": true,
+                "enabled": false
+            },
+            {
+                "name": "signature",
+                "group": "g_hw_info",
+                "address": 290,
+                "reg_type": "input",
+                "format": "string",
+                "type": "text",
+                "string_data_size": 12,
+                "enabled": false,
+                "sporadic": true,
+                "readonly": true
+            },
+            {
+                "name": "sn",
+                "reg_type": "holding",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "g_hw_info",
+                "enabled": false,
+                "sporadic": true,
+                "readonly": true
+            }
+        ],
+        "translations": {
+            "en": {
+                "akko-cm-1-mb-r8": "AKKO CM-1-MB-R8 (Curtain Motor)",
+                "setup_state_display": "Set Curtain State Display Mode",
+                "g_general": "General",
+                "state_curtain": "Current State",
+                "setpoint_state": "Target State",
+                "position": "Current Position",
+                "setpoint_position": "Target Position",
+                "setpoint_state_enum_0": "Close",
+                "setpoint_state_enum_1": "Open",
+                "setpoint_state_enum_2": "Stop",
+                "cmd_close": "Close",
+                "cmd_open": "Open",
+                "cmd_stop": "Stop",
+                "manual_control": "Manual Control",
+                "lock": "Lock Control",
+                "setup_state_display_enum_0": "Drop Down List",
+                "setup_state_display_enum_1": "Buttons",
+                "g_settings": "Settings",
+                "low_current_switch": "Low Current Input",
+                "low_current_switch_enum_0": "Double (With Return)",
+                "low_current_switch_enum_1": "Double (without Return)",
+                "low_current_switch_enum_2": "DC246",
+                "low_current_switch_enum_3": "Single Cyclic",
+                "current_switch": "Current Switch",
+                "current_switch_enum_0": "Double (without return)",
+                "current_switch_enum_1": "Hotel Mode Card Switch",
+                "current_switch_enum_2": "Double (with return)",
+                "invert_direction": "Invert Direction",
+                "cmd_close_limit": "Close Limit",
+                "cmd_open_limit": "Open Limit",
+                "cmd_reset_limits": "Reset Limits",
+                "cmd_factory_reset": "Factory Reset",
+                "g_hw_info": "Hardware Information",
+                "state_curtain_connected": "Curtain Connected",
+                "motor_version": "Motor Version",
+                "hw_version": "Hardware Version",
+                "fw": "Firmware Version",
+                "proto_version": "Protocol Version",
+                "signature": "Device Signature",
+                "sn": "Serial Number",
+                "state_curtain_enum_0": "Stopped",
+                "state_curtain_enum_1": "Opening",
+                "state_curtain_enum_2": "Closing",
+                "invert_direction_enum_0": "Off",
+                "invert_direction_enum_1": "On"                
+            },
+            "ru": {
+                "akko-cm-1-mb-r8": "AKKO CM-1-MB-R8 (мотор раздвижных штор)",
+                "setup_state_display": "Отображать желательное состояние шторы",
+                "g_general": "Общее",
+                "state_curtain": "Текущее состояние",
+                "setpoint_state": "Желаемое состояние",
+                "position": "Текущее положение",
+                "setpoint_position": "Желаемое положение",
+                "setpoint_state_enum_0": "Закрыть",
+                "setpoint_state_enum_1": "Открыть",
+                "setpoint_state_enum_2": "Остановить",
+                "cmd_close": "Закрыть",
+                "cmd_open": "Открыть",
+                "cmd_stop": "Остановить",
+                "manual_control": "Ручное управление",
+                "lock": "Блокировать управление",
+                "setup_state_display_enum_0": "Выпадающий список",
+                "setup_state_display_enum_1": "Кнопки",
+                "g_settings": "Настройки",
+                "low_current_switch": "Слаботочный вход",
+                "low_current_switch_enum_0": "Двойной (с возвратом)",
+                "low_current_switch_enum_1": "Двойной (без возврата)",
+                "low_current_switch_enum_2": "DC246",
+                "low_current_switch_enum_3": "Одиночный циклический",
+                "current_switch": "Силовой вход",
+                "current_switch_enum_0": "Двойной (без возврата)",
+                "current_switch_enum_1": "Гостиничный режим",
+                "current_switch_enum_2": "Двойной (с возвратом)",
+                "invert_direction": "Инверсия движения",
+                "cmd_close_limit": "Концевое положение закрытия",
+                "cmd_open_limit": "Концевое положение открытия",
+                "cmd_reset_limits": "Сбросить концевые положения",
+                "cmd_factory_reset": "Сбросить до заводских настроек",
+                "g_hw_info": "Данные модуля",
+                "state_curtain_connected": "Штора подключена",
+                "motor_version": "Версия мотора",
+                "hw_version": "Версия устройства",
+                "fw": "Версия прошивки",
+                "proto_version": "Версия протокола",
+                "signature": "Сигнатура устройства",
+                "sn": "Серийный номер",
+                "state_curtain_enum_0": "Остановлен",
+                "state_curtain_enum_1": "Открывается",
+                "state_curtain_enum_2": "Закрывается",
+                "invert_direction_enum_0": "Выкл.",
+                "invert_direction_enum_1": "Вкл."
+            }
+        }
+    }
+}

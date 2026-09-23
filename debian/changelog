@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.268.0-wb102) stable; urgency=medium
+
+  * Add AKKO CM-1-MB-R8 template (external contribution)
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 18 Sep 2026 16:00:00 +0300
+
 wb-mqtt-serial (2.268.0-wb101) stable; urgency=medium
 
   * Fix writing to devices which have no registers to poll
