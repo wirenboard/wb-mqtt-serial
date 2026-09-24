@@ -6,28 +6,22 @@
         "id": "nevoton_bcg_1_0_4_w",
         "groups": [
             {
-                "id": "g_boiler_state",
-                "order": 1
+                "id": "g_boiler_state"
             },
             {
-                "id": "g_heating",
-                "order": 2
+                "id": "g_heating"
             },
             {
-                "id": "g_dhw",
-                "order": 3
+                "id": "g_dhw"
             },
             {
-                "id": "g_opentherm",
-                "order": 4
+                "id": "g_opentherm"
             },
             {
-                "id": "g_hw_info",
-                "order": 5
+                "id": "g_hw_info"
             },
             {
-                "id": "g_debug",
-                "order": 6
+                "id": "g_debug"
             }
         ],
         "parameters": [
@@ -45,9 +39,7 @@
             },
             {
                 "id": "ch_heating_mode",
-                "reg_type": "holding",
                 "address": 224,
-                "format": "u16",
                 "enum": [0, 1],
                 "enum_titles": [
                     "ch_heating_mode_enum_0",
@@ -60,9 +52,7 @@
             {
                 "id": "climate_curve_number",
                 "description": "climate_curve_number_description",
-                "reg_type": "holding",
                 "address": 206,
-                "format": "u16",
                 "min": 1,
                 "max": 17,
                 "default": 1,
@@ -71,9 +61,7 @@
             },
             {
                 "id": "boiler_manufacturer",
-                "reg_type": "holding",
                 "address": 223,
-                "format": "u16",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
                     "boiler_manufacturer_enum_0",
@@ -86,9 +74,7 @@
             },
             {
                 "id": "ot_algorithm",
-                "reg_type": "holding",
                 "address": 219,
-                "format": "u16",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "ot_algorithm_enum_0",
@@ -102,35 +88,30 @@
         "setup": [
             {
                 "title": "disable direct heating setpoint control",
-                "reg_type": "holding",
                 "address": 203,
                 "value": 0,
                 "condition": "(heating_options==1)||(heating_options==2)"
             },
             {
                 "title": "reset room temperature setpoint",
-                "reg_type": "holding",
                 "address": 205,
                 "value": 0,
                 "condition": "heating_options==0"
             },
             {
                 "title": "set direct heating setpoint control",
-                "reg_type": "holding",
                 "address": 207,
                 "value": 0,
                 "condition": "heating_options==0"
             },
             {
                 "title": "set room temperature sensor",
-                "reg_type": "holding",
                 "address": 207,
                 "value": 1,
                 "condition": "heating_options==1"
             },
             {
                 "title": "set outdoor temperature sensor",
-                "reg_type": "holding",
                 "address": 207,
                 "value": 2,
                 "condition": "heating_options==2"
@@ -141,7 +122,7 @@
                 "name": "boiler_status",
                 "reg_type": "input",
                 "address": 205,
-                "format": "u16",
+                "enabled": false,
                 "group": "g_boiler_state"
             },
             {
@@ -149,7 +130,6 @@
                 "reg_type": "input",
                 "address": "205:0:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -157,7 +137,6 @@
                 "reg_type": "input",
                 "address": "205:1:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -165,7 +144,6 @@
                 "reg_type": "input",
                 "address": "205:2:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -173,7 +151,6 @@
                 "reg_type": "input",
                 "address": "205:3:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -181,7 +158,6 @@
                 "reg_type": "input",
                 "address": "205:5:1",
                 "type": "switch",
-                "readonly": true,
                 "enabled": false,
                 "group": "g_boiler_state"
             },
@@ -190,7 +166,6 @@
                 "reg_type": "input",
                 "address": "205:6:1",
                 "type": "switch",
-                "readonly": true,
                 "enabled": false,
                 "group": "g_boiler_state"
             },
@@ -199,7 +174,6 @@
                 "reg_type": "input",
                 "address": "205:8:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -207,7 +181,6 @@
                 "reg_type": "input",
                 "address": "205:9:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -215,7 +188,6 @@
                 "reg_type": "input",
                 "address": "205:11:1",
                 "type": "switch",
-                "readonly": true,
                 "enabled": false,
                 "group": "g_boiler_state"
             },
@@ -224,7 +196,6 @@
                 "reg_type": "input",
                 "address": "205:12:1",
                 "type": "switch",
-                "readonly": true,
                 "enabled": false,
                 "group": "g_boiler_state"
             },
@@ -232,7 +203,6 @@
                 "name": "error_code",
                 "reg_type": "input",
                 "address": 206,
-                "format": "u16",
                 "group": "g_boiler_state"
             },
             {
@@ -240,7 +210,6 @@
                 "reg_type": "input",
                 "address": "229:0:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -248,7 +217,6 @@
                 "reg_type": "input",
                 "address": "229:1:1",
                 "type": "switch",
-                "readonly": true,
                 "enabled": false,
                 "group": "g_boiler_state"
             },
@@ -257,7 +225,6 @@
                 "reg_type": "input",
                 "address": "229:2:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -265,7 +232,6 @@
                 "reg_type": "input",
                 "address": "229:3:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -273,7 +239,6 @@
                 "reg_type": "input",
                 "address": "229:4:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
@@ -281,23 +246,19 @@
                 "reg_type": "input",
                 "address": "229:5:1",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
                 "name": "alarm_boiler_connection",
                 "reg_type": "input",
                 "address": 217,
-                "format": "u16",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
                 "name": "t_heating",
                 "reg_type": "input",
                 "address": 207,
-                "format": "u16",
                 "units": "deg C",
                 "group": "g_boiler_state"
             },
@@ -305,7 +266,6 @@
                 "name": "t_dhw",
                 "reg_type": "input",
                 "address": 208,
-                "format": "u16",
                 "units": "deg C",
                 "group": "g_boiler_state"
             },
@@ -313,7 +273,6 @@
                 "name": "t_return",
                 "reg_type": "input",
                 "address": 216,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
@@ -334,7 +293,6 @@
                 "name": "t_solar_storage",
                 "reg_type": "input",
                 "address": 220,
-                "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
                 "round_to": 0.1,
@@ -346,7 +304,6 @@
                 "name": "t_solar_collector",
                 "reg_type": "input",
                 "address": 221,
-                "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
                 "round_to": 0.1,
@@ -358,7 +315,6 @@
                 "name": "t_heating2",
                 "reg_type": "input",
                 "address": 222,
-                "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
                 "round_to": 0.1,
@@ -370,7 +326,6 @@
                 "name": "t_dhw2",
                 "reg_type": "input",
                 "address": 223,
-                "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
                 "round_to": 0.1,
@@ -382,7 +337,6 @@
                 "name": "t_exhaust",
                 "reg_type": "input",
                 "address": 224,
-                "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
                 "round_to": 0.1,
@@ -394,7 +348,6 @@
                 "name": "level_modulation",
                 "reg_type": "input",
                 "address": 209,
-                "format": "u16",
                 "units": "%",
                 "group": "g_boiler_state"
             },
@@ -402,7 +355,6 @@
                 "name": "pressure_water",
                 "reg_type": "input",
                 "address": 210,
-                "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
                 "round_to": 0.1,
@@ -413,7 +365,6 @@
                 "name": "t_dhw_max_boiler",
                 "reg_type": "input",
                 "address": 212,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
@@ -422,7 +373,6 @@
                 "name": "t_dhw_min_boiler",
                 "reg_type": "input",
                 "address": 213,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
@@ -431,7 +381,6 @@
                 "name": "t_heating_max_boiler",
                 "reg_type": "input",
                 "address": 214,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
@@ -440,7 +389,6 @@
                 "name": "t_heating_min_boiler",
                 "reg_type": "input",
                 "address": 215,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
@@ -449,25 +397,19 @@
                 "name": "state_dhw_override",
                 "reg_type": "input",
                 "address": 218,
-                "format": "u16",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
                 "name": "state_dhw_transfer",
                 "reg_type": "input",
                 "address": 219,
-                "format": "u16",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_boiler_state"
             },
             {
                 "name": "boiler_mode",
-                "reg_type": "holding",
                 "address": 212,
-                "format": "u16",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
                     "boiler_mode_enum_0",
@@ -479,54 +421,42 @@
             },
             {
                 "name": "auto_temperature_switch",
-                "reg_type": "holding",
                 "address": 213,
-                "format": "u16",
                 "type": "switch",
                 "enabled": false,
                 "group": "g_boiler_state"
             },
             {
                 "name": "t_heating_min",
-                "reg_type": "holding",
                 "address": 214,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
             },
             {
                 "name": "t_heating_max",
-                "reg_type": "holding",
                 "address": 215,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
             },
             {
                 "name": "hysteresis_heating",
-                "reg_type": "holding",
                 "address": 216,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
             },
             {
                 "name": "hysteresis_dhw",
-                "reg_type": "holding",
                 "address": 217,
-                "format": "u16",
                 "units": "deg C",
                 "enabled": false,
                 "group": "g_boiler_state"
             },
             {
                 "name": "setpoint_t_dhw",
-                "reg_type": "holding",
                 "address": 204,
-                "format": "u16",
                 "units": "deg C",
                 "min": 0,
                 "max": 80,
@@ -534,9 +464,7 @@
             },
             {
                 "name": "setpoint_t_heating",
-                "reg_type": "holding",
                 "address": 203,
-                "format": "u16",
                 "units": "deg C",
                 "min": 0,
                 "max": 80,
@@ -545,9 +473,7 @@
             },
             {
                 "name": "setpoint_t_heating_calc",
-                "reg_type": "holding",
                 "address": 203,
-                "format": "u16",
                 "units": "deg C",
                 "readonly": true,
                 "group": "g_heating",
@@ -555,9 +481,7 @@
             },
             {
                 "name": "sensor_type",
-                "reg_type": "holding",
                 "address": 207,
-                "format": "u16",
                 "readonly": true,
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -569,7 +493,6 @@
             },
             {
                 "name": "t_room",
-                "reg_type": "holding",
                 "address": 208,
                 "format": "s16",
                 "scale": 0.1,
@@ -583,7 +506,6 @@
             },
             {
                 "name": "t_outdoor",
-                "reg_type": "holding",
                 "address": 208,
                 "format": "s16",
                 "scale": 0.1,
@@ -597,9 +519,7 @@
             },
             {
                 "name": "setpoint_t_room",
-                "reg_type": "holding",
                 "address": 205,
-                "format": "u16",
                 "units": "deg C",
                 "min": 0,
                 "max": 35,
@@ -608,9 +528,7 @@
             },
             {
                 "name": "heating_status",
-                "reg_type": "holding",
                 "address": 205,
-                "format": "u16",
                 "type": "switch",
                 "enabled": false,
                 "group": "g_heating",
@@ -618,9 +536,7 @@
             },
             {
                 "name": "level_modulation_max",
-                "reg_type": "holding",
                 "address": 222,
-                "format": "u16",
                 "units": "%",
                 "min": 20,
                 "max": 100,
@@ -630,16 +546,12 @@
                 "name": "state_modulation_limit",
                 "reg_type": "input",
                 "address": 226,
-                "format": "u16",
                 "type": "switch",
-                "readonly": true,
                 "group": "g_heating"
             },
             {
                 "name": "ot_command_type",
-                "reg_type": "holding",
                 "address": 209,
-                "format": "u16",
                 "min": 1,
                 "max": 10,
                 "enabled": false,
@@ -647,25 +559,19 @@
             },
             {
                 "name": "ot_command_id",
-                "reg_type": "holding",
                 "address": 210,
-                "format": "u16",
                 "enabled": false,
                 "group": "g_opentherm"
             },
             {
                 "name": "ot_command_data",
-                "reg_type": "holding",
                 "address": 211,
-                "format": "u16",
                 "enabled": false,
                 "group": "g_opentherm"
             },
             {
                 "name": "ot_master_id",
-                "reg_type": "holding",
                 "address": 218,
-                "format": "u16",
                 "enabled": false,
                 "group": "g_opentherm"
             },
@@ -673,7 +579,6 @@
                 "name": "fw",
                 "reg_type": "input",
                 "address": 204,
-                "format": "u16",
                 "scale": 0.01,
                 "round_to": 0.01,
                 "group": "g_hw_info"
@@ -685,14 +590,12 @@
                 "format": "string8",
                 "string_data_size": 8,
                 "type": "text",
-                "readonly": true,
                 "group": "g_hw_info"
             },
             {
                 "name": "algorithm_type",
                 "reg_type": "input",
                 "address": 225,
-                "format": "u16",
                 "enabled": false,
                 "group": "g_debug"
             },
@@ -700,7 +603,6 @@
                 "name": "debug_field_1",
                 "reg_type": "input",
                 "address": 227,
-                "format": "u16",
                 "enabled": false,
                 "group": "g_debug"
             },
@@ -708,7 +610,6 @@
                 "name": "debug_field_2",
                 "reg_type": "input",
                 "address": 228,
-                "format": "u16",
                 "enabled": false,
                 "group": "g_debug"
             }
