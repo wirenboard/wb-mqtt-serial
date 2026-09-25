@@ -26968,7 +26968,6 @@ WB-MS-v2-since-fw-4.36
 	Input 1 Last Valid Temp  =>  ext_sens1_last_valid_temp
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
 	Input 1 Sensor OK  =>  External Sensor 1 OK
-	Input 1 Sensor Presense  =>  ext_sens1_presense
 	Input 1 Sensor Supply  =>  ext_sens1_supply
 	Input 1 Shortlong Press Counter  =>  Input 1 Shortlong Press Counter
 	Input 1 Single Press Counter  =>  Input 1 Single Press Counter
@@ -26979,7 +26978,6 @@ WB-MS-v2-since-fw-4.36
 	Input 2 Last Valid Temp  =>  ext_sens2_last_valid_temp
 	Input 2 Long Press Counter  =>  Input 2 Long Press Counter
 	Input 2 Sensor OK  =>  External Sensor 2 OK
-	Input 2 Sensor Presense  =>  ext_sens2_presense
 	Input 2 Sensor Supply  =>  ext_sens2_supply
 	Input 2 Shortlong Press Counter  =>  Input 2 Shortlong Press Counter
 	Input 2 Single Press Counter  =>  Input 2 Single Press Counter
