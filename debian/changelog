@@ -14,7 +14,14 @@ wb-mqtt-serial (2.279.0) stable; urgency=medium
   * Restoring a device which is not in the bootloader mode no longer leaves
     an error in the firmware update state topic
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 21 Sep 2026 12:00:00 +0300
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 25 Sep 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.278.1) stable; urgency=medium
+
+  * README: document RPC usage restrictions for bus access in the "direct port
+    read/write" section and reference them from the Modbus read/write section
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 22 Sep 2026 20:45:46 +0300
 
 wb-mqtt-serial (2.278.0) stable; urgency=medium
 
