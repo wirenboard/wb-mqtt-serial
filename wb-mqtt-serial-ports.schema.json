@@ -58,6 +58,20 @@
           "options": {
             "grid_columns": 12
           }
+        },
+        "disable_fast_modbus": {
+          "type": "boolean",
+          "title": "Disable Fast Modbus",
+          "description": "port_disable_fast_modbus_desc",
+          "default": false,
+          "format": "checkbox",
+          "propertyOrder": 11,
+          "options": {
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true
+            }
+          }
         }
       }
     },
@@ -314,7 +328,8 @@
       "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between publishing the same values to MQTT. Zero means the values are published every time they read from the device. Negative value means the values are published only when they change. In any case, the values are published only after reading them from the device. If the values are not read, no out-of-turn publication is made.",
       "rate_limit_desc": "If not set, 100 reads for WB6 and 800 for WB7/WB8 are used to reduce the load on the processor",
-      "connected_to_mge_desc": "Allows using Fast Modbus for devices connected to the gateway"
+      "connected_to_mge_desc": "Allows using Fast Modbus for devices connected to the gateway",
+      "port_disable_fast_modbus_desc": "Devices on the port are polled without Fast Modbus events. Fast device scan is not available"
     },
     "ru": {
       "Enable port": "Включить порт",
@@ -343,7 +358,9 @@
       "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
       "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
       "rate_limit_desc": "Если не задано, то используется 100 чтений для WB6 и 800 для WB7/WB8, чтобы снизить нагрузку на процессор",
-      "connected_to_mge_desc": "Разрешает использование Быстрого Модбаса для устройств, подключенных к шлюзу"
+      "connected_to_mge_desc": "Разрешает использование Быстрого Модбаса для устройств, подключенных к шлюзу",
+      "Disable Fast Modbus": "Отключить Быстрый Модбас",
+      "port_disable_fast_modbus_desc": "Устройства на порту опрашиваются без событий Быстрого Модбаса. Быстрый поиск устройств недоступен"
      }
   }
 }

@@ -608,7 +608,7 @@ namespace
 
         auto port = std::make_shared<TSerialPort>(settings);
 
-        return std::make_shared<TFeaturePort>(port, false);
+        return std::make_shared<TFeaturePort>(port, false, false, port_data["disable_fast_modbus"].asBool());
     }
 
     PFeaturePort OpenTcpPort(const Json::Value& port_data)
@@ -617,7 +617,7 @@ namespace
 
         auto port = std::make_shared<TTcpPort>(settings);
 
-        return std::make_shared<TFeaturePort>(port, false);
+        return std::make_shared<TFeaturePort>(port, false, false, port_data["disable_fast_modbus"].asBool());
     }
 
     PFeaturePort OpenModbusTcpPort(const Json::Value& port_data)
@@ -626,7 +626,10 @@ namespace
 
         auto port = std::make_shared<TTcpPort>(settings);
 
-        return std::make_shared<TFeaturePort>(port, true, port_data["connected_to_mge"].asBool());
+        return std::make_shared<TFeaturePort>(port,
+                                              true,
+                                              port_data["connected_to_mge"].asBool(),
+                                              port_data["disable_fast_modbus"].asBool());
     }
 #endif
 

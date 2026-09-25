@@ -30,9 +30,10 @@ template<class Dev> class TModbusDeviceFactory: public IDeviceFactory
     std::unique_ptr<Modbus::IModbusTraitsFactory> ModbusTraitsFactory;
 
 public:
-    TModbusDeviceFactory(std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory)
+    TModbusDeviceFactory(std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory,
+                         const std::string& commonDeviceSchemaRef)
         : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(2, /*restrictWriteAddress=*/true),
-                         "#/definitions/simple_device_with_setup",
+                         commonDeviceSchemaRef,
                          "#/definitions/common_channel_modbus"),
           ModbusTraitsFactory(std::move(modbusTraitsFactory))
     {}
@@ -46,6 +47,7 @@ public:
         WBMQTT::JSON::Get(data,
                           "continue_polling_on_illegal_modbus_exception",
                           deviceConfig->ContinuePollingOnIllegalModbusException);
+        WBMQTT::JSON::Get(data, "disable_fast_modbus", deviceConfig->DisableFastModbus);
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 

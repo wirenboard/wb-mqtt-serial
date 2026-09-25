@@ -283,7 +283,7 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PFeaturePort por
         return ISerialClientTask::TRunResult::OK;
     }
 
-    if (!port->SupportsFastModbus() && port->IsModbusTcp()) {
+    if (!port->SupportsFastModbus()) {
         if (Request->OnResult) {
             Json::Value result;
             result["devices"] = Json::Value(Json::arrayValue);
