@@ -1,21 +1,22 @@
 #pragma once
 
+#include <map>
+
 #include <wblib/rpc.h>
 
-#include "port/serial_port_settings.h"
 #include "rpc_fw_downloader.h"
 #include "rpc_fw_update_state.h"
 #include "rpc_fw_update_task.h"
+#include "rpc_port_settings.h"
 
 class TFwUpdateSerialClientTask: public ISerialClientTask
 {
 public:
     TFwUpdateSerialClientTask(uint8_t slaveId,
                               const std::string& protocol,
-                              const std::string& softwareType,
-                              const std::string& portPath,
+                              EFwSoftwareType softwareType,
                               const std::string& releaseSuite,
-                              const TSerialPortConnectionSettings& portSettings,
+                              const TRPCPortSettings& portSettings,
                               std::shared_ptr<TFwDownloader> downloader,
                               PFwUpdateState state,
                               PFwUpdateLock updateLock,
@@ -27,12 +28,14 @@ public:
                                       const std::list<PSerialDevice>& polledDevices) override;
 
 private:
+    void ReleaseLock();
+    void ReadReleasedSoftware(const TFwDeviceInfo& info);
     void DoFirmwareUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info);
     void DoBootloaderUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info);
     void DoComponentsUpdate(TPort& port, Modbus::IModbusTraits& traits, const TFwDeviceInfo& info);
     void DoFlash(TPort& port,
                  Modbus::IModbusTraits& traits,
-                 const std::string& type,
+                 EFwSoftwareType type,
                  const std::string& fromVersion,
                  const std::string& toVersion,
                  const std::string& fwUrl,
@@ -43,11 +46,13 @@ private:
 
     uint8_t SlaveId;
     std::string Protocol;
-    std::string SoftwareType;
-    std::string PortPath;
+    EFwSoftwareType SoftwareType;
     std::string ReleaseSuite;
-    TSerialPortConnectionSettings PortSettings;
+    TRPCPortSettings PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
+    TReleasedBinary ReleasedFirmware;
+    TReleasedBinary ReleasedBootloader;
+    std::map<int, TReleasedBinary> ReleasedComponents;
     PFwUpdateState State;
     PFwUpdateLock UpdateLock;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;

@@ -1,5 +1,4 @@
 Open()
-ApplySerialPortSettings(9600 8N2)
 SkipNoise()
 EnqueueHoldingRead()
 >> 2A 03 01 22 00 0C E2 22
@@ -19,4 +18,3 @@ EnqueueHoldingRead()
 EnqueueDiscreteReadException()
 >> 2A 02 FE 80 00 08 4F D7
 << 2A 82 02 B1 69
-ResetSerialPortSettings()

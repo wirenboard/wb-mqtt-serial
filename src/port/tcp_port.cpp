@@ -154,7 +154,7 @@ std::string TTcpPort::GetDescription(bool verbose) const
     if (verbose) {
         return Settings.ToString();
     }
-    return Settings.Address + ":" + std::to_string(Settings.Port);
+    return Settings.GetDescription();
 }
 
 std::chrono::microseconds TTcpPort::GetSendTimeBytes(double bytesNumber) const

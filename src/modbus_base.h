@@ -37,7 +37,10 @@ namespace Modbus
     {
         ILLEGAL_FUNCTION = 0x1,
         ILLEGAL_DATA_ADDRESS = 0x2,
-        ILLEGAL_DATA_VALUE = 0x3
+        ILLEGAL_DATA_VALUE = 0x3,
+        SLAVE_DEVICE_FAILURE = 0x4,
+        SLAVE_DEVICE_BUSY = 0x6,
+        GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
     };
 
     struct TReadResult

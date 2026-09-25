@@ -25,6 +25,9 @@ const std::chrono::minutes TFwDownloader::BOOTLOADER_CACHE_TTL{30};
 const std::chrono::hours TFwDownloader::WBFW_CACHE_TTL{2};
 const std::chrono::seconds TFwDownloader::FAILED_DOWNLOAD_RETRY_INTERVAL{60};
 
+TFwDownloadError::TFwDownloadError(const std::string& message): std::runtime_error(message)
+{}
+
 #ifndef __EMSCRIPTEN__
 
 // ============================================================
@@ -286,7 +289,7 @@ void TFwDownloader::UpdateReleaseIndex(const std::string& indexUrl,
             throw std::runtime_error(indexUrl + " is not in cache");
         }
         if (now < cache.RetryAt) {
-            throw std::runtime_error("Skipping " + indexUrl + " download, the previous attempt has failed");
+            throw TFwDownloadError("Skipping " + indexUrl + " download, the previous attempt has failed");
         }
     }
 
@@ -294,10 +297,12 @@ void TFwDownloader::UpdateReleaseIndex(const std::string& indexUrl,
     std::string text;
     try {
         text = HttpClient->GetText(indexUrl);
-    } catch (const std::exception&) {
-        std::lock_guard<std::mutex> lock(CacheMutex);
-        cache.RetryAt = std::chrono::steady_clock::now() + FAILED_DOWNLOAD_RETRY_INTERVAL;
-        throw;
+    } catch (const std::exception& e) {
+        {
+            std::lock_guard<std::mutex> lock(CacheMutex);
+            cache.RetryAt = std::chrono::steady_clock::now() + FAILED_DOWNLOAD_RETRY_INTERVAL;
+        }
+        throw TFwDownloadError(e.what());
     }
 
     auto releases = ParseReleaseVersionsYaml(text);
@@ -376,7 +381,12 @@ TParsedWBFW TFwDownloader::DownloadAndParseWBFW(const std::string& url)
         }
     }
 
-    auto data = HttpClient->GetBinary(url);
+    std::vector<uint8_t> data;
+    try {
+        data = HttpClient->GetBinary(url);
+    } catch (const std::exception& e) {
+        throw TFwDownloadError(e.what());
+    }
     auto firmware = ParseWBFW(data);
 
     {
