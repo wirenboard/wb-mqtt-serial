@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.280.0) stable; urgency=medium
+
+  * WB-MWAC-v2 template: add the antiseize protection setting "Impact Of Water
+    Flow" (per channel) and the last status values for a cycle moved to the next
+    day by safety mode, leakage or water flow
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 25 Sep 2026 12:38:00 +0300
+
 wb-mqtt-serial (2.279.0) stable; urgency=medium
 
   * Firmware update of devices on Serial over TCP and Modbus TCP ports works
