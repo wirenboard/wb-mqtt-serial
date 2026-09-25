@@ -364,17 +364,6 @@
                 "condition": "in{{in_num}}_mode==0"
             },
             {
-                "id": "ext_sens{{in_num}}_presense",
-                "name": "Input {{in_num}} Sensor Presense",
-                "reg_type": "input",
-                "address": {{376 + (in_num - FIRST_INPUT)}},
-                "type": "switch",
-                "enabled": false,
-                "format": "u8",
-                "group": "gg_debug_bus{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==0"
-            },
-            {
                 "id": "ext_sens{{in_num}}_supply",
                 "name": "Input {{in_num}} Sensor Supply",
                 "reg_type": "input",
@@ -903,7 +892,6 @@
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
                 "Input {{in_num}} Last Valid Temp": "Последняя действ. температура на входе {{in_num}}",
-                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} присутствует",
                 "Input {{in_num}} Sensor Supply": "Питание датчика на входе {{in_num}}",
                 "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
                 "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
