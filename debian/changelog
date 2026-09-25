@@ -1,10 +1,28 @@
-wb-mqtt-serial (2.279.0) stable; urgency=medium
+wb-mqtt-serial (2.280.0) stable; urgency=medium
 
   * WB-MWAC-v2 template: add the antiseize protection setting "Impact Of Water
     Flow" (per channel) and the last status values for a cycle moved to the next
     day by safety mode, leakage or water flow
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 25 Sep 2026 11:00:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 25 Sep 2026 12:38:00 +0300
+
+wb-mqtt-serial (2.279.0) stable; urgency=medium
+
+  * Firmware update of devices on Serial over TCP and Modbus TCP ports works
+    again: the fw-update RPC takes the address of such a port as the "address"
+    and "port" fields, as the web interface sends them. A device is updated
+    only if it can be reached after rebooting to its bootloader, otherwise
+    can_update is false and the update request is rejected
+  * Firmware update of a device whose bootloader does not keep the port settings
+    continues with the factory settings 9600 8N2, as the bootloader does.
+    The same settings are now the defaults of the fw-update RPC
+  * A failed firmware download and a device which stopped responding during
+    an update are reported with their own error identifiers in the firmware
+    update state topic, so the web interface can advise what to do
+  * Restoring a device which is not in the bootloader mode no longer leaves
+    an error in the firmware update state topic
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 25 Sep 2026 12:00:00 +0300
 
 wb-mqtt-serial (2.278.1) stable; urgency=medium
 

@@ -15,6 +15,15 @@ struct TStateError
     Json::Value Metadata;
 };
 
+enum class EFwSoftwareType
+{
+    Firmware,
+    Bootloader,
+    Component
+};
+
+std::string GetFwSoftwareTypeName(EFwSoftwareType type);
+
 struct TDeviceUpdateInfo
 {
     std::string PortPath;
@@ -30,6 +39,8 @@ struct TDeviceUpdateInfo
 
     bool Matches(const TDeviceUpdateInfo& other) const;
 };
+
+TStateError MakeFwUpdateStateError(const std::exception& error);
 
 using TStatePublishFn = std::function<void(const std::string& topic, const std::string& payload, bool retain)>;
 

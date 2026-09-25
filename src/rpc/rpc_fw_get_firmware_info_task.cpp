@@ -7,7 +7,7 @@
 TFwGetFirmwareInfoTask::TFwGetFirmwareInfoTask(uint8_t slaveId,
                                                const std::string& protocol,
                                                const std::string& releaseSuite,
-                                               const TSerialPortConnectionSettings& portSettings,
+                                               const TRPCPortSettings& portSettings,
                                                std::shared_ptr<TFwDownloader> downloader,
                                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
@@ -29,12 +29,19 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
-        TSerialPortSettingsGuard settingsGuard(port, PortSettings);
+        TSerialPortSettingsGuard settingsGuard(port, GetRPCPortConnectionSettings(PortSettings));
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);
         auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
-        auto result = BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite, ENetworkAccess::CacheOnly);
+        auto updatable = true;
+        if (RequiresDefaultPortSettings(std::holds_alternative<TRPCTcpPortSettings>(PortSettings),
+                                        Protocol,
+                                        info.CanPreservePortSettings))
+        {
+            updatable = HasDefaultPortSettings(*traits, *port, SlaveId);
+        }
+        auto result = BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite, updatable, ENetworkAccess::CacheOnly);
 
         if (OnResult) {
             OnResult(result);

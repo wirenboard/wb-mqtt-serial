@@ -3,6 +3,7 @@
 #include "rpc_fw_update_helpers.h"
 #include "rpc_helpers.h"
 #include "serial_exc.h"
+#include "wb_registers.h"
 
 #define LOG(logger) ::logger.Log() << "[fw-update] "
 
@@ -11,6 +12,12 @@ namespace
     const auto FW_RESPONSE_TIMEOUT = std::chrono::milliseconds(500);
     const auto FW_FRAME_TIMEOUT = std::chrono::milliseconds(20);
     const auto FW_REBOOT_TIMEOUT = std::chrono::milliseconds(1000);
+
+    const uint64_t DEFAULT_BAUD_RATE_REGISTER_VALUE = 96;
+    const uint64_t NO_PARITY_REGISTER_VALUE = 0;
+
+    //! A device may be unable to report its components right after switching on
+    const auto COMPONENTS_PRESENCE_TIMEOUT = std::chrono::seconds(2);
 
     const size_t FW_BLOCK_SIZE = FwRegisters::FW_DATA_BLOCK_COUNT * 2; // 68 registers * 2 bytes = 136 bytes
     const int MAX_WRITE_RETRIES = 3;
@@ -79,6 +86,7 @@ namespace
                 // Device has rebooted and doesn't send response (expected for old firmware)
                 LOG(Debug) << "Device doesn't respond to reboot command, probably it has rebooted";
             }
+            port.ApplySerialPortSettings(FACTORY_PORT_SETTINGS);
         }
 
         // Delay before going to bootloader
@@ -120,7 +128,7 @@ namespace
             } catch (const Modbus::TModbusExceptionError& e) {
                 // Slave device failure (0x04) means block is already written — treat as success
                 // Cf. firmware_update.py:349 write_fw_data_block()
-                if (e.GetExceptionCode() == 0x04) {
+                if (e.GetExceptionCode() == Modbus::SLAVE_DEVICE_FAILURE) {
                     return;
                 }
                 lastException = std::current_exception();
@@ -132,6 +140,49 @@ namespace
         if (lastException) {
             std::rethrow_exception(lastException);
         }
+    }
+
+    std::vector<int> GetPresentComponents(const std::vector<uint8_t>& presenceData)
+    {
+        std::vector<int> res;
+        for (size_t byteIdx = 0; byteIdx < presenceData.size(); ++byteIdx) {
+            for (int bit = 0; bit < 8; ++bit) {
+                if (presenceData[byteIdx] & (1 << bit)) {
+                    res.push_back(static_cast<int>(byteIdx * 8 + bit));
+                }
+            }
+        }
+        return res;
+    }
+
+    // Read components presence (function 2 = READ_DISCRETE) - Cf. firmware_update.py:278 read_components_presence()
+    // Using raw PDU here because ReadRegister doesn't support multi-bit discrete reads
+    std::vector<int> ReadComponentsPresence(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId)
+    {
+        auto pdu = Modbus::MakePDU(Modbus::FN_READ_DISCRETE,
+                                   FwRegisters::COMPONENTS_PRESENCE_ADDR,
+                                   FwRegisters::COMPONENTS_PRESENCE_COUNT,
+                                   {});
+        auto responsePduSize =
+            Modbus::CalcResponsePDUSize(Modbus::FN_READ_DISCRETE, FwRegisters::COMPONENTS_PRESENCE_COUNT);
+
+        auto deadline = std::chrono::steady_clock::now() + COMPONENTS_PRESENCE_TIMEOUT;
+        while (std::chrono::steady_clock::now() < deadline) {
+            try {
+                auto res =
+                    traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
+                return GetPresentComponents(Modbus::ExtractResponseData(Modbus::FN_READ_DISCRETE, res.Pdu));
+            } catch (const Modbus::TModbusExceptionError& e) {
+                if (e.GetExceptionCode() != Modbus::SLAVE_DEVICE_BUSY) {
+                    return {};
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            } catch (const std::exception&) {
+                // Components presence register not available — skip
+                return {};
+            }
+        }
+        return {};
     }
 
     void WriteData(Modbus::IModbusTraits& traits,
@@ -170,6 +221,65 @@ namespace
 // ============================================================
 //                     Public free functions
 // ============================================================
+
+bool RequiresDefaultPortSettings(bool tcpPort, const std::string& protocol, bool canPreservePortSettings)
+{
+    return tcpPort && protocol != "modbus-tcp" && !canPreservePortSettings;
+}
+
+bool IsInBootloaderMode(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId)
+{
+    try {
+        ReadStringRegister(traits,
+                           port,
+                           slaveId,
+                           FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_FULL_COUNT,
+                           true);
+    } catch (const TResponseTimeoutException& e) {
+        LOG(Debug) << "Cannot read the bootloader version: " << e.what();
+        return false;
+    }
+    try {
+        ReadStringRegister(traits,
+                           port,
+                           slaveId,
+                           FwRegisters::BOOTLOADER_VERSION_ADDR,
+                           FwRegisters::BOOTLOADER_VERSION_COUNT,
+                           true);
+    } catch (const TResponseTimeoutException&) {
+        return true;
+    } catch (const Modbus::TModbusExceptionError& e) {
+        // Some gateways answer with this code when they decide that the device does not respond
+        if (e.GetExceptionCode() == Modbus::GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND) {
+            return true;
+        }
+        throw;
+    }
+    return false;
+}
+
+bool HasDefaultPortSettings(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId)
+{
+    auto readRegister = [&](const std::string& name) {
+        auto config = WbRegisters::GetRegisterConfig(name);
+        return Modbus::ReadRegister(traits,
+                                    port,
+                                    slaveId,
+                                    *config,
+                                    std::chrono::microseconds(0),
+                                    FW_RESPONSE_TIMEOUT,
+                                    FW_FRAME_TIMEOUT)
+            .Get<uint64_t>();
+    };
+    try {
+        return readRegister(WbRegisters::BAUD_RATE_REGISTER_NAME) == DEFAULT_BAUD_RATE_REGISTER_VALUE &&
+               readRegister(WbRegisters::PARITY_REGISTER_NAME) == NO_PARITY_REGISTER_VALUE;
+    } catch (const std::exception& e) {
+        LOG(Warn) << "Cannot read port settings of slave " << static_cast<int>(slaveId) << ": " << e.what();
+        return false;
+    }
+}
 
 // Cf. firmware_update.py:311 FirmwareInfoReader.read()
 TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId)
@@ -256,59 +366,35 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
     info.DeviceModel.erase(std::remove(info.DeviceModel.begin(), info.DeviceModel.end(), '\x02'),
                            info.DeviceModel.end());
 
-    // Read components presence (function 2 = READ_DISCRETE) - Cf. firmware_update.py:278 read_components_presence()
-    // Using raw PDU here because ReadRegister doesn't support multi-bit discrete reads
-    try {
-        auto pdu = Modbus::MakePDU(Modbus::FN_READ_DISCRETE,
-                                   FwRegisters::COMPONENTS_PRESENCE_ADDR,
-                                   FwRegisters::COMPONENTS_PRESENCE_COUNT,
-                                   {});
-        auto responsePduSize =
-            Modbus::CalcResponsePDUSize(Modbus::FN_READ_DISCRETE, FwRegisters::COMPONENTS_PRESENCE_COUNT);
-        auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, FW_RESPONSE_TIMEOUT, FW_FRAME_TIMEOUT);
-        auto presenceData = Modbus::ExtractResponseData(Modbus::FN_READ_DISCRETE, res.Pdu);
-
-        std::vector<int> presentComponents;
-        for (size_t byteIdx = 0; byteIdx < presenceData.size(); ++byteIdx) {
-            for (int bit = 0; bit < 8; ++bit) {
-                if (presenceData[byteIdx] & (1 << bit)) {
-                    presentComponents.push_back(static_cast<int>(byteIdx * 8 + bit));
-                }
-            }
-        }
-
-        // Read info for each present component - Cf. firmware_update.py:258 read_component_info()
-        for (int compNum: presentComponents) {
-            try {
-                auto signature = ReadStringRegister(traits,
-                                                    port,
-                                                    slaveId,
-                                                    FwRegisters::COMPONENT_SIGNATURE_BASE +
-                                                        static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
-                                                    FwRegisters::COMPONENT_SIGNATURE_COUNT);
-                // Check for unavailable component (all 0xFE in signature string)
-                if (!signature.empty() && signature == std::string(signature.size(), '\xFE')) {
-                    continue;
-                }
-                auto fwVer = ReadStringRegister(traits,
+    // Read info for each present component - Cf. firmware_update.py:258 read_component_info()
+    for (int compNum: ReadComponentsPresence(traits, port, slaveId)) {
+        try {
+            auto signature = ReadStringRegister(traits,
                                                 port,
                                                 slaveId,
-                                                FwRegisters::COMPONENT_FW_VERSION_BASE +
+                                                FwRegisters::COMPONENT_SIGNATURE_BASE +
                                                     static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
-                                                FwRegisters::COMPONENT_FW_VERSION_COUNT);
-                auto model = ReadStringRegister(traits,
-                                                port,
-                                                slaveId,
-                                                FwRegisters::COMPONENT_MODEL_BASE +
-                                                    static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
-                                                FwRegisters::COMPONENT_MODEL_COUNT);
-                info.Components.push_back({compNum, signature, SanitizeVersionString(fwVer), model});
-            } catch (const std::exception& e) {
-                LOG(Debug) << "Cannot read component " << compNum << " info: " << e.what();
+                                                FwRegisters::COMPONENT_SIGNATURE_COUNT);
+            // Check for unavailable component (all 0xFE in signature string)
+            if (!signature.empty() && signature == std::string(signature.size(), '\xFE')) {
+                continue;
             }
+            auto fwVer = ReadStringRegister(traits,
+                                            port,
+                                            slaveId,
+                                            FwRegisters::COMPONENT_FW_VERSION_BASE +
+                                                static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
+                                            FwRegisters::COMPONENT_FW_VERSION_COUNT);
+            auto model = ReadStringRegister(traits,
+                                            port,
+                                            slaveId,
+                                            FwRegisters::COMPONENT_MODEL_BASE +
+                                                static_cast<uint16_t>(compNum) * FwRegisters::COMPONENT_STEP,
+                                            FwRegisters::COMPONENT_MODEL_COUNT);
+            info.Components.push_back({compNum, signature, SanitizeVersionString(fwVer), model});
+        } catch (const std::exception& e) {
+            LOG(Debug) << "Cannot read component " << compNum << " info: " << e.what();
         }
-    } catch (const std::exception&) {
-        // Components presence register not available — skip
     }
 
     return info;
