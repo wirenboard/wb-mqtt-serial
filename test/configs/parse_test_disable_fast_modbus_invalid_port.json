@@ -1,0 +1,9 @@
+{
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "disable_fast_modbus": "yes",
+            "devices": []
+        }
+    ]
+}

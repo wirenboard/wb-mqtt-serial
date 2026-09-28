@@ -319,6 +319,29 @@ public:
                      readTime);
     }
 
+    void EnqueueDisableEvents(uint8_t slaveId, uint16_t addr, microseconds readTime)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        Port->Expect(WrapPDU({
+                         0x46,               // function code
+                         0x18,               // subcommand
+                         0x05,               // data size
+                         0x03,               // holding
+                         (addr >> 8) & 0xFF, // address Hi
+                         addr & 0xFF,        // address Lo
+                         0x01,               // count
+                         0x00                // disable
+                     }),
+                     WrapPDU({
+                         0x46, // function code
+                         0x18, // subcommand
+                         0x01, // data size
+                         0x00  //
+                     }),
+                     __func__,
+                     readTime);
+    }
+
     // Full control over an EVENTS_REQUEST (0x46/0x10): explicit min_slave and confirmation
     // state in the request plus an arbitrary response. Used to drive the read-cap logic that
     // the simpler EnqueueReadEvents helpers cannot express.
@@ -805,6 +828,70 @@ TEST_F(TPollTest, SemiSporadicRegister)
         // Not enough time for polling
         Cycle(serialClient, lastAccessedDevice);
     }
+}
+
+TEST_F(TPollTest, PortFastModbusDisabled)
+{
+    // Registers with events on a port with disabled Fast Modbus
+    // 1. Events are neither enabled nor read
+    // 2. Both registers are polled by normal requests
+
+    FeaturePort = std::make_shared<TFeaturePort>(Port, false, false, true);
+    Port->SetBaudRate(115200);
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+    AddRegister(*device, 2, 0ms, TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EnqueueReadHolding(1, 2, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+}
+
+TEST_F(TPollTest, DeviceFastModbusDisabled)
+{
+    // Two devices with events, Fast Modbus is disabled for the first one, but events are left enabled on it
+    // since the previous start
+    // 1. Events are enabled only for the second device
+    // 2. The register of the first device is polled by normal requests
+    // 3. An event from the first device is unexpected, events of the register are disabled
+
+    Port->SetBaudRate(115200);
+    auto config1 = MakeDeviceConfig("device1", "1");
+    config1.CommonConfig->RequestDelay = 10ms;
+    config1.CommonConfig->DisableFastModbus = true;
+    auto device1 = MakeDevice(config1);
+    AddRegister(*device1, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+
+    auto config2 = MakeDeviceConfig("device2", "2");
+    config2.CommonConfig->RequestDelay = 10ms;
+    auto device2 = MakeDevice(config2);
+    AddRegister(*device2, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+
+    TSerialClientRegisterAndEventsReader serialClient({device1, device2}, 50ms, [this]() {
+        return TimeMock.GetTime();
+    });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EnqueueEnableEvents(2, 1, 10ms);
+    EnqueueReadHolding(2, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueEventsExchange(4ms, 0, 0, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(4ms, 1, 1, 0, NoEventsResponse(), 0xFD);
+    EnqueueDisableEvents(1, 1, 4ms);
+    Cycle(serialClient, lastAccessedDevice);
 }
 
 TEST_F(TPollTest, ReconnectWithOnlyEvents)

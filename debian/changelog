@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.281.0) stable; urgency=medium
+
+  * Add the "disable_fast_modbus" option to ports and Modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 28 Sep 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.280.0) stable; urgency=medium
 
   * WB-MWAC-v2 template: add the antiseize protection setting "Impact Of Water
