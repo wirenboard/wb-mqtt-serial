@@ -392,8 +392,12 @@ namespace
                                      mqtt_channel_name,
                                      registers));
 
-        for (const auto& it: Translate(channel_data["name"].asString(), idIsDefined, context)) {
-            channel->SetTitle(it.second, it.first);
+        if (channel_data.isMember("title")) {
+            channel->SetTitle(channel_data["title"].asString(), "en");
+        } else {
+            for (const auto& it: Translate(channel_data["name"].asString(), idIsDefined, context)) {
+                channel->SetTitle(it.second, it.first);
+            }
         }
 
         if (channel_data.isMember("enum")) {
