@@ -15,6 +15,18 @@ using namespace std;
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
+namespace
+{
+    PDeviceChannelConfig FindChannel(const TSerialDeviceWithChannels& device, const std::string& mqttId)
+    {
+        auto it = std::find_if(device.Channels.begin(), device.Channels.end(), [&](const auto& channel) {
+            return channel->MqttId == mqttId;
+        });
+        return (it == device.Channels.end()) ? nullptr : *it;
+    }
+
+}
+
 class TConfigParserTest: public TLoggedFixture
 {
 protected:
@@ -476,6 +488,75 @@ TEST_F(TConfigParserTest, BigIntegers)
             case 1:
                 EXPECT_EQ(item->RawValue.Get<uint64_t>(), 257080185625143217);
                 break;
+        }
+    }
+}
+
+TEST_F(TConfigParserTest, ChannelTitle)
+{
+    auto portConfigs = GetConfig("configs/parse_test_channel_title.json")->PortConfigs;
+    ASSERT_EQ(portConfigs.size(), 1);
+    const auto& devices = portConfigs[0]->Devices;
+    ASSERT_EQ(devices.size(), 2);
+
+    // Title replaces the name from the template with all its translations
+    const auto& templateDevice = *devices[0];
+    auto channel = FindChannel(templateDevice, "Temperature");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Room temperature"}}));
+    EXPECT_EQ(channel->GetName(), "Room temperature");
+    EXPECT_EQ(channel->Order, 1);
+
+    // Title is applied to hidden channels too
+    channel = FindChannel(templateDevice, "Voltage");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_TRUE(channel->Hidden);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Hidden voltage"}}));
+
+    // Custom channel added to a device with template
+    channel = FindChannel(templateDevice, "Custom");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Custom channel"}}));
+
+    // Channel without title keeps the name and translations from the template,
+    // "title" of the channel in the template is ignored
+    channel = FindChannel(templateDevice, "Humidity");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Relative humidity"}, {"ru", "Влажность"}}));
+    EXPECT_EQ(channel->Order, 2);
+
+    // Device without template
+    const auto& customDevice = *devices[1];
+    ASSERT_EQ(customDevice.Channels.size(), 3);
+
+    channel = FindChannel(customDevice, "Channel 1");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Kitchen light"}}));
+
+    channel = FindChannel(customDevice, "channel_2_id");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Hall light"}}));
+
+    channel = FindChannel(customDevice, "Channel 3");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_TRUE(channel->GetTitles().empty());
+    EXPECT_EQ(channel->GetName(), "Channel 3");
+}
+
+TEST_F(TConfigParserTest, ChannelTitleSchemaValidation)
+{
+    // Empty and non-string titles are rejected
+    const std::vector<std::string> invalidConfigs = {"custom-device-channel-empty",
+                                                     "custom-device-channel-not-string",
+                                                     "template-channel-empty",
+                                                     "template-channel-not-string",
+                                                     "template-device-custom-channel-empty"};
+    for (const auto& name: invalidConfigs) {
+        try {
+            GetConfig("configs/channel_title_invalid/" + name + ".json");
+            ADD_FAILURE() << name << " must not pass validation";
+        } catch (const std::exception& e) {
+            EXPECT_NE(std::string(e.what()).find("[title]"), std::string::npos) << name << ": " << e.what();
         }
     }
 }

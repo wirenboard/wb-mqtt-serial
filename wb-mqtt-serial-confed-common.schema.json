@@ -613,43 +613,52 @@
     "registerChannel": {
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
-        {
-          "properties": {
-            "address": {
-              "$ref": "#/definitions/address",
-              "title": "Address",
-              "propertyOrder": 4,
-              "format": "wb-int-address",
-              "options": {
-                "grid_columns": 6,
-                "wb": {
-                  "show_editor": true,
-                  "allow_undefined": true
-                }
-              }
-            },
-            "write_address": {
-              "$ref": "#/definitions/address",
-              "title": "Write Address",
-              "propertyOrder": 5,
-              "format": "wb-int-address",
-              "options": {
-                "grid_columns": 6,
-                "wb": {
-                  "show_editor": true,
-                  "allow_undefined": true
-                }
-              }
+        { "$ref": "#/definitions/register_address" }
+      ]
+    },
+    "register_address": {
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/address",
+          "title": "Address",
+          "propertyOrder": 4,
+          "format": "wb-int-address",
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
+            }
+          }
+        },
+        "write_address": {
+          "$ref": "#/definitions/address",
+          "title": "Write Address",
+          "propertyOrder": 5,
+          "format": "wb-int-address",
+          "options": {
+            "grid_columns": 6,
+            "wb": {
+              "show_editor": true,
+              "allow_undefined": true
             }
           }
         }
-      ]
+      }
     },
     "common_channel": {
-        "$ref": "#/definitions/registerChannel"
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        { "$ref": "#/definitions/register_address" },
+        { "$ref": "#/definitions/config_channel_title" }
+      ]
     },
     "common_channel_modbus": {
-      "$ref": "#/definitions/registerChannel"
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        { "$ref": "#/definitions/register_address" },
+        { "$ref": "#/definitions/config_channel_title" }
+      ]
     },
     "channelSettings": {
       "type": "object",
@@ -703,6 +712,9 @@
             }
           },
           "propertyOrder": 5
+        },
+        "title": {
+          "$ref": "#/definitions/channel_title"
         }
       }
     },
@@ -762,6 +774,15 @@
       "pattern": "^[^$#+\\/\"']+$",
       "options": {
         "patternmessage": "Invalid channel name"
+      }
+    },
+    "channel_title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_channel_title": {
+      "properties": {
+        "title": { "$ref": "#/definitions/channel_title" }
       }
     },
     "channel_id": {
@@ -953,7 +974,8 @@
       "title": "Channel",
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
-        { "$ref": "#/definitions/dlms_address" }
+        { "$ref": "#/definitions/dlms_address" },
+        { "$ref": "#/definitions/config_channel_title" }
       ],
       "format": "wb-object",
       "options" : {
@@ -1099,7 +1121,8 @@
       "title": "Channel",
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
-        { "$ref": "#/definitions/string_address" }
+        { "$ref": "#/definitions/string_address" },
+        { "$ref": "#/definitions/config_channel_title" }
       ],
       "format": "wb-object",
       "options" : {
