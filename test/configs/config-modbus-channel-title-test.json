@@ -19,7 +19,6 @@
                         },
                         {
                             "name": "Custom",
-                            "title": "Custom channel",
                             "reg_type": "holding",
                             "format": "s16",
                             "address": 10

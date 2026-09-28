@@ -18,38 +18,6 @@
                         {
                             "name": "Voltage",
                             "title": "Hidden voltage"
-                        },
-                        {
-                            "name": "Custom",
-                            "title": "Custom channel",
-                            "reg_type": "holding",
-                            "format": "s16",
-                            "address": 10
-                        }
-                    ]
-                },
-                {
-                    "slave_id": 2,
-                    "name": "Custom device",
-                    "id": "custom_device",
-                    "channels": [
-                        {
-                            "name": "Channel 1",
-                            "title": "Kitchen light",
-                            "reg_type": "coil",
-                            "address": 0
-                        },
-                        {
-                            "name": "Channel 2",
-                            "id": "channel_2_id",
-                            "title": "Hall light",
-                            "reg_type": "coil",
-                            "address": 1
-                        },
-                        {
-                            "name": "Channel 3",
-                            "reg_type": "coil",
-                            "address": 2
                         }
                     ]
                 }
