@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "port/serial_port.h"
+#include "port/tcp_port.h"
 #include "rpc/rpc_exception.h"
 #include "rpc/rpc_port_driver_list.h"
 
@@ -35,4 +37,39 @@ TEST(TSerialClientTaskRunnerTest, RequestWithoutPortIsRejected)
     TSerialClientTaskRunner taskRunner(nullptr);
 
     ASSERT_THROW(taskRunner.GetSerialClientParams(Json::Value()), TRPCException);
+}
+
+//! A request names the polled port by fields, a serial path never matches a TCP port
+TEST(TPortMatchTest, SerialPort)
+{
+    TFeaturePort port(std::make_shared<TSerialPort>(TSerialPortSettings("/dev/ttyRS485-1")), false);
+
+    Json::Value request;
+    request["path"] = "/dev/ttyRS485-1";
+    ASSERT_TRUE(PortMatches(ParseRPCPort(request, false), port));
+
+    request["path"] = "/dev/ttyRS485-2";
+    ASSERT_FALSE(PortMatches(ParseRPCPort(request, false), port));
+}
+
+TEST(TPortMatchTest, TcpPort)
+{
+    TFeaturePort port(std::make_shared<TTcpPort>(TTcpPortSettings("192.168.1.10", 23)), false);
+
+    Json::Value request;
+    request["ip"] = "192.168.1.10";
+    request["port"] = 23;
+    ASSERT_TRUE(PortMatches(ParseRPCPort(request, false), port));
+
+    request["port"] = 24;
+    ASSERT_FALSE(PortMatches(ParseRPCPort(request, false), port));
+}
+
+TEST(TPortMatchTest, TcpPortIsNotNamedByItsDescription)
+{
+    TFeaturePort port(std::make_shared<TTcpPort>(TTcpPortSettings("192.168.1.10", 23)), false);
+
+    Json::Value request;
+    request["path"] = "192.168.1.10:23";
+    ASSERT_FALSE(PortMatches(ParseRPCPort(request, false), port));
 }

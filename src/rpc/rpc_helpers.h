@@ -11,7 +11,9 @@
 constexpr int MAX_RPC_RETRIES = 2;
 constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
-TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
+TSerialPortConnectionSettings ParseRPCSerialPortSettings(
+    const Json::Value& request,
+    const TSerialPortConnectionSettings& defaults = TSerialPortConnectionSettings());
 std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& protocol);
 
 /**

@@ -1,15 +1,11 @@
 #pragma once
 
-#include <list>
 #include <string>
 
 #include "rpc_fw_downloader.h"
 #include <wblib/json_utils.h>
 
 struct TFwDeviceInfo;
-
-// Non-updatable signatures (e.g. WB-MSW-LORA devices)
-const std::list<std::string> NonUpdatableSignatures = {"msw5GL", "msw3G419L"};
 
 // Pure helper functions extracted from rpc_fw_update_handler.cpp for testability.
 // These are used internally by TRPCFwUpdateHandler and exposed here for unit tests.
@@ -28,7 +24,11 @@ bool IsValidFwSignature(const std::string& sig);
 // an empty string.
 std::string SanitizeVersionString(const std::string& s);
 
+/**
+ * @param deviceIsUpdatable the device can be flashed over the port it is polled on
+ */
 Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
                                       TFwDownloader& downloader,
                                       const std::string& releaseSuite,
+                                      bool deviceIsUpdatable,
                                       ENetworkAccess networkAccess = ENetworkAccess::Allowed);

@@ -5,9 +5,9 @@
 
 #include <wblib/rpc.h>
 
-#include "port/serial_port_settings.h"
 #include "rpc_fw_downloader.h"
 #include "rpc_fw_update_task.h"
+#include "rpc_port_settings.h"
 
 class TFwGetFirmwareInfoTask: public ISerialClientTask
 {
@@ -15,7 +15,7 @@ public:
     TFwGetFirmwareInfoTask(uint8_t slaveId,
                            const std::string& protocol,
                            const std::string& releaseSuite,
-                           const TSerialPortConnectionSettings& portSettings,
+                           const TRPCPortSettings& portSettings,
                            std::shared_ptr<TFwDownloader> downloader,
                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
@@ -28,7 +28,7 @@ private:
     uint8_t SlaveId;
     std::string Protocol;
     std::string ReleaseSuite;
-    TSerialPortConnectionSettings PortSettings;
+    TRPCPortSettings PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;

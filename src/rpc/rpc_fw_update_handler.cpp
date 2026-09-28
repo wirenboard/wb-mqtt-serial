@@ -27,9 +27,10 @@ namespace
     const std::string STATE_TOPIC = "/wb-mqtt-serial/firmware_update/state";
 }
 
+// Non-updatable signatures (e.g. WB-MSW-LORA devices)
 bool IsNonUpdatableSignature(const std::string& sig)
 {
-    return std::find(NonUpdatableSignatures.begin(), NonUpdatableSignatures.end(), sig) != NonUpdatableSignatures.end();
+    return sig == "msw5GL" || sig == "msw3G419L";
 }
 
 bool IsPrintableAscii(const std::string& s)
@@ -66,6 +67,7 @@ bool ComponentFirmwareIsNewer(const std::string& currentVersion, const std::stri
 Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
                                       TFwDownloader& downloader,
                                       const std::string& releaseSuite,
+                                      bool deviceIsUpdatable,
                                       ENetworkAccess networkAccess)
 {
     Json::Value result;
@@ -102,24 +104,24 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
         LOG(Debug) << "Cannot get bootloader info for " << deviceInfo.FwSignature << ": " << e.what();
     }
 
-    // Serial devices are always updatable. TCP devices would need additional checks
-    // (port settings preservation, protocol type, baud rate), but wb-mqtt-serial only handles serial.
-    result["can_update"] =
-        !result["available_fw"].asString().empty() || !result["available_bootloader"].asString().empty();
+    result["can_update"] = deviceIsUpdatable && (!result["available_fw"].asString().empty() ||
+                                                 !result["available_bootloader"].asString().empty());
 
     // Component info
     for (const auto& comp: deviceInfo.Components) {
+        Json::Value compJson;
+        compJson["model"] = comp.Model;
+        compJson["fw"] = comp.FwVersion;
+        compJson["available_fw"] = "";
+        compJson["has_update"] = false;
         try {
             auto released = downloader.GetReleasedFirmware(comp.Signature, releaseSuite, networkAccess);
-            Json::Value compJson;
-            compJson["model"] = comp.Model;
-            compJson["fw"] = comp.FwVersion;
             compJson["available_fw"] = released.Version;
             compJson["has_update"] = ComponentFirmwareIsNewer(comp.FwVersion, released.Version);
-            result["components"][std::to_string(comp.Number)] = compJson;
         } catch (const std::exception& e) {
             LOG(Debug) << "Cannot get component " << comp.Number << " firmware info: " << e.what();
         }
+        result["components"][std::to_string(comp.Number)] = compJson;
     }
 
     return result;
@@ -215,37 +217,47 @@ void TRPCFwUpdateHandler::RegisterRpcMethods(WBMQTT::PMqttRpcServer rpcServer)
                                              std::placeholders::_3));
 }
 
+namespace
+{
+    int ParseSlaveId(const Json::Value& request)
+    {
+        if (!request.isMember("slave_id") || !request["slave_id"].isInt()) {
+            throw std::runtime_error("slave_id is required and must be an integer");
+        }
+        auto slaveId = request["slave_id"].asInt();
+        if (slaveId < 0 || slaveId > 255) {
+            throw std::runtime_error("slave_id must be in range 0-255");
+        }
+        return slaveId;
+    }
+
+    EFwSoftwareType ParseSoftwareType(const Json::Value& request)
+    {
+        auto softwareType = request.get("type", "firmware").asString();
+        if (softwareType == "firmware") {
+            return EFwSoftwareType::Firmware;
+        }
+        if (softwareType == "bootloader") {
+            return EFwSoftwareType::Bootloader;
+        }
+        if (softwareType == "component") {
+            return EFwSoftwareType::Component;
+        }
+        throw std::runtime_error("Unknown software type: " + softwareType);
+    }
+}
+
 // Cf. serial_device.py:135 create_device_from_json()
 TRPCFwUpdateHandler::TRequestParams TRPCFwUpdateHandler::ParseRequestParams(const Json::Value& request)
 {
     TRequestParams params;
 
-    if (!request.isMember("slave_id") || !request["slave_id"].isInt()) {
-        throw std::runtime_error("slave_id is required and must be an integer");
-    }
-    params.SlaveId = request["slave_id"].asInt();
-    if (params.SlaveId < 0 || params.SlaveId > 255) {
-        throw std::runtime_error("slave_id must be in range 0-255");
-    }
-
-    if (!request.isMember("port") || !request["port"].isMember("path") || request["port"]["path"].asString().empty()) {
-        throw std::runtime_error("port.path is required");
-    }
-    params.PortPath = request["port"]["path"].asString();
+    params.SlaveId = ParseSlaveId(request);
 
     params.Protocol = request.get("protocol", "modbus").asString();
-    params.PortSettings = ParseRPCSerialPortSettings(request["port"]);
+    params.PortSettings = ParseRPCPort(request["port"], params.Protocol == "modbus-tcp", FACTORY_PORT_SETTINGS);
 
     return params;
-}
-
-Json::Value TRPCFwUpdateHandler::MakePortRequestJson(const TRequestParams& params)
-{
-    Json::Value req;
-    req["path"] = params.PortPath;
-    req["slave_id"] = std::to_string(params.SlaveId);
-    req["protocol"] = params.Protocol;
-    return req;
 }
 
 // Cf. firmware_update.py:682 FirmwareUpdater.get_firmware_info()
@@ -256,7 +268,7 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
     try {
         auto params = ParseRequestParams(request);
 
-        if (State->HasActiveUpdate(params.SlaveId, params.PortPath)) {
+        if (State->HasActiveUpdate(params.SlaveId, GetRPCPortDescription(params.PortSettings))) {
             onError(WBMQTT::E_RPC_SERVER_ERROR, "Task is already executing.");
             return;
         }
@@ -270,7 +282,7 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
                                                              Downloader,
                                                              std::move(onResult),
                                                              std::move(onError));
-        SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
+        SerialClientTaskRunner.RunTask(params.PortSettings, task);
     } catch (const std::exception& e) {
         onError(WBMQTT::E_RPC_SERVER_ERROR, e.what());
     }
@@ -292,14 +304,13 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
         }
 
         auto params = ParseRequestParams(request);
-        auto softwareType = request.get("type", "firmware").asString();
+        auto softwareType = ParseSoftwareType(request);
 
         Downloader->PrefetchReleaseIndexes();
 
         auto task = std::make_shared<TFwUpdateSerialClientTask>(static_cast<uint8_t>(params.SlaveId),
                                                                 params.Protocol,
                                                                 softwareType,
-                                                                params.PortPath,
                                                                 ReleaseSuite,
                                                                 params.PortSettings,
                                                                 Downloader,
@@ -307,7 +318,7 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                                                                 UpdateLock,
                                                                 std::move(onResult),
                                                                 std::move(onError));
-        SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
+        SerialClientTaskRunner.RunTask(params.PortSettings, task);
     } catch (const std::exception& e) {
         {
             std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
@@ -320,9 +331,13 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
 // Cf. firmware_update.py:850 FirmwareUpdater.clear_error()
 Json::Value TRPCFwUpdateHandler::ClearError(const Json::Value& request)
 {
-    auto params = ParseRequestParams(request);
-    auto softwareType = request.get("type", "firmware").asString();
-    State->ClearError(params.SlaveId, params.PortPath, softwareType);
+    // A record of the state topic is deleted, so the port comes in the form the topic publishes it,
+    // a serial port path or "address:port" of a TCP port
+    std::string portPath;
+    if (!WBMQTT::JSON::Get(request["port"], "path", portPath) || portPath.empty()) {
+        throw std::runtime_error("port.path is required");
+    }
+    State->ClearError(ParseSlaveId(request), portPath, request.get("type", "firmware").asString());
     return Json::Value("Ok");
 }
 
@@ -347,7 +362,6 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
 
         auto task = std::make_shared<TFwRestoreTask>(static_cast<uint8_t>(params.SlaveId),
                                                      params.Protocol,
-                                                     params.PortPath,
                                                      ReleaseSuite,
                                                      params.PortSettings,
                                                      Downloader,
@@ -355,7 +369,7 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
                                                      UpdateLock,
                                                      std::move(onResult),
                                                      std::move(onError));
-        SerialClientTaskRunner.RunTask(MakePortRequestJson(params), task);
+        SerialClientTaskRunner.RunTask(params.PortSettings, task);
     } catch (const std::exception& e) {
         {
             std::lock_guard<std::mutex> lock(UpdateLock->Mutex);

@@ -20,7 +20,7 @@ public:
     enum TDisconnectType
     {
         NoDisconnect,                   //! All operations are successful
-        SilentReadAndWriteFailure,      //! Port can be successfully open, but all operations do nothing
+        SilentReadAndWriteFailure,      //! Port can be successfully open, writes go nowhere, reads time out
         BadFileDescriptorOnWriteAndRead //! Port can be successfully open, but all operations fail with EBADF
     };
 
@@ -48,6 +48,9 @@ public:
     std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0) override;
+
+    //! Imitate a device which does not answer the request, the reading of the response times out
+    void ExpectNoResponse(const std::vector<int>& request, const char* func = 0);
     void DumpWhatWasRead();
     void SimulateDisconnect(TDisconnectType simulate);
     WBMQTT::Testing::TLoggedFixture& GetFixture();
@@ -56,11 +59,20 @@ public:
 
     void SetAllowOpen(bool allowOpen);
 
+    void ApplySerialPortSettings(const TSerialPortConnectionSettings& settings) override;
+    void ResetSerialPortSettings() override;
+
+    //! Write the connection settings changes to the test log, off by default to keep other logs intact
+    void LogSerialPortSettings(bool enable);
+
     void SetBaudRate(size_t value);
 
 private:
     void SkipFrameBoundary();
+    bool SkipNoResponse();
+
     const int FRAME_BOUNDARY = -1;
+    const int NO_RESPONSE = -2;
 
     WBMQTT::Testing::TLoggedFixture& Fixture;
     bool AllowOpen;
@@ -74,6 +86,7 @@ private:
     size_t BaudRate;
     std::string PortName;
     bool EmptyDescription;
+    bool LogSettings = false;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

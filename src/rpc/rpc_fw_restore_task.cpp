@@ -1,7 +1,6 @@
 #include "rpc_fw_restore_task.h"
 #include "log.h"
 #include "port/port.h"
-#include "rpc_fw_update_helpers.h"
 #include "rpc_helpers.h"
 #include "serial_exc.h"
 
@@ -9,9 +8,8 @@
 
 TFwRestoreTask::TFwRestoreTask(uint8_t slaveId,
                                const std::string& protocol,
-                               const std::string& portPath,
                                const std::string& releaseSuite,
-                               const TSerialPortConnectionSettings& portSettings,
+                               const TRPCPortSettings& portSettings,
                                std::shared_ptr<TFwDownloader> downloader,
                                PFwUpdateState state,
                                PFwUpdateLock updateLock,
@@ -19,7 +17,6 @@ TFwRestoreTask::TFwRestoreTask(uint8_t slaveId,
                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
     : SlaveId(slaveId),
       Protocol(protocol),
-      PortPath(portPath),
       ReleaseSuite(releaseSuite),
       PortSettings(portSettings),
       Downloader(std::move(downloader)),
@@ -39,49 +36,39 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
-        TSerialPortSettingsGuard settingsGuard(port, PortSettings);
+        TSerialPortSettingsGuard settingsGuard(port, GetRPCPortConnectionSettings(PortSettings));
         port->SkipNoise();
 
         auto traits = MakeModbusTraits(Protocol);
 
-        // Try to read device info. If device is not in bootloader mode, it will fail.
-        TFwDeviceInfo info;
-        try {
-            info = ReadFwDeviceInfo(*traits, *port, SlaveId);
-        } catch (const std::exception&) {
-            // Device not responding — return "Ok" silently (current behavior)
-            {
-                std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
-                UpdateLock->InProgress = false;
-            }
+        if (!IsInBootloaderMode(*traits, *port, SlaveId)) {
+            ReleaseLock();
             if (OnResult) {
-                Json::Value result;
-                result = "Ok";
-                OnResult(result);
+                OnResult(Json::Value("Ok"));
             }
             return ISerialClientTask::TRunResult::OK;
         }
 
-        // Device responded — proceed with firmware restore
+        auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
+
         auto released = Downloader->GetReleasedFirmware(info.FwSignature, ReleaseSuite);
 
         // Send RPC response early
         if (OnResult) {
-            Json::Value result;
-            result = "Ok";
-            OnResult(result);
+            OnResult(Json::Value("Ok"));
         }
 
+        auto portDescription = GetRPCPortDescription(PortSettings);
+        auto softwareTypeName = GetFwSoftwareTypeName(EFwSoftwareType::Firmware);
         try {
             // Update state and flash
             TDeviceUpdateInfo updateInfo;
-            updateInfo.PortPath = PortPath;
+            updateInfo.PortPath = portDescription;
             updateInfo.Protocol = Protocol;
             updateInfo.SlaveId = SlaveId;
             updateInfo.ToVersion = released.Version;
             updateInfo.Progress = 0;
-            updateInfo.FromVersion = "";
-            updateInfo.Type = "firmware";
+            updateInfo.Type = softwareTypeName;
             State->Update(updateInfo);
 
             auto firmware = Downloader->DownloadAndParseWBFW(released.Endpoint);
@@ -94,35 +81,29 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
                 }
             });
 
-            State->Remove(SlaveId, PortPath, "firmware");
+            State->Remove(SlaveId, portDescription, softwareTypeName);
         } catch (const std::exception& e) {
             LOG(Error) << "Firmware restore error: " << e.what();
-            std::string errorId = "com.wb.serial_driver.generic_error";
-            std::string errorMsg = "Internal error. Check logs for more info";
-            Json::Value metadata;
-            metadata["exception"] = e.what();
-            State->SetError(SlaveId, PortPath, "firmware", errorId, errorMsg, metadata);
+            auto error = MakeFwUpdateStateError(e);
+            State->SetError(SlaveId, portDescription, softwareTypeName, error.Id, error.Message, error.Metadata);
         }
-        {
-            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
-            UpdateLock->InProgress = false;
-        }
+        ReleaseLock();
     } catch (const TResponseTimeoutException& e) {
-        {
-            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
-            UpdateLock->InProgress = false;
-        }
+        ReleaseLock();
         if (OnError) {
             OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Device not responding: ") + e.what());
         }
     } catch (const std::exception& e) {
-        {
-            std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
-            UpdateLock->InProgress = false;
-        }
+        ReleaseLock();
         if (OnError) {
             OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Error starting firmware restore: ") + e.what());
         }
     }
     return ISerialClientTask::TRunResult::OK;
+}
+
+void TFwRestoreTask::ReleaseLock()
+{
+    std::lock_guard<std::mutex> lock(UpdateLock->Mutex);
+    UpdateLock->InProgress = false;
 }

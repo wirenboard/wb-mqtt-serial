@@ -9,42 +9,36 @@ namespace
 {
     const size_t MAX_TASK_EXECUTORS = 5;
 
-    std::string GetRequestPortDescription(const Json::Value& request)
+    TRPCPortSettings ParseRequestPort(const Json::Value& request)
     {
-        std::string path;
-        if (WBMQTT::JSON::Get(request, "path", path)) {
-            return path;
-        }
-        int portNumber;
-        if (WBMQTT::JSON::Get(request, "ip", path) && WBMQTT::JSON::Get(request, "port", portNumber)) {
-            return path + ":" + std::to_string(portNumber);
-        }
-        throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        return ParseRPCPort(request, request.get("protocol", "modbus").asString() == "modbus-tcp");
     }
 
-    PFeaturePort InitPort(const Json::Value& request)
+    PFeaturePort InitPort(const TRPCPortSettings& portSettings)
     {
-        if (request.isMember("path")) {
-            std::string path;
-            WBMQTT::JSON::Get(request, "path", path);
-            TSerialPortSettings settings(path, ParseRPCSerialPortSettings(request));
-
-            LOG(Debug) << "Create serial port: " << path;
-            return std::make_shared<TFeaturePort>(std::make_shared<TSerialPort>(settings), false);
+        if (const auto* tcpPort = std::get_if<TRPCTcpPortSettings>(&portSettings)) {
+            LOG(Debug) << "Create tcp port: " << tcpPort->GetDescription();
+            return std::make_shared<TFeaturePort>(std::make_shared<TTcpPort>(*tcpPort), tcpPort->ModbusTcp);
         }
-        if (request.isMember("ip") && request.isMember("port")) {
-            std::string address;
-            int portNumber = 0;
-            WBMQTT::JSON::Get(request, "ip", address);
-            WBMQTT::JSON::Get(request, "port", portNumber);
-            TTcpPortSettings settings(address, portNumber);
-
-            LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
-            bool isModbusTcp = request.get("protocol", "modbus").asString() == "modbus-tcp";
-            return std::make_shared<TFeaturePort>(std::make_shared<TTcpPort>(settings), isModbusTcp);
-        }
-        throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        const auto& serialPort = std::get<TSerialPortSettings>(portSettings);
+        LOG(Debug) << "Create serial port: " << serialPort.Device;
+        return std::make_shared<TFeaturePort>(std::make_shared<TSerialPort>(serialPort), false);
     }
+}
+
+bool PortMatches(const TRPCPortSettings& requestedPortSettings, const TFeaturePort& port)
+{
+    const auto& basePort = *port.GetBasePort();
+    if (const auto* serialPort = dynamic_cast<const TSerialPort*>(&basePort)) {
+        const auto* requested = std::get_if<TSerialPortSettings>(&requestedPortSettings);
+        return requested != nullptr && serialPort->GetInitialSettings().Device == requested->Device;
+    }
+    if (const auto* tcpPort = dynamic_cast<const TTcpPort*>(&basePort)) {
+        const auto* requested = std::get_if<TRPCTcpPortSettings>(&requestedPortSettings);
+        const auto& settings = tcpPort->GetInitialSettings();
+        return requested != nullptr && settings.Address == requested->Address && settings.Port == requested->Port;
+    }
+    return false;
 }
 
 //==========================================================
@@ -139,30 +133,35 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
         }
     }
 
-    auto portDescription = GetRequestPortDescription(request);
-    if (SerialDriver) {
-        auto portDrivers = SerialDriver->GetPortDrivers();
-        auto portDriver =
-            std::find_if(portDrivers.begin(), portDrivers.end(), [&portDescription](const PSerialPortDriver& driver) {
-                return driver->GetSerialClient()->GetPort()->GetDescription(false) == portDescription;
-            });
-        if (portDriver != portDrivers.end()) {
-            params.SerialClient = (*portDriver)->GetSerialClient();
-            auto slaveId = request["slave_id"].asString();
-            auto deviceType = request["device_type"].asString();
-            for (auto device: (*portDriver)->GetSerialClient()->GetDevices()) {
-                if (device->DeviceConfig()->SlaveId == slaveId &&
-                    (device->DeviceConfig()->DeviceType == deviceType ||
-                     (deviceType.empty() && WBMQTT::StringStartsWith(device->Protocol()->GetName(), "modbus"))))
-                {
-                    params.Device = device;
-                    break;
-                }
+    params.SerialClient = FindSerialClient(ParseRequestPort(request));
+    if (params.SerialClient) {
+        auto slaveId = request["slave_id"].asString();
+        auto deviceType = request["device_type"].asString();
+        for (auto device: params.SerialClient->GetDevices()) {
+            if (device->DeviceConfig()->SlaveId == slaveId &&
+                (device->DeviceConfig()->DeviceType == deviceType ||
+                 (deviceType.empty() && WBMQTT::StringStartsWith(device->Protocol()->GetName(), "modbus"))))
+            {
+                params.Device = device;
+                break;
             }
         }
     }
 
     return params;
+}
+
+PSerialClient TSerialClientTaskRunner::FindSerialClient(const TRPCPortSettings& portSettings)
+{
+    if (!SerialDriver) {
+        return nullptr;
+    }
+    auto portDrivers = SerialDriver->GetPortDrivers();
+    auto portDriver =
+        std::find_if(portDrivers.begin(), portDrivers.end(), [&portSettings](const PSerialPortDriver& driver) {
+            return PortMatches(portSettings, *driver->GetSerialClient()->GetPort());
+        });
+    return portDriver == portDrivers.end() ? nullptr : (*portDriver)->GetSerialClient();
 }
 
 void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientTask task)
@@ -172,22 +171,34 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientT
         params.SerialClient->AddTask(task);
         return;
     }
+    RunTaskOnOwnPort(ParseRequestPort(request), task);
+}
 
-    std::unique_lock<std::mutex> lock(TaskExecutorsMutex);
-    auto portDescription = GetRequestPortDescription(request);
-    auto executor = std::find_if(TaskExecutors.begin(),
-                                 TaskExecutors.end(),
-                                 [&portDescription](PSerialClientTaskExecutor executor) {
-                                     return executor->GetPort()->GetDescription(false) == portDescription;
-                                 });
-    if (executor == TaskExecutors.end()) {
-        RemoveUnusedExecutors();
-        auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(request));
-        TaskExecutors.push_back(newExecutor);
-        newExecutor->AddTask(task);
-    } else {
-        return (*executor)->AddTask(task);
+void TSerialClientTaskRunner::RunTask(const TRPCPortSettings& portSettings, PSerialClientTask task)
+{
+    auto serialClient = FindSerialClient(portSettings);
+    if (serialClient) {
+        serialClient->AddTask(task);
+        return;
     }
+    RunTaskOnOwnPort(portSettings, task);
+}
+
+void TSerialClientTaskRunner::RunTaskOnOwnPort(const TRPCPortSettings& portSettings, PSerialClientTask task)
+{
+    std::unique_lock<std::mutex> lock(TaskExecutorsMutex);
+    auto executor =
+        std::find_if(TaskExecutors.begin(), TaskExecutors.end(), [&portSettings](PSerialClientTaskExecutor executor) {
+            return PortMatches(portSettings, *executor->GetPort());
+        });
+    if (executor != TaskExecutors.end()) {
+        (*executor)->AddTask(task);
+        return;
+    }
+    RemoveUnusedExecutors();
+    auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(portSettings));
+    TaskExecutors.push_back(newExecutor);
+    newExecutor->AddTask(task);
 }
 
 void TSerialClientTaskRunner::RemoveUnusedExecutors()
