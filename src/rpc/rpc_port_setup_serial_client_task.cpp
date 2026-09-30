@@ -5,6 +5,8 @@
 #include "serial_exc.h"
 #include "wb_registers.h"
 
+#include <algorithm>
+
 namespace
 {
     TRPCPortSetupRequestItem ParseRPCPortSetupItemRequest(const Json::Value& request)
@@ -78,6 +80,15 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PFeaturePort po
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");
+        }
+        return ISerialClientTask::TRunResult::OK;
+    }
+
+    if (!port->SupportsFastModbus() &&
+        std::any_of(Request->Items.begin(), Request->Items.end(), [](const auto& item) { return item.Sn.has_value(); }))
+    {
+        if (Request->OnError) {
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, "Fast Modbus is not available on the port");
         }
         return ISerialClientTask::TRunResult::OK;
     }

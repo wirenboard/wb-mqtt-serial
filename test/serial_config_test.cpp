@@ -427,6 +427,35 @@ TEST_F(TConfigParserTest, ContinuePollingOnIllegalModbusException)
     EXPECT_TRUE(devices[0]->Device->DeviceConfig()->ContinuePollingOnIllegalModbusException);
 }
 
+TEST_F(TConfigParserTest, DisableFastModbus)
+{
+    auto portConfigs = GetConfig("configs/parse_test_disable_fast_modbus.json")->PortConfigs;
+    ASSERT_EQ(portConfigs.size(), 5);
+
+    EXPECT_FALSE(portConfigs[0]->Port->SupportsFastModbus());
+    ASSERT_EQ(portConfigs[0]->Devices.size(), 2);
+    EXPECT_TRUE(portConfigs[0]->Devices[0]->Device->DeviceConfig()->DisableFastModbus);
+    EXPECT_TRUE(portConfigs[0]->Devices[1]->Device->DeviceConfig()->DisableFastModbus);
+
+    EXPECT_TRUE(portConfigs[1]->Port->SupportsFastModbus());
+    ASSERT_EQ(portConfigs[1]->Devices.size(), 2);
+    EXPECT_FALSE(portConfigs[1]->Devices[0]->Device->DeviceConfig()->DisableFastModbus);
+    EXPECT_FALSE(portConfigs[1]->Devices[1]->Device->DeviceConfig()->DisableFastModbus);
+
+    // Modbus TCP with connected_to_mge
+    EXPECT_FALSE(portConfigs[2]->Port->SupportsFastModbus());
+    EXPECT_TRUE(portConfigs[3]->Port->SupportsFastModbus());
+
+    // Serial over TCP
+    EXPECT_FALSE(portConfigs[4]->Port->SupportsFastModbus());
+}
+
+TEST_F(TConfigParserTest, DisableFastModbusInvalidValue)
+{
+    EXPECT_THROW(GetConfig("configs/parse_test_disable_fast_modbus_invalid_port.json"), std::runtime_error);
+    EXPECT_THROW(GetConfig("configs/parse_test_disable_fast_modbus_invalid_device.json"), std::runtime_error);
+}
+
 TEST_F(TConfigParserTest, BigIntegers)
 {
     auto portConfigs = GetConfig("configs/config-big-integers.json")->PortConfigs;

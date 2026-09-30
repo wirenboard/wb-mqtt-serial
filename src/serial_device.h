@@ -141,6 +141,8 @@ struct TDeviceConfig
     //! instead of being permanently excluded.
     bool ContinuePollingOnIllegalModbusException = false;
 
+    bool DisableFastModbus = false;
+
     //! Interval of device time synchronization, zero or less disables synchronization
     std::chrono::hours TimeSyncInterval = TimeSyncDisabled;
 

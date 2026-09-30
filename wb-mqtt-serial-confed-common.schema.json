@@ -1210,6 +1210,35 @@
       ]
     },
 
+    "fast_modbus_device_properties": {
+      "properties": {
+        "disable_fast_modbus": {
+          "type": "boolean",
+          "title": "Disable Fast Modbus",
+          "default": false,
+          "format": "checkbox",
+          "propertyOrder": 117
+        }
+      }
+    },
+    "modbus_device_with_setup_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/fast_modbus_device_properties" },
+        { "$ref": "#/definitions/common_setup" },
+        { "$ref": "#/definitions/slave_id" }
+      ]
+    },
+    "modbus_device_with_setup": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/fast_modbus_device_properties" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/common_setup" },
+        { "$ref": "#/definitions/slave_id" }
+      ]
+    },
+
     "modbus_device_properties": {
       "properties": {
         "enable_wb_continuous_read": {
@@ -1417,7 +1446,8 @@
       "Preserve setup items order": "Сохранять порядок параметров настройки",
       "preserve_setup_order_desc": "Если включено, параметры настройки записываются в устройство в том порядке, в котором они заданы в шаблоне. Иначе параметры сортируются по типу регистра и адресу.",
       "Max publish interval (s)": "Максимальный интервал публикации (с)",
-      "max_publish_interval_desc": "Публиковать значение, даже если оно не менялось заданное время. Ноль отключает публикацию неизменившихся значений. Значения меньше 5 заменяются на 5. Значение, заданное у канала, приоритетнее заданного у устройства."
+      "max_publish_interval_desc": "Публиковать значение, даже если оно не менялось заданное время. Ноль отключает публикацию неизменившихся значений. Значения меньше 5 заменяются на 5. Значение, заданное у канала, приоритетнее заданного у устройства.",
+      "Disable Fast Modbus": "Отключить Быстрый Модбас"
     }
   }
 }

@@ -289,10 +289,13 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
     if (!modbusDevice) {
         return;
     }
+    if (device->DeviceConfig()->DisableFastModbus) {
+        return;
+    }
     if (!port.SupportsFastModbus()) {
         LOG(Info) << port.GetDescription() << ". Skip enabling events for "
                   << MakeDeviceDescriptionString(static_cast<uint8_t>(modbusDevice->SlaveId))
-                  << " because Fast Modbus is not supported by gateway";
+                  << " because Fast Modbus is not available on the port";
         return;
     }
     uint8_t slaveId = static_cast<uint8_t>(modbusDevice->SlaveId);
@@ -366,6 +369,13 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
 void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devices)
 {
     for (const auto& dev: devices) {
+        dev->AddOnConnectionStateChangedCallback(
+            [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
+        // Registers of a device with disable_fast_modbus are not registered, so events left enabled on it
+        // since the previous start are disabled as unexpected
+        if (dev->DeviceConfig()->DisableFastModbus) {
+            continue;
+        }
         for (const auto& reg: dev->GetRegisters()) {
             if (reg->GetConfig()->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
                 auto dev = ToModbusDevice(reg->Device().get());
@@ -378,8 +388,6 @@ void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devic
                 }
             }
         }
-        dev->AddOnConnectionStateChangedCallback(
-            [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
     }
 }
 

@@ -37,10 +37,12 @@ void TModbusDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(
         new TModbusProtocol("modbus"),
-        new TModbusDeviceFactory<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraitsFactory>()));
+        new TModbusDeviceFactory<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraitsFactory>(),
+                                                "#/definitions/modbus_device_with_setup"));
     factory.RegisterProtocol(
         new TModbusProtocol("modbus-tcp"),
-        new TModbusDeviceFactory<TModbusDevice>(std::make_unique<Modbus::TModbusTCPTraitsFactory>()));
+        new TModbusDeviceFactory<TModbusDevice>(std::make_unique<Modbus::TModbusTCPTraitsFactory>(),
+                                                "#/definitions/modbus_device_with_setup"));
 }
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
