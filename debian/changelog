@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.281.1) stable; urgency=medium
+
+  * Remove non-existent 1-Wire sensor presence registers (376, 377) from the
+    WB-MS v.2 template
+  * Set the 1-Wire erroneous readings filter default to 2 °C and add limits
+    0 … 1200 °C in templates for WB-M1W2, WB-MIR and WB-MS
+
+ -- DenisN <denis.nikolaev@wirenboard.com>  Wed, 30 Sep 2026 09:27:14 +0300
+
 wb-mqtt-serial (2.281.0) stable; urgency=medium
 
   * Add the "disable_fast_modbus" option to ports and Modbus devices

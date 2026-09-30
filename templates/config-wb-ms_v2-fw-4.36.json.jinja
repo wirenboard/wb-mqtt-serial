@@ -196,7 +196,9 @@
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
-                "default": 1,
+                "default": 2,
+                "min": 0,
+                "max": 1200,
                 "group": "g_w1_bus",
                 "order": 2
             },
@@ -360,17 +362,6 @@
                 "scale": 0.0625,
                 "round_to": 0.05,
                 "error_value": "0x7FFF",
-                "group": "gg_debug_bus{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==0"
-            },
-            {
-                "id": "ext_sens{{in_num}}_presense",
-                "name": "Input {{in_num}} Sensor Presense",
-                "reg_type": "input",
-                "address": {{376 + (in_num - FIRST_INPUT)}},
-                "type": "switch",
-                "enabled": false,
-                "format": "u8",
                 "group": "gg_debug_bus{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
@@ -822,7 +813,7 @@
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
-                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
+                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 2",
                 "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
                 "w1_sensors_description": "{{
@@ -869,7 +860,7 @@
                 {% endfor -%}
 
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
-                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 2",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
                 "w1_sensors_description": "{{
@@ -903,7 +894,6 @@
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
                 "Input {{in_num}} Last Valid Temp": "Последняя действ. температура на входе {{in_num}}",
-                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} присутствует",
                 "Input {{in_num}} Sensor Supply": "Питание датчика на входе {{in_num}}",
                 "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
                 "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
