@@ -3,7 +3,7 @@
 #include "rpc/rpc_exception.h"
 #include "rpc/rpc_port_settings.h"
 
-TEST(TRPCPortSettingsTest, ParseSerialPort)
+TEST(TPortSettingsTest, ParseSerialPort)
 {
     Json::Value request;
     request["path"] = "/dev/ttyRS485-1";
@@ -20,14 +20,14 @@ TEST(TRPCPortSettingsTest, ParseSerialPort)
     ASSERT_EQ(GetRPCPortDescription(port), "/dev/ttyRS485-1");
 }
 
-TEST(TRPCPortSettingsTest, ParseTcpPort)
+TEST(TPortSettingsTest, ParseTcpPort)
 {
     Json::Value request;
     request["ip"] = "192.168.1.10";
     request["port"] = 23;
 
     auto port = ParseRPCPort(request, false);
-    const auto& settings = std::get<TRPCTcpPortSettings>(port);
+    const auto& settings = std::get<TFramedTcpPortSettings>(port);
     ASSERT_EQ(settings.Address, "192.168.1.10");
     ASSERT_EQ(settings.Port, 23);
     ASSERT_FALSE(settings.ModbusTcp);
@@ -35,17 +35,17 @@ TEST(TRPCPortSettingsTest, ParseTcpPort)
 }
 
 //! Modbus TCP is spoken only over a TCP port, so the flag belongs to it
-TEST(TRPCPortSettingsTest, ParseModbusTcpPort)
+TEST(TPortSettingsTest, ParseModbusTcpPort)
 {
     Json::Value request;
     request["ip"] = "192.168.1.10";
     request["port"] = 502;
 
     auto port = ParseRPCPort(request, true);
-    ASSERT_TRUE(std::get<TRPCTcpPortSettings>(port).ModbusTcp);
+    ASSERT_TRUE(std::get<TFramedTcpPortSettings>(port).ModbusTcp);
 }
 
-TEST(TRPCPortSettingsTest, ParseTcpPortWithoutPortNumber)
+TEST(TPortSettingsTest, ParseTcpPortWithoutPortNumber)
 {
     Json::Value request;
     request["address"] = "192.168.1.100";
@@ -53,7 +53,7 @@ TEST(TRPCPortSettingsTest, ParseTcpPortWithoutPortNumber)
     ASSERT_THROW(ParseRPCPort(request, false), TRPCException);
 }
 
-TEST(TRPCPortSettingsTest, ParseUndefinedPort)
+TEST(TPortSettingsTest, ParseUndefinedPort)
 {
     ASSERT_THROW(ParseRPCPort(Json::Value(), false), TRPCException);
 }

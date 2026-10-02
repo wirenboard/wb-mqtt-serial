@@ -1,7 +1,9 @@
 #pragma once
 
 #include "register.h"
+#include <atomic>
 #include <condition_variable>
+#include <deque>
 #include <list>
 
 #include "log.h"
@@ -77,6 +79,14 @@ public:
     virtual ISerialClientTask::TRunResult Run(PFeaturePort port,
                                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                               const std::list<PSerialDevice>& polledDevices) = 0;
+
+    //! Only raises the flag, the task decides in Run what to do
+    void Cancel();
+
+    bool IsCancelled() const;
+
+private:
+    std::atomic<bool> Cancelled{false};
 };
 
 typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;
@@ -94,6 +104,7 @@ public:
 
     void AddDevice(PSerialDevice device);
     void Cycle();
+    //! Thread-safe
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TRegisterCallback& callback);
     void SetErrorCallback(const TRegisterCallback& callback);
@@ -101,9 +112,24 @@ public:
     PFeaturePort GetPort();
     std::list<PSerialDevice> GetDevices();
 
+    //! Thread-safe. A task added after RequestStop is cancelled at once
     void AddTask(PSerialClientTask task);
 
+    //! Thread-safe. Stops the polling and cancels the queued tasks, writes to the controls are not taken after it
+    void RequestStop();
+
+    //! Thread-safe. Returns false if the client still polls or runs a task which is not cancelled at the deadline
+    bool WaitStopped(std::chrono::steady_clock::time_point deadline);
+
+    //! Thread-safe
+    void Resume();
+
+    //! Thread-safe
+    //! @throws std::runtime_error if the polling is not started
     void SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
+
+    //! Thread-safe
+    //! @throws std::runtime_error if the polling is not started
     void ResumePoll(PSerialDevice device);
 
 private:
@@ -113,6 +139,7 @@ private:
     PRegisterHandler GetHandler(PRegister) const;
     void ClosedPortCycle();
     void OpenPortCycle();
+    bool IsStopRequested();
     void ProcessPolledRegister(PRegister reg);
 
     PFeaturePort Port;
@@ -128,6 +155,7 @@ private:
 
     std::unique_ptr<TSerialClientDeviceAccessHandler> LastAccessedDevice;
     std::unique_ptr<TSerialClientRegisterAndEventsReader> RegReader;
+    std::mutex RegReaderMutex;
 
     util::TGetNowFn NowFn;
 
@@ -135,7 +163,10 @@ private:
 
     std::mutex TasksMutex;
     std::condition_variable TasksCv;
-    std::vector<PSerialClientTask> Tasks;
+    std::deque<PSerialClientTask> Tasks;
+    bool StopRequested = false;
+    bool Stopped = false;
+    std::condition_variable StoppedCv;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

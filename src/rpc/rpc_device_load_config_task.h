@@ -19,10 +19,10 @@ public:
                                 PDeviceTemplate deviceTemplate,
                                 bool deviceFromConfig,
                                 const std::string& configFileName,
-                                TRPCDeviceParametersCache& parametersCache);
+                                PDeviceParametersCache parametersCache);
 
     const std::string& ConfigFileName;
-    TRPCDeviceParametersCache& ParametersCache;
+    PDeviceParametersCache ParametersCache;
     bool Force;
 };
 
@@ -34,7 +34,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                             PDeviceTemplate deviceTemplate,
                                                             bool deviceFromConfig,
                                                             const std::string& configFileName,
-                                                            TRPCDeviceParametersCache& parametersCache,
+                                                            PDeviceParametersCache parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError);
 

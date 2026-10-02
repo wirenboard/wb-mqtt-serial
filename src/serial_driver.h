@@ -6,6 +6,7 @@ class TMQTTSerialDriver
 {
 public:
     TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config);
+    ~TMQTTSerialDriver();
     void LoopOnce();
     void ClearDevices();
 
@@ -15,6 +16,8 @@ public:
     std::vector<PSerialPortDriver> GetPortDrivers();
 
 private:
+    WBMQTT::PDeviceDriver MqttDriver;
+    WBMQTT::PDriverEventHandlerHandle ControlOnValueHandler;
     std::vector<PSerialPortDriver> PortDrivers;
     std::vector<std::thread> PortLoops;
     std::mutex ActiveMutex;
