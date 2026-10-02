@@ -281,7 +281,7 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
                                                              params.PortSettings,
                                                              Downloader,
                                                              std::move(onResult),
-                                                             std::move(onError));
+                                                             onError);
         SerialClientTaskRunner.RunTask(params.PortSettings, task);
     } catch (const std::exception& e) {
         onError(WBMQTT::E_RPC_SERVER_ERROR, e.what());
@@ -317,7 +317,7 @@ void TRPCFwUpdateHandler::Update(const Json::Value& request,
                                                                 State,
                                                                 UpdateLock,
                                                                 std::move(onResult),
-                                                                std::move(onError));
+                                                                onError);
         SerialClientTaskRunner.RunTask(params.PortSettings, task);
     } catch (const std::exception& e) {
         {
@@ -368,7 +368,7 @@ void TRPCFwUpdateHandler::Restore(const Json::Value& request,
                                                      State,
                                                      UpdateLock,
                                                      std::move(onResult),
-                                                     std::move(onError));
+                                                     onError);
         SerialClientTaskRunner.RunTask(params.PortSettings, task);
     } catch (const std::exception& e) {
         {

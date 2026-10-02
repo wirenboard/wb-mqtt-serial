@@ -80,6 +80,10 @@ protected:
     TSerialDeviceFactory DeviceFactory;
     PTemplateMap Templates;
     std::unique_ptr<TDevicesConfedSchemasMap> ConfedSchemas;
+    Json::Value PortsSchema;
+    std::unique_ptr<TProtocolConfedSchemasMap> ProtocolSchemas;
+    std::unique_ptr<TConfigLoader> ConfigLoader;
+    std::unique_ptr<TSerialDriverCore> SerialDriverCore;
     std::unique_ptr<TRPCTemplatesHandler> Handler;
 
     void SetUp() override
@@ -95,6 +99,15 @@ protected:
         Templates->AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"));
         Templates->AddTemplatesDir(UserTemplatesDir.string());
         ConfedSchemas = std::make_unique<TDevicesConfedSchemasMap>(*Templates, DeviceFactory, CommonDeviceSchema);
+        ProtocolSchemas = std::make_unique<TProtocolConfedSchemasMap>(TLoggedFixture::GetDataFilePath("../protocols"),
+                                                                      CommonDeviceSchema);
+        ConfigLoader = std::make_unique<TConfigLoader>(std::string(),
+                                                       DeviceFactory,
+                                                       CommonDeviceSchema,
+                                                       *Templates,
+                                                       PortsSchema,
+                                                       *ProtocolSchemas);
+        SerialDriverCore = std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
         MakeHandler(TLoggedFixture::GetDataFilePath("configs/rpc-templates-handler-test.json"));
     }
 
@@ -107,7 +120,8 @@ protected:
             *ConfedSchemas,
             WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../groups.json")),
             TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-rpc-templates-upload-request.schema.json"),
-            TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-rpc-templates-delete-request.schema.json")));
+            TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-rpc-templates-delete-request.schema.json"),
+            *SerialDriverCore));
     }
 
     void TearDown() override

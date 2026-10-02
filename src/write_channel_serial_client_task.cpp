@@ -28,6 +28,10 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PFeaturePort po
     if (!Handler->NeedToFlush()) {
         return ISerialClientTask::TRunResult::OK;
     }
+    if (IsCancelled()) {
+        LOG(Debug) << Handler->Register()->ToString() << " register write is dropped, the client is stopped";
+        return ISerialClientTask::TRunResult::OK;
+    }
 
     auto device = Handler->Register()->Device();
     auto isDisconnected = device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED;

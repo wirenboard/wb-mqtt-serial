@@ -16,7 +16,7 @@ public:
                               const std::string& protocol,
                               EFwSoftwareType softwareType,
                               const std::string& releaseSuite,
-                              const TRPCPortSettings& portSettings,
+                              const TPortSettings& portSettings,
                               std::shared_ptr<TFwDownloader> downloader,
                               PFwUpdateState state,
                               PFwUpdateLock updateLock,
@@ -48,7 +48,7 @@ private:
     std::string Protocol;
     EFwSoftwareType SoftwareType;
     std::string ReleaseSuite;
-    TRPCPortSettings PortSettings;
+    TPortSettings PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
     TReleasedBinary ReleasedFirmware;
     TReleasedBinary ReleasedBootloader;

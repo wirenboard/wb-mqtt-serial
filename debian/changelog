@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.282.0) stable; urgency=medium
+
+  * Add config/Save RPC: a saved configuration is applied without restarting
+    the service. The configuration is no longer saved through wb-mqtt-confed
+  * The service keeps running without polling if the configuration can not
+    be applied, so a fixed configuration can be saved
+  * The -J command line option is removed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 01 Oct 2026 12:00:00 +0300
+
 wb-mqtt-serial (2.281.0) stable; urgency=medium
 
   * Add the "disable_fast_modbus" option to ports and Modbus devices
