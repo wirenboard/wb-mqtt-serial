@@ -37,7 +37,8 @@ protected:
                                                        Templates,
                                                        PortsSchema,
                                                        *ProtocolSchemas);
-        SerialDriverCore = std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
+        SerialDriverCore =
+            std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
         TaskRunner = std::make_unique<TSerialClientTaskRunner>(*SerialDriverCore);
     }
 

@@ -107,7 +107,8 @@ protected:
                                                        *Templates,
                                                        PortsSchema,
                                                        *ProtocolSchemas);
-        SerialDriverCore = std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
+        SerialDriverCore =
+            std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
         MakeHandler(TLoggedFixture::GetDataFilePath("configs/rpc-templates-handler-test.json"));
     }
 
