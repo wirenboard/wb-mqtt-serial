@@ -17,7 +17,7 @@ public:
     TFwRestoreTask(uint8_t slaveId,
                    const std::string& protocol,
                    const std::string& releaseSuite,
-                   const TRPCPortSettings& portSettings,
+                   const TPortSettings& portSettings,
                    std::shared_ptr<TFwDownloader> downloader,
                    PFwUpdateState state,
                    PFwUpdateLock updateLock,
@@ -34,7 +34,7 @@ private:
     uint8_t SlaveId;
     std::string Protocol;
     std::string ReleaseSuite;
-    TRPCPortSettings PortSettings;
+    TPortSettings PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
     PFwUpdateState State;
     PFwUpdateLock UpdateLock;

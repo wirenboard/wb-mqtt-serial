@@ -11,7 +11,7 @@ TFwUpdateSerialClientTask::TFwUpdateSerialClientTask(uint8_t slaveId,
                                                      const std::string& protocol,
                                                      EFwSoftwareType softwareType,
                                                      const std::string& releaseSuite,
-                                                     const TRPCPortSettings& portSettings,
+                                                     const TPortSettings& portSettings,
                                                      std::shared_ptr<TFwDownloader> downloader,
                                                      PFwUpdateState state,
                                                      PFwUpdateLock updateLock,
@@ -33,6 +33,11 @@ ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
                                                              TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                              const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        ReleaseLock();
+        AnswerRequestCancelled(OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     try {
         if (!port->IsOpen()) {
             port->Open();
@@ -46,7 +51,7 @@ ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
 
         // Components are flashed without rebooting to a bootloader, so their update is always possible
         if (SoftwareType != EFwSoftwareType::Component &&
-            RequiresDefaultPortSettings(std::holds_alternative<TRPCTcpPortSettings>(PortSettings),
+            RequiresDefaultPortSettings(std::holds_alternative<TFramedTcpPortSettings>(PortSettings),
                                         Protocol,
                                         info.CanPreservePortSettings) &&
             !HasDefaultPortSettings(*traits, *port, SlaveId))

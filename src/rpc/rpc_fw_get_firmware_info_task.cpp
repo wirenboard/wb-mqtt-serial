@@ -7,7 +7,7 @@
 TFwGetFirmwareInfoTask::TFwGetFirmwareInfoTask(uint8_t slaveId,
                                                const std::string& protocol,
                                                const std::string& releaseSuite,
-                                               const TRPCPortSettings& portSettings,
+                                               const TPortSettings& portSettings,
                                                std::shared_ptr<TFwDownloader> downloader,
                                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
@@ -24,6 +24,10 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
                                                           TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                           const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        AnswerRequestCancelled(OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     try {
         if (!port->IsOpen()) {
             port->Open();
@@ -35,7 +39,7 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
         auto traits = MakeModbusTraits(Protocol);
         auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
         auto updatable = true;
-        if (RequiresDefaultPortSettings(std::holds_alternative<TRPCTcpPortSettings>(PortSettings),
+        if (RequiresDefaultPortSettings(std::holds_alternative<TFramedTcpPortSettings>(PortSettings),
                                         Protocol,
                                         info.CanPreservePortSettings))
         {

@@ -39,12 +39,12 @@ template<> inline Modbus::EFunction WBMQTT::JSON::As<Modbus::EFunction>(const Js
     return static_cast<Modbus::EFunction>(value.asUInt() & 0xFF);
 }
 
-TRPCPortLoadModbusRequest::TRPCPortLoadModbusRequest(TRPCDeviceParametersCache& parametersCache)
+TRPCPortLoadModbusRequest::TRPCPortLoadModbusRequest(PDeviceParametersCache parametersCache)
     : ParametersCache(parametersCache)
 {}
 
 PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request,
-                                                        TRPCDeviceParametersCache& parametersCache)
+                                                        PDeviceParametersCache parametersCache)
 {
     PRPCPortLoadModbusRequest RPCRequest = std::make_shared<TRPCPortLoadModbusRequest>(parametersCache);
 
@@ -104,8 +104,8 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
             rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_REGISTERS ||
             rpcRequest->Function == Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS)
         {
-            std::string id = rpcRequest->ParametersCache.GetId(port, std::to_string(rpcRequest->SlaveId));
-            rpcRequest->ParametersCache.Remove(id);
+            std::string id = rpcRequest->ParametersCache->GetId(port, std::to_string(rpcRequest->SlaveId));
+            rpcRequest->ParametersCache->Remove(id);
         }
     } catch (const Modbus::TModbusExceptionError& error) {
         Json::Value replyJSON;
@@ -130,6 +130,10 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
     TSerialClientDeviceAccessHandler& lastAccessedDevice,
     const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        AnswerRequestCancelled(Request->OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");

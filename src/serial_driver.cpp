@@ -32,7 +32,9 @@ namespace
     }
 }
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config): Active(false)
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config)
+    : MqttDriver(mqttDriver),
+      Active(false)
 {
     try {
         size_t totalChannels = GetChannelsCount(config);
@@ -59,7 +61,12 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
         throw;
     }
 
-    mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
+    ControlOnValueHandler = mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
+}
+
+TMQTTSerialDriver::~TMQTTSerialDriver()
+{
+    MqttDriver->RemoveEventHandler(ControlOnValueHandler);
 }
 
 void TMQTTSerialDriver::LoopOnce()

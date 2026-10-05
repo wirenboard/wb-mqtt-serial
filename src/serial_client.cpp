@@ -37,6 +37,16 @@ namespace
     }
 };
 
+void ISerialClientTask::Cancel()
+{
+    Cancelled = true;
+}
+
+bool ISerialClientTask::IsCancelled() const
+{
+    return Cancelled;
+}
+
 TSerialClient::TSerialClient(PFeaturePort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
                              util::TGetNowFn nowFn,
@@ -71,6 +81,7 @@ void TSerialClient::AddDevice(PSerialDevice device)
 
 void TSerialClient::Activate()
 {
+    std::lock_guard<std::mutex> lock(RegReaderMutex);
     if (!RegReader) {
         RegReader = std::make_unique<TSerialClientRegisterAndEventsReader>(Devices,
                                                                            GetReadEventsPeriod(*Port),
@@ -96,16 +107,22 @@ void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, st
     {
         std::unique_lock<std::mutex> lock(TasksMutex);
 
-        while (TasksCv.wait_until(lock, waitUntil, [this]() { return !Tasks.empty(); })) {
-            std::vector<PSerialClientTask> tasks;
-            Tasks.swap(tasks);
-            lock.unlock();
-            for (auto& task: tasks) {
+        while (TasksCv.wait_until(lock, waitUntil, [this]() { return !Tasks.empty() || (StopRequested && !Stopped); }))
+        {
+            // One by one, so RequestStop cancels every task which has not started
+            while (!Tasks.empty()) {
+                auto task = Tasks.front();
+                Tasks.pop_front();
+                lock.unlock();
                 if (task->Run(Port, *LastAccessedDevice, Devices) == ISerialClientTask::TRunResult::RETRY) {
                     retryTasks.push_back(task);
                 }
+                lock.lock();
             }
-            lock.lock();
+            if (StopRequested) {
+                Stopped = true;
+                StoppedCv.notify_all();
+            }
         }
     }
     for (auto& task: retryTasks) {
@@ -129,6 +146,11 @@ void TSerialClient::ProcessPolledRegister(PRegister reg)
 void TSerialClient::Cycle()
 {
     Activate();
+    if (IsStopRequested()) {
+        auto currentTime = NowFn();
+        WaitForPollAndFlush(currentTime, currentTime + CLOSED_PORT_CYCLE_TIME);
+        return;
+    }
 
     try {
         OpenCloseLogic.OpenIfAllowed(Port);
@@ -149,12 +171,19 @@ void TSerialClient::ClosedPortCycle()
     auto currentTime = NowFn();
     auto waitUntil = currentTime + CLOSED_PORT_CYCLE_TIME;
     WaitForPollAndFlush(currentTime, waitUntil);
+    if (IsStopRequested()) {
+        return;
+    }
 
     RegReader->ClosedPortCycle(waitUntil, [this](PRegister reg) { ProcessPolledRegister(reg); });
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
+    if (IsStopRequested()) {
+        LOG(Debug) << reg->ToString() << " write is dropped, the client is stopped";
+        return;
+    }
     auto handler = GetHandler(reg);
     handler->SetTextValue(value);
     auto serialClientTask =
@@ -187,6 +216,9 @@ void TSerialClient::OpenPortCycle()
     // Limit waiting time to be responsive
     waitUntil = std::min(waitUntil, currentTime + MAX_POLL_TIME);
     WaitForPollAndFlush(currentTime, waitUntil);
+    if (IsStopRequested()) {
+        return;
+    }
 
     auto device =
         RegReader->OpenPortCycle(*Port, [this](PRegister reg) { ProcessPolledRegister(reg); }, *LastAccessedDevice);
@@ -210,18 +242,63 @@ void TSerialClient::AddTask(PSerialClientTask task)
 {
     {
         std::unique_lock<std::mutex> lock(TasksMutex);
+        if (StopRequested) {
+            task->Cancel();
+        }
         Tasks.push_back(task);
     }
     TasksCv.notify_all();
 }
 
+void TSerialClient::RequestStop()
+{
+    {
+        std::unique_lock<std::mutex> lock(TasksMutex);
+        StopRequested = true;
+        for (const auto& task: Tasks) {
+            task->Cancel();
+        }
+    }
+    TasksCv.notify_all();
+}
+
+bool TSerialClient::WaitStopped(std::chrono::steady_clock::time_point deadline)
+{
+    std::unique_lock<std::mutex> lock(TasksMutex);
+    return StoppedCv.wait_until(lock, deadline, [this]() { return Stopped; });
+}
+
+void TSerialClient::Resume()
+{
+    {
+        std::unique_lock<std::mutex> lock(TasksMutex);
+        StopRequested = false;
+        Stopped = false;
+    }
+    TasksCv.notify_all();
+}
+
+bool TSerialClient::IsStopRequested()
+{
+    std::unique_lock<std::mutex> lock(TasksMutex);
+    return StopRequested;
+}
+
 void TSerialClient::SuspendPoll(PSerialDevice device, std::chrono::steady_clock::time_point currentTime)
 {
+    std::lock_guard<std::mutex> lock(RegReaderMutex);
+    if (!RegReader) {
+        throw std::runtime_error("the polling is not started");
+    }
     RegReader->SuspendPoll(device, currentTime);
 }
 
 void TSerialClient::ResumePoll(PSerialDevice device)
 {
+    std::lock_guard<std::mutex> lock(RegReaderMutex);
+    if (!RegReader) {
+        throw std::runtime_error("the polling is not started");
+    }
     RegReader->ResumePoll(device);
 }
 

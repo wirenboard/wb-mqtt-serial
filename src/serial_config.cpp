@@ -738,6 +738,59 @@ void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
 }
 
 #ifndef __EMSCRIPTEN__
+namespace
+{
+    //! The text of a configuration file
+    std::string SerializeConfig(const Json::Value& config)
+    {
+        Json::StreamWriterBuilder builder;
+        builder["commentStyle"] = "None";
+        builder["indentation"] = "  ";
+        builder["precision"] = 15;
+        return Json::writeString(builder, config) + "\n";
+    }
+
+    PHandlerConfig MakeHandlerConfig(const Json::Value& root,
+                                     TSerialDeviceFactory& deviceFactory,
+                                     TTemplateMap& templates,
+                                     TPortFactoryFn portFactory)
+    {
+        PHandlerConfig handlerConfig(new THandlerConfig);
+
+        // wb6 - single core - max 100 registers per second
+        // wb7 - 4 cores - max 800 registers per second
+        handlerConfig->LowPriorityRegistersRateLimit = (1 == get_nprocs_conf()) ? 100 : 800;
+        Get(root, "rate_limit", handlerConfig->LowPriorityRegistersRateLimit);
+
+        Get(root, "debug", handlerConfig->Debug);
+
+        auto maxUnchangedInterval = DefaultMaxUnchangedInterval;
+        Get(root, "max_unchanged_interval", maxUnchangedInterval);
+        if (maxUnchangedInterval.count() > 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
+            LOG(Warn) << "\"max_unchanged_interval\" is set to " << MaxUnchangedIntervalLowLimit.count()
+                      << " instead of " << maxUnchangedInterval.count();
+            maxUnchangedInterval = MaxUnchangedIntervalLowLimit;
+        }
+        handlerConfig->PublishParameters.Set(maxUnchangedInterval.count());
+
+        const Json::Value& array = root["ports"];
+        for (Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
+            // old default prefix for compat
+            LoadPort(handlerConfig,
+                     array[index],
+                     "wb-modbus-" + std::to_string(index) + "-",
+                     templates,
+                     deviceFactory,
+                     portFactory);
+        }
+
+        CheckDuplicatePorts(*handlerConfig);
+        CheckDuplicateDeviceIds(*handlerConfig);
+
+        return handlerConfig;
+    }
+}
+
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& commonDeviceSchema,
@@ -746,7 +799,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory)
 {
-    PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
     FixOldConfigFormat(Root, templates);
 
@@ -756,37 +808,36 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
         throw std::runtime_error("File: " + configFileName + " error: " + e.what());
     }
 
-    // wb6 - single core - max 100 registers per second
-    // wb7 - 4 cores - max 800 registers per second
-    handlerConfig->LowPriorityRegistersRateLimit = (1 == get_nprocs_conf()) ? 100 : 800;
-    Get(Root, "rate_limit", handlerConfig->LowPriorityRegistersRateLimit);
+    return MakeHandlerConfig(Root, deviceFactory, templates, portFactory);
+}
 
-    Get(Root, "debug", handlerConfig->Debug);
+TConfigLoader::TConfigLoader(const std::string& configPath,
+                             TSerialDeviceFactory& deviceFactory,
+                             const Json::Value& commonDeviceSchema,
+                             TTemplateMap& templates,
+                             const Json::Value& portsSchema,
+                             TProtocolConfedSchemasMap& protocolSchemas,
+                             TPortFactoryFn portFactory)
+    : ConfigPath(configPath),
+      DeviceFactory(deviceFactory),
+      CommonDeviceSchema(commonDeviceSchema),
+      Templates(templates),
+      PortsSchema(portsSchema),
+      ProtocolSchemas(protocolSchemas),
+      PortFactory(portFactory)
+{}
 
-    auto maxUnchangedInterval = DefaultMaxUnchangedInterval;
-    Get(Root, "max_unchanged_interval", maxUnchangedInterval);
-    if (maxUnchangedInterval.count() > 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
-        LOG(Warn) << "\"max_unchanged_interval\" is set to " << MaxUnchangedIntervalLowLimit.count() << " instead of "
-                  << maxUnchangedInterval.count();
-        maxUnchangedInterval = MaxUnchangedIntervalLowLimit;
-    }
-    handlerConfig->PublishParameters.Set(maxUnchangedInterval.count());
+PHandlerConfig TConfigLoader::Load(const Json::Value& config)
+{
+    Json::Value root(config);
+    FixOldConfigFormat(root, Templates);
+    ValidateConfig(root, DeviceFactory, CommonDeviceSchema, PortsSchema, Templates, ProtocolSchemas);
+    return MakeHandlerConfig(root, DeviceFactory, Templates, PortFactory);
+}
 
-    const Json::Value& array = Root["ports"];
-    for (Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
-        // old default prefix for compat
-        LoadPort(handlerConfig,
-                 array[index],
-                 "wb-modbus-" + std::to_string(index) + "-",
-                 templates,
-                 deviceFactory,
-                 portFactory);
-    }
-
-    CheckDuplicatePorts(*handlerConfig);
-    CheckDuplicateDeviceIds(*handlerConfig);
-
-    return handlerConfig;
+void TConfigLoader::Write(const Json::Value& config)
+{
+    WriteFileAtomically(ConfigPath, SerializeConfig(config));
 }
 #endif
 
