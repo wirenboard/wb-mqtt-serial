@@ -15,6 +15,18 @@ using namespace std;
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
+namespace
+{
+    PDeviceChannelConfig FindChannel(const TSerialDeviceWithChannels& device, const std::string& mqttId)
+    {
+        auto it = std::find_if(device.Channels.begin(), device.Channels.end(), [&](const auto& channel) {
+            return channel->MqttId == mqttId;
+        });
+        return (it == device.Channels.end()) ? nullptr : *it;
+    }
+
+}
+
 class TConfigParserTest: public TLoggedFixture
 {
 protected:
@@ -476,6 +488,49 @@ TEST_F(TConfigParserTest, BigIntegers)
             case 1:
                 EXPECT_EQ(item->RawValue.Get<uint64_t>(), 257080185625143217);
                 break;
+        }
+    }
+}
+
+TEST_F(TConfigParserTest, ChannelTitle)
+{
+    auto portConfigs = GetConfig("configs/parse_test_channel_title.json")->PortConfigs;
+    ASSERT_EQ(portConfigs.size(), 1);
+    const auto& devices = portConfigs[0]->Devices;
+    ASSERT_EQ(devices.size(), 1);
+
+    // Title replaces the name from the template with all its translations
+    const auto& templateDevice = *devices[0];
+    auto channel = FindChannel(templateDevice, "Temperature");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Room temperature"}}));
+    EXPECT_EQ(channel->GetName(), "Room temperature");
+    EXPECT_EQ(channel->Order, 1);
+
+    // Title is applied to hidden channels too
+    channel = FindChannel(templateDevice, "Voltage");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_TRUE(channel->Hidden);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Hidden voltage"}}));
+
+    // Channel without title keeps the name and translations from the template,
+    // "title" of the channel in the template is ignored
+    channel = FindChannel(templateDevice, "Humidity");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Relative humidity"}, {"ru", "Влажность"}}));
+    EXPECT_EQ(channel->Order, 2);
+}
+
+TEST_F(TConfigParserTest, ChannelTitleSchemaValidation)
+{
+    // Empty and non-string titles are rejected
+    const std::vector<std::string> invalidConfigs = {"template-channel-empty", "template-channel-not-string"};
+    for (const auto& name: invalidConfigs) {
+        try {
+            GetConfig("configs/channel_title_invalid/" + name + ".json");
+            ADD_FAILURE() << name << " must not pass validation";
+        } catch (const std::exception& e) {
+            EXPECT_NE(std::string(e.what()).find("[title]"), std::string::npos) << name << ": " << e.what();
         }
     }
 }
