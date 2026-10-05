@@ -95,8 +95,6 @@
                 {% if safety_fw -%}
                 "fw": "{{safety_fw}}",
                 "description": "safety_behaviour_with_input_state_description",
-                {% else -%}
-                "description": "safety_behaviour_description",
                 {% endif -%}
                 "group": "g_safety"
             },
@@ -104,7 +102,6 @@
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
-                "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
             {
@@ -1131,7 +1128,7 @@
         "translations": {
             "en": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
-                "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only",
+                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" setting applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
@@ -1139,9 +1136,7 @@
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "safety_behaviour_description": "Action when module switches into safe mode",
-                "safety_behaviour_with_input_state_description": "Action when module switches into safe mode. Option \"Switch output according to input state\" works for latching switch mode only",
+                "safety_behaviour_with_input_state_description": "The \"Switch output according to input state\" setting applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "outputs_safe_state_description": "Outputs state after module power on (if the \"Set output to safe state\" item is selected in the \"States of the relay on power up\" setting) and in the safe mode, if the transition to the safe state is activated",
 
                 "sp_title": "Short Press",
@@ -1265,9 +1260,7 @@
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
-                "safety_behaviour_description": "Действие при переходе модуля в безопасный режим",
-                "safety_behaviour_with_input_state_description": "Действие при переходе модуля в безопасный режим. Вариант \"Установить выход согласно состоянию входа\" применим только для режима \"Переключатель с фиксацией\"",
+                "safety_behaviour_with_input_state_description": "Внимание! Настройка \"Установить выход согласно состоянию входа\" применима только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов настройка будет проигнорирована.",
                 "Outputs State After Power On": "Состояния выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
@@ -1353,7 +1346,7 @@
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\"",
+                "outputs_state_after_power_on_description": "Внимание! Настройка \"Установить согласно состоянию входов\" применима только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов настройка будет проигнорирована.",
 
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",
