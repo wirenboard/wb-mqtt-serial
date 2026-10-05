@@ -154,8 +154,7 @@
             {# declare the power-on actions group -#}
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
+                "id": "g_power_up_behaviour"
             },
             {# declare a group inside the safe-modes group that will hold per-channel actions depending on the dimmer operating mode -#}
             {
@@ -893,7 +892,6 @@
             {
                 "id": "in{{in_num}}_lp_hold_time",
                 "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
                 "order": 1,
                 "group": "gg_in_{{in_num}}_params",
                 "address": {{1100 + in_num - 1}},
@@ -2355,7 +2353,6 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
-                "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
@@ -2383,7 +2380,6 @@
                 "input_switch_off_title" : "Out action",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "g_power_up_behaviour_description" : "Setting the behavior of outputs when the device is powered on",
 
                 "gg_out_channels_auto_on_description": "Channels are enabled when writing a value > 0:",
                 "g_auto_change_description": "Channels in this group start automatic smooth change of light parameters in either direction, or with direction inversion, the same way as long-press of local buttons",
@@ -2646,7 +2642,6 @@
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
-                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. <br>При подключении энкодера рекомендуется установить значение 2-5 мс.",
@@ -2730,7 +2725,6 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
                 "Safety Behaviour" : "Действие в безопасном режиме",
                 "switch_action" : "Действие с выходом",

@@ -107,8 +107,7 @@
             },
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
+                "id": "g_power_up_behaviour"
             },
             {
                 "title": "Safety Behaviour",
@@ -164,7 +163,6 @@
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
-                "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
                 "reg_type": "holding",
                 "default": 1000,
@@ -378,7 +376,6 @@
             {
                 "id": "action{{ch_number}}_repeat_time",
                 "title": "Changing Rate for Long Press Actions (ms/%)",
-                "description": "action_repeat_time_description",
                 "address": {{896 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 20,
@@ -702,7 +699,6 @@
                 "FW Version": "Firmware Version",
                 "Supply voltage": "Supply Voltage",
                 "template_title": "{{ title_en }}",
-                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 20 kHz / Factor",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -713,22 +709,18 @@
 
                 "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
                 "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
-                "action_repeat_time_description": "When button is held for a long time, level will change with specified rate.",
 
-                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except single and long. Adds a delay to the response to a single press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "output_description": "Output can be controlled by:<br>1) setting level in percentage between working range limits<br>2) setting output current in mA (level of the channel will not change)",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
-                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "g_power_up_behaviour_description": "Actions that will be performed when power is applied to the module"
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters"
             },
             "ru": {
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "template_title": "{{ title_ru }}",
-                "Outputs": "Выходы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -794,7 +786,6 @@
                 "Changing Rate for Long Press Actions (ms/%)": "Темп изменения уровня при долгих нажатиях (мс/%)",
                 "decrement_rate_description": "При скачкообразном изменении уровня или выключении канала, уровень будет плавно уменьшаться с заданным темпом. При значении 0, уровень уменьшится мгновенно",
                 "increment_rate_description": "При скачкообразном изменении уровня или включении канала, уровень будет плавно увеличиваться с заданным темпом. При значении 0, уровень увеличится мгновенно",
-                "action_repeat_time_description": "При удержании кнопки уровень будет изменяться с заданным темпом",
 
                 "Safety Mode": "Безопасный режим",
                 "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
@@ -807,7 +798,6 @@
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
 
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
@@ -823,7 +813,6 @@
                 "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
 
-                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия"
             }

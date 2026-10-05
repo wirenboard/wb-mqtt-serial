@@ -74,8 +74,7 @@
             },
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
+                "id": "g_power_up_behaviour"
             },
             {
                 "title": "Safety Behaviour",
@@ -391,7 +390,6 @@
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
-                "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
                 "reg_type": "holding",
                 "fw": "2.7.0",
@@ -741,22 +739,19 @@
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
-                "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
-                "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time",
+                "increase_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time",
+                "decrease_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
-                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.8.0",
-                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.8.0",
 
                 "level_after_actions_description": "Starting from firmware v2.11.0 it is possible to set the brightness level to 0% (channel off)",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "g_power_up_behaviour_description": "Actions when Power is On",
 
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
@@ -837,7 +832,6 @@
 
                 "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 2.8.0",
 
-                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
 
@@ -856,7 +850,6 @@
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
 
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
 
                 "level_after_actions_description": "Начиная с версии прошивки 2.11.0 возможно установить уровень яркости на 0% (канал выключен)",

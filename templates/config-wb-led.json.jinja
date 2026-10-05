@@ -47,8 +47,7 @@
             {# объявим группу действий при включении питания -#}
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
+                "id": "g_power_up_behaviour"
             },
             {# объявим группу внутри группы безопасных режимов куда будут помещены действия по каналам, которые зависят от режима работы диммера -#}
             {
@@ -564,7 +563,6 @@
             {
                 "id": "in{{in_num}}_lp_hold_time",
                 "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
                 "order": 1,
                 "group": "gg_in_{{in_num}}_params",
                 "address": {{1100 + in_num - 1}},
@@ -1604,7 +1602,6 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
-                "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
@@ -1619,7 +1616,6 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "Uptime": "Uptime (s)",
-                "light_scenes_description": "Light scenes description",
                 "Action_sp" : "Action short press",
                 "Action_lp" : "Action long press",
                 "Action_dp" : "Action double press",
@@ -1627,19 +1623,8 @@
                 "input_mode_description" : "Button is the default mode. Switch mode supported since firmware version 3.5.0",
                 "input_switch_on_title" : "Out action",
                 "input_switch_off_title" : "Out action",
-                "switch_on_scene_title" : "Choose scene",
-                "switch_on_scene_action" : "Action above the scene",
-                "Inputs work with sp" :"Inputs work with short press",
-                "Inputs work with lp" :"Inputs work with long press",
-                "Inputs work with dp" : "Inputs work with double press",
-                "Inputs work with slp"  : "Inputs work with short and after long press",
-                "sp_scene_action" : "Action above the scene",
-                "lp_scene_action" : "Action above the scene",
-                "dp_scene_action" : "Action above the scene",
-                "slp_scene_action" : "Action above the scene",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "g_power_up_behaviour_description" : "Setting the behavior of outputs when the device is powered on",
 
                 "switch_action": "Switch action",
                 "sw_all_act_title": "All channels",
@@ -1667,8 +1652,6 @@
                 "fader_hue_title": "Время увеличения/уменьшения оттенка (Hue) с 0 до 360°",
 
                 "cct_power_normalization_title": "Нормализация мощности CCT лент",
-
-                "Actions": "Действия ",
 
                 "Outputs": "Выходы",
                 "General": "Общее",
@@ -1801,7 +1784,6 @@
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
-                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
@@ -1825,36 +1807,17 @@
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
 
-                "Dimming level rate (ms/%)": "Темп изменения уровня яркости (мс/%)",
-                "Dimming level rate temperature (ms/%)": "Темп изменения температуры света (мс/%)",
-                "Dimming level rate brightness (ms/%)": "Темп изменения яркости света (мс/%)",
                 "Brightness (%)": "Яркость (%)",
                 "Temperature (%)": "Температура (%)",
-                "light_scenes_description": "Важно: необходимо настраивать канал не только при включении света сцены, но и при выключении света сцены",
-                "Scene Light On/Off Condition": "Условие включенного света сцены",
-                "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
-                "Scene Light is on if all used channels are on. Otherwise light is off": "Свет сцены включен, если все используемые каналы включены. Иначе свет выключен",
                 "Turn Off" : "Выключить",
-                "Set Brightness" : "Установить яркость",
                 "Set Level" : "Установить уровень",
-                "Set Angle" : "Установить угол",
                 "Turn On" : "Включить",
                 "Turn On and Set Brightness" : "Включить и установить яркость",
                 "Turn On and Set Level" : "Включить и установить уровень",
-                "Turn On and Set Levels" : "Включить и установить уровни",
-                "Turn On and Set Angle" : "Включить и установить угол",
-                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-                "Enable Channel {{in_num}}": "Действие на канале {{in_num}}",
-                {% endfor -%}
                 "Channel 1_2" : "Канал 1 и 2",
-                "Enable Channel 1_2": "Действие на канале 1 и 2",
                 "Channel 3_4" : "Канал 3 и 4",
-                "Enable Channel 3_4": "Действие на канале 3 и 4",
                 "Channel CCT1" : "Канал CCT1",
-                "Enable Channel CCT1": "Действие на канале CCT1",
                 "Channel CCT2" : "Канал CCT2",
-                "Enable Channel CCT2": "Действие на канале CCT2",
-                "Channel not Used in Scene": "Канал не используется в сцене",
                 "Action_sp" : "Действие для короткого нажатия",
                 "Action_lp" : "Действие для длинного нажатия",
                 "Action_dp" : "Действие для двойного нажатия",
@@ -1862,30 +1825,12 @@
                 "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации",
                 "input_switch_on_title" : "Выход",
                 "input_switch_off_title" : "Выход",
-                "switch_on_scene_title" : "Выбор сцены",
-                "switch_on_scene_action" : "Действие со сценой",
-                "Inputs work with sp" :"Режим работы входа для короткого нажатия",
-                "Inputs work with lp" :"Режим работы входа для длинного нажатия",
-                "Inputs work with dp" : "Режим работы входа для двойного нажатия",
-                "Inputs work with slp"  : "Режим работы входа для короткого, затем длинного нажатия",
                 "Input Mode" : "Режим работы входа",
                 "Button" : "Кнопка без фиксации",
                 "Switch": "Выключатель с фиксацией",
                 "Action when Switch is on": "Действие в положении \"включено\"",
                 "Action when Switch is off": "Действие в положении \"выключено\"",
-                "Inputs work with scenes?" : "Вход работает со сценами?",
-                "sp_scene_action" : "Действие со сценой",
-                "lp_scene_action" : "Действие со сценой",
-                "dp_scene_action" : "Действие со сценой",
-                "slp_scene_action" : "Действие со сценой",
-                "Non Scenes" : "Без сцен",
-                "Scenes" : "Co сценами",
                 "Toggle": "Переключить",
-                {% for out in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Channel {{out}} Switch" :  "Действие на канале {{out}}",
-                {% endfor -%}
-                "Actions when Scene Light Turn on" : "Действие при включении света сцены",
-                "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
                 "g_safety_description" : "Настройка поведения устройства в случае потери связи с контроллером",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
@@ -1897,7 +1842,6 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
                 "Safety Behaviour" : "Действие в безопасном режиме",
                 "switch_action" : "Действие с выходом",
