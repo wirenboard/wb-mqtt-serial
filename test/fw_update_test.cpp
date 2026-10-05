@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <functional>
+
 #include "rpc/rpc_fw_downloader.h"
 #include "rpc/rpc_fw_update_handler.h"
 #include "rpc/rpc_fw_update_helpers.h"
@@ -54,6 +56,9 @@ public:
 
     std::vector<uint8_t> GetBinary(const std::string& url) override
     {
+        if (OnGetBinary) {
+            OnGetBinary();
+        }
         auto errIt = Errors.find(url);
         if (errIt != Errors.end()) {
             RequestCount[url]++;
@@ -72,6 +77,9 @@ public:
         auto it = RequestCount.find(url);
         return it != RequestCount.end() ? it->second : 0;
     }
+
+    //! Called while a task downloads a file
+    std::function<void()> OnGetBinary;
 
 private:
     std::map<std::string, std::string> TextResponses;
@@ -1942,7 +1950,7 @@ TEST_F(FwHandlerTest, ParseRequestParamsModbusTcpPort)
 
     auto params = TRPCFwUpdateHandler::ParseRequestParams(request);
     EXPECT_EQ(params.Protocol, "modbus-tcp");
-    EXPECT_TRUE(std::get<TRPCTcpPortSettings>(params.PortSettings).ModbusTcp);
+    EXPECT_TRUE(std::get<TFramedTcpPortSettings>(params.PortSettings).ModbusTcp);
 }
 
 // ---- Version comparison tests ----
@@ -2573,7 +2581,7 @@ public:
         AccessHandler = std::make_unique<TSerialClientDeviceAccessHandler>(nullptr);
     }
 
-    void RunTask(const TRPCPortSettings& portSettings, PSerialClientTask task) override
+    void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override
     {
         SubmittedTasks.push_back({portSettings, task});
         if (Port) {
@@ -2583,7 +2591,7 @@ public:
 
     struct SubmittedTask
     {
-        TRPCPortSettings PortSettings;
+        TPortSettings PortSettings;
         PSerialClientTask Task;
     };
     std::vector<SubmittedTask> SubmittedTasks;
@@ -2946,6 +2954,28 @@ TEST_F(FwHandlerIntegrationTest, UpdateFirmware)
     ASSERT_FALSE(GotError);
     EXPECT_EQ(LastResult.asString(), "Ok");
     EXPECT_FALSE(GetUpdateInProgress());
+}
+
+//! config/Save cancels the tasks of the port, an update which has started goes on to the end
+TEST_F(FwHandlerIntegrationTest, UpdateCancelledAfterStartIsCompleted)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueFlashExpectations(true, true);
+    FakeHttp->OnGetBinary = [this]() { TaskRunner->SubmittedTasks.back().Task->Cancel(); };
+
+    auto request = MakeRequest();
+    request["type"] = "firmware";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_TRUE(TaskRunner->SubmittedTasks.back().Task->IsCancelled());
+    EXPECT_FALSE(GetUpdateInProgress());
+    EXPECT_TRUE(ParseLastPublishedState()["devices"].empty());
 }
 
 //! Such a bootloader answers on the settings of the firmware, the update runs on the settings

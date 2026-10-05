@@ -95,6 +95,13 @@ std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& proto
     return std::make_unique<Modbus::TModbusRTUTraits>();
 }
 
+void AnswerRequestCancelled(const WBMQTT::TMqttRpcServer::TErrorCallback& onError)
+{
+    if (onError) {
+        onError(WBMQTT::E_RPC_SERVER_ERROR, REQUEST_CANCELLED_ERROR);
+    }
+}
+
 void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema)
 {
     try {

@@ -427,7 +427,7 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ChecksUnsupportedValueMarkerBeforeCondi
     auto device = protocolParams.factory->CreateDevice(deviceJson, config, protocolParams.protocol);
     device->SetWbDevice(true);
 
-    TRPCDeviceParametersCache parametersCache;
+    auto parametersCache = std::make_shared<TDeviceParametersCache>();
     std::string configFileName;
     auto request = std::make_shared<TRPCDeviceLoadConfigRequest>(protocolParams,
                                                                  device,
@@ -527,7 +527,7 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ReadsFirmwareOfTemplateWithoutParameter
     auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
     device->SetWbDevice(true);
 
-    TRPCDeviceParametersCache parametersCache;
+    auto parametersCache = std::make_shared<TDeviceParametersCache>();
     std::string configFileName;
     auto request = std::make_shared<TRPCDeviceLoadConfigRequest>(protocolParams,
                                                                  device,

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <unordered_map>
 #include <wblib/json/json.h>
 
@@ -27,6 +28,8 @@ class TProtocolConfedSchemasMap
     //! Protocol to JSON-Schema map
     std::unordered_map<std::string, Json::Value> JsonSchemas;
 
+    std::mutex JsonSchemasMutex;
+
     const Json::Value& CommonDeviceSchema;
 
 public:
@@ -36,5 +39,6 @@ public:
 
     const std::unordered_map<std::string, TProtocolConfedSchema>& GetSchemas() const;
 
+    //! Thread-safe
     const Json::Value& GetSchema(const std::string& protocol);
 };

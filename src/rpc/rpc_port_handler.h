@@ -8,18 +8,16 @@ public:
     TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
                     const std::string& requestPortSetupSchemaFilePath,
                     const std::string& requestPortScanSchemaFilePath,
-                    PHandlerConfig handlerConfig,
+                    TSerialDriverCore& serialDriverCore,
                     TSerialClientTaskRunner& serialClientTaskRunner,
-                    TRPCDeviceParametersCache& parametersCache,
                     WBMQTT::PMqttRpcServer rpcServer);
 
 private:
     Json::Value RequestPortLoadSchema;
     Json::Value RequestPortSetupSchema;
     Json::Value RequestPortScanSchema;
-    PHandlerConfig HandlerConfig;
+    TSerialDriverCore& SerialDriverCore;
     TSerialClientTaskRunner& SerialClientTaskRunner;
-    TRPCDeviceParametersCache& ParametersCache;
 
     void PortLoad(const Json::Value& request,
                   WBMQTT::TMqttRpcServer::TResultCallback onResult,

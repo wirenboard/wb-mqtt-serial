@@ -26,7 +26,7 @@ public:
     {
         int SlaveId = 0;
         std::string Protocol;
-        TRPCPortSettings PortSettings;
+        TPortSettings PortSettings;
     };
 
     static TRequestParams ParseRequestParams(const Json::Value& request);
