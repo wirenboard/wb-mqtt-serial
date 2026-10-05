@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.282.0) stable; urgency=medium
+wb-mqtt-serial (2.283.0) stable; urgency=medium
 
   * Add config/Save RPC: a saved configuration is applied without restarting
     the service. The configuration is no longer saved through wb-mqtt-confed
@@ -6,7 +6,13 @@ wb-mqtt-serial (2.282.0) stable; urgency=medium
     be applied, so a fixed configuration can be saved
   * The -J command line option is removed
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 01 Oct 2026 12:00:00 +0300
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 05 Oct 2026 14:16:11 +0500
+
+wb-mqtt-serial (2.282.0) stable; urgency=medium
+
+  * Add the "title" property to channels in device config
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 28 Sep 2026 12:00:00 +0300
 
 wb-mqtt-serial (2.281.0) stable; urgency=medium
 
