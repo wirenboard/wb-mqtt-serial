@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.283.0) stable; urgency=medium
+
+  * Add a test for Cyrillic letters in templates
+  * Fix Cyrillic letters in templates
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 05 Oct 2026 12:35:08 +0300
+
 wb-mqtt-serial (2.282.0) stable; urgency=medium
 
   * Add the "title" property to channels in device config
