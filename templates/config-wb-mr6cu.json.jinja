@@ -1,6 +1,8 @@
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
 {% set TIMER_AUTORESET_FW = "1.28.0" -%}
+{# (fw, min) of the curtain open and close time: 0 (no timeout) is allowed since 1.24.0 -#}
+{% set CURTAIN_TIME_FW_VARIANTS = [("", 1), ("1.24.0", 0)] -%}
 {
     "title": "WB-MR6CU_template_title",
     "device_type": "WB-MR6CU",
@@ -52,13 +54,11 @@
             {
                 "title": "Startup Delay (s)",
                 "id": "gg_startup_delay_params",
-                "description": "startup_delay_description",
                 "group": "g_delays"
             },
             {
                 "title": "Restart Delay (s)",
                 "id": "gg_restart_delay_params",
-                "description": "restart_delay_description",
                 "group": "g_delays"
             },
             {
@@ -249,7 +249,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "on_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
             },
             {
@@ -264,7 +263,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "off_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
             },
             {
@@ -279,7 +277,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "on_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6)"
             },
             {
@@ -294,7 +291,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "off_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7)"
             },
             {
@@ -309,7 +305,6 @@
                 "max": 65000,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "cyclic_on_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
             {
@@ -324,7 +319,6 @@
                 "max": 65000,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "cyclic_off_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
@@ -343,34 +337,48 @@
                 ],
                 "order": 1
             },
+            {% for curtain_time_fw, curtain_time_min in CURTAIN_TIME_FW_VARIANTS -%}
             {
                 "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
+                {% if curtain_time_min == 0 -%}
                 "description": "curtain_zero_time_description",
+                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
+                {% if curtain_time_fw -%}
+                "fw": "{{ curtain_time_fw }}",
+                {% endif -%}
                 "scale": 0.1,
                 "default": 10.0,
-                "min": 0,
+                "min": {{ curtain_time_min }},
                 "max": 600.0,
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
+            {% endfor -%}
+            {% for curtain_time_fw, curtain_time_min in CURTAIN_TIME_FW_VARIANTS -%}
             {
                 "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
+                {% if curtain_time_min == 0 -%}
                 "description": "curtain_zero_time_description",
+                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
+                {% if curtain_time_fw -%}
+                "fw": "{{ curtain_time_fw }}",
+                {% endif -%}
                 "scale": 0.1,
                 "default": 10.0,
-                "min": 0,
+                "min": {{ curtain_time_min }},
                 "max": 600.0,
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
+            {% endfor -%}
             {
                 "id": "curtain{{curtain_num}}_deadtime",
                 "title": "Dead time (ms)",
@@ -653,7 +661,7 @@
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
 
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
-                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
+                "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
@@ -671,16 +679,7 @@
                 {% endfor -%}
 
                 "Startup Delay (s)": "Startup Delay When Power On (s)",
-                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)",
-                "startup_delay_description": "0...999 s",
-                "restart_delay_description": "0...999 s",
-
-                "on_delay_description": "0.1...6500",
-                "off_delay_description": "0.1...6500",
-                "on_pulse_description": "0.1...6500",
-                "off_pulse_description": "0.1...6500",
-                "cyclic_on_time_description": "1...65000",
-                "cyclic_off_time_description": "1...65000"
+                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)"
             },
             "ru": {
                 "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-канальный модуль реле)",
@@ -718,7 +717,6 @@
                 "Outputs State After Power On": "Состояния выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
-                "Safety Timer (s)": "Таймаут безопасного режима (с)",
 
                 "open": "открыть",
                 "close": "закрыть",
@@ -732,8 +730,6 @@
 
                 "Startup Delay (s)": "Задержка включения при подаче питания (с)",
                 "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
-                "startup_delay_description": "0...999 с",
-                "restart_delay_description": "0...999 с",
 
                 "Function": "Функция",
                 "Not Used": "Не используется",
@@ -759,7 +755,7 @@
                 {% endfor -%}
 
                 "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
-                "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
+                "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",

@@ -103,8 +103,7 @@
             },
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
+                "id": "g_power_up_behaviour"
             },
             {
                 "title": "Safety Behaviour",
@@ -126,7 +125,6 @@
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
-                "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
 
@@ -432,7 +430,6 @@
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
-                "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
                 "reg_type": "holding",
                 "default": 1000,
@@ -918,7 +915,6 @@
                 "decrease_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
-                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
 
@@ -928,8 +924,6 @@
                 "level_after_actions_description": "It is possible to set the brightness level to 0% (channel off)",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "g_power_up_behaviour_description": "Actions when Power is On",
 
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
@@ -1043,7 +1037,6 @@
 
                 "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией поддерживается",
 
-                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия <br>При подключении энкодера рекомендуется установить значение 2-5 мс.",
 
@@ -1060,10 +1053,8 @@
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
 
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
 
                 "level_after_actions_description": "Можно установить уровень яркости на 0% (канал выключен)",

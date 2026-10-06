@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.285.0) stable; urgency=medium
+
+  * WB device templates: firmware version limits are set in the parameters,
+    redundant parameter descriptions are removed, swapped descriptions of the
+    WB-MAO4 and WB-MDM3 increase and decrease rates are fixed
+  * WB-MR, WB-MRWM2 templates: options for the latching switch input mode are
+    shown only if an input is in this mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 06 Oct 2026 10:33:55 +0300
+
 wb-mqtt-serial (2.284.0) stable; urgency=medium
 
   * Add a test for Cyrillic letters in templates
