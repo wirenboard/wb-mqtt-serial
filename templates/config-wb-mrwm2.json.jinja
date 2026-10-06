@@ -5,6 +5,9 @@
 {% set TIMER_AUTORESET_FW = "1.27.0" -%}
 {# (fw, max) of the input debounce time -#}
 {% set DEBOUNCE_FW_VARIANTS = [("", 250), ("1.19.0", 2000)] -%}
+{# (latching, fw) of the output safety behaviour: "according to input state" is only for a latching switch input.
+   The latching chain has its own variant without fw: fw variants of a parameter must have the same condition -#}
+{% set SAFETY_BEHAVIOUR_VARIANTS = [(false, ""), (true, ""), (true, SAFETY_ACCORDING_TO_INPUT_FW)] -%}
 {
     "title": "WB-MRWM2-template-title",
     "device_type": "WB-MRWM2",
@@ -374,7 +377,7 @@
                     "On"
                 ]
             },
-            {% for latching, safety_fw in [(false, ""), (true, ""), (true, SAFETY_ACCORDING_TO_INPUT_FW)] -%}
+            {% for latching, safety_fw in SAFETY_BEHAVIOUR_VARIANTS -%}
             {
                 "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
@@ -411,7 +414,16 @@
                 ]
             },
             {% endfor -%}
-            {% for any_latching in [true, false] -%}
+            {% set any_latching_cond = [] -%}
+            {% set no_latching_cond = [] -%}
+            {% for in_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                {% set _ = any_latching_cond.append("in" ~ in_num ~ "_mode==1") -%}
+                {% set _ = no_latching_cond.append("in" ~ in_num ~ "_mode!=1") -%}
+            {% endfor -%}
+            {% for any_latching, restore_cond in [
+                (true, any_latching_cond | join("||")),
+                (false, no_latching_cond | join("&&")),
+            ] -%}
             {
                 "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
@@ -423,7 +435,7 @@
                 {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
                 "enum_titles": ["Safe state", "Restore last state"{% if any_latching %}, "According to inputs"{% endif %}],
-                "condition": "{% for in_num in range(1, OUTPUTS_NUMBER + 1) %}in{{in_num}}_mode{{ '==' if any_latching else '!=' }}1{% if not loop.last %}{{ '||' if any_latching else '&&' }}{% endif %}{% endfor %}",
+                "condition": "{{ restore_cond }}",
                 "order": 1,
                 "group": "g_outputs"
             },
@@ -989,7 +1001,7 @@
         "translations": {
             "en": {
                 "WB-MRWM2-template-title": "WB-MRWM2 (2-channel power metering relay)",
-                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" setting applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
+                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
@@ -1020,7 +1032,6 @@
                 "Startup Delay (s)": "Protection Startup Delay (s)",
                 "Restart Delay (s)": "Restart Delay After Output Turn Off (s)",
                 "startup_delay_description": "Starts at power on or voltage normalization after blocking by voltage control"
-
             },
             "ru": {
                 "WB-MRWM2-template-title": "WB-MRWM2 (2-канальный модуль реле с измерением мощности)",
@@ -1159,7 +1170,7 @@
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "outputs_state_after_power_on_description": "Внимание! Настройка \"Установить согласно состоянию входов\" применима только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов настройка будет проигнорирована.",
+                "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
 
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",
