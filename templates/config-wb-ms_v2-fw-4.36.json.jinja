@@ -852,6 +852,10 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
                 "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
 
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}} Sensor Presense": "Input {{in_num}} Sensor Connected And Working",
+                {% endfor -%}
+
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "sens{{sens_num}}_temp_offset_deg_title": "Sensor {{sens_num}} Temperature Offset (°C)"{% if not loop.last %},{% endif %}
                 {% endfor -%}
@@ -905,7 +909,7 @@
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
                 "Input {{in_num}} Last Valid Temp": "Последняя действ. температура на входе {{in_num}}",
-                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} присутствует",
+                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} подключен и работает",
                 "Input {{in_num}} Sensor Supply": "Питание датчика на входе {{in_num}}",
                 "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
                 "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",
