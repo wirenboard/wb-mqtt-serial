@@ -88,17 +88,11 @@
                 "title": "Safety Mode",
                 "id": "g_safety"
             },
-            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
             {
                 "title": "Safety Behaviour",
                 "id": "g_safety_behaviour",
-                {% if safety_fw -%}
-                "fw": "{{safety_fw}}",
-                "description": "safety_behaviour_input_state_description",
-                {% endif -%}
                 "group": "g_safety"
             },
-            {% endfor -%}
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
@@ -454,7 +448,7 @@
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
-            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
+            {% for latching, safety_fw in [(false, ""), (true, ""), (true, SAFETY_ACCORDING_TO_INPUT_FW)] -%}
             {
                 "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
@@ -471,7 +465,7 @@
                     "Switch output to safety state"{% if safety_fw %},
                     "Switch output according to input state"{% endif %}
                 ],
-                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+                "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&in{{out_num}}_mode{{ '==' if latching else '!=' }}1"
             },
             {% endfor -%}
             {
@@ -763,18 +757,23 @@
                     "order": 1
             },
 
+            {% for any_latching in [true, false] -%}
             {
                 "id": "outputs_power_on_state",
                 "title": "Outputs State After Power On",
+                {% if any_latching -%}
                 "description": "outputs_state_after_power_on_description",
+                {% endif -%}
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [0, 1, 2],
+                {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
-                "enum_titles": ["Safe state", "Restore last state", "According to inputs"],
+                "enum_titles": ["Safe state", "Restore last state"{% if any_latching %}, "According to inputs"{% endif %}],
+                "condition": "{% for in_num in range(1, OUTPUTS_NUMBER + 1) %}in{{in_num}}_mode{{ '==' if any_latching else '!=' }}1{% if not loop.last %}{{ '||' if any_latching else '&&' }}{% endif %}{% endfor %}",
                 "order": 1,
                 "group": "g_outputs"
             },
+            {% endfor -%}
 
             {
                 "id": "safety_mode_source",
@@ -1135,7 +1134,6 @@
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
-                "safety_behaviour_input_state_description": "Warning! The \"Switch output according to input state\" setting applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "outputs_safe_state_description": "Outputs state after module power on (if the \"Safe state\" option is selected in the \"Outputs State After Power On\" setting) and in the safe mode, if the transition to the safe state is activated",
 
                 "sp_title": "Short Press",
@@ -1256,7 +1254,6 @@
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
-                "safety_behaviour_input_state_description": "Внимание! Настройка \"Установить выход согласно состоянию входа\" применима только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов настройка будет проигнорирована.",
                 "Outputs State After Power On": "Состояния выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",

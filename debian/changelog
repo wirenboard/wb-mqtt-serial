@@ -1,13 +1,16 @@
-wb-mqtt-serial (2.284.1) stable; urgency=medium
+wb-mqtt-serial (2.285.0) stable; urgency=medium
 
   * WB-MR, WB-MRWM2, WB-MAO4, WB-MDM3, WB-LED, WB-MWAC templates: remove
     parameter descriptions that repeat the parameter title and unused
-    translations, clarify the latching switch notes for the "According to
-    inputs" and "Switch output according to input state" options
+    translations
   * WB-MAO4, WB-MDM3 templates: fix swapped descriptions of the increase and
     decrease rate parameters
+  * WB-MR, WB-MRWM2 templates: the "Switch output according to input state"
+    safety behaviour is shown only for an output whose input is in the
+    latching switch mode, the "According to inputs" power on state is shown
+    only if at least one input is in the latching switch mode
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 05 Oct 2026 18:16:54 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 06 Oct 2026 10:33:55 +0300
 
 wb-mqtt-serial (2.284.0) stable; urgency=medium
 

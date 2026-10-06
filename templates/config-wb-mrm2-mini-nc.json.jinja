@@ -78,17 +78,11 @@
                 "title": "Safety Mode",
                 "id": "g_safety"
             },
-            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
-                {% if safety_fw -%}
-                "fw": "{{safety_fw}}",
-                "description": "safety_behaviour_input_state_description",
-                {% endif -%}
                 "group": "g_safety"
             },
-            {% endfor -%}
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
@@ -356,7 +350,7 @@
                     "Off"
                 ]
             },
-            {% for safety_fw in ["", SAFETY_ACCORDING_TO_INPUT_FW] -%}
+            {% for latching, safety_fw in [(false, ""), (true, ""), (true, SAFETY_ACCORDING_TO_INPUT_FW)] -%}
             {
                 "id": "out{{out_num}}_safety_behaviour",
                 "title": "Output {{out_num}}",
@@ -373,7 +367,8 @@
                     "Don't change output state",
                     "Switch output to safety state"{% if safety_fw %},
                     "Switch output according to input state"{% endif %}
-                ]
+                ],
+                "condition": "in{{out_num}}_mode{{ '==' if latching else '!=' }}1"
             },
             {% endfor -%}
             {
@@ -533,18 +528,23 @@
                 "condition": "out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
+            {% for any_latching in [true, false] -%}
             {
                 "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
+                {% if any_latching -%}
                 "description": "outputs_state_after_power_on_description",
+                {% endif -%}
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [0, 1, 2],
+                {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
-                "enum_titles": ["Safe state", "Restore last state", "According to inputs"],
+                "enum_titles": ["Safe state", "Restore last state"{% if any_latching %}, "According to inputs"{% endif %}],
+                "condition": "{% for in_num in range(1, OUTPUTS_NUMBER + 1) %}in{{in_num}}_mode{{ '==' if any_latching else '!=' }}1{% if not loop.last %}{{ '||' if any_latching else '&&' }}{% endif %}{% endfor %}",
                 "order": 1,
                 "group": "g_outputs"
             },
+            {% endfor -%}
             {
                 "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
@@ -863,7 +863,6 @@
             "en": {
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
                 "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" setting applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
-                "safety_behaviour_input_state_description": "Warning! The \"Switch output according to input state\" setting applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
@@ -1001,7 +1000,6 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
-                "safety_behaviour_input_state_description": "Внимание! Настройка \"Установить выход согласно состоянию входа\" применима только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов настройка будет проигнорирована.",
                 "Don't change output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
                 "Switch output according to input state": "Установить выход согласно состоянию входа",
