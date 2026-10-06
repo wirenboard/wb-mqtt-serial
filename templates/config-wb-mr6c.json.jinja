@@ -13,6 +13,10 @@
 {% set FIRST_INPUT = 0 -%}
 {% set SAFETY_ACCORDING_TO_INPUT_FW = "1.27.0" -%}
 {% set TIMER_AUTORESET_FW = "1.28.0" -%}
+{# (fw, max) of the input debounce time -#}
+{% set DEBOUNCE_FW_VARIANTS = [("", 250), ("1.19.0", 2000)] -%}
+{# (fw, min) of the curtain open and close time: 0 (no timeout) is allowed since 1.24.0 -#}
+{% set CURTAIN_TIME_FW_VARIANTS = [("1.21.0", 1), ("1.24.0", 0)] -%}
 {
     "title": "template_title",
     "device_type": "{{ device_type }}",
@@ -106,13 +110,11 @@
             {
                 "title": "Startup Delay (s)",
                 "id": "gg_startup_delay_params",
-                "description": "startup_delay_description",
                 "group": "g_delays"
             },
             {
                 "title": "Restart Delay (s)",
                 "id": "gg_restart_delay_params",
-                "description": "restart_delay_description",
                 "group": "g_delays"
             },
             {
@@ -226,6 +228,7 @@
                 "order": 1
             },
             {% endif -%}
+            {% for debounce_fw, debounce_max in DEBOUNCE_FW_VARIANTS -%}
             {
                 "id": "in{{in_num}}_debounce_ms",
                 "title": "debounce_time_title",
@@ -236,12 +239,16 @@
                 "address": {{20 + in_num - 1}},
                 {% endif -%}
                 "reg_type": "holding",
+                {% if debounce_fw -%}
+                "fw": "{{ debounce_fw }}",
+                {% endif -%}
                 "min": 0,
-                "max": 2000,
+                "max": {{ debounce_max }},
                 "default": 50,
                 "group": "g_in{{in_num}}",
                 "order": 2
             },
+            {% endfor -%}
             {
                 "id": "in{{in_num}}_lp_hold_time",
                 "group": "gg_in{{in_num}}_press_params",
@@ -549,7 +556,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "on_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==1"
             },
             {
@@ -564,7 +570,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "off_delay_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==2"
             },
             {
@@ -579,7 +584,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "on_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6)"
             },
             {
@@ -594,7 +598,6 @@
                 "max": 6500,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "off_pulse_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&(out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7)"
             },
             {
@@ -609,7 +612,6 @@
                 "max": 65000,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "cyclic_on_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
             {
@@ -624,7 +626,6 @@
                 "max": 65000,
                 "default": 3,
                 "fw": "1.25.0",
-                "description": "cyclic_off_time_description",
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
@@ -673,36 +674,44 @@
                 "order": 1,
                 "fw": "1.21.0"
             },
+            {% for curtain_time_fw, curtain_time_min in CURTAIN_TIME_FW_VARIANTS -%}
             {
                 "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
+                {% if curtain_time_min == 0 -%}
                 "description": "curtain_zero_time_description",
+                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "default": 10.0,
-                "min": 0,
+                "min": {{ curtain_time_min }},
                 "max": 600.0,
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1",
-                "fw": "1.21.0"
+                "fw": "{{ curtain_time_fw }}"
             },
+            {% endfor -%}
+            {% for curtain_time_fw, curtain_time_min in CURTAIN_TIME_FW_VARIANTS -%}
             {
                 "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
+                {% if curtain_time_min == 0 -%}
                 "description": "curtain_zero_time_description",
+                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "default": 10.0,
-                "min": 0,
+                "min": {{ curtain_time_min }},
                 "max": 600.0,
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1",
-                "fw": "1.21.0"
+                "fw": "{{ curtain_time_fw }}"
             },
+            {% endfor -%}
             {
                 "id": "curtain{{curtain_num}}_deadtime",
                 "title": "Dead time (ms)",
@@ -1121,10 +1130,10 @@
                 "debounce_time_title": "Debounce Time (ms)",
 
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
-                "curtain_zero_time_description": "Starting from v1.24.0 you can choose 0 or 1-600 seconds. Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
+                "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
@@ -1143,16 +1152,8 @@
                 {% endfor -%}
 
                 "Startup Delay (s)": "Startup Delay When Power On (s)",
-                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)",
-                "startup_delay_description": "0...999 s",
-                "restart_delay_description": "0...999 s",
+                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)"
 
-                "on_delay_description": "0.1...6500",
-                "off_delay_description": "0.1...6500",
-                "on_pulse_description": "0.1...6500",
-                "off_pulse_description": "0.1...6500",
-                "cyclic_on_time_description": "1...65000",
-                "cyclic_off_time_description": "1...65000"
             },
             "ru": {
                 "template_title": "{{ title_ru}}",
@@ -1244,7 +1245,7 @@
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
-                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. На прошивках до 1.19.0 максимально возможное время 250 мс",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
 
                 "Off": "Выключен",
                 "On": "Включен",
@@ -1275,8 +1276,6 @@
 
                 "Startup Delay (s)": "Задержка включения при подаче питания (с)",
                 "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
-                "startup_delay_description": "0...999 с",
-                "restart_delay_description": "0...999 с",
 
                 "Function": "Функция",
                 "Not Used": "Не используется",
@@ -1303,7 +1302,7 @@
                 {% endfor -%}
 
                 "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
-                "curtain_zero_time_description": "Начиная с прошивки 1.24.0 можно выбрать 0 или 1-600 секунд. Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
+                "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",

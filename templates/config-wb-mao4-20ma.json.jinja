@@ -8,6 +8,8 @@
 
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{# (fw, min) of the safety and power up action levels: the newer firmware allows 0% -#}
+{% set LEVEL_FW_VARIANTS = [("", 0.1), ("2.8.0", 0)] -%}
 {% set PRESS_TYPES = ["single", "long", "double", "shortlong"] %}
 
 {
@@ -412,13 +414,19 @@
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
+            {% for level_fw, level_min in LEVEL_FW_VARIANTS -%}
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
                 "title": "Level (%)",
+                {% if level_min == 0 -%}
                 "description": "level_after_actions_description",
+                {% endif -%}
                 "reg_type": "holding",
+                {% if level_fw -%}
+                "fw": "{{ level_fw }}",
+                {% endif -%}
                 "address": {{656 + ch_number - 1}},
-                "min": 0,
+                "min": {{ level_min }},
                 "max": 100,
                 "scale": 0.1,
                 "default": 50,
@@ -426,6 +434,7 @@
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
+            {% endfor -%}
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
@@ -441,13 +450,19 @@
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
+            {% for level_fw, level_min in LEVEL_FW_VARIANTS -%}
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
                 "title": "Level (%)",
+                {% if level_min == 0 -%}
                 "description": "level_after_actions_description",
+                {% endif -%}
                 "reg_type": "holding",
+                {% if level_fw -%}
+                "fw": "{{ level_fw }}",
+                {% endif -%}
                 "address": {{672 + ch_number - 1}},
-                "min": 0,
+                "min": {{ level_min }},
                 "max": 100,
                 "default": 50,
                 "scale": 0.1,
@@ -455,6 +470,7 @@
                 "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
+            {% endfor -%}
             {% endfor -%}
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
             {
@@ -705,7 +721,7 @@
                 "level_0_current_description": "If channel is turned off or level is set to 0%, output current will be equal to the specified value",
                 "level_100_current_description": "If level is set to 100% and channel is turned on, output current will be equal to the specified value",
 
-                "level_after_actions_description": "Starting from firmware v2.8.0 it is possible to set the level to 0% (channel off)",
+                "level_after_actions_description": "It is possible to set the level to 0% (channel off)",
 
                 "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
                 "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
@@ -779,7 +795,7 @@
                 "Current at 100% Level (mA)": "Значение выходного тока при 100% уровне (мА)",
                 "level_0_current_description": "Если канал выключен либо уровень установлен на 0%, выходной ток будет соответствовать заданному значению",
                 "level_100_current_description": "Если уровень установлен на 100% и канал включен, выходной ток будет соответствовать заданному значению",
-                "level_after_actions_description": "Начиная с версии прошивки 2.8.0 возможно установить уровень на 0% (канал выключен)",
+                "level_after_actions_description": "Можно установить уровень на 0% (канал выключен)",
                 "Level Rates": "Плавное изменение уровня",
                 "Decrement Rate (ms/%)": "Темп изменения уровня в сторону уменьшения (мс/%)",
                 "Increment Rate (ms/%)": "Темп изменения уровня в сторону увеличения (мс/%)",

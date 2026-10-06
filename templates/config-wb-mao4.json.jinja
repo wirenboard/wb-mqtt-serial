@@ -8,6 +8,8 @@
 
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{# (fw, min) of the safety and power up action levels: the newer firmware allows 0% -#}
+{% set LEVEL_FW_VARIANTS = [("2.5.0", 1), ("2.8.0", 0)] -%}
 {% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
 {% set LIGHT_SCENES_NUMBER = 8 -%}
 
@@ -607,20 +609,24 @@
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
+            {% for level_fw, level_min in LEVEL_FW_VARIANTS -%}
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
+                {% if level_min == 0 -%}
                 "description": "level_after_actions_description",
+                {% endif -%}
                 "reg_type": "holding",
-                "fw": "2.5.0",
+                "fw": "{{ level_fw }}",
                 "address": {{656 + ch_number - 1}},
-                "min": 0,
+                "min": {{ level_min }},
                 "max": 100,
                 "default": 50,
                 "required": true,
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
+            {% endfor -%}
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
@@ -637,20 +643,24 @@
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
+            {% for level_fw, level_min in LEVEL_FW_VARIANTS -%}
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
+                {% if level_min == 0 -%}
                 "description": "level_after_actions_description",
+                {% endif -%}
                 "reg_type": "holding",
-                "fw": "2.5.0",
+                "fw": "{{ level_fw }}",
                 "address": {{672 + ch_number - 1}},
-                "min": 0,
+                "min": {{ level_min }},
                 "max": 100,
                 "default": 50,
                 "required": true,
                 "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
+            {% endfor -%}
             {% endfor -%}
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
             {
@@ -891,7 +901,7 @@
                 "Channel {{ch_number}}": "Channel {{ch_number}} Voltage",
                 {% endfor -%}
 
-                "level_after_actions_description": "Starting from firmware v2.8.0 it is possible to set level to 0% (channel off)",
+                "level_after_actions_description": "It is possible to set level to 0% (channel off)",
 
                 "increase_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will increase instantly",
                 "decrease_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will decrease instantly",
@@ -900,7 +910,7 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
-                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.5.0",
+                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. It is necessary to define actions when the scene light is turned on or off",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters"
@@ -962,7 +972,7 @@
                 "Dimming level increment rate (ms/%)": "Темп увеличения уровня яркости (мс/%)",
                 "Action repeat time (ms)": "Длительность периода повторения действий (мс)",
 
-                "level_after_actions_description": "Начиная с версии прошивки 2.8.0 возможно установить уровень на 0% (канал выключен)",
+                "level_after_actions_description": "Можно установить уровень на 0% (канал выключен)",
 
                 "Input Mode": "Режим работы входа",
                 "Button": "Кнопка без фиксации",
@@ -970,7 +980,7 @@
                 "Action when Switch is On": "Действие в положении \"включено\"",
                 "Action when Switch is Off": "Действие в положении \"выключено\"",
 
-                "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Для сцены обязательно настраивать действия при включении и выключении. Доступно с версии прошивки 2.5.0",
+                "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Для сцены обязательно настраивать действия при включении и выключении",
                 "Scene Light On/Off Condition": "Условие включенного света сцены",
                 "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
                 "Scene Light is on if all used channels are on. Otherwise light is off": "Свет сцены включен, если все используемые каналы включены. Иначе свет выключен",

@@ -1,5 +1,7 @@
 {% set INPUTS_NUMBER = 6 -%}
 {% set OUTPUTS_NUMBER = 3 -%}
+{# (fw, min) of the safety and power up action levels: the newer firmware allows 0% -#}
+{% set LEVEL_FW_VARIANTS = [("2.8.0", 1), ("2.11.0", 0)] -%}
 {% set PRESS_TYPES = ["single", "long", "double", "shortlong"] -%}
 
 {
@@ -305,20 +307,24 @@
                 ],
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
+            {% for level_fw, level_min in LEVEL_FW_VARIANTS -%}
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
+                {% if level_min == 0 -%}
                 "description": "level_after_actions_description",
+                {% endif -%}
                 "reg_type": "holding",
-                "fw": "2.8.0",
+                "fw": "{{ level_fw }}",
                 "address": {{656 + ch_number - 1}},
-                "min": 0,
+                "min": {{ level_min }},
                 "max": 100,
                 "default": 50,
                 "required": true,
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
+            {% endfor -%}
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
@@ -335,20 +341,24 @@
                 ],
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
+            {% for level_fw, level_min in LEVEL_FW_VARIANTS -%}
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
                 "title": "Brightness (%)",
+                {% if level_min == 0 -%}
                 "description": "level_after_actions_description",
+                {% endif -%}
                 "reg_type": "holding",
-                "fw": "2.8.0",
+                "fw": "{{ level_fw }}",
                 "address": {{672 + ch_number - 1}},
-                "min": 0,
+                "min": {{ level_min }},
                 "max": 100,
                 "default": 50,
                 "required": true,
                 "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
             },
+            {% endfor -%}
             {% endfor -%}
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
             {
@@ -746,10 +756,10 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
-                "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.8.0",
-                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.8.0",
+                "input_mode_description": "Button is the default mode",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
 
-                "level_after_actions_description": "Starting from firmware v2.11.0 it is possible to set the brightness level to 0% (channel off)",
+                "level_after_actions_description": "It is possible to set the brightness level to 0% (channel off)",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
 
@@ -830,7 +840,7 @@
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
                 "Action Repeat Time (ms)": "Длительность периода повторения действий (мс)",
 
-                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 2.8.0",
+                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации",
 
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
@@ -852,7 +862,7 @@
                 "Power Up Behaviour": "Поведение при включении питания",
                 "Set Previous State": "Установить предыдущее состояние",
 
-                "level_after_actions_description": "Начиная с версии прошивки 2.11.0 возможно установить уровень яркости на 0% (канал выключен)",
+                "level_after_actions_description": "Можно установить уровень яркости на 0% (канал выключен)",
 
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",
