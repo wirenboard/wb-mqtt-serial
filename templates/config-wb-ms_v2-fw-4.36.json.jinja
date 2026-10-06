@@ -852,6 +852,8 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
                 "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
 
+                {# Input 376/377 shows the same state as discrete 16/17 ("Input N Sensor OK"). The channel is kept
+                   per WB-STD-003 10.2 and retitled here; drop it in the next template generation (10.3). -#}
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}} Sensor Presense": "Input {{in_num}} Sensor Connected And Working",
                 {% endfor -%}
