@@ -2,15 +2,15 @@
 #include "rpc_exception.h"
 #include "rpc_helpers.h"
 
-std::string GetRPCPortDescription(const TRPCPortSettings& portSettings)
+std::string GetRPCPortDescription(const TPortSettings& portSettings)
 {
-    if (const auto* tcpPort = std::get_if<TRPCTcpPortSettings>(&portSettings)) {
+    if (const auto* tcpPort = std::get_if<TFramedTcpPortSettings>(&portSettings)) {
         return tcpPort->GetDescription();
     }
     return std::get<TSerialPortSettings>(portSettings).Device;
 }
 
-TSerialPortConnectionSettings GetRPCPortConnectionSettings(const TRPCPortSettings& portSettings)
+TSerialPortConnectionSettings GetRPCPortConnectionSettings(const TPortSettings& portSettings)
 {
     if (const auto* serialPort = std::get_if<TSerialPortSettings>(&portSettings)) {
         return *serialPort;
@@ -18,9 +18,9 @@ TSerialPortConnectionSettings GetRPCPortConnectionSettings(const TRPCPortSetting
     return TSerialPortConnectionSettings();
 }
 
-TRPCPortSettings ParseRPCPort(const Json::Value& json,
-                              bool modbusTcp,
-                              const TSerialPortConnectionSettings& defaultSerialSettings)
+TPortSettings ParseRPCPort(const Json::Value& json,
+                           bool modbusTcp,
+                           const TSerialPortConnectionSettings& defaultSerialSettings)
 {
     std::string path;
     if (WBMQTT::JSON::Get(json, "path", path) && !path.empty()) {
@@ -35,7 +35,7 @@ TRPCPortSettings ParseRPCPort(const Json::Value& json,
         (WBMQTT::JSON::Get(json, "ip", address) || WBMQTT::JSON::Get(json, "address", address)) && !address.empty() &&
         WBMQTT::JSON::Get(json, "port", port))
     {
-        return TRPCTcpPortSettings{TTcpPortSettings(address, static_cast<uint16_t>(port)), modbusTcp};
+        return TFramedTcpPortSettings{TTcpPortSettings(address, static_cast<uint16_t>(port)), modbusTcp};
     }
 
     throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);

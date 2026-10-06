@@ -3,7 +3,6 @@
 #include "rpc_templates_handler.h"
 
 #include <filesystem>
-#include <fstream>
 
 #include <wblib/utils.h>
 
@@ -18,7 +17,6 @@
 
 namespace
 {
-    const std::string TEMPLATE_IN_USE_ERROR = "template-in-use";
     const std::string JSON_SUFFIX = ".json";
 
     Json::Value ParseTemplateContent(const std::string& content)
@@ -77,23 +75,11 @@ namespace
         return count;
     }
 
-    void WriteFileAtomically(const std::filesystem::path& path, const std::string& content)
+    void WriteTemplateFile(const std::filesystem::path& path, const std::string& content)
     {
-        auto tmpPath = path.string() + ".tmp";
         try {
-            {
-                std::ofstream file;
-                OpenWithException(file, tmpPath);
-                file << content;
-                file.flush();
-                if (!file.good()) {
-                    throw std::runtime_error("Failed to write file: " + tmpPath);
-                }
-            }
-            std::filesystem::rename(tmpPath, path);
+            WriteFileAtomically(path.string(), content);
         } catch (const std::exception& e) {
-            std::error_code ec;
-            std::filesystem::remove(tmpPath, ec);
             throw TRPCException("Failed to write template file: " + std::string(e.what()),
                                 TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
@@ -106,16 +92,20 @@ TRPCTemplatesHandler::TRPCTemplatesHandler(const std::string& userTemplatesDir,
                                            TDevicesConfedSchemasMap& deviceConfedSchemas,
                                            const Json::Value& groupTranslations,
                                            const std::string& requestUploadSchemaFilePath,
-                                           const std::string& requestDeleteSchemaFilePath)
+                                           const std::string& requestDeleteSchemaFilePath,
+                                           TSerialDriverCore& serialDriverCore)
     : UserTemplatesDir(userTemplatesDir),
       ConfigPath(configPath),
       Templates(templates),
       DeviceConfedSchemas(deviceConfedSchemas),
       GroupTranslations(groupTranslations),
       RequestUploadTemplateSchema(LoadRPCRequestSchema(requestUploadSchemaFilePath, "templates/Upload")),
-      RequestDeleteTemplateSchema(LoadRPCRequestSchema(requestDeleteSchemaFilePath, "templates/Delete"))
+      RequestDeleteTemplateSchema(LoadRPCRequestSchema(requestDeleteSchemaFilePath, "templates/Delete")),
+      SerialDriverCore(serialDriverCore)
 {}
 
+// A config/Save started just before the request may not have set the busy flag yet,
+// then the check uses the old file while the new config is loaded with the template being changed
 void TRPCTemplatesHandler::CheckTemplateIsNotInUse(const std::string& deviceType, bool force)
 {
     if (force) {
@@ -143,6 +133,9 @@ Json::Value TRPCTemplatesHandler::MakeSingleDeviceTypeResponse(const PDeviceTemp
 
 Json::Value TRPCTemplatesHandler::UploadTemplate(const Json::Value& request)
 {
+    if (SerialDriverCore.IsBusy()) {
+        throw TRPCException(CONFIG_BUSY_ERROR, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
     ValidateRPCRequest(request, RequestUploadTemplateSchema);
     auto lang = request.get("lang", "en").asString();
     auto force = request.get("force", false).asBool();
@@ -187,7 +180,7 @@ Json::Value TRPCTemplatesHandler::UploadTemplate(const Json::Value& request)
 
     std::error_code ec;
     std::filesystem::create_directories(UserTemplatesDir, ec);
-    WriteFileAtomically(finalPath, content);
+    WriteTemplateFile(finalPath, content);
 
     try {
         for (const auto& type: Templates->UpdateTemplate(finalPath.string())) {
@@ -216,6 +209,9 @@ Json::Value TRPCTemplatesHandler::UploadTemplate(const Json::Value& request)
 
 Json::Value TRPCTemplatesHandler::DeleteTemplate(const Json::Value& request)
 {
+    if (SerialDriverCore.IsBusy()) {
+        throw TRPCException(CONFIG_BUSY_ERROR, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
     ValidateRPCRequest(request, RequestDeleteTemplateSchema);
     auto lang = request.get("lang", "en").asString();
     auto force = request.get("force", false).asBool();

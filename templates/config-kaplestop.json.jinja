@@ -45,7 +45,7 @@
         ],
         "parameters": {
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
-            "in{{ ch_num }}_type":    {"title":"Mode",                "address": {{(20-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "order": 1, "required": true, "default": 0, "enum": [0,1,2,3,4,5,6,7], "enum_titles": ["None", "Temperature NTC 10k", "KS-R100", "KS-B500", "KS-R0", "KS-Zone", "KS-PP0", "Датчик с выходом «сухой контакт»"]},
+            "in{{ ch_num }}_type":    {"title":"Mode",                "address": {{(20-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "order": 1, "required": true, "default": 0, "enum": [0,1,2,3,4,5,6,7], "enum_titles": ["None", "Temperature NTC 10k", "KS-R100", "KS-B500", "KS-R0", "KS-Zone", "KS-PP0", "Dry Contact Sensor"]},
             "in{{ ch_num }}_bl_res":  {"title":"Classic-Level (kOhm)","address": {{(60-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "required": true, "default":35, "min": 5, "max":100, "condition": "in{{ ch_num }}_type==6"},
             "in{{ ch_num }}_bl_time": {"title":"Classic-Time (sec)",  "address": {{(80-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "required": true, "default":20, "min": 5, "max":300, "condition": "in{{ ch_num }}_type==6"},
             {% endfor -%}
@@ -104,7 +104,7 @@
                 "KS-B500": "Линейный датчик скрытой протечки KapleStop KS-B500",
                 "KS-PP0": "Датчик залития пола классический (KapleStop KS-Floor) / Датчик засора канализации KapleStop KS-PP0",
                 "KS-Zone": "Цепочка линейных датчиков протечки KapleStop KS-Z15 x N + KS-R100",
-                "State": "Датчик с выходом «сухой контакт»",
+                "Dry Contact Sensor": "Датчик с выходом «сухой контакт»",
 
                 "Mode": "Тип датчика",
                 "Classic-Level (kOhm)": "Чуствительность электродов (кОм)",

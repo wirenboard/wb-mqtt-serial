@@ -11,6 +11,15 @@
 constexpr int MAX_RPC_RETRIES = 2;
 constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
+//! Machine-readable errors passed in "error.data" of a reply
+const std::string CONFIG_INVALID_ERROR = "config-invalid";
+const std::string CONFIG_BUSY_ERROR = "config-busy";
+const std::string REQUEST_CANCELLED_ERROR = "request-cancelled";
+const std::string PORT_BUSY_ERROR = "port-busy";
+const std::string WRITE_FAILED_ERROR = "write-failed";
+const std::string POLLING_RESTART_FAILED_ERROR = "polling-restart-failed";
+const std::string TEMPLATE_IN_USE_ERROR = "template-in-use";
+
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(
     const Json::Value& request,
     const TSerialPortConnectionSettings& defaults = TSerialPortConnectionSettings());
@@ -69,6 +78,9 @@ void MarkUnsupportedRegisterItems(TPort& port,
  * @throws TRPCException with TRPCResultCode::RPC_WRONG_PARAM_VALUE code, if the request does not conform to the schema.
  */
 void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema);
+
+//! Answers a request whose task is cancelled
+void AnswerRequestCancelled(const WBMQTT::TMqttRpcServer::TErrorCallback& onError);
 
 /**
  * @brief Loads the JSON schema for an RPC request from a specified file.

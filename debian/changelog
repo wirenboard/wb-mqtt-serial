@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.281.1) stable; urgency=medium
+wb-mqtt-serial (2.284.1) stable; urgency=medium
 
   * Remove non-existent 1-Wire sensor presence registers (376, 377) from the
     WB-MS v.2 template
@@ -6,6 +6,29 @@ wb-mqtt-serial (2.281.1) stable; urgency=medium
     0 … 1200 °C in templates for WB-M1W2, WB-MIR and WB-MS
 
  -- DenisN <denis.nikolaev@wirenboard.com>  Wed, 30 Sep 2026 09:27:14 +0300
+
+wb-mqtt-serial (2.284.0) stable; urgency=medium
+
+  * Add a test for Cyrillic letters in templates
+  * Fix Cyrillic letters in templates
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 05 Oct 2026 13:06:38 +0300
+
+wb-mqtt-serial (2.283.0) stable; urgency=medium
+
+  * Add config/Save RPC: a saved configuration is applied without restarting
+    the service. The configuration is no longer saved through wb-mqtt-confed
+  * The service keeps running without polling if the configuration can not
+    be applied, so a fixed configuration can be saved
+  * The -J command line option is removed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 05 Oct 2026 14:16:11 +0500
+
+wb-mqtt-serial (2.282.0) stable; urgency=medium
+
+  * Add the "title" property to channels in device config
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 28 Sep 2026 12:00:00 +0300
 
 wb-mqtt-serial (2.281.0) stable; urgency=medium
 

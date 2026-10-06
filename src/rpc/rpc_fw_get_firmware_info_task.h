@@ -15,7 +15,7 @@ public:
     TFwGetFirmwareInfoTask(uint8_t slaveId,
                            const std::string& protocol,
                            const std::string& releaseSuite,
-                           const TRPCPortSettings& portSettings,
+                           const TPortSettings& portSettings,
                            std::shared_ptr<TFwDownloader> downloader,
                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
@@ -28,7 +28,7 @@ private:
     uint8_t SlaveId;
     std::string Protocol;
     std::string ReleaseSuite;
-    TRPCPortSettings PortSettings;
+    TPortSettings PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;

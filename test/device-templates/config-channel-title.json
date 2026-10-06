@@ -1,0 +1,39 @@
+{
+    "device_type": "channel_title",
+    "device": {
+        "name": "Channel title",
+        "id": "channel_title",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s16",
+                "address": 1
+            },
+            {
+                "name": "Humidity",
+                "title": "Template title",
+                "reg_type": "input",
+                "format": "s16",
+                "address": 2
+            },
+            {
+                "name": "Voltage",
+                "reg_type": "input",
+                "format": "s16",
+                "address": 3,
+                "hidden": true
+            }
+        ],
+        "translations": {
+            "en": {
+                "Humidity": "Relative humidity"
+            },
+            "ru": {
+                "Temperature": "Температура",
+                "Humidity": "Влажность",
+                "Voltage": "Напряжение"
+            }
+        }
+    }
+}

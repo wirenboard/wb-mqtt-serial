@@ -1,4 +1,5 @@
 #pragma once
+#include "device_parameters_cache.h"
 #include "rpc_port_driver_list.h"
 #include "templates_map.h"
 
@@ -6,58 +7,14 @@
 
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
 
-class TRPCDeviceParametersCache
-{
-public:
-    TRPCDeviceParametersCache() = default;
-
-    /**
-     * Registers DeviceConnectionStateChanged callbacks to remove cached data if device connection lost.
-     */
-    void RegisterCallbacks(PHandlerConfig handlerConfig);
-
-    /**
-     * Creates cache item identifier string based on simplified port description and device address.
-     * For example: "/dev/ttyRS485-2:12" or "192.168.18.7:2321:33"
-     */
-    std::string GetId(const TPort& port, const std::string& slaveId) const;
-
-    /**
-     * Puts device parameters data into cache.
-     * This method is thread safe.
-     */
-    void Add(const std::string& id, const Json::Value& value);
-
-    /**
-     * Removes device parameters data from cache.
-     * This method is thread safe.
-     */
-    void Remove(const std::string& id);
-
-    /**
-     * Returns true if cache contains device parameters data or false otherwise.
-     * This method is thread safe.
-     */
-    bool Contains(const std::string& id) const;
-
-    /**
-     * Returns device parameters data if cache contains it or defaultData otherwise.
-     * This method is thread safe.
-     */
-    const Json::Value& Get(const std::string& id, const Json::Value& defaultValue = Json::Value()) const;
-
-private:
-    mutable std::mutex Mutex;
-    std::unordered_map<std::string, Json::Value> DeviceParameters;
-};
-
 class TRPCDeviceHelper
 {
 public:
+    //! deviceFromConfig null makes a device from the template of the request
     TRPCDeviceHelper(const Json::Value& request,
                      const TSerialDeviceFactory& deviceFactory,
                      PTemplateMap templates,
-                     TSerialClientTaskRunner& serialClientTaskRunner);
+                     PSerialDevice deviceFromConfig);
 
     TDeviceProtocolParams ProtocolParams;
     PSerialDevice Device;
@@ -104,7 +61,6 @@ public:
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
                       TSerialClientTaskRunner& serialClientTaskRunner,
-                      TRPCDeviceParametersCache& parametersCache,
                       WBMQTT::PMqttRpcServer rpcServer);
 
 private:
@@ -119,7 +75,6 @@ private:
 
     PTemplateMap Templates;
     TSerialClientTaskRunner& SerialClientTaskRunner;
-    TRPCDeviceParametersCache& ParametersCache;
 
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,

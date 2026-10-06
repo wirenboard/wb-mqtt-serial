@@ -9,7 +9,7 @@
 TFwRestoreTask::TFwRestoreTask(uint8_t slaveId,
                                const std::string& protocol,
                                const std::string& releaseSuite,
-                               const TRPCPortSettings& portSettings,
+                               const TPortSettings& portSettings,
                                std::shared_ptr<TFwDownloader> downloader,
                                PFwUpdateState state,
                                PFwUpdateLock updateLock,
@@ -31,6 +31,11 @@ ISerialClientTask::TRunResult TFwRestoreTask::Run(PFeaturePort port,
                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                   const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        ReleaseLock();
+        AnswerRequestCancelled(OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     try {
         if (!port->IsOpen()) {
             port->Open();
