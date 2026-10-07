@@ -196,7 +196,9 @@
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
-                "default": 1,
+                "default": 2,
+                "min": 0,
+                "max": 1200,
                 "group": "g_w1_bus",
                 "order": 2
             },
@@ -822,7 +824,7 @@
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
-                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
+                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 2",
                 "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
                 "w1_sensors_description": "{{
@@ -850,6 +852,12 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
                 "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
 
+                {# Input 376/377 shows the same state as discrete 16/17 ("Input N Sensor OK"). The channel is kept
+                   per WB-STD-003 10.2 and retitled here; drop it in the next template generation (10.3). -#}
+                {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}} Sensor Presense": "Input {{in_num}} Sensor Connected And Working",
+                {% endfor -%}
+
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
                 "sens{{sens_num}}_temp_offset_deg_title": "Sensor {{sens_num}} Temperature Offset (°C)"{% if not loop.last %},{% endif %}
                 {% endfor -%}
@@ -869,7 +877,7 @@
                 {% endfor -%}
 
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
-                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 2",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
                 "w1_sensors_description": "{{
@@ -903,7 +911,7 @@
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "1-Wire Bus {{in_num}}": "Шина 1-Wire {{in_num}}",
                 "Input {{in_num}} Last Valid Temp": "Последняя действ. температура на входе {{in_num}}",
-                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} присутствует",
+                "Input {{in_num}} Sensor Presense": "Датчик на входе {{in_num}} подключен и работает",
                 "Input {{in_num}} Sensor Supply": "Питание датчика на входе {{in_num}}",
                 "New Sensors On The Bus {{in_num}}": "Новые датчики на шине {{in_num}}",
                 "New Sensors Saved On The Bus {{in_num}}": "Сохранено новых датчиков на шине {{in_num}}",

@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.284.1) stable; urgency=medium
+
+  * Set the 1-Wire erroneous readings filter default to 2 °C and limit it to
+    0 … 1200 °C in templates for WB-M1W2, WB-MIR and WB-MS
+  * WB-MS v.2 fw 4.36: rename the "Input N Sensor Presense" channel to
+    "Input N Sensor Connected And Working" in the web UI, as it shows the same
+    state as "Input N Sensor OK". The MQTT topic is unchanged
+
+ -- Dmitry Kuryatnikov <dmitry.kuryatnikov@wirenboard.com>  Tue, 06 Oct 2026 13:52:22 +0300
+
 wb-mqtt-serial (2.284.0) stable; urgency=medium
 
   * Add a test for Cyrillic letters in templates
