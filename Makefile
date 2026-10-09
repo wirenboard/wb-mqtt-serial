@@ -107,8 +107,6 @@ install:
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial/schemas
 	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 
-	install -Dm0644 config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
-
 	for cfg in configs/config.json.*; do \
 	    board=$${cfg##*.}; \
 	    install -Dm0644 $$cfg $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.$$board; \

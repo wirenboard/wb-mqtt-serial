@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.284.2) stable; urgency=medium
+
+  * Drop /etc/wb-mqtt-serial.conf.sample
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 05 Oct 2026 11:20:00 +0400
+
 wb-mqtt-serial (2.284.1) stable; urgency=medium
 
   * Set the 1-Wire erroneous readings filter default to 2 °C and limit it to

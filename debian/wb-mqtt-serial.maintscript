@@ -1,0 +1,1 @@
+rm_conffile /etc/wb-mqtt-serial.conf.sample 2.284.2~
