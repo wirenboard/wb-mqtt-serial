@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.288.3) stable; urgency=medium
+
+  * Eliwell IDPlus 9xx: fix swapped Operating Mode (HC) titles, rename the
+    Standby and pressure alarm channels in the web UI
+  * Eliwell ID 985 LX (WB-REF-U): show Standby Mode as Controller Running
+  * Eliwell IDPlus 9xx and ID 985 LX (WB-REF-U): commands are push buttons
+  * Fix typos in Eliwell templates
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 26 Oct 2026 15:16:44 +0300
+
 wb-mqtt-serial (2.288.2) stable; urgency=medium
 
   * Fix titles and translations in the NEVOTON BCG-1.0.4-W template

@@ -110,8 +110,8 @@
                 "address": 49212,
                 "format": "u8",
                 "enum": [0, 1],
-                "enum_titles": ["heating", "cooling"],
-                "default": 1,
+                "enum_titles": ["cooling", "heating"],
+                "default": 0,
                 "group": "compressor",
                 "order": 5
             },
@@ -128,7 +128,7 @@
                 "order": 6
             },
             "waiting_time_with_faulty_probe": {
-                "title": "Waitnig Time With Faulty Pb1 Probe (OFt)",
+                "title": "Waiting Time With Faulty Pb1 Probe (OFt)",
                 "reg_type": "holding",
                 "address": 49218,
                 "format": "u8",
@@ -427,7 +427,7 @@
                 "order": 9
             },
             "fans_off_time_night_mode": {
-                "title": "Fans Off Time In Night Mode (Fnn)",
+                "title": "Fans Off Time In Night Mode (FnF)",
                 "reg_type": "holding",
                 "address": 49279,
                 "format": "u8",
@@ -1058,7 +1058,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrost",
-                    "reducet set",
+                    "reduced set",
                     "standby",
                     "reset HACCP alarms",
                     "disable HACCP alarms",
@@ -1078,7 +1078,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrost",
-                    "reducet set",
+                    "reduced set",
                     "standby",
                     "reset HACCP alarms",
                     "disable HACCP alarms",
@@ -1445,6 +1445,15 @@
                 "min": 0,
                 "group": "control"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "Standby": "Controller Running",
+                "Auxilary Output On": "Auxiliary Output On",
+                "Auxilary Output Off": "Auxiliary Output Off",
+                "Critical Pressure": "Pressure Switch Alarm, Manual Reset (PAL)",
+                "Pressure Switch": "Pressure Switch Alarm, Auto Reset (nPA)"
+            }
+        }
     }
 }
