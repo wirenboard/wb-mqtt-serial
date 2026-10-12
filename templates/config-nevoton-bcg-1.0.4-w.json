@@ -1,0 +1,810 @@
+{
+    "device_type": "nevoton-bcg-1.0.4-w",
+    "group": "g-adapter",
+    "device": {
+        "name": "NEVOTON BCG-1.0.4-W",
+        "id": "nevoton_bcg_1_0_4_w",
+        "groups": [
+            {
+                "id": "g_boiler_state"
+            },
+            {
+                "id": "g_heating"
+            },
+            {
+                "id": "g_dhw"
+            },
+            {
+                "id": "g_opentherm"
+            },
+            {
+                "id": "g_hw_info"
+            },
+            {
+                "id": "g_debug"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "heating_options",
+                "readonly": true,
+                "enum": [1, 2, 0],
+                "enum_titles": [
+                    "heating_options_enum_0",
+                    "heating_options_enum_1",
+                    "heating_options_enum_2"
+                ],
+                "default": 1,
+                "group": "g_heating"
+            },
+            {
+                "id": "ch_heating_mode",
+                "address": 224,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "ch_heating_mode_enum_0",
+                    "ch_heating_mode_enum_1"
+                ],
+                "default": 0,
+                "group": "g_heating",
+                "condition": "heating_options==1"
+            },
+            {
+                "id": "climate_curve_number",
+                "description": "climate_curve_number_description",
+                "address": 206,
+                "min": 1,
+                "max": 17,
+                "default": 1,
+                "group": "g_heating",
+                "condition": "heating_options==2"
+            },
+            {
+                "id": "boiler_manufacturer",
+                "address": 223,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "boiler_manufacturer_enum_0",
+                    "boiler_manufacturer_enum_1",
+                    "boiler_manufacturer_enum_2",
+                    "boiler_manufacturer_enum_3"
+                ],
+                "default": 0,
+                "group": "g_heating"
+            },
+            {
+                "id": "ot_algorithm",
+                "address": 219,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "ot_algorithm_enum_0",
+                    "ot_algorithm_enum_1",
+                    "ot_algorithm_enum_2"
+                ],
+                "default": 1,
+                "group": "g_opentherm"
+            }
+        ],
+        "setup": [
+            {
+                "title": "disable direct heating setpoint control",
+                "address": 203,
+                "value": 0,
+                "condition": "(heating_options==1)||(heating_options==2)"
+            },
+            {
+                "title": "reset room temperature setpoint",
+                "address": 205,
+                "value": 0,
+                "condition": "heating_options==0"
+            },
+            {
+                "title": "set direct heating setpoint control",
+                "address": 207,
+                "value": 0,
+                "condition": "heating_options==0"
+            },
+            {
+                "title": "set room temperature sensor",
+                "address": 207,
+                "value": 1,
+                "condition": "heating_options==1"
+            },
+            {
+                "title": "set outdoor temperature sensor",
+                "address": 207,
+                "value": 2,
+                "condition": "heating_options==2"
+            }
+        ],
+        "channels": [
+            {
+                "name": "boiler_status",
+                "reg_type": "input",
+                "address": 205,
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "alarm_boiler_fault",
+                "reg_type": "input",
+                "address": "205:0:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_ch",
+                "reg_type": "input",
+                "address": "205:1:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_dhw",
+                "reg_type": "input",
+                "address": "205:2:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_flame",
+                "reg_type": "input",
+                "address": "205:3:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_ch2",
+                "reg_type": "input",
+                "address": "205:5:1",
+                "type": "switch",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_diagnostic",
+                "reg_type": "input",
+                "address": "205:6:1",
+                "type": "switch",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_master_ch",
+                "reg_type": "input",
+                "address": "205:8:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_master_dhw",
+                "reg_type": "input",
+                "address": "205:9:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_master_otc",
+                "reg_type": "input",
+                "address": "205:11:1",
+                "type": "switch",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_master_ch2",
+                "reg_type": "input",
+                "address": "205:12:1",
+                "type": "switch",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "error_code",
+                "reg_type": "input",
+                "address": 206,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_service_request",
+                "reg_type": "input",
+                "address": "229:0:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_remote_reset",
+                "reg_type": "input",
+                "address": "229:1:1",
+                "type": "switch",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "alarm_low_water_pressure",
+                "reg_type": "input",
+                "address": "229:2:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "alarm_gas_flame",
+                "reg_type": "input",
+                "address": "229:3:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "alarm_air_pressure",
+                "reg_type": "input",
+                "address": "229:4:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "alarm_overheating",
+                "reg_type": "input",
+                "address": "229:5:1",
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "alarm_boiler_connection",
+                "reg_type": "input",
+                "address": 217,
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_heating",
+                "reg_type": "input",
+                "address": 207,
+                "units": "deg C",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_dhw",
+                "reg_type": "input",
+                "address": 208,
+                "units": "deg C",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_return",
+                "reg_type": "input",
+                "address": 216,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_outdoor_boiler",
+                "reg_type": "input",
+                "address": 211,
+                "format": "s16",
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_solar_storage",
+                "reg_type": "input",
+                "address": 220,
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_solar_collector",
+                "reg_type": "input",
+                "address": 221,
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_heating2",
+                "reg_type": "input",
+                "address": 222,
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_dhw2",
+                "reg_type": "input",
+                "address": 223,
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_exhaust",
+                "reg_type": "input",
+                "address": 224,
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "level_modulation",
+                "reg_type": "input",
+                "address": 209,
+                "units": "%",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "pressure_water",
+                "reg_type": "input",
+                "address": 210,
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "bar",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_dhw_max_boiler",
+                "reg_type": "input",
+                "address": 212,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_dhw_min_boiler",
+                "reg_type": "input",
+                "address": 213,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_heating_max_boiler",
+                "reg_type": "input",
+                "address": 214,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_heating_min_boiler",
+                "reg_type": "input",
+                "address": 215,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_dhw_override",
+                "reg_type": "input",
+                "address": 218,
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "state_dhw_transfer",
+                "reg_type": "input",
+                "address": 219,
+                "type": "switch",
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "boiler_mode",
+                "address": 212,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "boiler_mode_enum_0",
+                    "boiler_mode_enum_1",
+                    "boiler_mode_enum_2",
+                    "boiler_mode_enum_3"
+                ],
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "auto_temperature_switch",
+                "address": 213,
+                "type": "switch",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_heating_min",
+                "address": 214,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "t_heating_max",
+                "address": 215,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "hysteresis_heating",
+                "address": 216,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "hysteresis_dhw",
+                "address": 217,
+                "units": "deg C",
+                "enabled": false,
+                "group": "g_boiler_state"
+            },
+            {
+                "name": "setpoint_t_dhw",
+                "address": 204,
+                "units": "deg C",
+                "min": 0,
+                "max": 80,
+                "group": "g_dhw"
+            },
+            {
+                "name": "setpoint_t_heating",
+                "address": 203,
+                "units": "deg C",
+                "min": 0,
+                "max": 80,
+                "group": "g_heating",
+                "condition": "heating_options==0"
+            },
+            {
+                "name": "setpoint_t_heating_calc",
+                "address": 203,
+                "units": "deg C",
+                "readonly": true,
+                "group": "g_heating",
+                "condition": "(heating_options==1)||(heating_options==2)"
+            },
+            {
+                "name": "sensor_type",
+                "address": 207,
+                "readonly": true,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "sensor_type_enum_0",
+                    "sensor_type_enum_1",
+                    "sensor_type_enum_2"
+                ],
+                "group": "g_heating"
+            },
+            {
+                "name": "t_room",
+                "address": 208,
+                "format": "s16",
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "min": -50,
+                "max": 60,
+                "group": "g_heating",
+                "condition": "heating_options==1"
+            },
+            {
+                "name": "t_outdoor",
+                "address": 208,
+                "format": "s16",
+                "scale": 0.1,
+                "offset": -100,
+                "round_to": 0.1,
+                "units": "deg C",
+                "min": -50,
+                "max": 60,
+                "group": "g_heating",
+                "condition": "heating_options==2"
+            },
+            {
+                "name": "setpoint_t_room",
+                "address": 205,
+                "units": "deg C",
+                "min": 0,
+                "max": 35,
+                "group": "g_heating",
+                "condition": "heating_options==1"
+            },
+            {
+                "name": "heating_status",
+                "address": 205,
+                "type": "switch",
+                "enabled": false,
+                "group": "g_heating",
+                "condition": "heating_options==2"
+            },
+            {
+                "name": "level_modulation_max",
+                "address": 222,
+                "units": "%",
+                "min": 20,
+                "max": 100,
+                "group": "g_heating"
+            },
+            {
+                "name": "state_modulation_limit",
+                "reg_type": "input",
+                "address": 226,
+                "type": "switch",
+                "group": "g_heating"
+            },
+            {
+                "name": "ot_command_type",
+                "address": 209,
+                "min": 1,
+                "max": 10,
+                "enabled": false,
+                "group": "g_opentherm"
+            },
+            {
+                "name": "ot_command_id",
+                "address": 210,
+                "enabled": false,
+                "group": "g_opentherm"
+            },
+            {
+                "name": "ot_command_data",
+                "address": 211,
+                "enabled": false,
+                "group": "g_opentherm"
+            },
+            {
+                "name": "ot_master_id",
+                "address": 218,
+                "enabled": false,
+                "group": "g_opentherm"
+            },
+            {
+                "name": "fw",
+                "reg_type": "input",
+                "address": 204,
+                "scale": 0.01,
+                "round_to": 0.01,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "device_name",
+                "reg_type": "input",
+                "address": 200,
+                "format": "string8",
+                "string_data_size": 8,
+                "type": "text",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "algorithm_type",
+                "reg_type": "input",
+                "address": 225,
+                "enabled": false,
+                "group": "g_debug"
+            },
+            {
+                "name": "debug_field_1",
+                "reg_type": "input",
+                "address": 227,
+                "enabled": false,
+                "group": "g_debug"
+            },
+            {
+                "name": "debug_field_2",
+                "reg_type": "input",
+                "address": 228,
+                "enabled": false,
+                "group": "g_debug"
+            }
+        ],
+        "translations": {
+            "en": {
+                "nevoton-bcg-1.0.4-w": "NEVOTON BCG-1.0.4-W (OpenTherm - Modbus Bridge)",
+                "g_boiler_state": "Boiler State",
+                "g_heating": "Heating Settings",
+                "g_dhw": "Hot Water Settings",
+                "g_opentherm": "OpenTherm Commands",
+                "g_hw_info": "HW Info",
+                "g_debug": "Debug",
+                "boiler_status": "Boiler Status",
+                "alarm_boiler_fault": "Boiler Fault",
+                "state_ch": "Boiler CH Mode",
+                "state_dhw": "Boiler DHW Mode",
+                "state_flame": "Boiler Flame Status",
+                "state_ch2": "Boiler CH2 Mode",
+                "state_diagnostic": "Boiler Diagnostic Indication",
+                "state_master_ch": "Master CH Enable",
+                "state_master_dhw": "Master DHW Enable",
+                "state_master_otc": "Master OTC Active",
+                "state_master_ch2": "Master CH2 Enable",
+                "error_code": "Error Code",
+                "state_service_request": "Service Request",
+                "state_remote_reset": "Remote Reset Enabled",
+                "alarm_low_water_pressure": "Low Water Pressure Alarm",
+                "alarm_gas_flame": "Gas Flame Alarm",
+                "alarm_air_pressure": "Air Pressure Alarm",
+                "alarm_overheating": "Overheating Alarm",
+                "alarm_boiler_connection": "Boiler Connection Lost",
+                "t_heating": "Heating Temperature",
+                "t_dhw": "Hot Water Temperature",
+                "t_return": "Heating Return Temperature",
+                "t_outdoor_boiler": "Boiler Outdoor Temperature",
+                "t_solar_storage": "Solar Storage Temperature",
+                "t_solar_collector": "Solar Collector Temperature",
+                "t_heating2": "CH2 Temperature",
+                "t_dhw2": "DHW2 Temperature",
+                "t_exhaust": "Exhaust Gas Temperature",
+                "level_modulation": "Burner Modulation Level",
+                "pressure_water": "Water Pressure",
+                "t_dhw_max_boiler": "Boiler DHW Setpoint Max",
+                "t_dhw_min_boiler": "Boiler DHW Setpoint Min",
+                "t_heating_max_boiler": "Boiler Heating Setpoint Max",
+                "t_heating_min_boiler": "Boiler Heating Setpoint Min",
+                "state_dhw_override": "DHW Override",
+                "state_dhw_transfer": "DHW Transfer",
+                "boiler_mode": "Boiler Mode",
+                "boiler_mode_enum_0": "Standby",
+                "boiler_mode_enum_1": "Winter",
+                "boiler_mode_enum_2": "Summer",
+                "boiler_mode_enum_3": "CH Only",
+                "auto_temperature_switch": "Auto Circuit Switch Off",
+                "t_heating_min": "Heating Min Temperature",
+                "t_heating_max": "Heating Max Temperature",
+                "hysteresis_heating": "CH Gest",
+                "hysteresis_dhw": "DHW Gest",
+                "setpoint_t_dhw": "Hot Water Setpoint",
+                "setpoint_t_heating": "Heating Setpoint",
+                "setpoint_t_heating_calc": "Calculated Heating Setpoint",
+                "sensor_type": "Temperature Sensor Type",
+                "sensor_type_enum_0": "Direct Setpoint",
+                "sensor_type_enum_1": "Room Sensor",
+                "sensor_type_enum_2": "Outdoor Sensor",
+                "t_room": "Room Temperature",
+                "t_outdoor": "Outdoor Temperature",
+                "setpoint_t_room": "Room Temperature Setpoint",
+                "heating_status": "Heating Status",
+                "level_modulation_max": "Max Modulation Level",
+                "state_modulation_limit": "Modulation Limit Supported",
+                "ot_command_type": "Command Type",
+                "ot_command_id": "Command ID",
+                "ot_command_data": "Command Data",
+                "ot_master_id": "OT Master ID",
+                "fw": "Firmware Version",
+                "device_name": "Device Name",
+                "algorithm_type": "Algorithm Type",
+                "debug_field_1": "Debug Field 1",
+                "debug_field_2": "Debug Field 2",
+                "heating_options": "Heating Options",
+                "heating_options_enum_0": "Room Temperature Sensor",
+                "heating_options_enum_1": "Outdoor Temperature Sensor",
+                "heating_options_enum_2": "Direct Heating Setpoint Control",
+                "ch_heating_mode": "CH Heating Mode",
+                "ch_heating_mode_enum_0": "Linear Mode, Calculated Coolant Temperature",
+                "ch_heating_mode_enum_1": "Constant Maximum Temperature",
+                "climate_curve_number": "Climate Curve Number",
+                "climate_curve_number_description": "1 - Most Economical, 17 - Most Intensive",
+                "ot_algorithm": "OpenTherm Algorithm",
+                "ot_algorithm_enum_0": "Fixed Interval",
+                "ot_algorithm_enum_1": "Standard",
+                "ot_algorithm_enum_2": "Fixed Interval With Synchronization",
+                "boiler_manufacturer": "Boiler Manufacturer",
+                "boiler_manufacturer_enum_0": "BAXI Ampera",
+                "boiler_manufacturer_enum_1": "ImmerGaz",
+                "boiler_manufacturer_enum_2": "ZOTA",
+                "boiler_manufacturer_enum_3": "EVAN"
+            },
+            "ru": {
+                "nevoton-bcg-1.0.4-w": "NEVOTON BCG-1.0.4-W (OpenTherm - Modbus Bridge)",
+                "g_boiler_state": "Состояние котла",
+                "g_heating": "Параметры отопления",
+                "g_dhw": "Параметры ГВС",
+                "g_opentherm": "Команды OpenTherm",
+                "g_hw_info": "Данные модуля",
+                "g_debug": "Диагностика",
+                "boiler_status": "Статус котла",
+                "alarm_boiler_fault": "Ошибка котла",
+                "state_ch": "Контур ЦО котла",
+                "state_dhw": "Контур ГВС котла",
+                "state_flame": "Состояние горелки котла",
+                "state_ch2": "Второй контур котла",
+                "state_diagnostic": "Диагностика котла",
+                "state_master_ch": "Разрешение контура ЦО",
+                "state_master_dhw": "Разрешение контура ГВС",
+                "state_master_otc": "Погодозависимый режим",
+                "state_master_ch2": "Разрешение второго контура",
+                "error_code": "Код ошибки котла",
+                "state_service_request": "Требуется обслуживание",
+                "state_remote_reset": "Дистанционный сброс разрешен",
+                "alarm_low_water_pressure": "Низкое давление воды",
+                "alarm_gas_flame": "Ошибка газа или пламени",
+                "alarm_air_pressure": "Ошибка прессостата",
+                "alarm_overheating": "Перегрев",
+                "alarm_boiler_connection": "Нет связи с котлом",
+                "t_heating": "Температура теплоносителя",
+                "t_dhw": "Температура ГВС",
+                "t_return": "Температура обратки",
+                "t_outdoor_boiler": "Уличная температура (датчик котла)",
+                "t_solar_storage": "Температура БКН",
+                "t_solar_collector": "Температура солнечного коллектора",
+                "t_heating2": "Температура второго контура",
+                "t_dhw2": "Температура ГВС 2",
+                "t_exhaust": "Температура дымовых газов",
+                "level_modulation": "Модуляция горелки",
+                "pressure_water": "Давление воды",
+                "t_dhw_max_boiler": "Максимальная уставка ГВС котла",
+                "t_dhw_min_boiler": "Минимальная уставка ГВС котла",
+                "t_heating_max_boiler": "Максимальная уставка ЦО котла",
+                "t_heating_min_boiler": "Минимальная уставка ЦО котла",
+                "state_dhw_override": "Перезапись уставки ГВС",
+                "state_dhw_transfer": "Передача температуры ГВС",
+                "boiler_mode": "Режим работы котла",
+                "boiler_mode_enum_0": "Спящий режим",
+                "boiler_mode_enum_1": "Зима - ЦО+ГВС",
+                "boiler_mode_enum_2": "Лето - только ГВС",
+                "boiler_mode_enum_3": "Только ЦО",
+                "auto_temperature_switch": "Отключение контуров при уставке",
+                "t_heating_min": "Минимальная температура теплоносителя",
+                "t_heating_max": "Максимальная температура теплоносителя",
+                "hysteresis_heating": "Гистерезис теплоносителя",
+                "hysteresis_dhw": "Гистерезис ГВС",
+                "setpoint_t_dhw": "Уставка ГВС",
+                "setpoint_t_heating": "Уставка отопления",
+                "setpoint_t_heating_calc": "Расчетная уставка отопления",
+                "sensor_type": "Тип датчика температуры",
+                "sensor_type_enum_0": "По уставке",
+                "sensor_type_enum_1": "Комнатный датчик",
+                "sensor_type_enum_2": "Уличный датчик",
+                "t_room": "Комнатная температура",
+                "t_outdoor": "Уличная температура",
+                "setpoint_t_room": "Уставка комнатной температуры",
+                "heating_status": "Статус отопления",
+                "level_modulation_max": "Максимальная мощность",
+                "state_modulation_limit": "Регулировка мощности горелки",
+                "ot_command_type": "Тип команды",
+                "ot_command_id": "Регистр котла",
+                "ot_command_data": "Данные команды",
+                "ot_master_id": "Идентификатор мастера",
+                "fw": "Версия прошивки",
+                "device_name": "Имя устройства",
+                "algorithm_type": "Текущий алгоритм",
+                "debug_field_1": "Отладочное сообщение 1",
+                "debug_field_2": "Отладочное сообщение 2",
+                "heating_options": "Режим отопления",
+                "heating_options_enum_0": "Датчик комнатной температуры",
+                "heating_options_enum_1": "Датчик уличной температуры",
+                "heating_options_enum_2": "Управление уставкой отопления",
+                "ch_heating_mode": "Режим нагрева теплоносителя",
+                "ch_heating_mode_enum_0": "Линейный режим, рассчитываемая температура теплоносителя",
+                "ch_heating_mode_enum_1": "Постоянная максимальная температура",
+                "climate_curve_number": "Номер климатической кривой",
+                "climate_curve_number_description": "1 - самая экономичная, 17 - самая энергозатратная",
+                "ot_algorithm": "Алгоритм обмена OpenTherm",
+                "ot_algorithm_enum_0": "Фиксированный интервал",
+                "ot_algorithm_enum_1": "Стандартный",
+                "ot_algorithm_enum_2": "Фиксированный интервал с синхронизацией",
+                "boiler_manufacturer": "Модель котла",
+                "boiler_manufacturer_enum_0": "BAXI Ampera",
+                "boiler_manufacturer_enum_1": "ImmerGaz",
+                "boiler_manufacturer_enum_2": "ZOTA",
+                "boiler_manufacturer_enum_3": "ЭВАН"
+            }
+        }
+    }
+}
