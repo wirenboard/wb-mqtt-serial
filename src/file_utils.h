@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <stdexcept>
@@ -37,6 +38,27 @@ template<class T> void OpenWithException(T& f, const std::string& fileName)
  * @param value Value to write
  */
 void WriteToFile(const std::string& fileName, const std::string& value);
+
+//! Commit replaces the file with the temporary file written by the constructor.
+//! A symbolic link is kept, the file it points to is replaced
+class TAtomicFileWrite
+{
+public:
+    //! @throws std::runtime_error
+    TAtomicFileWrite(const std::string& fileName, const std::string& content);
+    ~TAtomicFileWrite();
+
+    TAtomicFileWrite(const TAtomicFileWrite&) = delete;
+    TAtomicFileWrite& operator=(const TAtomicFileWrite&) = delete;
+
+    //! @throws std::runtime_error
+    void Commit();
+
+private:
+    std::filesystem::path Path;
+    std::string TmpFileName;
+    bool Committed = false;
+};
 
 /**
  * @brief Write a string to a temporary file next to the file and rename it,

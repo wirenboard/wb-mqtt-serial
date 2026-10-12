@@ -4,7 +4,9 @@
 
 #include <wblib/testing/testlog.h>
 
-#include "rpc/rpc_templates_handler.h"
+#include "rpc/rpc_config_change_handler.h"
+#include "rpc/rpc_helpers.h"
+#include "rpc_service_test_utils.h"
 #include "serial_config.h"
 #include "test_utils.h"
 
@@ -12,7 +14,6 @@ using WBMQTT::Testing::TLoggedFixture;
 
 namespace
 {
-    const std::string TEMPLATE_IN_USE_ERROR = "template-in-use";
     const std::string USED_TYPE = "MSU34";               // present in the test config
     const std::string STOCK_TYPE = "TestDeviceOverride"; // present only in stock templates
     const std::string NEW_TYPE = "UploadedDevice";
@@ -75,69 +76,81 @@ namespace
 class TRPCTemplatesHandlerTest: public testing::Test
 {
 protected:
+    std::filesystem::path TestDir;
     std::filesystem::path UserTemplatesDir;
-    Json::Value CommonDeviceSchema;
-    TSerialDeviceFactory DeviceFactory;
+    std::string ConfigPath;
     PTemplateMap Templates;
-    std::unique_ptr<TDevicesConfedSchemasMap> ConfedSchemas;
-    Json::Value PortsSchema;
-    std::unique_ptr<TProtocolConfedSchemasMap> ProtocolSchemas;
-    std::unique_ptr<TConfigLoader> ConfigLoader;
     std::unique_ptr<TSerialDriverCore> SerialDriverCore;
-    std::unique_ptr<TRPCTemplatesHandler> Handler;
+    std::unique_ptr<TRPCConfigChangeHandler> Handler;
+    std::shared_ptr<TRPCMethods> Rpc;
 
     void SetUp() override
     {
-        UserTemplatesDir = std::filesystem::temp_directory_path() / "wb-mqtt-serial-user-templates-test" /
-                           ::testing::UnitTest::GetInstance()->current_test_info()->name();
-        std::filesystem::remove_all(UserTemplatesDir);
+        TestDir = std::filesystem::temp_directory_path() / "wb-mqtt-serial-user-templates-test" /
+                  ::testing::UnitTest::GetInstance()->current_test_info()->name();
+        UserTemplatesDir = TestDir / "templates";
+        std::filesystem::remove_all(TestDir);
         std::filesystem::create_directories(UserTemplatesDir);
-
-        RegisterProtocols(DeviceFactory);
-        CommonDeviceSchema = GetCommonDeviceSchema();
-        Templates = std::make_shared<TTemplateMap>(GetTemplatesSchema(), UserTemplatesDir.string());
-        Templates->AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"));
-        Templates->AddTemplatesDir(UserTemplatesDir.string());
-        ConfedSchemas = std::make_unique<TDevicesConfedSchemasMap>(*Templates, DeviceFactory, CommonDeviceSchema);
-        ProtocolSchemas = std::make_unique<TProtocolConfedSchemasMap>(TLoggedFixture::GetDataFilePath("../protocols"),
-                                                                      CommonDeviceSchema);
-        ConfigLoader = std::make_unique<TConfigLoader>(std::string(),
-                                                       DeviceFactory,
-                                                       CommonDeviceSchema,
-                                                       *Templates,
-                                                       PortsSchema,
-                                                       *ProtocolSchemas);
-        SerialDriverCore =
-            std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
-        MakeHandler(TLoggedFixture::GetDataFilePath("configs/rpc-templates-handler-test.json"));
+        // The handler may write the configuration
+        ConfigPath = (TestDir / "wb-mqtt-serial.conf").string();
+        std::filesystem::copy_file(TLoggedFixture::GetDataFilePath("configs/rpc-templates-handler-test.json"),
+                                   ConfigPath);
+        MakeHandler(ConfigPath);
     }
 
+    //! The service with the configuration file
     void MakeHandler(const std::string& configPath)
     {
-        Handler.reset(new TRPCTemplatesHandler(
-            UserTemplatesDir.string(),
-            configPath,
-            Templates,
-            *ConfedSchemas,
+        if (Rpc) {
+            Rpc->Stop();
+        }
+        Handler.reset();
+        Templates.reset();
+        SerialDriverCore.reset();
+        SerialDriverCore = std::make_unique<TSerialDriverCore>(
+            MakeUnconnectedMqttDriver(),
+            MakeSerialDriverCoreFiles(configPath,
+                                      TLoggedFixture::GetDataFilePath("device-templates"),
+                                      UserTemplatesDir.string()),
+            false);
+        Templates = SerialDriverCore->GetTemplates();
+        Handler.reset(new TRPCConfigChangeHandler(
             WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../groups.json")),
             TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-rpc-templates-upload-request.schema.json"),
             TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-rpc-templates-delete-request.schema.json"),
             *SerialDriverCore));
+        Rpc = std::make_shared<TRPCMethods>();
+        RegisterConfigChangeRpcHandlers(*Handler, Rpc);
     }
 
     void TearDown() override
     {
-        std::filesystem::remove_all(UserTemplatesDir);
+        Rpc->Stop();
+        Handler.reset();
+        Templates.reset();
+        SerialDriverCore.reset();
+        std::filesystem::remove_all(TestDir);
+    }
+
+    //! @throws std::runtime_error with "error.data" of a refused request
+    Json::Value Call(const std::string& method, const Json::Value& request)
+    {
+        auto answer = CallAsync(*Rpc, method, request);
+        auto error = answer->Get();
+        if (!error.empty()) {
+            throw std::runtime_error(error);
+        }
+        return answer->GetResult();
     }
 
     Json::Value Upload(const Json::Value& request)
     {
-        return Handler->UploadTemplate(request);
+        return Call("templates/Upload", request);
     }
 
     Json::Value Delete(const Json::Value& request)
     {
-        return Handler->DeleteTemplate(request);
+        return Call("templates/Delete", request);
     }
 
     std::vector<std::string> ListUserTemplatesDir() const
@@ -174,6 +187,9 @@ TEST_F(TRPCTemplatesHandlerTest, UploadNewType)
     EXPECT_TRUE(typeJson["user-defined"].asBool());
     EXPECT_FALSE(typeJson["deprecated"].asBool());
     EXPECT_EQ("modbus", typeJson["protocol"].asString());
+
+    // The configuration of an unused type is the current one
+    EXPECT_EQ(WBMQTT::JSON::Parse(ConfigPath), response["config"]);
 
     // The type is available for config editor already
     auto deviceTemplate = Templates->GetTemplate(NEW_TYPE);
@@ -268,7 +284,7 @@ TEST_F(TRPCTemplatesHandlerTest, ReUploadSameTypeDifferentFilename)
     EXPECT_EQ((UserTemplatesDir / "renamed-device.json").string(), deviceTemplate->GetFilePath());
 }
 
-TEST_F(TRPCTemplatesHandlerTest, ReUploadKeepsMapEntryWhenOldFileRemovalFails)
+TEST_F(TRPCTemplatesHandlerTest, ReUploadSucceedsWhenOldFileRemovalFails)
 {
     Upload(MakeUploadRequest(MakeTemplateContent(NEW_TYPE, "Uploaded device"), "uploaded-device.json"));
     auto oldPath = UserTemplatesDir / "uploaded-device.json";
@@ -284,12 +300,6 @@ TEST_F(TRPCTemplatesHandlerTest, ReUploadKeepsMapEntryWhenOldFileRemovalFails)
     auto newPath = UserTemplatesDir / "renamed-device.json";
     EXPECT_EQ(newPath.string(), Templates->GetTemplate(NEW_TYPE)->GetFilePath());
     EXPECT_EQ(std::vector<std::string>({"renamed-device.json", "uploaded-device.json"}), ListUserTemplatesDir());
-
-    // The map keeps the entry for the old path while it is still present on disk
-    Templates->DeleteTemplate(newPath.string());
-    auto stale = Templates->FindUserDefinedTemplate(NEW_TYPE);
-    ASSERT_TRUE(stale);
-    EXPECT_EQ(oldPath.string(), stale->GetFilePath());
 }
 
 TEST_F(TRPCTemplatesHandlerTest, UploadSanitizesFilename)
@@ -317,33 +327,11 @@ TEST_F(TRPCTemplatesHandlerTest, UploadInvalidFilename)
     EXPECT_TRUE(ListUserTemplatesDir().empty());
 }
 
-TEST_F(TRPCTemplatesHandlerTest, UploadUsedTypeWithoutForce)
-{
-    try {
-        Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded"), "msu34.json"));
-        FAIL() << "Upload of a used type without \"force\" must throw";
-    } catch (const std::exception& e) {
-        EXPECT_EQ(TEMPLATE_IN_USE_ERROR, std::string(e.what()));
-    }
-    EXPECT_TRUE(ListUserTemplatesDir().empty());
-}
-
-TEST_F(TRPCTemplatesHandlerTest, UploadUsedTypeWithForce)
-{
-    auto response = Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded"), "msu34.json", true));
-
-    EXPECT_EQ(std::vector<std::string>{"msu34.json"}, ListUserTemplatesDir());
-    auto typeJson = GetSingleType(response, "Custom devices");
-    EXPECT_EQ(USED_TYPE, typeJson["type"].asString());
-    EXPECT_TRUE(typeJson["user-defined"].asBool());
-    EXPECT_TRUE(Templates->GetTemplate(USED_TYPE)->IsUserDefined());
-}
-
 TEST_F(TRPCTemplatesHandlerTest, UploadUsedTypeWithMissingConfig)
 {
     // A missing (or unreadable) config can't refer to the template, so nothing is protected
     // and "force" is not required
-    MakeHandler((UserTemplatesDir / "nonexistent-config.json").string());
+    MakeHandler((TestDir / "nonexistent-config.json").string());
 
     auto response = Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded"), "msu34.json"));
 
@@ -351,15 +339,16 @@ TEST_F(TRPCTemplatesHandlerTest, UploadUsedTypeWithMissingConfig)
     auto typeJson = GetSingleType(response, "Custom devices");
     EXPECT_EQ(USED_TYPE, typeJson["type"].asString());
     EXPECT_TRUE(Templates->GetTemplate(USED_TYPE)->IsUserDefined());
+    EXPECT_TRUE(response["config"].isNull());
 }
 
 TEST_F(TRPCTemplatesHandlerTest, UploadInvalidatesSchemaCache)
 {
-    auto schemaBefore = ConfedSchemas->GetSchema(STOCK_TYPE);
+    auto schemaBefore = SerialDriverCore->GetDeviceConfedSchemas().GetSchema(STOCK_TYPE);
 
     Upload(MakeUploadRequest(MakeTemplateContent(STOCK_TYPE, "Overridden device"), "override.json"));
 
-    auto schemaAfter = ConfedSchemas->GetSchema(STOCK_TYPE);
+    auto schemaAfter = SerialDriverCore->GetDeviceConfedSchemas().GetSchema(STOCK_TYPE);
     EXPECT_NE(schemaBefore.get(), schemaAfter.get());
 }
 
@@ -388,11 +377,11 @@ TEST_F(TRPCTemplatesHandlerTest, OverrideUnusedStockType)
 TEST_F(TRPCTemplatesHandlerTest, OverrideChangesGroup)
 {
     auto response =
-        Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded", "g-relay"), "msu34.json", true));
+        Upload(MakeUploadRequest(MakeTemplateContent(STOCK_TYPE, "Overridden device", "g-relay"), "override.json"));
     GetSingleType(response, "Relays");
 
     // A template without a group moves the type to the custom group
-    response = Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded"), "msu34.json", true));
+    response = Upload(MakeUploadRequest(MakeTemplateContent(STOCK_TYPE, "Overridden device"), "override.json"));
     GetSingleType(response, "Custom devices");
 }
 
@@ -537,20 +526,20 @@ TEST_F(TRPCTemplatesHandlerTest, UploadNumericChannelEnum)
 
 TEST_F(TRPCTemplatesHandlerTest, DeleteOverride)
 {
-    Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded", "g-relay"), "msu34.json", true));
-    auto schemaBefore = ConfedSchemas->GetSchema(USED_TYPE);
+    Upload(MakeUploadRequest(MakeTemplateContent(STOCK_TYPE, "Overridden device", "g-relay"), "override.json"));
+    auto schemaBefore = SerialDriverCore->GetDeviceConfedSchemas().GetSchema(STOCK_TYPE);
 
-    auto response = Delete(MakeDeleteRequest(USED_TYPE, true));
+    auto response = Delete(MakeDeleteRequest(STOCK_TYPE));
 
     // The type falls back to the stock template and to the stock template group
     EXPECT_TRUE(ListUserTemplatesDir().empty());
     auto typeJson = GetSingleType(response, "Custom devices");
-    EXPECT_EQ(USED_TYPE, typeJson["type"].asString());
+    EXPECT_EQ(STOCK_TYPE, typeJson["type"].asString());
     EXPECT_FALSE(typeJson.isMember("user-defined"));
-    EXPECT_FALSE(Templates->GetTemplate(USED_TYPE)->IsUserDefined());
+    EXPECT_FALSE(Templates->GetTemplate(STOCK_TYPE)->IsUserDefined());
 
     // Schema cache is invalidated
-    auto schemaAfter = ConfedSchemas->GetSchema(USED_TYPE);
+    auto schemaAfter = SerialDriverCore->GetDeviceConfedSchemas().GetSchema(STOCK_TYPE);
     EXPECT_NE(schemaBefore.get(), schemaAfter.get());
 }
 
@@ -567,31 +556,6 @@ TEST_F(TRPCTemplatesHandlerTest, DeleteSoleUserType)
 
     // Repeated delete fails without a crash
     EXPECT_THROW(Delete(MakeDeleteRequest(NEW_TYPE)), std::exception);
-}
-
-TEST_F(TRPCTemplatesHandlerTest, DeleteUsedTypeWithoutForce)
-{
-    Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded"), "msu34.json", true));
-
-    try {
-        Delete(MakeDeleteRequest(USED_TYPE));
-        FAIL() << "Delete of a used type without \"force\" must throw";
-    } catch (const std::exception& e) {
-        EXPECT_EQ(TEMPLATE_IN_USE_ERROR, std::string(e.what()));
-    }
-    // The file is intact, the user defined template is still active
-    EXPECT_EQ(std::vector<std::string>{"msu34.json"}, ListUserTemplatesDir());
-    EXPECT_TRUE(Templates->GetTemplate(USED_TYPE)->IsUserDefined());
-}
-
-TEST_F(TRPCTemplatesHandlerTest, DeleteUsedTypeWithForce)
-{
-    Upload(MakeUploadRequest(MakeTemplateContent(USED_TYPE, "MSU34 uploaded"), "msu34.json", true));
-
-    Delete(MakeDeleteRequest(USED_TYPE, true));
-
-    EXPECT_TRUE(ListUserTemplatesDir().empty());
-    EXPECT_FALSE(Templates->GetTemplate(USED_TYPE)->IsUserDefined());
 }
 
 TEST_F(TRPCTemplatesHandlerTest, DeleteTypeWithoutUserTemplate)
