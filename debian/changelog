@@ -1,10 +1,9 @@
-<<<<<<< HEAD
-wb-mqtt-serial (2.279.0) stable; urgency=medium
+wb-mqtt-serial (2.285.0) stable; urgency=medium
 
   * Add NEVOTON BCG-1.0.4-W template (OpenTherm - Modbus boiler bridge)
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 24 Sep 2026 15:05:56 +0300
-=======
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 12 Oct 2026 17:05:02 +0300
+
 wb-mqtt-serial (2.284.2) stable; urgency=medium
 
   * Drop /etc/wb-mqtt-serial.conf.sample
@@ -75,7 +74,6 @@ wb-mqtt-serial (2.279.0) stable; urgency=medium
     an error in the firmware update state topic
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 25 Sep 2026 12:00:00 +0300
->>>>>>> b714f9b6ef92637803c4c7edbbd3b474d3983f8d
 
 wb-mqtt-serial (2.278.1) stable; urgency=medium
 
