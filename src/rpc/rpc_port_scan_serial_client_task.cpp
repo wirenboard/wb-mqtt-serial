@@ -276,6 +276,10 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PFeaturePort por
                                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                 const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        AnswerRequestCancelled(Request->OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");
@@ -283,7 +287,7 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PFeaturePort por
         return ISerialClientTask::TRunResult::OK;
     }
 
-    if (!port->SupportsFastModbus() && port->IsModbusTcp()) {
+    if (!port->SupportsFastModbus()) {
         if (Request->OnResult) {
             Json::Value result;
             result["devices"] = Json::Value(Json::arrayValue);

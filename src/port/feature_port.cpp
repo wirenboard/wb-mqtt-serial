@@ -5,10 +5,10 @@
 
 #define LOG(logger) ::logger.Log() << "[port] "
 
-TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge)
+TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge, bool fastModbusDisabled)
     : BasePort(basePort),
       ModbusTcp(modbusTcp),
-      FastModbus(!modbusTcp || connectedToMge)
+      FastModbus((!modbusTcp || connectedToMge) && !fastModbusDisabled)
 {}
 
 void TFeaturePort::Open()

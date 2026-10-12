@@ -406,6 +406,7 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
     auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType,
                                                             data["device"].get("protocol", "modbus").asString(),
                                                             Validator,
+                                                            ValidatorMutex,
                                                             filePath);
     deviceTemplate->SetTitle(GetTranslations(data.get("title", deviceType).asString(), data["device"]));
     deviceTemplate->SetGroup(data.get("group", "").asString());
@@ -540,7 +541,7 @@ std::string TTemplateMap::DeleteTemplate(const std::string& path)
 
 void TTemplateMap::ValidateTemplate(const Json::Value& templateRoot)
 {
-    std::unique_lock m(Mutex);
+    std::unique_lock m(*ValidatorMutex);
     if (!Validator) {
         throw std::runtime_error("Device templates schema is not loaded");
     }
@@ -565,11 +566,13 @@ PDeviceTemplate TTemplateMap::FindUserDefinedTemplate(const std::string& deviceT
 TDeviceTemplate::TDeviceTemplate(const std::string& type,
                                  const std::string& protocol,
                                  std::shared_ptr<WBMQTT::JSON::TValidator> validator,
+                                 std::shared_ptr<std::mutex> validatorMutex,
                                  const std::string& filePath)
     : Type(type),
       Deprecated(false),
       UserDefined(false),
       Validator(validator),
+      ValidatorMutex(validatorMutex),
       FilePath(filePath),
       Subdevices(false),
       Protocol(protocol)
@@ -644,6 +647,8 @@ const std::string& TDeviceTemplate::GetFilePath() const
 
 const Json::Value& TDeviceTemplate::GetTemplate()
 {
+    // The validator is shared by the templates, and the template is parsed once
+    std::unique_lock m(*ValidatorMutex);
     if (Template.isNull()) {
         Json::Value root(WBMQTT::JSON::Parse(GetFilePath()));
         // Skip deprecated template validation, it may be broken according to latest schema

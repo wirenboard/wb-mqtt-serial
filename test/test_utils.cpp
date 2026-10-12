@@ -1,6 +1,8 @@
 #include "test_utils.h"
 #include "serial_config.h"
 #include <sstream>
+#include <wblib/backend.h>
+#include <wblib/mqtt.h>
 #include <wblib/testing/testlog.h>
 
 using namespace WBMQTT;
@@ -48,4 +50,13 @@ PHandlerConfig LoadTestConfig(const std::string& filePath, TSerialDeviceFactory&
                       templateMap,
                       portsSchema,
                       protocolSchemas);
+}
+
+WBMQTT::PDeviceDriver MakeUnconnectedMqttDriver()
+{
+    WBMQTT::TMosquittoMqttConfig mqttConfig;
+    mqttConfig.Id = "test";
+    auto mqttClient = WBMQTT::NewMosquittoMqttClient(mqttConfig);
+    return WBMQTT::NewDriver(
+        WBMQTT::TDriverArgs{}.SetId("test").SetBackend(WBMQTT::NewDriverBackend(mqttClient)).SetIsTesting(true));
 }

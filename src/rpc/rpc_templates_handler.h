@@ -6,6 +6,7 @@
 #include <wblib/rpc.h>
 
 #include "confed_device_schemas_map.h"
+#include "serial_driver_core.h"
 #include "templates_map.h"
 
 class TRPCTemplatesHandler
@@ -17,7 +18,8 @@ public:
                          TDevicesConfedSchemasMap& deviceConfedSchemas,
                          const Json::Value& groupTranslations,
                          const std::string& requestUploadSchemaFilePath,
-                         const std::string& requestDeleteSchemaFilePath);
+                         const std::string& requestDeleteSchemaFilePath,
+                         TSerialDriverCore& serialDriverCore);
 
     Json::Value UploadTemplate(const Json::Value& request);
     Json::Value DeleteTemplate(const Json::Value& request);
@@ -33,6 +35,7 @@ private:
     Json::Value GroupTranslations;
     Json::Value RequestUploadTemplateSchema;
     Json::Value RequestDeleteTemplateSchema;
+    TSerialDriverCore& SerialDriverCore;
 };
 
 typedef std::shared_ptr<TRPCTemplatesHandler> PRPCTemplatesHandler;

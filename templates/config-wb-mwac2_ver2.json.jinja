@@ -121,6 +121,12 @@
                 "group": "g_antiseize_protection"
             },
             {
+                "title": "Impact Of Water Flow",
+                "id": "gg_antiseize_water_flow",
+                "description": "impact_of_water_flow_description",
+                "group": "g_antiseize_protection"
+            },
+            {
                 "title": "Antiseize Channels",
                 "id": "gg_antiseize_channels",
                  "ui_options": {
@@ -527,6 +533,23 @@
                 "group": "gg_antiseize_action",
                 "order": {{ out_num }}
             },
+            "out{{ out_num }}_antiseize_counters_behaviour": {
+                "title": {%- if out_num == OUT_NUM_K1 %} "Output K1",
+                        {%- elif out_num == OUT_NUM_K2 %} "Output K2",
+                        {%- endif %}
+                "address": {{ 977 + (out_num - 1) }},
+                "reg_type": "holding",
+                "fw": "1.27.0",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Allow Antiseize After Water Flow",
+                    "Move Antiseize To Next Day"
+                ],
+                "group": "gg_antiseize_water_flow",
+                "order": {{ out_num }},
+                "condition": "out{{ out_num }}_antiseize_behaviour!=0"
+            },
             {% endfor -%}
             "baud_rate": {
                 "title": "Baud Rate",
@@ -808,13 +831,16 @@
                 "reg_type": "input",
                 "address": {{ 960 + (out_num - 1) }},
                 "type": "value",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7],
                 "enum_titles": [
                     "Completed",
                     "In Progress: Closing",
                     "In Progress: Opening",
                     "Interrupted",
-                    "Never Started"
+                    "Never Started",
+                    "Moved To Next Day: Safety Mode",
+                    "Moved To Next Day: Leakage",
+                    "Moved To Next Day: Water Flow"
                 ],
                 "enabled": false,
                 "group": "gg_antiseize_channels",
@@ -973,6 +999,7 @@
                 "antiseize_interval_description": "1...60, default: 30",
                 "antiseize_start_hour_description": "0...23, default: 0",
                 "antiseize_duration_description": "Opening time + closing time of the valve: 10...120, default: 60",
+                "impact_of_water_flow_description": "The counter of the same channel (K1/P1, K2/P2) is taken into account",
 
                 "Battery State, measured at module startup": "Battery State"
             },
@@ -1118,6 +1145,9 @@
                 "Cycle Duration (s)": "Длительность цикла (с)",
                 "antiseize_duration_description": "Время открытия + время закрытия крана: 10...120, по умолчанию: 60",
                 "Action On Start": "Действие при запуске",
+                "Impact Of Water Flow": "Влияние расхода воды на запуск",
+                "impact_of_water_flow_description": "Учитывается счётчик того же канала (K1/P1, K2/P2)",
+                "Allow Antiseize After Water Flow": "Разрешить запуск при наличии расхода воды",
                 "No Action (function disabled)": "Ничего не делать (функция отключена)",
                 "Off/On": "выключить/включить",
                 "On/Off": "включить/выключить",
@@ -1128,6 +1158,9 @@
                 "In Progress: Opening": "В процессе: открытие",
                 "Interrupted": "Прервана",
                 "Never Started": "Ни разу не выполнялась",
+                "Moved To Next Day: Safety Mode": "Перенесена: безопасный режим",
+                "Moved To Next Day: Leakage": "Перенесена: протечка",
+                "Moved To Next Day: Water Flow": "Перенесена: расход воды",
                 "Days Until Next Antiseize K1": "Дней до запуска защиты K1",
                 "Days Until Next Antiseize K2": "Дней до запуска защиты K2",
                 "Not set": "Не задано",

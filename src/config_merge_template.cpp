@@ -26,6 +26,16 @@ namespace
             channels.removeIndex(*it, nullptr);
         }
     }
+
+    // A channel can be renamed only in a device config, "title" of a template's channel is ignored
+    void RemoveTemplateChannelTitles(Json::Value& templateConfig)
+    {
+        if (templateConfig.isMember("channels")) {
+            for (auto& channel: templateConfig["channels"]) {
+                channel.removeMember("title");
+            }
+        }
+    }
 }
 
 void UpdateChannels(Json::Value& dst,
@@ -258,6 +268,7 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceConfigJson,
     }
 
     auto res(deviceTemplate);
+    RemoveTemplateChannelTitles(res);
 
     TSubDevicesTemplateMap subDevicesTemplates(deviceType, deviceTemplate);
     res.removeMember("subdevices");

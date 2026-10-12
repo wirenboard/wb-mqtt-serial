@@ -1,5 +1,6 @@
 #include "rpc_port_load_raw_serial_client_task.h"
 #include "port/serial_port.h"
+#include "rpc_helpers.h"
 #include "rpc_port_handler.h"
 #include "serial_exc.h"
 
@@ -44,6 +45,10 @@ ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PFeaturePort 
                                                                    TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                    const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        AnswerRequestCancelled(Request->OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");

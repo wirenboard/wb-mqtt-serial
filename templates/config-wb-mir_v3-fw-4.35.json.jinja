@@ -231,7 +231,9 @@
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
-                "default": 1,
+                "default": 2,
+                "min": 0,
+                "max": 1200,
                 "group": "g_w1_bus",
                 "order": 2
             },
@@ -729,7 +731,7 @@
                 "WB-MIR-v.3_template_title": "WB-MIR v.3 fw4.35 (Modbus IR remote control)",
 
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
-                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
+                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 2",
                 "temperature_readings_period_s_title": "Temperature sensor poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
                 "w1_sensors_description": "{{
@@ -798,7 +800,7 @@
                 "safety_command_description": "ИК-команда, которая будет воспроизведена в безопасном режиме",
 
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчика 1-Wire (°C)",
-                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 2",
                 "temperature_readings_period_s_title": "Период опроса датчика температуры (с)",
                 "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
                 "w1_sensors_description": "{{

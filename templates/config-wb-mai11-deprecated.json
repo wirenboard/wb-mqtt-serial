@@ -969,7 +969,7 @@
         ],
         "subdevices": [
             {
-                "title": "Thermocouple type K (ТХА)",
+                "title": "Thermocouple type K",
                 "device_type": "thermocouple_k",
                 "device": {
                     "setup": [
@@ -5350,7 +5350,7 @@
                 "Input 10": "IN 10",
                 "Input 11": "IN 11",
                 "disabled": "отключен",
-                "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
+                "Thermocouple type K": "термопара типа K (ТХА)",
                 "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
                 "0-5 mA sensor": "измерение тока 0-5 мА",
                 "0-20 mA sensor": "измерение тока 0-20 мА",

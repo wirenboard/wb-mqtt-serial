@@ -1313,6 +1313,26 @@ TEST_F(TModbusPushbuttonPublishTest, DuplicateValues)
     }
 }
 
+class TModbusChannelTitlePublishTest: public TSerialDeviceIntegrationTest
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-channel-title-test.json";
+    }
+    std::string GetTemplatePath() const override
+    {
+        return "device-templates/";
+    }
+};
+
+// Check that a title from the device config is published in the control's meta instead of the template's name
+// and its translations. MQTT id of the control is not changed
+TEST_F(TModbusChannelTitlePublishTest, Meta)
+{
+    // Controls meta is published on driver creation in SetUp(), nothing else to do here
+}
+
 class TModbusMaxPublishIntervalTest: public TSerialDeviceIntegrationTest
 {
 protected:

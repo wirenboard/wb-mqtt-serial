@@ -287,6 +287,30 @@ TEST_F(TSerialClientTest, Write)
     }
 }
 
+//! Neither a write queued before RequestStop nor a write made after it reaches the device
+TEST_F(TSerialClientTest, WritesAreDroppedAfterRequestStop)
+{
+    PRegister reg20 = Reg(20);
+    SerialClient->AddDevice(Device);
+
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+
+    SerialClient->SetTextValue(reg20, "10");
+    SerialClient->RequestStop();
+    SerialClient->SetTextValue(reg20, "20");
+    Note() << "Cycle() [stop requested]";
+    SerialClient->Cycle();
+    EXPECT_TRUE(SerialClient->WaitStopped(std::chrono::steady_clock::now()));
+    EXPECT_EQ(0, Device->Registers[20]);
+
+    SerialClient->Resume();
+    SerialClient->SetTextValue(reg20, "30");
+    Note() << "Cycle() [resumed]";
+    SerialClient->Cycle();
+    EXPECT_EQ(30, Device->Registers[20]);
+}
+
 TEST_F(TSerialClientTest, U8)
 {
     PRegister reg20 = Reg(20, U8);

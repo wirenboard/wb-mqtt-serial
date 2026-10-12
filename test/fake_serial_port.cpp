@@ -46,6 +46,26 @@ void TFakeSerialPort::CheckPortOpen() const
         throw TSerialDeviceException("port not open");
 }
 
+void TFakeSerialPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)
+{
+    if (LogSettings) {
+        Fixture.Emit() << "ApplySerialPortSettings(" << settings.BaudRate << " " << settings.DataBits << settings.Parity
+                       << settings.StopBits << ")";
+    }
+}
+
+void TFakeSerialPort::ResetSerialPortSettings()
+{
+    if (LogSettings) {
+        Fixture.Emit() << "ResetSerialPortSettings()";
+    }
+}
+
+void TFakeSerialPort::LogSerialPortSettings(bool enable)
+{
+    LogSettings = enable;
+}
+
 void TFakeSerialPort::Open()
 {
     if (IsPortOpen)
@@ -129,13 +149,24 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count)
     ReqPos += count + 1;
 }
 
+bool TFakeSerialPort::SkipNoResponse()
+{
+    if (RespPos >= Resp.size() || Resp[RespPos] != NO_RESPONSE) {
+        return false;
+    }
+    DumpWhatWasRead();
+    ++RespPos;
+    DumpPos = RespPos;
+    return true;
+}
+
 uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
 {
     switch (DisconnectType) {
         case NoDisconnect:
             break;
         case SilentReadAndWriteFailure:
-            return 0xFF;
+            throw TSerialDeviceTransientErrorException("timeout");
         case BadFileDescriptorOnWriteAndRead: {
             Fixture.Emit() << "read error EBADF";
             throw TSerialDeviceErrnoException("read error ", EBADF);
@@ -143,6 +174,10 @@ uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
     };
 
     CheckPortOpen();
+
+    if (SkipNoResponse()) {
+        throw TResponseTimeoutException();
+    }
 
     while (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
         RespPos++;
@@ -165,12 +200,16 @@ TReadFrameResult TFakeSerialPort::ReadFrame(uint8_t* buf,
         case NoDisconnect:
             break;
         case SilentReadAndWriteFailure:
-            return res;
+            throw TResponseTimeoutException();
         case BadFileDescriptorOnWriteAndRead: {
             Fixture.Emit() << "read frame error EBADF";
             throw TSerialDeviceErrnoException("read frame error ", EBADF);
         }
     };
+
+    if (SkipNoResponse()) {
+        throw TResponseTimeoutException();
+    }
 
     if (ExpectedFrameTimeout.count() >= 0 && frameTimeout != ExpectedFrameTimeout) {
         DumpWhatWasRead();
@@ -253,6 +292,11 @@ void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<
     Req.push_back(FRAME_BOUNDARY);
     Resp.insert(Resp.end(), response.begin(), response.end());
     Resp.push_back(FRAME_BOUNDARY);
+}
+
+void TFakeSerialPort::ExpectNoResponse(const std::vector<int>& request, const char* func)
+{
+    Expect(request, {NO_RESPONSE}, func);
 }
 
 void TFakeSerialPort::SkipFrameBoundary()

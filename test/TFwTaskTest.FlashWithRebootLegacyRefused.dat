@@ -1,0 +1,5 @@
+Open()
+SkipNoise()
+EnqueueWriteSingleRegisterException()
+>> 2A 06 00 81 00 01 1E 39
+<< 2A 86 01 F3 A8

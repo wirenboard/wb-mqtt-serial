@@ -74,9 +74,10 @@ namespace
     }
 }
 
-TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request)
+TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request,
+                                                         const TSerialPortConnectionSettings& defaults)
 {
-    TSerialPortConnectionSettings res;
+    TSerialPortConnectionSettings res(defaults);
     WBMQTT::JSON::Get(request, "baud_rate", res.BaudRate);
     if (request.isMember("parity")) {
         res.Parity = request["parity"].asCString()[0];
@@ -92,6 +93,13 @@ std::unique_ptr<Modbus::IModbusTraits> MakeModbusTraits(const std::string& proto
         return std::make_unique<Modbus::TModbusTCPTraits>();
     }
     return std::make_unique<Modbus::TModbusRTUTraits>();
+}
+
+void AnswerRequestCancelled(const WBMQTT::TMqttRpcServer::TErrorCallback& onError)
+{
+    if (onError) {
+        onError(WBMQTT::E_RPC_SERVER_ERROR, REQUEST_CANCELLED_ERROR);
+    }
 }
 
 void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema)

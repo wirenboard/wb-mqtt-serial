@@ -116,7 +116,7 @@ All methods registered under group `fw-update` on the `wb-mqtt-serial` service:
 |----------|-----------|
 | **Reuse existing Modbus utilities** via `Modbus::ReadRegister()` / `Modbus::WriteRegister()` and `TRegisterConfig` | Reuses the same high-level register I/O used by the rest of the codebase. Raw `MakePDU()` / `Transaction()` only where needed (firmware data blocks with retry, discrete input reads). |
 | **Self-contained ISerialClientTask classes** | Each RPC method creates a task that owns its callbacks and does everything in `Run()`: Modbus I/O, HTTP downloads, state updates, error handling. No lambdas or callback chains. Consistent with how all other RPC handlers (`TRPCPortHandler`, `TRPCDeviceHandler`) work. |
-| **Free functions for Modbus operations** | `ReadFwDeviceInfo()` and `FlashFirmware()` are free functions reused by all three task classes (`TFwGetFirmwareInfoTask`, `TFwUpdateSerialClientTask`, `TFwRestoreTask`). |
+| **Free functions for Modbus operations** | `ReadFwDeviceInfo()` and `FlashFirmware()` are free functions reused by both task classes (`TFwGetFirmwareInfoTask`, `TFwUpdateSerialClientTask`). |
 | **Fire-and-forget flash** | `Update` RPC returns "Ok" after reading device info. Flash proceeds in the same task with progress/errors reported via MQTT state topic. Lock held until flash completes. |
 | **TTL-cached HTTP responses** | Release manifest cached 10min, bootloader info 30min, firmware binaries 2hr. Avoids hammering the release server on repeated queries. |
 | **IHttpClient interface** | Abstracts HTTP transport. Production uses libcurl (`TCurlHttpClient`), tests use `TFakeHttpClient` with canned responses. |
@@ -131,9 +131,9 @@ src/rpc/
 ├── rpc_fw_update_handler.h/.cpp            ← RPC method registration, request dispatch
 ├── rpc_fw_update_helpers.h                 ← Free helper functions (version comparison, response building)
 ├── rpc_fw_get_firmware_info_task.h/.cpp     ← GetFirmwareInfo task (ISerialClientTask)
-├── rpc_fw_update_serial_client_task.h/.cpp  ← Update task (ISerialClientTask)
-├── rpc_fw_restore_task.h/.cpp              ← Restore task (ISerialClientTask)
+├── rpc_fw_update_serial_client_task.h/.cpp  ← Update and Restore task (ISerialClientTask)
 ├── rpc_fw_update_task.h/.cpp               ← Low-level Modbus I/O: ReadFwDeviceInfo(), FlashFirmware()
+├── rpc_port_settings.h/.cpp                ← The port of a request, parsed from JSON
 ├── rpc_fw_downloader.h/.cpp                ← HTTP downloads, WBFW parsing, release lookup
 └── rpc_fw_update_state.h/.cpp              ← State tracking & MQTT publishing
 ```
@@ -147,31 +147,28 @@ src/rpc/
 - Guards against concurrent Update/Restore operations via `TFwUpdateLock`
 - Each RPC method is ~10 lines: parse params, create task, submit
 
-**Cf.** `firmware_update.py:650 FirmwareUpdater`
 
 #### TFwGetFirmwareInfoTask (ISerialClientTask)
 - Owns `OnResult`/`OnError` callbacks and `TFwDownloader`
 - `Run()`: calls `ReadFwDeviceInfo()` → `BuildFirmwareInfoResponse()` → `OnResult(json)`
 - All HTTP lookups (release versions, bootloader) happen inside `Run()` on the task thread
 
-**Cf.** `firmware_update.py:682 FirmwareUpdater.get_firmware_info()`
 
 #### TFwUpdateSerialClientTask (ISerialClientTask)
 - Owns `OnResult`/`OnError`, `TFwDownloader`, `TFwUpdateState`, `TFwUpdateLock`
 - `Run()`: reads device info → sends "Ok" RPC response → downloads firmware → flashes
-- Dispatches by `SoftwareType`: `"firmware"`, `"bootloader"`, `"component"`. Unknown values throw `std::runtime_error`.
-- Private methods: `DoFirmwareUpdate()`, `DoBootloaderUpdate()`, `DoComponentsUpdate()`, `DoFlash()`
+- Dispatches by `SoftwareType`: `"firmware"`, `"bootloader"`, `"component"` and the internal
+  `"restore"` of the Restore RPC. Unknown values throw `std::runtime_error`.
+- Private methods: `DoRestore()`, `DoFirmwareUpdate()`, `DoBootloaderUpdate()`, `DoComponentsUpdate()`, `DoFlash()`
+- Refuses to update a device which cannot be reached after rebooting to its bootloader
 - Auto-restores firmware after bootloader update (inline, no second task)
 - Holds `UpdateLock` until flash completes or errors
 
-**Cf.** `firmware_update.py:785 FirmwareUpdater.update_software()`
 
-#### TFwRestoreTask (ISerialClientTask)
-- Same pattern as `TFwUpdateSerialClientTask` but for devices already in bootloader mode
-- Reads device info to get signature, downloads matching firmware, flashes it
-- On device-info error returns "Ok" silently (matches Python behavior)
+#### Restore (`TFwUpdateSerialClientTask` with `SoftwareType == RESTORE`)
+- Writes the firmware into a device which is already in the bootloader, without rebooting it
+- A device answering in the firmware mode gets "Ok" and is left alone
 
-**Cf.** `firmware_update.py:871 FirmwareUpdater.restore_firmware()`
 
 #### Free functions (rpc_fw_update_task.h/.cpp)
 
@@ -182,14 +179,13 @@ src/rpc/
 
 `MakeModbusTraits(protocol)` is defined in `rpc_helpers.h` and shared across all RPC handlers.
 
-**Cf.** `firmware_update.py:311 FirmwareInfoReader`, `firmware_update.py:382 flash_fw()`
 
 #### Helper functions and constants (rpc_fw_update_helpers.h)
 
 | Name | Kind | Description |
 |------|------|-------------|
 | `NonUpdatableSignatures` | `const std::list<std::string>` | Signatures of devices that cannot be updated (e.g. LORA) |
-| `BuildFirmwareInfoResponse(info, downloader, suite)` | function | Build JSON response from device info + release server data |
+| `BuildFirmwareInfoResponse(info, downloader, suite, updatable, network)` | function | Build JSON response from device info + release server data |
 | `IsNonUpdatableSignature(sig)` | function | Check if signature is in `NonUpdatableSignatures` |
 | `FirmwareIsNewer(current, available)` | function | Compare firmware version strings |
 | `ComponentFirmwareIsNewer(current, available)` | function | Compare component firmware versions |
@@ -205,14 +201,12 @@ src/rpc/
 - `DownloadAndParseWBFW(url)` → info block + data block
 - TTL caching for all HTTP responses
 
-**Cf.** `fw_downloader.py:89 get_released_fw()`
 
 #### TFwUpdateState
 - Thread-safe list of `TDeviceUpdateInfo` records
 - Serializes to JSON and publishes to MQTT on every change
 - Mutex released before publishing (avoids holding lock during MQTT I/O)
 
-**Cf.** `firmware_update.py:82 UpdateState`
 
 ## 6. Runtime View
 
@@ -273,9 +267,8 @@ and can be installed or removed independently.
   Update/Restore operations. The lock is held from when the RPC is accepted until
   the flash operation completes or errors, ensuring only one device is updated at a time.
 - `CacheMutex` in `TFwDownloader` protects HTTP response caches.
-- All three task classes (`TFwGetFirmwareInfoTask`, `TFwUpdateSerialClientTask`,
-  `TFwRestoreTask`) run entirely on the serial client task thread. No cross-thread
-  callback chains.
+- Both task classes (`TFwGetFirmwareInfoTask` and `TFwUpdateSerialClientTask`) run entirely
+  on the serial client task thread. No cross-thread callback chains.
 
 ### Error Handling
 
@@ -286,8 +279,10 @@ and can be installed or removed independently.
 - Unknown `SoftwareType` values in `Update` RPC raise `std::runtime_error`, caught
   locally and reported via the state topic (same path as other flash errors).
 - HTTP errors surface as RPC error responses or state error entries.
-- All errors published to the state topic with `com.wb.serial_driver.generic_error`
-  error ID and exception details in metadata.
+- Errors published to the state topic carry an identifier: `com.wb.serial_driver.download_error`
+  for a failed download from the update server, `com.wb.serial_driver.device.response_timeout_error`
+  for a device which stopped answering, `com.wb.serial_driver.generic_error` for the rest,
+  with exception details in metadata.
 
 ### Resource Management
 
@@ -298,7 +293,9 @@ and can be installed or removed independently.
 ### Input Validation
 
 - `slave_id` is required, must be integer in range 0-255
-- `port.path` is required and must be non-empty
+- the port is required: `path` of a serial port, or `address` and `port` of a TCP connection.
+  `ClearError` takes the port as the state topic publishes it, `path` holding a serial path
+  or `address:port`
 - Invalid requests return clear error messages via RPC error response
 
 ## 9. Architecture Decisions
@@ -369,6 +366,9 @@ per method). −Task classes are larger (but self-explanatory).
 | fw_signature | 290 | 12 | READ_HOLDING (3) | Device identity for fw lookup |
 | fw_version | 250 | 16 | READ_HOLDING (3) | Current firmware version |
 | bootloader_version | 330 | 7 | READ_HOLDING (3) | Current bootloader version |
+| bootloader_version (full) | 330 | 8 | READ_HOLDING (3) | Answered in the bootloader mode only |
+| baud_rate | 110 | 1 | READ_HOLDING (3) | Port speed of the device divided by 100 |
+| parity | 111 | 1 | READ_HOLDING (3) | Parity of the device, 0 is none |
 | device_model (ext) | 200 | 20 | READ_HOLDING (3) | Device model string |
 | device_model (std) | 200 | 6 | READ_HOLDING (3) | Fallback model string |
 | reboot_preserve | 131 | 1 | WRITE_SINGLE (6) | Reboot to BL (new devices) |
@@ -380,28 +380,3 @@ per method). −Task classes are larger (but self-explanatory).
 | component_fw_version | 64800+N*48 | 16 | READ_INPUT (4) | Component N version |
 | component_model | 64768+N*48 | 20 | READ_INPUT (4) | Component N model |
 
-## 12. Traceability to Original Python
-
-Every function in the C++ implementation has a comment referencing the corresponding
-Python function in [wb-device-manager](https://github.com/wirenboard/wb-device-manager).
-
-| C++ Class/Function | Python Reference |
-|---------------------|-----------------|
-| `TRPCFwUpdateHandler` | `firmware_update.py:650 FirmwareUpdater` |
-| `GetFirmwareInfo()` | `firmware_update.py:682` |
-| `Update()` | `firmware_update.py:785` |
-| `Restore()` | `firmware_update.py:871` |
-| `ClearError()` | `firmware_update.py:850` |
-| `TFwUpdateSerialClientTask::DoFirmwareUpdate()` | `firmware_update.py:444 update_software()` |
-| `TFwUpdateSerialClientTask::DoComponentsUpdate()` | `firmware_update.py:538 update_components()` |
-| `BuildFirmwareInfoResponse()` | `firmware_update.py:682` |
-| `ReadFwDeviceInfo()` | `firmware_update.py:311 FirmwareInfoReader.read()` |
-| `FlashFirmware() / DoReboot()` | `firmware_update.py:412 reboot_to_bootloader()` |
-| `FlashFirmware() / WriteDataBlock()` | `firmware_update.py:349 write_fw_data_block()` |
-| `ParseWBFW()` | `firmware_update.py:185 parse_wbfw()` |
-| `ParseFwVersionFromUrl()` | `releases.py:30 parse_fw_version()` |
-| `GetReleasedFirmware()` | `fw_downloader.py:89 get_released_fw()` |
-| `GetReleasedBootloader()` | `fw_downloader.py get_released_bootloader()` |
-| `TFwUpdateState` | `firmware_update.py:82 UpdateState` |
-| `TUpdateNotifier` | `firmware_update.py:209 UpdateNotifier` |
-| `TDeviceUpdateInfo::Matches()` | `firmware_update.py:73 DeviceUpdateInfo.__eq__()` |

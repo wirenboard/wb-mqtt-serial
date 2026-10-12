@@ -1,60 +1,33 @@
 #pragma once
 
 #include "rpc_exception.h"
-#include "serial_driver.h"
-
-class TSerialClientTaskExecutor: public util::TNonCopyable
-{
-public:
-    TSerialClientTaskExecutor(PFeaturePort port);
-    ~TSerialClientTaskExecutor();
-
-    void AddTask(PSerialClientTask task);
-
-    PFeaturePort GetPort() const;
-
-    bool IsIdle() const;
-
-private:
-    PFeaturePort Port;
-
-    mutable std::mutex Mutex;
-    std::condition_variable TasksCv;
-    std::vector<PSerialClientTask> Tasks;
-
-    std::thread Thread;
-    std::atomic<bool> Running;
-    bool Idle;
-};
-
-typedef std::shared_ptr<TSerialClientTaskExecutor> PSerialClientTaskExecutor;
-
-struct TSerialClientParams
-{
-    PSerialClient SerialClient;
-    PSerialDevice Device;
-};
+#include "rpc_port_settings.h"
+#include "serial_driver_core.h"
 
 class ITaskRunner
 {
 public:
     virtual ~ITaskRunner() = default;
-    virtual void RunTask(const Json::Value& request, PSerialClientTask task) = 0;
+
+    //! Run a task on the port, whether the driver polls it or not
+    virtual void RunTask(const TPortSettings& portSettings, PSerialClientTask task) = 0;
 };
 
 class TSerialClientTaskRunner: public ITaskRunner
 {
 public:
-    TSerialClientTaskRunner(PMQTTSerialDriver serialDriver);
+    TSerialClientTaskRunner(TSerialDriverCore& serialDriverCore);
 
-    TSerialClientParams GetSerialClientParams(const Json::Value& request);
-    void RunTask(const Json::Value& request, PSerialClientTask task) override;
+    //! Suspends or resumes the polling of the config device of the request
+    //! @throws TRPCException with "config-busy" during config/Save and after the service stop
+    void SetPoll(const Json::Value& request, bool poll);
+
+    //! Adds the task to the client of the config device or the port of the request
+    //! @throws TRPCException with "config-busy" during config/Save and after the service stop
+    void RunTask(const Json::Value& request, const TSerialDriverCore::TMakeTaskFn& makeTask);
+
+    void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override;
 
 private:
-    PMQTTSerialDriver SerialDriver;
-
-    std::vector<PSerialClientTaskExecutor> TaskExecutors;
-    std::mutex TaskExecutorsMutex;
-
-    void RemoveUnusedExecutors();
+    TSerialDriverCore& SerialDriverCore;
 };

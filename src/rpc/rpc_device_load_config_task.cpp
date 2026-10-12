@@ -86,12 +86,12 @@ namespace
             return;
         }
 
-        std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
+        std::string id = rpcRequest->ParametersCache->GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
         std::string deviceModel;
         Json::Value parameters(Json::objectValue);
         if (rpcRequest->DeviceFromConfig && !rpcRequest->Force) {
-            if (rpcRequest->ParametersCache.Contains(id)) {
-                Json::Value cache = rpcRequest->ParametersCache.Get(id);
+            if (rpcRequest->ParametersCache->Contains(id)) {
+                Json::Value cache = rpcRequest->ParametersCache->Get(id);
                 deviceModel = cache["model"].asString();
                 parameters = cache["parameters"];
             }
@@ -131,7 +131,7 @@ namespace
             result["fw"] = rpcRequest->Device->GetWbFwVersion();
         }
         if (rpcRequest->DeviceFromConfig) {
-            rpcRequest->ParametersCache.Add(id, result);
+            rpcRequest->ParametersCache->Add(id, result);
         }
 
         rpcRequest->OnResult(result);
@@ -143,7 +143,7 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolPa
                                                          PDeviceTemplate deviceTemplate,
                                                          bool deviceFromConfig,
                                                          const std::string& configFileName,
-                                                         TRPCDeviceParametersCache& parametersCache)
+                                                         PDeviceParametersCache parametersCache)
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig),
       ConfigFileName(configFileName),
       ParametersCache(parametersCache)
@@ -155,7 +155,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                             PDeviceTemplate deviceTemplate,
                                                             bool deviceFromConfig,
                                                             const std::string& configFileName,
-                                                            TRPCDeviceParametersCache& parametersCache,
+                                                            PDeviceParametersCache parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
@@ -181,6 +181,10 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     TSerialClientDeviceAccessHandler& lastAccessedDevice,
     const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        AnswerRequestCancelled(Request->OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");

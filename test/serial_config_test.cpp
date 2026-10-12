@@ -15,6 +15,18 @@ using namespace std;
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
+namespace
+{
+    PDeviceChannelConfig FindChannel(const TSerialDeviceWithChannels& device, const std::string& mqttId)
+    {
+        auto it = std::find_if(device.Channels.begin(), device.Channels.end(), [&](const auto& channel) {
+            return channel->MqttId == mqttId;
+        });
+        return (it == device.Channels.end()) ? nullptr : *it;
+    }
+
+}
+
 class TConfigParserTest: public TLoggedFixture
 {
 protected:
@@ -427,6 +439,35 @@ TEST_F(TConfigParserTest, ContinuePollingOnIllegalModbusException)
     EXPECT_TRUE(devices[0]->Device->DeviceConfig()->ContinuePollingOnIllegalModbusException);
 }
 
+TEST_F(TConfigParserTest, DisableFastModbus)
+{
+    auto portConfigs = GetConfig("configs/parse_test_disable_fast_modbus.json")->PortConfigs;
+    ASSERT_EQ(portConfigs.size(), 5);
+
+    EXPECT_FALSE(portConfigs[0]->Port->SupportsFastModbus());
+    ASSERT_EQ(portConfigs[0]->Devices.size(), 2);
+    EXPECT_TRUE(portConfigs[0]->Devices[0]->Device->DeviceConfig()->DisableFastModbus);
+    EXPECT_TRUE(portConfigs[0]->Devices[1]->Device->DeviceConfig()->DisableFastModbus);
+
+    EXPECT_TRUE(portConfigs[1]->Port->SupportsFastModbus());
+    ASSERT_EQ(portConfigs[1]->Devices.size(), 2);
+    EXPECT_FALSE(portConfigs[1]->Devices[0]->Device->DeviceConfig()->DisableFastModbus);
+    EXPECT_FALSE(portConfigs[1]->Devices[1]->Device->DeviceConfig()->DisableFastModbus);
+
+    // Modbus TCP with connected_to_mge
+    EXPECT_FALSE(portConfigs[2]->Port->SupportsFastModbus());
+    EXPECT_TRUE(portConfigs[3]->Port->SupportsFastModbus());
+
+    // Serial over TCP
+    EXPECT_FALSE(portConfigs[4]->Port->SupportsFastModbus());
+}
+
+TEST_F(TConfigParserTest, DisableFastModbusInvalidValue)
+{
+    EXPECT_THROW(GetConfig("configs/parse_test_disable_fast_modbus_invalid_port.json"), std::runtime_error);
+    EXPECT_THROW(GetConfig("configs/parse_test_disable_fast_modbus_invalid_device.json"), std::runtime_error);
+}
+
 TEST_F(TConfigParserTest, BigIntegers)
 {
     auto portConfigs = GetConfig("configs/config-big-integers.json")->PortConfigs;
@@ -447,6 +488,49 @@ TEST_F(TConfigParserTest, BigIntegers)
             case 1:
                 EXPECT_EQ(item->RawValue.Get<uint64_t>(), 257080185625143217);
                 break;
+        }
+    }
+}
+
+TEST_F(TConfigParserTest, ChannelTitle)
+{
+    auto portConfigs = GetConfig("configs/parse_test_channel_title.json")->PortConfigs;
+    ASSERT_EQ(portConfigs.size(), 1);
+    const auto& devices = portConfigs[0]->Devices;
+    ASSERT_EQ(devices.size(), 1);
+
+    // Title replaces the name from the template with all its translations
+    const auto& templateDevice = *devices[0];
+    auto channel = FindChannel(templateDevice, "Temperature");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Room temperature"}}));
+    EXPECT_EQ(channel->GetName(), "Room temperature");
+    EXPECT_EQ(channel->Order, 1);
+
+    // Title is applied to hidden channels too
+    channel = FindChannel(templateDevice, "Voltage");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_TRUE(channel->Hidden);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Hidden voltage"}}));
+
+    // Channel without title keeps the name and translations from the template,
+    // "title" of the channel in the template is ignored
+    channel = FindChannel(templateDevice, "Humidity");
+    ASSERT_NE(channel, nullptr);
+    EXPECT_EQ(channel->GetTitles(), (TTitleTranslations{{"en", "Relative humidity"}, {"ru", "Влажность"}}));
+    EXPECT_EQ(channel->Order, 2);
+}
+
+TEST_F(TConfigParserTest, ChannelTitleSchemaValidation)
+{
+    // Empty and non-string titles are rejected
+    const std::vector<std::string> invalidConfigs = {"template-channel-empty", "template-channel-not-string"};
+    for (const auto& name: invalidConfigs) {
+        try {
+            GetConfig("configs/channel_title_invalid/" + name + ".json");
+            ADD_FAILURE() << name << " must not pass validation";
+        } catch (const std::exception& e) {
+            EXPECT_NE(std::string(e.what()).find("[title]"), std::string::npos) << name << ": " << e.what();
         }
     }
 }

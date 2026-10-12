@@ -13,9 +13,11 @@ struct TDeviceTemplate
 {
     std::string Type;
 
+    //! validatorMutex guards the validator shared by the templates
     TDeviceTemplate(const std::string& type,
                     const std::string& protocol,
                     std::shared_ptr<WBMQTT::JSON::TValidator> validator,
+                    std::shared_ptr<std::mutex> validatorMutex,
                     const std::string& filePath);
 
     void SetDeprecated();
@@ -44,6 +46,7 @@ private:
     bool UserDefined;
     std::vector<TDeviceTemplateHardware> Hardware;
     std::shared_ptr<WBMQTT::JSON::TValidator> Validator;
+    std::shared_ptr<std::mutex> ValidatorMutex;
     std::string FilePath;
     Json::Value Template;
     bool Subdevices;
@@ -62,6 +65,9 @@ class TTemplateMap
     std::unordered_map<std::string, std::vector<PDeviceTemplate>> Templates;
 
     std::shared_ptr<WBMQTT::JSON::TValidator> Validator;
+
+    //! The validator caches regexes while it validates, it is used by the templates as well
+    std::shared_ptr<std::mutex> ValidatorMutex = std::make_shared<std::mutex>();
 
     std::mutex Mutex;
 

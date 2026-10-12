@@ -248,6 +248,35 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
+//! Loads a configuration from its JSON and writes it to the configuration file
+class TConfigLoader
+{
+public:
+    TConfigLoader(const std::string& configPath,
+                  TSerialDeviceFactory& deviceFactory,
+                  const Json::Value& commonDeviceSchema,
+                  TTemplateMap& templates,
+                  const Json::Value& portsSchema,
+                  TProtocolConfedSchemasMap& protocolSchemas,
+                  TPortFactoryFn portFactory = DefaultPortFactory);
+    virtual ~TConfigLoader() = default;
+
+    //! The checks are the ones of LoadConfig for a file
+    virtual PHandlerConfig Load(const Json::Value& config);
+
+    //! The file has either the old or the new content
+    void Write(const Json::Value& config);
+
+private:
+    std::string ConfigPath;
+    TSerialDeviceFactory& DeviceFactory;
+    const Json::Value& CommonDeviceSchema;
+    TTemplateMap& Templates;
+    const Json::Value& PortsSchema;
+    TProtocolConfedSchemasMap& ProtocolSchemas;
+    TPortFactoryFn PortFactory;
+};
+
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 void FixChannelEnum(Json::Value& channel);
 

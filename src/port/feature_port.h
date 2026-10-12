@@ -6,7 +6,7 @@
 class TFeaturePort: public TPort
 {
 public:
-    TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge = false);
+    TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge = false, bool fastModbusDisabled = false);
 
     // TPort interface
 
@@ -37,10 +37,8 @@ public:
     bool IsModbusTcp() const;
 
     /**
-     * @brief Returns true if the underlying port supports fast Modbus.
-     *        Correct value can be returned only if the port is open.
-     *        For TCP ports Fast Modbus is supported only with WB-MGE v.3.
-     *        It is detected automatically on port open.
+     * @brief Returns true if Fast Modbus is allowed on the port: it is not disabled in config
+     *        and, for Modbus TCP, the port is connected to WB-MGE v.3.
      */
     bool SupportsFastModbus() const;
 

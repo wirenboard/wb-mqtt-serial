@@ -5,9 +5,6 @@
 
   "configFile": {
     "path": "/etc/wb-mqtt-serial.conf",
-    "service": "wb-mqtt-serial",
-    "fromJSON": ["wb-mqtt-serial", "-J"],
-    "validate": false,
     "editor": "serial-config"
   },
 

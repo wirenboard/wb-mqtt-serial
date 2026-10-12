@@ -1,0 +1,14 @@
+{
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "devices": [
+                {
+                    "slave_id": 1,
+                    "device_type": "default_params",
+                    "disable_fast_modbus": "yes"
+                }
+            ]
+        }
+    ]
+}

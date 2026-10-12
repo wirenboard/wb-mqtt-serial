@@ -9,8 +9,8 @@
 class TRPCPortLoadModbusRequest: public TRPCPortLoadRequestBase
 {
 public:
-    TRPCPortLoadModbusRequest(TRPCDeviceParametersCache& parametersCache);
-    TRPCDeviceParametersCache& ParametersCache;
+    TRPCPortLoadModbusRequest(PDeviceParametersCache parametersCache);
+    PDeviceParametersCache ParametersCache;
     uint8_t SlaveId;
     uint16_t Address;
     uint16_t Count = 1;
@@ -38,6 +38,6 @@ private:
 };
 
 PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request,
-                                                        TRPCDeviceParametersCache& parametersCache);
+                                                        PDeviceParametersCache parametersCache);
 
 typedef std::shared_ptr<TRPCPortLoadModbusSerialClientTask> PRPCPortLoadModbusSerialClientTask;

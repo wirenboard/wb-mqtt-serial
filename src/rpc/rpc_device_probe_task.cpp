@@ -34,6 +34,10 @@ ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PFeaturePort 
                                                                    TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                                    const std::list<PSerialDevice>& polledDevices)
 {
+    if (IsCancelled()) {
+        AnswerRequestCancelled(OnError);
+        return ISerialClientTask::TRunResult::OK;
+    }
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (OnError) {
             OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");

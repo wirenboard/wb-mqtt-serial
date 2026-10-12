@@ -39,6 +39,15 @@ template<class T> void OpenWithException(T& f, const std::string& fileName)
 void WriteToFile(const std::string& fileName, const std::string& value);
 
 /**
+ * @brief Write a string to a temporary file next to the file and rename it,
+ *        so the file has either the old or the new content. A symbolic link is kept,
+ *        the file it points to is replaced
+ *
+ * @throws std::runtime_error on failure, the temporary file is removed
+ */
+void WriteFileAtomically(const std::string& fileName, const std::string& content);
+
+/**
  * @brief Exception class thrown on open directory failure.
  */
 class TNoDirError: public std::runtime_error

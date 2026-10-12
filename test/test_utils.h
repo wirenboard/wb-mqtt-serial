@@ -4,6 +4,7 @@
 #include "serial_config.h"
 #include "serial_exc.h"
 #include <gtest/gtest.h>
+#include <wblib/driver.h>
 
 template<class FnType> void CheckExceptionMsg(FnType fn, const std::string& msg)
 {
@@ -33,3 +34,6 @@ Json::Value ParseJson(const std::string& text);
  * @param filePath path of the configuration relative to the test data directory
  */
 PHandlerConfig LoadTestConfig(const std::string& filePath, TSerialDeviceFactory& deviceFactory);
+
+//! A driver which is never connected to a broker, for the tests which do not publish anything
+WBMQTT::PDeviceDriver MakeUnconnectedMqttDriver();

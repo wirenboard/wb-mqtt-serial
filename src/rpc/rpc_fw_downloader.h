@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include <chrono>
 #include <map>
 #include <memory>
@@ -25,6 +27,12 @@ public:
     std::string GetText(const std::string& url) override;
 };
 #endif
+
+class TFwDownloadError: public std::runtime_error
+{
+public:
+    explicit TFwDownloadError(const std::string& message);
+};
 
 struct TReleasedBinary
 {

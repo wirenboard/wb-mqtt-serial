@@ -70,6 +70,7 @@ const std::unordered_map<std::string, TProtocolConfedSchema>& TProtocolConfedSch
 
 const Json::Value& TProtocolConfedSchemasMap::GetSchema(const std::string& protocol)
 {
+    std::lock_guard<std::mutex> lock(JsonSchemasMutex);
     try {
         return JsonSchemas.at(protocol);
     } catch (const std::out_of_range&) {

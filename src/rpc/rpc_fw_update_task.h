@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "port/serial_port_settings.h"
 #include "rpc_fw_downloader.h"
 #include "serial_client.h"
 
@@ -12,6 +13,8 @@ namespace Modbus
 {
     class IModbusTraits;
 }
+
+const TSerialPortConnectionSettings FACTORY_PORT_SETTINGS(9600, 'N', 8, 2);
 
 // Register addresses and counts for WB device firmware operations
 namespace FwRegisters
@@ -25,6 +28,7 @@ namespace FwRegisters
 
     const uint16_t BOOTLOADER_VERSION_ADDR = 330;
     const uint16_t BOOTLOADER_VERSION_COUNT = 7;
+    const uint16_t BOOTLOADER_VERSION_FULL_COUNT = 8;
 
     const uint16_t DEVICE_MODEL_EXTENDED_ADDR = 200;
     const uint16_t DEVICE_MODEL_EXTENDED_COUNT = 20;
@@ -75,6 +79,21 @@ struct TFwDeviceInfo
 
 // Free functions for serial operations — used by task classes and higher-level tasks
 TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId);
+
+//! A bootloader which cannot preserve the port settings starts with the factory ones, and the
+//! line behind a Serial over TCP port cannot be switched to them by the driver
+bool RequiresDefaultPortSettings(bool tcpPort, const std::string& protocol, bool canPreservePortSettings);
+
+//! Asks the device for its baud rate and parity, the factory settings are 9600 without parity
+bool HasDefaultPortSettings(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId);
+
+/**
+ * @brief A bootloader gives its version only as a whole, a firmware answers a read of any number
+ *        of the version registers. A device which does not answer at all is not in the bootloader.
+ *
+ * @throws Modbus::TModbusExceptionError if the device answers the read with an error
+ */
+bool IsInBootloaderMode(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId);
 void FlashFirmware(Modbus::IModbusTraits& traits,
                    TPort& port,
                    uint8_t slaveId,

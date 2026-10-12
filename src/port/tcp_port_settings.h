@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <sstream>
 #include <string>
 
 struct TTcpPortSettings
@@ -11,9 +10,12 @@ struct TTcpPortSettings
 
     std::string ToString() const
     {
-        std::ostringstream ss;
-        ss << "<" << Address << ":" << Port << ">";
-        return ss.str();
+        return "<" + GetDescription() + ">";
+    }
+
+    std::string GetDescription() const
+    {
+        return Address + ":" + std::to_string(Port);
     }
 
     std::string Address;
