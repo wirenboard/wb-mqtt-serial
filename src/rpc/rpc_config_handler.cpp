@@ -17,31 +17,6 @@ namespace
 {
     const std::string PROTOCOL_PREFIX = "protocol:";
 
-#ifndef __EMSCRIPTEN__
-    //! Logs the error and returns its "error.data" code
-    std::string ProcessApplyConfigError(const TApplyConfigError& e)
-    {
-        switch (e.GetReason()) {
-            case TApplyConfigError::TReason::Busy:
-                LOG(Debug) << "config/Save: " << e.what();
-                return CONFIG_BUSY_ERROR;
-            case TApplyConfigError::TReason::ConfigInvalid:
-                LOG(Debug) << "config/Save: the configuration is rejected: " << e.what();
-                return CONFIG_INVALID_ERROR + ": " + e.what();
-            case TApplyConfigError::TReason::PortTasksTimeout:
-                LOG(Debug) << "config/Save: " << e.what();
-                return PORT_BUSY_ERROR;
-            case TApplyConfigError::TReason::WriteFailed:
-                LOG(Error) << "config/Save: " << e.what();
-                return WRITE_FAILED_ERROR;
-            case TApplyConfigError::TReason::PollingRestartFailed:
-                LOG(Error) << "config/Save: " << e.what();
-                return POLLING_RESTART_FAILED_ERROR;
-        }
-        return CONFIG_BUSY_ERROR;
-    }
-#endif
-
     struct TDeviceTypeGroup
     {
         typedef std::vector<PDeviceTemplate> TemplatesArray;
@@ -134,19 +109,14 @@ namespace
 }
 
 #ifndef __EMSCRIPTEN__
-TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
-                                     const Json::Value& portsSchema,
-                                     PTemplateMap templates,
-                                     TDevicesConfedSchemasMap& deviceConfedSchemas,
-                                     TProtocolConfedSchemasMap& protocolConfedSchemas,
-                                     const Json::Value& groupTranslations,
+TRPCConfigHandler::TRPCConfigHandler(const Json::Value& groupTranslations,
                                      TSerialDriverCore& serialDriverCore,
                                      WBMQTT::PMqttRpcServer rpcServer)
-    : ConfigPath(configPath),
-      PortsSchema(portsSchema),
-      Templates(templates),
-      DeviceConfedSchemas(deviceConfedSchemas),
-      ProtocolConfedSchemas(protocolConfedSchemas),
+    : ConfigPath(serialDriverCore.GetConfigPath()),
+      PortsSchema(serialDriverCore.GetPortsSchema()),
+      Templates(serialDriverCore.GetTemplates()),
+      DeviceConfedSchemas(serialDriverCore.GetDeviceConfedSchemas()),
+      ProtocolConfedSchemas(serialDriverCore.GetProtocolConfedSchemas()),
       GroupTranslations(groupTranslations),
       SerialDriverCore(serialDriverCore)
 {
@@ -154,20 +124,6 @@ TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
     rpcServer->RegisterMethod("config",
                               "GetSchema",
                               std::bind(&TRPCConfigHandler::GetSchema, this, std::placeholders::_1));
-    rpcServer->RegisterAsyncMethod("config",
-                                   "Save",
-                                   std::bind(&TRPCConfigHandler::SaveConfig,
-                                             this,
-                                             std::placeholders::_1,
-                                             std::placeholders::_2,
-                                             std::placeholders::_3));
-}
-
-TRPCConfigHandler::~TRPCConfigHandler()
-{
-    if (SaveThread.joinable()) {
-        SaveThread.join();
-    }
 }
 #else
 TRPCConfigHandler::TRPCConfigHandler(const Json::Value& portsSchema,
@@ -246,44 +202,3 @@ Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 }
-
-#ifndef __EMSCRIPTEN__
-void TRPCConfigHandler::SaveConfig(const Json::Value& request,
-                                   WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                   WBMQTT::TMqttRpcServer::TErrorCallback onError)
-{
-    if (!request["config"].isObject()) {
-        onError(WBMQTT::E_RPC_SERVER_ERROR, "\"config\" object is required");
-        return;
-    }
-    std::lock_guard<std::mutex> lock(SaveMutex);
-    if (SaveInProgress) {
-        onError(WBMQTT::E_RPC_SERVER_ERROR, CONFIG_BUSY_ERROR);
-        return;
-    }
-    if (SaveThread.joinable()) {
-        SaveThread.join();
-    }
-    SaveInProgress = true;
-    // The RPC server goes on answering other requests meanwhile
-    SaveThread = std::thread([this, request, onResult, onError]() {
-        std::string error;
-        try {
-            SerialDriverCore.ApplyConfig(request["config"]);
-        } catch (const TApplyConfigError& e) {
-            error = ProcessApplyConfigError(e);
-        } catch (const std::exception& e) {
-            error = e.what();
-        }
-        {
-            std::lock_guard<std::mutex> lock(SaveMutex);
-            SaveInProgress = false;
-        }
-        if (error.empty()) {
-            onResult(Json::Value(Json::objectValue));
-        } else {
-            onError(WBMQTT::E_RPC_SERVER_ERROR, error);
-        }
-    });
-}
-#endif

@@ -15,5 +15,9 @@ bool PortMatches(const TPortSettings& portSettings, const TFeaturePort& port)
         const auto& settings = tcpPort->GetInitialSettings();
         return requested != nullptr && settings.Address == requested->Address && settings.Port == requested->Port;
     }
-    return false;
+    // Other ports, as the ones of the tests, are named by their description
+    if (const auto* requested = std::get_if<TSerialPortSettings>(&portSettings)) {
+        return basePort.GetDescription(false) == requested->Device;
+    }
+    return basePort.GetDescription(false) == std::get<TFramedTcpPortSettings>(portSettings).GetDescription();
 }

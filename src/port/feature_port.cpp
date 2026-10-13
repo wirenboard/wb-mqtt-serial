@@ -104,3 +104,19 @@ PPort TFeaturePort::GetBasePort() const
 {
     return BasePort;
 }
+
+#ifndef __EMSCRIPTEN__
+PFeaturePort DefaultPortFactory(const TFeaturePortSettings& settings)
+{
+    if (const auto* tcpPort = std::get_if<TFramedTcpPortSettings>(&settings.Port)) {
+        return std::make_shared<TFeaturePort>(std::make_shared<TTcpPort>(*tcpPort),
+                                              tcpPort->ModbusTcp,
+                                              settings.ConnectedToMge,
+                                              settings.FastModbusDisabled);
+    }
+    return std::make_shared<TFeaturePort>(std::make_shared<TSerialPort>(std::get<TSerialPortSettings>(settings.Port)),
+                                          false,
+                                          settings.ConnectedToMge,
+                                          settings.FastModbusDisabled);
+}
+#endif

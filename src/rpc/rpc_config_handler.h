@@ -7,8 +7,6 @@
 #include "serial_config.h"
 
 #ifndef __EMSCRIPTEN__
-#include <thread>
-
 #include "serial_driver_core.h"
 #endif
 
@@ -16,15 +14,9 @@ class TRPCConfigHandler
 {
 public:
 #ifndef __EMSCRIPTEN__
-    TRPCConfigHandler(const std::string& configPath,
-                      const Json::Value& portsSchema,
-                      PTemplateMap templates,
-                      TDevicesConfedSchemasMap& deviceConfedSchemas,
-                      TProtocolConfedSchemasMap& protocolConfedSchemas,
-                      const Json::Value& groupTranslations,
+    TRPCConfigHandler(const Json::Value& groupTranslations,
                       TSerialDriverCore& serialDriverCore,
                       WBMQTT::PMqttRpcServer rpcServer);
-    ~TRPCConfigHandler();
 #else
     TRPCConfigHandler(const Json::Value& portsSchema,
                       PTemplateMap templates,
@@ -47,14 +39,6 @@ private:
 
 #ifndef __EMSCRIPTEN__
     TSerialDriverCore& SerialDriverCore;
-
-    std::mutex SaveMutex;
-    bool SaveInProgress = false;
-    std::thread SaveThread;
-
-    void SaveConfig(const Json::Value& request,
-                    WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                    WBMQTT::TMqttRpcServer::TErrorCallback onError);
 #endif
 };
 

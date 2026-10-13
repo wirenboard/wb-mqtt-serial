@@ -12,13 +12,8 @@ constexpr int MAX_RPC_RETRIES = 2;
 constexpr auto UNSUPPORTED_VALUE = "unsupported";
 
 //! Machine-readable errors passed in "error.data" of a reply
-const std::string CONFIG_INVALID_ERROR = "config-invalid";
 const std::string CONFIG_BUSY_ERROR = "config-busy";
 const std::string REQUEST_CANCELLED_ERROR = "request-cancelled";
-const std::string PORT_BUSY_ERROR = "port-busy";
-const std::string WRITE_FAILED_ERROR = "write-failed";
-const std::string POLLING_RESTART_FAILED_ERROR = "polling-restart-failed";
-const std::string TEMPLATE_IN_USE_ERROR = "template-in-use";
 
 TSerialPortConnectionSettings ParseRPCSerialPortSettings(
     const Json::Value& request,

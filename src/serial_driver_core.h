@@ -1,29 +1,20 @@
 #pragma once
 
-#include <optional>
-#include <variant>
-
-#include "port/port_settings.h"
-
+#include "confed_device_schemas_map.h"
+#include "confed_protocol_schemas_map.h"
 #include "device_parameters_cache.h"
-#include "serial_client_task_executor.h"
-#include "serial_driver.h"
+#include "files_watcher.h"
+#include "port_task_dispatcher.h"
+#include "template_change.h"
 
 //! How long a configuration change waits for the port tasks
 const std::chrono::seconds DefaultPortTasksWaitTimeout(10);
 
-//! config/Save is running or the service is stopped
+//! A configuration or template change is running or the service is stopped
 class TSerialDriverCoreBusyError: public std::runtime_error
 {
 public:
     TSerialDriverCoreBusyError();
-};
-
-//! No polled config device matches the target, and for a task no port is given either
-class TTaskTargetNotFoundError: public std::runtime_error
-{
-public:
-    TTaskTargetNotFoundError();
 };
 
 class TApplyConfigError: public std::runtime_error
@@ -38,58 +29,76 @@ public:
         PortTasksTimeout,
         WriteFailed,
         //! The configuration is written, nothing is polled
-        PollingRestartFailed
+        PollingRestartFailed,
+        //! The type is used and the change is not forced
+        TemplateInUse,
+        //! TemplateInUse with problems
+        ApplyProblems
     };
 
     TApplyConfigError(TReason reason, const std::string& message);
+    //! ApplyProblems
+    TApplyConfigError(const std::string& message, const TApplyProblems& problems);
 
     TReason GetReason() const;
+    const TApplyProblems& GetProblems() const;
 
 private:
     TReason Reason;
+    TApplyProblems Problems;
+};
+
+struct TTemplateApplyResult
+{
+    //! Null if the type has no template
+    PDeviceTemplate Template;
+    //! As config/Load gives it, null if it is not read
+    Json::Value Config;
+};
+
+struct TSerialDriverCoreFiles
+{
+    std::string Config;
+    std::string TemplatesDir;
+    std::string UserTemplatesDir;
+    std::string TemplatesSchema;
+    std::string CommonDeviceSchema;
+    std::string PortsSchema;
+    std::string ProtocolSchemasDir;
 };
 
 /**
- * @brief Owns everything that accesses the ports: the driver polling the configuration
- *        and the executors of the ports outside it
+ * @brief Owns the configuration, the templates and everything that accesses the ports: the driver polling
+ *        the configuration and the executors of the ports outside it
  */
 class TSerialDriverCore: public util::TNonCopyable
 {
 public:
-    //! The task gets the config device it addresses, null if there is none, and the current parameters cache
-    typedef std::function<PSerialClientTask(PSerialDevice deviceFromConfig, PDeviceParametersCache cache)> TMakeTaskFn;
-
-    //! A config device by its id, otherwise a port and a config device on it by its address
-    struct TTaskTarget
-    {
-        std::string DeviceId;
-
-        //! Not set: only DeviceId is searched
-        std::optional<TPortSettings> Port;
-
-        std::string SlaveId;
-        //! Empty matches a Modbus device
-        std::string DeviceType;
-    };
-
     /**
-     * @param handlerConfig the configuration loaded at the start, null starts without polling.
-     *        The service starts without polling too if the polling can not be created for it
-     * @param configLoader ApplyConfig loads and writes the configuration with it
-     * @param debugFromCommandLine debug logging stays enabled after ApplyConfig whatever "debug" is
-     * @param portTasksWaitTimeout how long ApplyConfig waits for the port tasks
+     * @brief Loads the templates and the configuration. If the configuration can not be loaded or polled,
+     *        the service starts without polling
      *
-     * @throws std::invalid_argument if mqttDriver is null
+     * @param debugFromCommandLine debug logging stays enabled whatever "debug" of the configuration is
+     * @param portTasksWaitTimeout how long a configuration or template change waits for the port tasks
+     *
+     * @throws std::invalid_argument if mqttDriver is null, std::exception if the schemas can not be loaded
      */
     TSerialDriverCore(WBMQTT::PDeviceDriver mqttDriver,
-                      PHandlerConfig handlerConfig,
-                      TConfigLoader& configLoader,
+                      const TSerialDriverCoreFiles& files,
                       bool debugFromCommandLine,
+                      TFeaturePortFactoryFn portFactory = DefaultPortFactory,
                       std::chrono::milliseconds portTasksWaitTimeout = DefaultPortTasksWaitTimeout);
     ~TSerialDriverCore();
 
-    //! config/Save is running or the service is stopped
+    //! A configuration or template change is running or the service is stopped
     bool IsBusy();
+
+    const std::string& GetConfigPath() const;
+    const TSerialDeviceFactory& GetDeviceFactory() const;
+    const Json::Value& GetPortsSchema() const;
+    TProtocolConfedSchemasMap& GetProtocolConfedSchemas();
+    PTemplateMap GetTemplates();
+    TDevicesConfedSchemasMap& GetDeviceConfedSchemas();
 
     /**
      * @brief Adds the task made by makeTask to the client polling the target or to the executor
@@ -112,7 +121,7 @@ public:
     void Stop();
 
     /**
-     * @brief Checks the configuration, stops the port clients, writes the configuration and restarts
+     * @brief Thread-safe. Checks the configuration, stops the port clients, writes the configuration and restarts
      *        the polling with it. If the service is stopped meanwhile, the polling is not restarted
      *
      * @throws TApplyConfigError. The file, the polled configuration and the MQTT devices are kept
@@ -121,37 +130,57 @@ public:
      */
     void ApplyConfig(const Json::Value& config);
 
-private:
-    struct TPolledDevice
-    {
-        PSerialClient SerialClient;
-        PSerialDevice Device;
-    };
+    /**
+     * @brief Thread-safe. If the type is used, its devices are read by the new template if it has "hw". Without force
+     *        nothing is changed then, with force the configuration gets the read parameters and the polling
+     *        is restarted as ApplyConfig does
+     *
+     * @throws TApplyConfigError, std::exception if the template is invalid
+     */
+    TTemplateApplyResult UploadTemplate(const std::string& content, const std::string& fileName, bool force);
 
+    //! Thread-safe. Same as UploadTemplate for the remaining template of the type
+    //! @throws TApplyConfigError, std::exception if the type has no user template
+    TTemplateApplyResult DeleteTemplate(const std::string& deviceType, bool force);
+
+private:
     WBMQTT::PDeviceDriver MqttDriver;
-    TConfigLoader& ConfigLoader;
+    std::string ConfigPath;
+    TSerialDeviceFactory DeviceFactory;
+    Json::Value CommonDeviceSchema;
+    Json::Value PortsSchema;
+    TProtocolConfedSchemasMap ProtocolConfedSchemas;
+    TConfigLoadParams ConfigLoadParams;
+    PTemplateMap Templates;
+    TDevicesConfedSchemasMap DeviceConfedSchemas;
     bool DebugFromCommandLine;
     std::chrono::milliseconds PortTasksWaitTimeout;
 
     std::mutex ApplyConfigMutex;
-    bool Started;
 
     std::mutex Mutex;
     bool Applying;
     bool Stopped;
-    PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;
-    PDeviceParametersCache ParametersCache;
-    std::vector<PSerialClientTaskExecutor> Executors;
+    TPortTaskDispatcher PortTasks;
+
+    //! Changes the templates, so it is stopped before they are destroyed
+    std::unique_ptr<TFilesWatcher> TemplatesWatcher;
 
     //! The mutex is held by the caller
     bool IsBusyLocked() const;
     void ThrowIfBusy() const;
-    TPolledDevice FindPolledDeviceLocked(const TTaskTarget& target);
-    void RemoveUnusedExecutors();
+    void HandleTemplateChangeEvent(const std::string& fileName, TFilesWatcher::TEvent event);
 
-    void ResumeClients(const std::vector<PSerialClient>& serialClients,
-                       const std::vector<PSerialClientTaskExecutor>& executors);
+    //! @throws TApplyConfigError PortTasksTimeout
+    void PausePortTasks();
     void DoApplyConfig(const Json::Value& config);
+    void DoApplyTemplate(const TTemplateChange& change, bool force);
+    //! As config/Load gives it, null if it is not read
+    Json::Value LoadConfedConfig();
+    //! Null handlerConfig leaves nothing polled
+    //! @throws TApplyConfigError PollingRestartFailed
+    void RestartPolling(PHandlerConfig handlerConfig);
+    //! Null handlerConfig stops the polling
     void SwitchDriver(PHandlerConfig handlerConfig);
 };
