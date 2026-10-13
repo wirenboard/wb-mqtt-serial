@@ -1,9 +1,17 @@
-wb-mqtt-serial (2.285.1) stable; urgency=medium
+wb-mqtt-serial (2.286.1) stable; urgency=medium
 
   * Add Modbus settings parameters (device address, baud rate, parity) to the
     NEVOTON BCG-1.0.4-W template
 
  -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 13 Oct 2026 15:32:30 +0300
+
+wb-mqtt-serial (2.286.0) stable; urgency=medium
+
+  * templates/Upload and templates/Delete update the configuration of the
+    devices using the template, if possible
+  * device/LoadConfig reads only devices with "hw" in the template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 13 Oct 2026 12:00:00 +0500
 
 wb-mqtt-serial (2.285.0) stable; urgency=medium
 
