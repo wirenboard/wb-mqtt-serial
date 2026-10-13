@@ -118,11 +118,11 @@ TSerialDriverCore::TSerialDriverCore(WBMQTT::PDeviceDriver mqttDriver,
         }
     }
     PortTasks.Switch(serialDriver, MakeParametersCache(Config));
-    TemplatesWatcher = std::make_unique<TFilesWatcher>(
-        std::vector<std::string>{files.TemplatesDir, files.UserTemplatesDir},
-        [this](const std::string& fileName, TFilesWatcher::TEvent event) {
-            HandleTemplateChangeEvent(fileName, event);
-        });
+    TemplatesWatcher =
+        std::make_unique<TFilesWatcher>(std::vector<std::string>{files.TemplatesDir, files.UserTemplatesDir},
+                                        [this](const std::string& fileName, TFilesWatcher::TEvent event) {
+                                            HandleTemplateChangeEvent(fileName, event);
+                                        });
 }
 
 TSerialDriverCore::~TSerialDriverCore()
