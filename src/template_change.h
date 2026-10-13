@@ -29,7 +29,7 @@ std::shared_ptr<TTemplateMap> MakeChangedTemplates(TTemplateMap& templates, cons
 //! @throws std::exception, the files are not changed then
 void WriteTemplateFile(const TTemplateChange& change);
 
-//! Both files are written to the temporary files first, so a failure of the writing changes nothing
+//! Both files are written to the temporary files first, so a failure before replacing the files changes nothing
 //! @throws std::exception
 void WriteTemplateAndConfigFiles(const TTemplateChange& change,
                                  const std::string& configPath,
