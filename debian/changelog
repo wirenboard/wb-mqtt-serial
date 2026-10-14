@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1-wb108-cb8ea449) stable; urgency=medium
+
+  * Rebase ONI customizations onto wb-2606
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 14 Oct 2026 12:09:01 +0300
+
 wb-mqtt-serial (2.248.1-wb108) stable; urgency=medium
 
   * Fix writing to devices which have no registers to poll
