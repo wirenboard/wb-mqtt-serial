@@ -91,12 +91,26 @@
         "enum": [
           1,
           2,
-          3
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
         ],
         "enum_titles": [
           "1",
           "2",
-          "3"
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
         ]
       },
       {
@@ -105,6 +119,7 @@
         "reg_type": "holding",
         "address": "31",
         "type": "value",
+        "units": "deg C",
         "format": "s16",
         "scale": 0.1
       },
@@ -171,7 +186,7 @@
         "Heater Overheat": "Перегрев калорифера",
         "External Stop": "Внешний стоп",
         "T-outdoor Sensor Short": "Замыкание Т наружного",
-        "T-indoor Sensor Break": "Обрыв Т наружного",
+        "T-outdoor Sensor Break": "Обрыв Т наружного",
         "T-Duct Sensor Short": "Замыкание Т канала",
         "T-Duct Sensor Break": "Обрыв Т канала",
         "Fire&Heater Overheat": "Пожар&Перегрев калорифера"
