@@ -22,6 +22,9 @@
             },
             {
                 "id": "g_debug"
+            },
+            {
+                "id": "g_modbus"
             }
         ],
         "parameters": [
@@ -83,6 +86,30 @@
                 ],
                 "default": 1,
                 "group": "g_opentherm"
+            },
+            {
+                "id": "modbus_address",
+                "address": 200,
+                "min": 1,
+                "max": 247,
+                "group": "g_modbus",
+                "order": 1
+            },
+            {
+                "id": "baud_rate",
+                "address": 201,
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": ["9600", "19200", "38400", "57600", "115200"],
+                "group": "g_modbus",
+                "order": 2
+            },
+            {
+                "id": "parity",
+                "address": 202,
+                "enum": [0, 1, 2],
+                "enum_titles": ["N", "O", "E"],
+                "group": "g_modbus",
+                "order": 3
             }
         ],
         "setup": [
@@ -623,6 +650,7 @@
                 "g_opentherm": "OpenTherm Commands",
                 "g_hw_info": "HW Info",
                 "g_debug": "Debug",
+                "g_modbus": "Modbus Settings",
                 "boiler_status": "Boiler Status",
                 "alarm_boiler_fault": "Boiler Fault",
                 "state_ch": "Boiler CH Mode",
@@ -708,7 +736,10 @@
                 "boiler_manufacturer_enum_0": "BAXI Ampera",
                 "boiler_manufacturer_enum_1": "ImmerGaz",
                 "boiler_manufacturer_enum_2": "ZOTA",
-                "boiler_manufacturer_enum_3": "EVAN"
+                "boiler_manufacturer_enum_3": "EVAN",
+                "modbus_address": "Device Address",
+                "baud_rate": "Baud Rate",
+                "parity": "Parity"
             },
             "ru": {
                 "nevoton-bcg-1.0.4-w": "NEVOTON BCG-1.0.4-W (OpenTherm - Modbus Bridge)",
@@ -718,6 +749,7 @@
                 "g_opentherm": "Команды OpenTherm",
                 "g_hw_info": "Данные модуля",
                 "g_debug": "Диагностика",
+                "g_modbus": "Настройки Modbus",
                 "boiler_status": "Статус котла",
                 "alarm_boiler_fault": "Ошибка котла",
                 "state_ch": "Контур ЦО котла",
@@ -803,7 +835,10 @@
                 "boiler_manufacturer_enum_0": "BAXI Ampera",
                 "boiler_manufacturer_enum_1": "ImmerGaz",
                 "boiler_manufacturer_enum_2": "ZOTA",
-                "boiler_manufacturer_enum_3": "ЭВАН"
+                "boiler_manufacturer_enum_3": "ЭВАН",
+                "modbus_address": "Адрес устройства",
+                "baud_rate": "Скорость обмена",
+                "parity": "Контроль чётности"
             }
         }
     }
