@@ -4,6 +4,7 @@
 #include "port/tcp_port.h"
 #include "rpc/rpc_exception.h"
 #include "rpc/rpc_port_driver_list.h"
+#include "rpc_service_test_utils.h"
 #include "test_utils.h"
 
 #include <wblib/testing/testlog.h>
@@ -28,26 +29,15 @@ class TSerialClientTaskRunnerTest: public testing::Test
 protected:
     void SetUp() override
     {
-        ProtocolSchemas = std::make_unique<TProtocolConfedSchemasMap>(
-            WBMQTT::Testing::TLoggedFixture::GetDataFilePath("../protocols"),
-            CommonDeviceSchema);
-        ConfigLoader = std::make_unique<TConfigLoader>(std::string(),
-                                                       DeviceFactory,
-                                                       CommonDeviceSchema,
-                                                       Templates,
-                                                       PortsSchema,
-                                                       *ProtocolSchemas);
-        SerialDriverCore =
-            std::make_unique<TSerialDriverCore>(MakeUnconnectedMqttDriver(), nullptr, *ConfigLoader, false);
+        SerialDriverCore = std::make_unique<TSerialDriverCore>(
+            MakeUnconnectedMqttDriver(),
+            MakeSerialDriverCoreFiles(std::string(),
+                                      WBMQTT::Testing::TLoggedFixture::GetDataFilePath("device-templates"),
+                                      std::string()),
+            false);
         TaskRunner = std::make_unique<TSerialClientTaskRunner>(*SerialDriverCore);
     }
 
-    TSerialDeviceFactory DeviceFactory;
-    Json::Value CommonDeviceSchema;
-    TTemplateMap Templates;
-    Json::Value PortsSchema;
-    std::unique_ptr<TProtocolConfedSchemasMap> ProtocolSchemas;
-    std::unique_ptr<TConfigLoader> ConfigLoader;
     std::unique_ptr<TSerialDriverCore> SerialDriverCore;
     std::unique_ptr<TSerialClientTaskRunner> TaskRunner;
 };

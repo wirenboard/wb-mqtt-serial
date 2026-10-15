@@ -186,6 +186,12 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     try {
         SerialClientTaskRunner.RunTask(request, [&](PSerialDevice deviceFromConfig, PDeviceParametersCache cache) {
             auto helper = TRPCDeviceHelper(request, DeviceFactory, Templates, deviceFromConfig);
+            // Without "hw" the model is not checked, the settings may be read from another device
+            if (helper.DeviceTemplate->GetHardware().empty()) {
+                throw TRPCException("Device \"" + helper.DeviceTemplate->Type +
+                                        "\" without \"hw\" in the template is not supported by this RPC",
+                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
             auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request,
                                                               helper.ProtocolParams,
                                                               helper.Device,

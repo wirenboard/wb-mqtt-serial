@@ -597,52 +597,41 @@ namespace
         port_config->AddDevice(deviceFactory.CreateDevice(device_data, params, templates));
     }
 
-#ifndef __EMSCRIPTEN__
-    PFeaturePort OpenSerialPort(const Json::Value& port_data)
+    TFeaturePortSettings ParseFeaturePortSettings(const Json::Value& port_data)
     {
-        TSerialPortSettings settings(port_data["path"].asString());
+        TFeaturePortSettings res;
+        res.FastModbusDisabled = port_data["disable_fast_modbus"].asBool();
+        auto port_type = port_data.get("port_type", "serial").asString();
+        if (port_type == "serial") {
+            TSerialPortSettings settings(port_data["path"].asString());
 
-        Get(port_data, "baud_rate", settings.BaudRate);
+            Get(port_data, "baud_rate", settings.BaudRate);
 
-        if (port_data.isMember("parity"))
-            settings.Parity = port_data["parity"].asCString()[0];
+            if (port_data.isMember("parity"))
+                settings.Parity = port_data["parity"].asCString()[0];
 
-        Get(port_data, "data_bits", settings.DataBits);
-        Get(port_data, "stop_bits", settings.StopBits);
-
-        auto port = std::make_shared<TSerialPort>(settings);
-
-        return std::make_shared<TFeaturePort>(port, false, false, port_data["disable_fast_modbus"].asBool());
+            Get(port_data, "data_bits", settings.DataBits);
+            Get(port_data, "stop_bits", settings.StopBits);
+            res.Port = settings;
+            return res;
+        }
+        if (port_type == "tcp" || port_type == "modbus tcp") {
+            bool modbusTcp = (port_type == "modbus tcp");
+            res.Port =
+                TFramedTcpPortSettings{TTcpPortSettings(port_data["address"].asString(), port_data["port"].asUInt()),
+                                       modbusTcp};
+            res.ConnectedToMge = modbusTcp && port_data["connected_to_mge"].asBool();
+            return res;
+        }
+        throw TConfigParserException("invalid port_type: '" + port_type + "'");
     }
-
-    PFeaturePort OpenTcpPort(const Json::Value& port_data)
-    {
-        TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
-
-        auto port = std::make_shared<TTcpPort>(settings);
-
-        return std::make_shared<TFeaturePort>(port, false, false, port_data["disable_fast_modbus"].asBool());
-    }
-
-    PFeaturePort OpenModbusTcpPort(const Json::Value& port_data)
-    {
-        TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
-
-        auto port = std::make_shared<TTcpPort>(settings);
-
-        return std::make_shared<TFeaturePort>(port,
-                                              true,
-                                              port_data["connected_to_mge"].asBool(),
-                                              port_data["disable_fast_modbus"].asBool());
-    }
-#endif
 
     void LoadPort(PHandlerConfig handlerConfig,
                   const Json::Value& port_data,
                   const std::string& id_prefix,
                   TTemplateMap& templates,
                   TSerialDeviceFactory& deviceFactory,
-                  TPortFactoryFn portFactory)
+                  TFeaturePortFactoryFn portFactory)
     {
         if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
             return;
@@ -655,7 +644,7 @@ namespace
         Get(port_data, "connection_timeout_ms", port_config->OpenCloseSettings.MaxFailTime);
         Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
-        port_config->Port = portFactory(port_data);
+        port_config->Port = portFactory(ParseFeaturePortSettings(port_data));
 
         std::chrono::milliseconds responseTimeout = RESPONSE_TIMEOUT_NOT_SET;
         Get(port_data, "response_timeout_ms", responseTimeout);
@@ -683,23 +672,6 @@ void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value&
         dst[dstKey] = src[srcKey];
     }
 }
-
-#ifndef __EMSCRIPTEN__
-PFeaturePort DefaultPortFactory(const Json::Value& port_data)
-{
-    auto port_type = port_data.get("port_type", "serial").asString();
-    if (port_type == "serial") {
-        return OpenSerialPort(port_data);
-    }
-    if (port_type == "tcp") {
-        return OpenTcpPort(port_data);
-    }
-    if (port_type == "modbus tcp") {
-        return OpenModbusTcpPort(port_data);
-    }
-    throw TConfigParserException("invalid port_type: '" + port_type + "'");
-}
-#endif
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema)
 {
@@ -740,20 +712,10 @@ void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
 #ifndef __EMSCRIPTEN__
 namespace
 {
-    //! The text of a configuration file
-    std::string SerializeConfig(const Json::Value& config)
-    {
-        Json::StreamWriterBuilder builder;
-        builder["commentStyle"] = "None";
-        builder["indentation"] = "  ";
-        builder["precision"] = 15;
-        return Json::writeString(builder, config) + "\n";
-    }
-
     PHandlerConfig MakeHandlerConfig(const Json::Value& root,
                                      TSerialDeviceFactory& deviceFactory,
                                      TTemplateMap& templates,
-                                     TPortFactoryFn portFactory)
+                                     TFeaturePortFactoryFn portFactory)
     {
         PHandlerConfig handlerConfig(new THandlerConfig);
 
@@ -797,7 +759,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TTemplateMap& templates,
                           const Json::Value& portsSchema,
                           TProtocolConfedSchemasMap& protocolSchemas,
-                          TPortFactoryFn portFactory)
+                          TFeaturePortFactoryFn portFactory)
 {
     Json::Value Root(Parse(configFileName));
     FixOldConfigFormat(Root, templates);
@@ -811,33 +773,31 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     return MakeHandlerConfig(Root, deviceFactory, templates, portFactory);
 }
 
-TConfigLoader::TConfigLoader(const std::string& configPath,
-                             TSerialDeviceFactory& deviceFactory,
-                             const Json::Value& commonDeviceSchema,
-                             TTemplateMap& templates,
-                             const Json::Value& portsSchema,
-                             TProtocolConfedSchemasMap& protocolSchemas,
-                             TPortFactoryFn portFactory)
-    : ConfigPath(configPath),
-      DeviceFactory(deviceFactory),
-      CommonDeviceSchema(commonDeviceSchema),
-      Templates(templates),
-      PortsSchema(portsSchema),
-      ProtocolSchemas(protocolSchemas),
-      PortFactory(portFactory)
-{}
-
-PHandlerConfig TConfigLoader::Load(const Json::Value& config)
+PHandlerConfig LoadConfigJson(const Json::Value& config, const TConfigLoadParams& params, TTemplateMap& templates)
 {
     Json::Value root(config);
-    FixOldConfigFormat(root, Templates);
-    ValidateConfig(root, DeviceFactory, CommonDeviceSchema, PortsSchema, Templates, ProtocolSchemas);
-    return MakeHandlerConfig(root, DeviceFactory, Templates, PortFactory);
+    FixOldConfigFormat(root, templates);
+    ValidateConfig(root,
+                   params.DeviceFactory,
+                   params.CommonDeviceSchema,
+                   params.PortsSchema,
+                   templates,
+                   params.ProtocolSchemas);
+    return MakeHandlerConfig(root, params.DeviceFactory, templates, params.PortFactory);
 }
 
-void TConfigLoader::Write(const Json::Value& config)
+std::string SerializeConfig(const Json::Value& config)
 {
-    WriteFileAtomically(ConfigPath, SerializeConfig(config));
+    Json::StreamWriterBuilder builder;
+    builder["commentStyle"] = "None";
+    builder["indentation"] = "  ";
+    builder["precision"] = 15;
+    return Json::writeString(builder, config) + "\n";
+}
+
+void WriteConfigFile(const std::string& path, const Json::Value& config)
+{
+    WriteFileAtomically(path, SerializeConfig(config));
 }
 #endif
 

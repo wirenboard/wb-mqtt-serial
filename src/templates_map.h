@@ -20,6 +20,12 @@ struct TDeviceTemplate
                     std::shared_ptr<std::mutex> validatorMutex,
                     const std::string& filePath);
 
+    //! A template without a file
+    //! @throws std::runtime_error if the template is invalid
+    TDeviceTemplate(const Json::Value& root,
+                    std::shared_ptr<WBMQTT::JSON::TValidator> validator,
+                    std::shared_ptr<std::mutex> validatorMutex);
+
     void SetDeprecated();
     void SetUserDefined();
     void SetWithSubdevices();
@@ -76,7 +82,12 @@ class TTemplateMap
     std::string UserTemplatesDir;
 
     PDeviceTemplate MakeTemplateFromJson(const Json::Value& data, const std::string& filePath);
+    bool IsPreferredTemplatePath(const std::string& path) const;
     std::string DeleteTemplateUnsafe(const std::string& path);
+    //! deletedType is the type of the template of the path removed before
+    std::vector<std::string> InsertTemplateUnsafe(PDeviceTemplate deviceTemplate,
+                                                  const std::string& path,
+                                                  const std::string& deletedType);
 
 public:
     TTemplateMap() = default;
@@ -110,6 +121,13 @@ public:
      * @return std::vector<std::string> Array of updated device types
      */
     std::vector<std::string> UpdateTemplate(const std::string& filePath);
+
+    //! Thread-safe. The template is not bound to the file, the path sets only its place among the templates of the type
+    //! @throws std::runtime_error if the template is invalid
+    void AddTemplate(const Json::Value& root, const std::string& filePath);
+
+    //! Thread-safe
+    std::shared_ptr<TTemplateMap> Clone();
 
     /**
      * @brief Notify about deletion of template file
@@ -145,6 +163,8 @@ public:
      * @return template loaded from user templates directory or nullptr if there is no such template
      */
     PDeviceTemplate FindUserDefinedTemplate(const std::string& deviceType);
+
+    const std::string& GetUserTemplatesDir() const;
 };
 
 typedef std::shared_ptr<TTemplateMap> PTemplateMap;

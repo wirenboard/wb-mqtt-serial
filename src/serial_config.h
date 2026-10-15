@@ -58,10 +58,6 @@ public:
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
-typedef std::function<PFeaturePort(const Json::Value& config)> TPortFactoryFn;
-
-PFeaturePort DefaultPortFactory(const Json::Value& port_data);
-
 class IRegisterAddressFactory
 {
 public:
@@ -246,36 +242,26 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TTemplateMap& templates,
                           const Json::Value& portsSchema,
                           TProtocolConfedSchemasMap& protocolSchemas,
-                          TPortFactoryFn portFactory = DefaultPortFactory);
+                          TFeaturePortFactoryFn portFactory = DefaultPortFactory);
 
-//! Loads a configuration from its JSON and writes it to the configuration file
-class TConfigLoader
+//! What LoadConfigJson makes the polling configuration with, besides the templates
+struct TConfigLoadParams
 {
-public:
-    TConfigLoader(const std::string& configPath,
-                  TSerialDeviceFactory& deviceFactory,
-                  const Json::Value& commonDeviceSchema,
-                  TTemplateMap& templates,
-                  const Json::Value& portsSchema,
-                  TProtocolConfedSchemasMap& protocolSchemas,
-                  TPortFactoryFn portFactory = DefaultPortFactory);
-    virtual ~TConfigLoader() = default;
-
-    //! The checks are the ones of LoadConfig for a file
-    virtual PHandlerConfig Load(const Json::Value& config);
-
-    //! The file has either the old or the new content
-    void Write(const Json::Value& config);
-
-private:
-    std::string ConfigPath;
     TSerialDeviceFactory& DeviceFactory;
     const Json::Value& CommonDeviceSchema;
-    TTemplateMap& Templates;
     const Json::Value& PortsSchema;
     TProtocolConfedSchemasMap& ProtocolSchemas;
-    TPortFactoryFn PortFactory;
+    TFeaturePortFactoryFn PortFactory;
 };
+
+//! Makes the polling configuration from a configuration JSON with the checks of LoadConfig for a file
+PHandlerConfig LoadConfigJson(const Json::Value& config, const TConfigLoadParams& params, TTemplateMap& templates);
+
+//! The text of a configuration file
+std::string SerializeConfig(const Json::Value& config);
+
+//! The file has either the old or the new content
+void WriteConfigFile(const std::string& path, const Json::Value& config);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 void FixChannelEnum(Json::Value& channel);

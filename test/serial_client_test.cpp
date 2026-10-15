@@ -1204,7 +1204,7 @@ void TSerialClientIntegrationTest::SetUp()
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
 
     FixFakeDevices(Config);
 }
@@ -1610,8 +1610,8 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     TTemplateMap t;
 
-    auto factory = [=, this](const Json::Value& port_data) -> PFeaturePort {
-        auto path = port_data["path"].asString();
+    auto factory = [=, this](const TFeaturePortSettings& settings) {
+        auto path = std::get<TSerialPortSettings>(settings.Port).Device;
         return std::make_shared<TFeaturePort>(std::make_shared<TFakeSerialPort>(*this, path, false), false);
     };
 
@@ -1716,7 +1716,7 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     FilterConfig("RPCTest");
@@ -1784,7 +1784,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     if (pollIntervalTest) {
@@ -1885,7 +1885,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2114,7 +2114,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2144,7 +2144,7 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -2172,7 +2172,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectAfterNetworkDisconnect)
                         t,
                         PortsSchema,
                         *ProtocolSchemas,
-                        [=, this](const Json::Value&) { return std::make_shared<TFeaturePort>(Port, false); });
+                        [=, this](const TFeaturePortSettings&) { return std::make_shared<TFeaturePort>(Port, false); });
     FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
