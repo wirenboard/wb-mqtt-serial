@@ -1,5 +1,10 @@
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
+{# "Outputs State After Power On" is hidden when every output is given to an actuator -#}
+{% set curtain_free_cond = [] -%}
+{% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+    {% set _ = curtain_free_cond.append("isDefined(curtain" ~ curtain_num ~ "_mode)==0||curtain" ~ curtain_num ~ "_mode==0") -%}
+{% endfor -%}
 {% set TIMER_AUTORESET_FW = "1.28.0" -%}
 {# (fw, min) of the curtain open and close time: 0 (no timeout) is allowed since 1.24.0 -#}
 {% set CURTAIN_TIME_FW_VARIANTS = [("", 1), ("1.24.0", 0)] -%}
@@ -123,11 +128,13 @@
             {
                 "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
+                "description": "outputs_state_after_power_on_actuators_description",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["Safe state", "Restore last state"],
+                "condition": "{{ curtain_free_cond | join('||') }}",
                 "order": 1,
                 "group": "g_outputs"
             },
@@ -660,6 +667,7 @@
         "translations": {
             "en": {
                 "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-channel relay)",
+                "outputs_state_after_power_on_actuators_description": "The setting does not apply to the outputs used for actuator control: their power-on action is set in the actuator settings.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
@@ -768,6 +776,7 @@
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
+                "outputs_state_after_power_on_actuators_description": "Настройка не действует на выходы, используемые для управления приводом: для них действие при подаче питания задаётся в настройках привода.",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",

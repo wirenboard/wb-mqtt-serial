@@ -633,6 +633,10 @@
                 {% set _ = any_latching_cond.append("in" ~ in_num ~ "_mode==1") -%}
                 {% set _ = no_latching_cond.append("in" ~ in_num ~ "_mode!=1") -%}
             {% endfor -%}
+            {% set curtain_free_cond = [] -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+                {% set _ = curtain_free_cond.append("isDefined(curtain" ~ curtain_num ~ "_mode)==0||curtain" ~ curtain_num ~ "_mode==0") -%}
+            {% endfor -%}
             {% for any_latching, restore_cond in [
                 (true, any_latching_cond | join("||")),
                 (false, no_latching_cond | join("&&")),
@@ -648,7 +652,7 @@
                 {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
                 "enum_titles": ["Safe state", "Restore last state"{% if any_latching %}, "According to inputs"{% endif %}],
-                "condition": "{{ restore_cond }}",
+                "condition": "({{ restore_cond }})&&({{ curtain_free_cond | join('||') }})",
                 "order": 1,
                 "group": "g_outputs"
             },

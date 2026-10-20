@@ -646,6 +646,8 @@
                 "title": "Outputs State After Power On",
                 {% if any_latching -%}
                 "description": "outputs_state_after_power_on_description",
+                {% else -%}
+                "description": "outputs_state_after_power_on_actuators_description",
                 {% endif -%}
                 "address": 6,
                 "reg_type": "holding",
@@ -1142,7 +1144,8 @@
         "translations": {
             "en": {
                 "WB-MR3_template_title": "WB-MR3LV/x, WB-MR3HV/x, WB-MRWL3  (3-channel relay)",
-                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
+                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs. The setting does not apply to the outputs used for actuator control: their power-on action is set in the actuator settings.",
+                "outputs_state_after_power_on_actuators_description": "The setting does not apply to the outputs used for actuator control: their power-on action is set in the actuator settings.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
@@ -1339,7 +1342,8 @@
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
+                "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован. Настройка не действует на выходы, используемые для управления приводом: для них действие при подаче питания задаётся в настройках привода.",
+                "outputs_state_after_power_on_actuators_description": "Настройка не действует на выходы, используемые для управления приводом: для них действие при подаче питания задаётся в настройках привода.",
 
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",

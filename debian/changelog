@@ -10,6 +10,9 @@ wb-mqtt-serial (2.288.0) stable; urgency=medium
     units, HW Batch Number channel is added to WB-MR6C/NC and WB-MRM2-mini
   * WB-MR6CU template: fix "Outputs State After Power On" parameter not being
     applied
+  * WB-MR templates: "Outputs State After Power On" is hidden when all outputs
+    are used for actuator control, its description says that it does not
+    apply to such outputs
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 20 Oct 2026 13:18:09 +0300
 
