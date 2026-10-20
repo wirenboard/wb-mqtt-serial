@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.287.3) stable; urgency=medium
+
+  * Fix titles and translations in the NEVOTON BCG-1.0.4-W template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 20 Oct 2026 21:08:58 +0300
+
 wb-mqtt-serial (2.287.2) stable; urgency=medium
 
   * Start the service after mosquitto
