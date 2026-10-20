@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.288.0) stable; urgency=medium
+
+  * Add templates for WB-MRM2-mini v.3/NO and WB-MRM2-mini v.3/NC: the same
+    channels and settings as WB-MRM2-mini, plus the "1-Wire temperature
+    sensor" input mode with DS18B20 temperature, status and debug channels,
+    the status LED setting and the HW batch number
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 20 Oct 2026 11:22:34 +0300
+
 wb-mqtt-serial (2.287.2) stable; urgency=medium
 
   * Start the service after mosquitto
