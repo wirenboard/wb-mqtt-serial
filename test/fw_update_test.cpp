@@ -1116,9 +1116,7 @@ TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
     // Preserve port settings - also fails
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
     // Model - extended fails, fall back to standard
-    EnqueueHoldingReadException(TestRegisters::DEVICE_MODEL_ADDR,
-                                TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                                0x02);
+    EnqueueHoldingReadException(TestRegisters::DEVICE_MODEL_ADDR, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT, 0x02);
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_COUNT,
                        EncodeStringAsRegs("WB-LED", TestRegisters::DEVICE_MODEL_COUNT));
@@ -1296,9 +1294,7 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
                        EncodeStringAsRegs("1.0.0", TestRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
-                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                       modelWithCtrl);
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT, modelWithCtrl);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
