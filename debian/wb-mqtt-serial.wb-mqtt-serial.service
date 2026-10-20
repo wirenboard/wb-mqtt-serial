@@ -2,6 +2,8 @@
 Description=MQTT Driver for serial devices
 Wants=wb-hwconf-manager.service wb-modules.service
 After=network.target wb-hwconf-manager.service wb-modules.service
+# Keep restarting until mosquitto is up, it may start long after us
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple

@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.287.1) stable; urgency=medium
+
+  * Restart the service without a start rate limit, so it does not end up
+    failed when mosquitto starts later than the default limit of 5 restarts
+    in 10 seconds allows (mosquitto waits for network-online.target on trixie)
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 05:21:58 +0000
+
 wb-mqtt-serial (2.287.0) stable; urgency=medium
 
   * Extend fan speed selection to 1..10 in Ventmachine Colibri 650 GTC template
