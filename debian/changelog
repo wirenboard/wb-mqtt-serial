@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.287.4) stable; urgency=medium
+
+  * OWEN SMI2-M template: switch to id translation keys, move communication
+    parameters to the General group, rename the address parameter, reword
+    alarm names and slope/offset descriptions
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 20 Oct 2026 21:34:26 +0300
+
 wb-mqtt-serial (2.287.2) stable; urgency=medium
 
   * Start the service after mosquitto
