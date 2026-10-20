@@ -1,0 +1,28 @@
+// testing template with a model signature fitting the short model register
+{
+    "device_type": "short_model",
+    "hw": [
+        {
+            "signature": "OLDDEV"
+        }
+    ],
+    "device": {
+        "name": "short model",
+        "id": "short model",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 1
+            }
+        ]
+    }
+}
