@@ -25,6 +25,21 @@ namespace
     std::string ReadStringRegister(Modbus::IModbusTraits& traits,
                                    TPort& port,
                                    uint8_t slaveId,
+                                   const TRegisterConfig& config)
+    {
+        return Modbus::ReadRegister(traits,
+                                    port,
+                                    slaveId,
+                                    config,
+                                    std::chrono::microseconds(0),
+                                    FW_RESPONSE_TIMEOUT,
+                                    FW_FRAME_TIMEOUT)
+            .Get<std::string>();
+    }
+
+    std::string ReadStringRegister(Modbus::IModbusTraits& traits,
+                                   TPort& port,
+                                   uint8_t slaveId,
                                    uint16_t addr,
                                    uint16_t regCount,
                                    bool holding = false)
@@ -34,14 +49,7 @@ namespace
                                                             0,
                                                             static_cast<uint32_t>(regCount * sizeof(char) * 8)},
                                               RegisterFormat::String);
-        return Modbus::ReadRegister(traits,
-                                    port,
-                                    slaveId,
-                                    *config,
-                                    std::chrono::microseconds(0),
-                                    FW_RESPONSE_TIMEOUT,
-                                    FW_FRAME_TIMEOUT)
-            .Get<std::string>();
+        return ReadStringRegister(traits, port, slaveId, *config);
     }
 
     void WriteSingleRegister(Modbus::IModbusTraits& traits,
@@ -290,9 +298,7 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
     info.FwSignature = ReadStringRegister(traits,
                                           port,
                                           slaveId,
-                                          FwRegisters::FW_SIGNATURE_ADDR,
-                                          FwRegisters::FW_SIGNATURE_COUNT,
-                                          true); // holding
+                                          *WbRegisters::GetRegisterConfig(WbRegisters::FW_SIGNATURE_REGISTER_NAME));
 
     if (!IsValidFwSignature(info.FwSignature)) {
         LOG(Debug) << "Firmware signature is not a valid value, ignoring it";
@@ -302,12 +308,11 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
     // Read firmware version - Cf. firmware_update.py:255 read_fw_version()
     // In bootloader mode, firmware version registers may not be available
     try {
-        info.FwVersion = SanitizeVersionString(ReadStringRegister(traits,
-                                                                  port,
-                                                                  slaveId,
-                                                                  FwRegisters::FW_VERSION_ADDR,
-                                                                  FwRegisters::FW_VERSION_COUNT,
-                                                                  true)); // holding
+        info.FwVersion = SanitizeVersionString(
+            ReadStringRegister(traits,
+                               port,
+                               slaveId,
+                               *WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME)));
     } catch (const std::exception& e) {
         LOG(Debug) << "Cannot read firmware version: " << e.what();
     }
@@ -341,30 +346,17 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
         info.CanPreservePortSettings = false;
     }
 
-    // Read device model (try extended first, then standard) - Cf. firmware_update.py:574 read_device_model()
+    // Read device model - Cf. firmware_update.py:574 read_device_model()
     try {
-        info.DeviceModel = ReadStringRegister(traits,
-                                              port,
-                                              slaveId,
-                                              FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                                              FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                                              true); // holding
-    } catch (const std::exception&) {
-        try {
-            info.DeviceModel = ReadStringRegister(traits,
-                                                  port,
-                                                  slaveId,
-                                                  FwRegisters::DEVICE_MODEL_ADDR,
-                                                  FwRegisters::DEVICE_MODEL_COUNT,
-                                                  true); // holding
-        } catch (const std::exception& e) {
-            LOG(Debug) << "Cannot read device model: " << e.what();
-        }
+        info.DeviceModel = Modbus::ReadWbDeviceModel(traits,
+                                                     port,
+                                                     slaveId,
+                                                     std::chrono::microseconds(0),
+                                                     FW_RESPONSE_TIMEOUT,
+                                                     FW_FRAME_TIMEOUT);
+    } catch (const std::exception& e) {
+        LOG(Debug) << "Cannot read device model: " << e.what();
     }
-
-    // Clean up device model - remove 0x02 characters (like Python's replace("\x02", ""))
-    info.DeviceModel.erase(std::remove(info.DeviceModel.begin(), info.DeviceModel.end(), '\x02'),
-                           info.DeviceModel.end());
 
     // Read info for each present component - Cf. firmware_update.py:258 read_component_info()
     for (int compNum: ReadComponentsPresence(traits, port, slaveId)) {

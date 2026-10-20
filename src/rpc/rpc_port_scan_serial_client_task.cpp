@@ -42,15 +42,6 @@ namespace
         errorsJson.append(errorJson);
     }
 
-    std::string GetDeviceSignature(RpcPortScan::TRegisterReader& reader)
-    {
-        try {
-            return reader.Read<std::string>(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME, 3);
-        } catch (const std::exception& e) {
-            return reader.Read<std::string>(WbRegisters::DEVICE_MODEL_REGISTER_NAME, 3);
-        }
-    }
-
     Json::Value GetDeviceDetails(RpcPortScan::TRegisterReader& reader,
                                  uint8_t slaveId,
                                  uint32_t snFromRegister,
@@ -61,7 +52,7 @@ namespace
 
         std::string stringSn = std::to_string(snFromRegister);
         try {
-            deviceJson["device_signature"] = GetDeviceSignature(reader);
+            deviceJson["device_signature"] = reader.ReadDeviceModel();
             stringSn = std::to_string(GetSnFromRegister(deviceJson["device_signature"].asString(), snFromRegister));
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_DEVICE_SIGNATURE_ERROR_ID, e.what());

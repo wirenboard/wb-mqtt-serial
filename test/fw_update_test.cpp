@@ -17,6 +17,20 @@
 #include <filesystem>
 #include <fstream>
 
+//! Addresses of WB device registers on the bus, intentionally independent from WbRegisters
+namespace TestRegisters
+{
+    const uint16_t FW_SIGNATURE_ADDR = 290;
+    const uint16_t FW_SIGNATURE_COUNT = 12;
+
+    const uint16_t FW_VERSION_ADDR = 250;
+    const uint16_t FW_VERSION_COUNT = 16;
+
+    const uint16_t DEVICE_MODEL_ADDR = 200;
+    const uint16_t DEVICE_MODEL_COUNT = 6;
+    const uint16_t DEVICE_MODEL_EXTENDED_COUNT = 20;
+}
+
 // ============================================================
 //                  TFakeHttpClient
 // ============================================================
@@ -881,12 +895,12 @@ protected:
                                 const std::string& model = "WB-LED",
                                 bool canPreservePortSettings = true)
     {
-        EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                           FwRegisters::FW_SIGNATURE_COUNT,
-                           EncodeStringAsRegs(signature, FwRegisters::FW_SIGNATURE_COUNT));
-        EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                           FwRegisters::FW_VERSION_COUNT,
-                           EncodeStringAsRegs(version, FwRegisters::FW_VERSION_COUNT));
+        EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                           TestRegisters::FW_SIGNATURE_COUNT,
+                           EncodeStringAsRegs(signature, TestRegisters::FW_SIGNATURE_COUNT));
+        EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                           TestRegisters::FW_VERSION_COUNT,
+                           EncodeStringAsRegs(version, TestRegisters::FW_VERSION_COUNT));
         EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
                            FwRegisters::BOOTLOADER_VERSION_COUNT,
                            EncodeStringAsRegs(bootloader, FwRegisters::BOOTLOADER_VERSION_COUNT));
@@ -895,9 +909,9 @@ protected:
         } else {
             EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
         }
-        EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                           FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                           EncodeStringAsRegs(model, FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+        EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                           TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                           EncodeStringAsRegs(model, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
     }
 
     //! A device without components
@@ -1090,24 +1104,24 @@ TEST_F(TFwTaskTest, GetInfoSuccessfulRead)
 TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
 {
     // Signature
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
-                       EncodeStringAsRegs("wbled", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("wbled", TestRegisters::FW_SIGNATURE_COUNT));
     // Version
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
-                       EncodeStringAsRegs("3.7.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("3.7.0", TestRegisters::FW_VERSION_COUNT));
     // Bootloader - returns exception (old devices don't have this register)
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     // Preserve port settings - also fails
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
     // Model - extended fails, fall back to standard
-    EnqueueHoldingReadException(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                                FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+    EnqueueHoldingReadException(TestRegisters::DEVICE_MODEL_ADDR,
+                                TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                                 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_ADDR,
-                       FwRegisters::DEVICE_MODEL_COUNT,
-                       EncodeStringAsRegs("WB-LED", FwRegisters::DEVICE_MODEL_COUNT));
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_COUNT,
+                       EncodeStringAsRegs("WB-LED", TestRegisters::DEVICE_MODEL_COUNT));
     // No components
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
@@ -1136,19 +1150,19 @@ TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
 TEST_F(TFwTaskTest, GetInfoWithComponents)
 {
     // Standard reads
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
-                       EncodeStringAsRegs("wbmwac", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
-                       EncodeStringAsRegs("2.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("wbmwac", TestRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("2.0.0", TestRegisters::FW_VERSION_COUNT));
     EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
                        FwRegisters::BOOTLOADER_VERSION_COUNT,
                        EncodeStringAsRegs("1.0.0", FwRegisters::BOOTLOADER_VERSION_COUNT));
     EnqueueHoldingRead(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, {0x00, 0x00});
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                       EncodeStringAsRegs("WBMWAC-v2", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("WBMWAC-v2", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
     // Components presence: bit 0 set = component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -1230,17 +1244,17 @@ TEST_F(TFwTaskTest, GetInfoComponentsPresenceRetriedWhileDeviceIsBusy)
 TEST_F(TFwTaskTest, GetInfoUnavailableComponent)
 {
     // Standard reads
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
-                       EncodeStringAsRegs("test", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
-                       EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("test", TestRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", TestRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                       EncodeStringAsRegs("TEST", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("TEST", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -1270,18 +1284,20 @@ TEST_F(TFwTaskTest, GetInfoUnavailableComponent)
 
 TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
 {
-    // Model contains \x02 characters that should be stripped
-    auto modelWithCtrl = EncodeStringAsRegs("WB\x02-LED", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT);
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
-                       EncodeStringAsRegs("wbled", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
-                       EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
+    // Some WB-MAP firmwares put 0x02 into the high byte of a model register: 0x0245 instead of 0x0045.
+    // Only low bytes are used, so 0x02 is dropped
+    auto modelWithCtrl = EncodeStringAsRegs("MAP12E", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT);
+    modelWithCtrl[10] = 0x02;
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("wbled", TestRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", TestRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        modelWithCtrl);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
@@ -1300,8 +1316,7 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
     task->Run(FeaturePort, *AccessHandler, EmptyDeviceList);
 
     ASSERT_TRUE(gotResult);
-    // \x02 should be stripped - Cf. firmware_update.py:560 get_human_readable_device_model()
-    EXPECT_EQ(resultInfo.DeviceModel, "WB-LED");
+    EXPECT_EQ(resultInfo.DeviceModel, "MAP12E");
 }
 
 // Third-party devices may answer the FW/bootloader-version register reads with
@@ -1309,23 +1324,23 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
 // the source so no consumer (RPC response, update-progress state, logs) sees garbage.
 TEST_F(TFwTaskTest, GetInfoGarbageVersionsSanitized)
 {
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
-                       EncodeStringAsRegs("engo", FwRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("engo", TestRegisters::FW_SIGNATURE_COUNT));
     // FW version: control char + high byte -> not a printable version
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
                        EncodeStringAsRegs(std::string("\x0F\x80"
                                                       "F"),
-                                          FwRegisters::FW_VERSION_COUNT));
+                                          TestRegisters::FW_VERSION_COUNT));
     // Bootloader version: control chars only
     EnqueueHoldingRead(FwRegisters::BOOTLOADER_VERSION_ADDR,
                        FwRegisters::BOOTLOADER_VERSION_COUNT,
                        EncodeStringAsRegs(std::string("\x01\x02"), FwRegisters::BOOTLOADER_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                       EncodeStringAsRegs("EFAN", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("EFAN", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -1352,19 +1367,19 @@ TEST_F(TFwTaskTest, GetInfoGarbageVersionsSanitized)
 // looks it up or fires a pointless release-server request for an unknown device.
 TEST_F(TFwTaskTest, GetInfoGarbageSignatureCleared)
 {
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
                        EncodeStringAsRegs(std::string("\x0F\x80"
                                                       "F"),
-                                          FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
-                       EncodeStringAsRegs("1.0", FwRegisters::FW_VERSION_COUNT));
+                                          TestRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0", TestRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                       EncodeStringAsRegs("EFAN", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("EFAN", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -2501,17 +2516,17 @@ TEST_F(TFwTaskTest, FlashDataBlockExceptionCausesError)
 TEST_F(TFwTaskTest, GetInfoComponentReadError)
 {
     // Standard reads
-    EnqueueHoldingRead(FwRegisters::FW_SIGNATURE_ADDR,
-                       FwRegisters::FW_SIGNATURE_COUNT,
-                       EncodeStringAsRegs("test", FwRegisters::FW_SIGNATURE_COUNT));
-    EnqueueHoldingRead(FwRegisters::FW_VERSION_ADDR,
-                       FwRegisters::FW_VERSION_COUNT,
-                       EncodeStringAsRegs("1.0.0", FwRegisters::FW_VERSION_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_SIGNATURE_ADDR,
+                       TestRegisters::FW_SIGNATURE_COUNT,
+                       EncodeStringAsRegs("test", TestRegisters::FW_SIGNATURE_COUNT));
+    EnqueueHoldingRead(TestRegisters::FW_VERSION_ADDR,
+                       TestRegisters::FW_VERSION_COUNT,
+                       EncodeStringAsRegs("1.0.0", TestRegisters::FW_VERSION_COUNT));
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
-    EnqueueHoldingRead(FwRegisters::DEVICE_MODEL_EXTENDED_ADDR,
-                       FwRegisters::DEVICE_MODEL_EXTENDED_COUNT,
-                       EncodeStringAsRegs("TEST", FwRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
+                       TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
+                       EncodeStringAsRegs("TEST", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});

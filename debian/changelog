@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.287.3) stable; urgency=medium
+
+  * Refactor Wiren Board device model reading, no functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 13:30:37 +0000
+
 wb-mqtt-serial (2.287.2) stable; urgency=medium
 
   * Start the service after mosquitto

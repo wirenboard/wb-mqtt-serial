@@ -41,6 +41,16 @@ namespace RpcPortScan
             }
         }
 
+        std::string ReadDeviceModel()
+        {
+            return Modbus::ReadWbDeviceModel(ModbusTraits,
+                                             Port,
+                                             SlaveId,
+                                             FrameTimeout,
+                                             FrameTimeout,
+                                             FrameTimeout);
+        }
+
         TPort& GetPort()
         {
             return Port;

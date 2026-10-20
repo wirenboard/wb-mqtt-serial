@@ -1075,6 +1075,61 @@ namespace Modbus // modbus protocol common utilities
         return std::string();
     }
 
+    std::string ReadWbDeviceModel(IModbusTraits& traits,
+                                  TPort& port,
+                                  uint8_t slaveId,
+                                  std::chrono::microseconds requestDelay,
+                                  std::chrono::milliseconds responseTimeout,
+                                  std::chrono::milliseconds frameTimeout)
+    {
+        const int TRY_COUNT = 3;
+
+        // Extended model register, old firmwares don't have it
+        for (int i = 0; i < TRY_COUNT; ++i) {
+            try {
+                return ReadRegister(traits,
+                                    port,
+                                    slaveId,
+                                    *WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME),
+                                    requestDelay,
+                                    responseTimeout,
+                                    frameTimeout)
+                    .Get<std::string>();
+            } catch (const TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == ILLEGAL_FUNCTION || err.GetExceptionCode() == ILLEGAL_DATA_ADDRESS ||
+                    err.GetExceptionCode() == ILLEGAL_DATA_VALUE)
+                {
+                    break;
+                }
+            } catch (const std::exception&) {
+            }
+        }
+
+        // Standard model register
+        for (int i = 0;; ++i) {
+            try {
+                return ReadRegister(traits,
+                                    port,
+                                    slaveId,
+                                    *WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME),
+                                    requestDelay,
+                                    responseTimeout,
+                                    frameTimeout)
+                    .Get<std::string>();
+            } catch (const TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == ILLEGAL_FUNCTION || err.GetExceptionCode() == ILLEGAL_DATA_ADDRESS ||
+                    err.GetExceptionCode() == ILLEGAL_DATA_VALUE || i == TRY_COUNT - 1)
+                {
+                    throw;
+                }
+            } catch (const std::exception&) {
+                if (i == TRY_COUNT - 1) {
+                    throw;
+                }
+            }
+        }
+    }
+
     TRegisterValue ReadRegister(IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,

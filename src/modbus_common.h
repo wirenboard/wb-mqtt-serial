@@ -138,4 +138,24 @@ namespace Modbus // modbus protocol common utilities
                                                  TRegisterCache& cache);
 
     std::string ReadWbFwVersion(PSerialDevice device, IModbusTraits& traits, TPort& port, uint8_t slaveId);
+
+    /**
+     * @brief Reads WB device model.
+     *        Tries to read extended model register, if it fails (old firmwares don't have the extended register),
+     *        reads the standard one. Each register is read up to 3 times, the request isn't repeated
+     *        if the device answers with ILLEGAL_FUNCTION, ILLEGAL_DATA_ADDRESS or ILLEGAL_DATA_VALUE.
+     *        The registers are read as String format, so only low bytes are used. Some WB-MAP firmwares
+     *        put 0x02 into high bytes (0x0245), tools reading both bytes get "MAP12\x02E" and must
+     *        remove 0x02. Here it is dropped by reading, the result is "MAP12E".
+     *
+     * @throws The same as ReadRegister():
+     *         TSerialDeviceException based exception on communication errors or
+     *         Modbus::TErrorBase based exception on Modbus protocol errors.
+     */
+    std::string ReadWbDeviceModel(IModbusTraits& traits,
+                                  TPort& port,
+                                  uint8_t slaveId,
+                                  std::chrono::microseconds requestDelay,
+                                  std::chrono::milliseconds responseTimeout,
+                                  std::chrono::milliseconds frameTimeout);
 } // modbus protocol common utilities
