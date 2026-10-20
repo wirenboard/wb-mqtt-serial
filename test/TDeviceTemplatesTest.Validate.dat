@@ -26188,6 +26188,7 @@ WB-MR6C v.3
 	Uptime  =>  Uptime
 WB-MR6C-NC
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -26711,6 +26712,7 @@ WB-MRM2-mini-NC
 	Uptime  =>  Uptime
 WB-MRM2-mini-NC-inputs
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -26752,6 +26754,7 @@ WB-MRM2-mini-NO-inputs
 	Curtain 1 Close  =>  Curtain 1 Close
 	Curtain 1 Open  =>  Curtain 1 Open
 	FW Version  =>  FW Version
+	HW Batch Number  =>  HW Batch Number
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter

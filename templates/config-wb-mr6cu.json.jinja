@@ -119,15 +119,6 @@
             }
         ],
 
-        "setup": [
-            {
-                "title": "disable legacy input mode control",
-                "address": 5,
-                "reg_type": "holding",
-                "value": 0
-            }
-        ],
-
         "parameters": [
             {
                 "id": "outputs_restore_state",
@@ -441,6 +432,18 @@
                 ],
                 "group": "g_general",
                 "order": 1
+            },
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "g_general",
+                "order": 2,
+                "fw": "1.20.0"
             }
         ],
 
@@ -606,7 +609,8 @@
                 "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "g_hw_info"
@@ -615,7 +619,8 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "type": "text",
+                "type": "value",
+                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "g_hw_info"
@@ -625,7 +630,8 @@
                 "reg_type": "input",
                 "address": 122,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -633,7 +639,8 @@
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
@@ -644,7 +651,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             }
@@ -653,7 +661,6 @@
             "en": {
                 "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-channel relay)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
@@ -758,12 +765,15 @@
                 "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Baud rate": "Скорость обмена",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)",
+                "Uptime": "Время работы с момента включения",
                 "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК"

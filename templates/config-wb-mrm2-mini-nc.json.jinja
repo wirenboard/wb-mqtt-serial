@@ -173,7 +173,7 @@
                 "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 4, 6],
-                "default": 0,
+                "default": 1,
                 "enum_titles": [
                     "Push button",
                     "Latching switch",
@@ -585,6 +585,18 @@
                 ],
                 "group": "g_general",
                 "order": 1
+            },
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "g_general",
+                "order": 2,
+                "fw": "1.20.0"
             }
         ],
 
@@ -803,6 +815,17 @@
                 "group": "g_hw_info"
             },
             {
+                "name": "HW Batch Number",
+                "type": "text",
+                "reg_type": "input",
+                "address": 304,
+                "format": "string",
+                "string_data_size": 16,
+                "fw": "1.23.0",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -816,7 +839,8 @@
                 "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "g_hw_info"
@@ -825,7 +849,8 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "type": "text",
+                "type": "value",
+                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "g_hw_info"
@@ -835,7 +860,8 @@
                 "reg_type": "input",
                 "address": 122,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -843,7 +869,8 @@
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
@@ -854,7 +881,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -875,7 +903,6 @@
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
                 "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
@@ -1028,13 +1055,17 @@
                 "Time (s)": "Время (с)",
 
                 "Baud rate": "Скорость обмена",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
 
                 "Serial": "Серийный номер",
+                "HW Batch Number": "Номер партии",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)",
+                "Uptime": "Время работы с момента включения",
                 "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",

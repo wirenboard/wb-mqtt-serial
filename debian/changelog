@@ -5,6 +5,11 @@ wb-mqtt-serial (2.285.0) stable; urgency=medium
     WB-MAO4 and WB-MDM3 increase and decrease rates are fixed
   * WB-MR, WB-MRWM2 templates: options for the latching switch input mode are
     shown only if an input is in this mode
+  * WB-MR templates: the default input mode is "Latching switch" as in the
+    firmware, "Status LED" parameter is added, hardware info channels have
+    units, HW Batch Number channel is added to WB-MR6C/NC and WB-MRM2-mini
+  * WB-MR6CU template: fix "Outputs State After Power On" parameter not being
+    applied
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 06 Oct 2026 10:33:55 +0300
 
