@@ -8,30 +8,27 @@
 
 namespace
 {
-    std::string ReadWbRegister(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest, const std::string& registerName)
-    {
-        std::string error;
-        try {
-            auto config = WbRegisters::GetRegisterConfig(registerName);
-            TRegisterValue value;
-            ReadModbusRegister(port, *rpcRequest, config, value);
-            return value.Get<std::string>();
-        } catch (const Modbus::TErrorBase& err) {
-            error = err.what();
-        } catch (const TResponseTimeoutException& e) {
-            error = e.what();
-        }
-        LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
-                  << " unable to read \"" << registerName << "\" register: " << error;
-        throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-
     std::string ReadDeviceModel(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         try {
-            return ReadWbRegister(port, rpcRequest, WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME);
-        } catch (const Modbus::TErrorBase& err) {
-            return ReadWbRegister(port, rpcRequest, WbRegisters::DEVICE_MODEL_REGISTER_NAME);
+            TRegisterValue value;
+            try {
+                ReadModbusRegister(port,
+                                   *rpcRequest,
+                                   WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME),
+                                   value);
+            } catch (const Modbus::TModbusExceptionError& err) {
+                ReadModbusRegister(port,
+                                   *rpcRequest,
+                                   WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME),
+                                   value);
+            }
+            return value.Get<std::string>();
+        } catch (const std::exception& e) {
+            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
+                      << " unable to read device model: " << e.what();
+            throw TRPCException(std::string("unable to read device model: ") + e.what(),
+                                TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
     }
 

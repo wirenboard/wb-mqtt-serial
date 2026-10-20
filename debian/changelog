@@ -1,12 +1,19 @@
+wb-mqtt-serial (2.287.2) stable; urgency=medium
+
+  * Start the service after mosquitto
+  * Restart the service without a start rate limit, so it does not end up
+    failed when mosquitto starts late (it waits for network-online.target
+    on trixie)
+  * Increase the restart delay exponentially from 1 to 3 seconds
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 06:36:48 +0000
+
 wb-mqtt-serial (2.287.1) stable; urgency=medium
 
-  * Restart the service without a start rate limit, so it does not end up
-    failed when mosquitto starts later than the default limit of 5 restarts
-    in 10 seconds allows (mosquitto waits for network-online.target on trixie)
-  * Increase the restart delay exponentially from 1 to 3 seconds
-  * Start the service after mosquitto
+  * Fix device/LoadConfig RPC failure on Wiren Board devices without extended
+    model register
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 05:21:58 +0000
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 12:00:00 +0500
 
 wb-mqtt-serial (2.287.0) stable; urgency=medium
 

@@ -570,6 +570,113 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ReadsFirmwareOfTemplateWithoutParameter
 }
 
 /**
+ * Checks that device/LoadConfig reads the short model register of a Wiren Board device
+ * which rejects the extended one.
+ */
+TEST_F(TRPCDeviceLoadConfigTaskExecTest, ReadsShortModelOnExtendedModelError)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+    TTemplateMap templates(GetTemplatesSchema());
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templates.GetTemplate("short_model");
+    auto config = std::make_shared<TDeviceConfig>("test", "1", "modbus");
+    auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
+    device->SetWbDevice(true);
+
+    auto parametersCache = std::make_shared<TDeviceParametersCache>();
+    std::string configFileName;
+    auto request = std::make_shared<TRPCDeviceLoadConfigRequest>(protocolParams,
+                                                                 device,
+                                                                 deviceTemplate,
+                                                                 false,
+                                                                 configFileName,
+                                                                 parametersCache);
+    request->Force = true;
+    Json::Value result;
+    bool gotResult = false;
+    std::string error;
+    request->OnResult = [&](const Json::Value& data) {
+        result = data;
+        gotResult = true;
+    };
+    request->OnError = [&](auto, const std::string& message) { error = message; };
+
+    auto port = std::make_shared<TFakeSerialPort>(*this, "<short_model>");
+    port->Expect({0x01, 0x03, 0x00, 0xFA, 0x00, 0x10, 0x64, 0x37},
+                 {0x01, 0x03, 0x20, 0x00, 0x31, 0x00, 0x2E, 0x00, 0x32, 0x00, 0x2E, 0x00, 0x33,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x81, 0x21},
+                 "read fw version");
+    port->Expect({0x01, 0x03, 0x00, 0xC8, 0x00, 0x14, 0xC4, 0x3B},
+                 {0x01, 0x83, 0x03, 0x01, 0x31},
+                 "read extended model, illegal data value");
+    port->Expect({0x01, 0x03, 0x00, 0xC8, 0x00, 0x06, 0x44, 0x36},
+                 {0x01, 0x03, 0x0C, 0x00, 0x4F, 0x00, 0x4C, 0x00, 0x44, 0x00, 0x44, 0x00, 0x45, 0x00, 0x56, 0xF7, 0x86},
+                 "read model");
+
+    TSerialClientDeviceAccessHandler accessHandler(nullptr);
+    TRPCDeviceLoadConfigSerialClientTask task(request);
+    task.Run(std::make_shared<TFeaturePort>(port, false), accessHandler, {});
+
+    ASSERT_TRUE(gotResult) << error;
+    EXPECT_EQ(result["model"].asString(), "OLDDEV");
+}
+
+/**
+ * Checks that device/LoadConfig reports the model read failure with the error of the last read.
+ */
+TEST_F(TRPCDeviceLoadConfigTaskExecTest, ReportsModelReadError)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+    TTemplateMap templates(GetTemplatesSchema());
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templates.GetTemplate("no_parameters");
+    auto config = std::make_shared<TDeviceConfig>("test", "1", "modbus");
+    auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
+    device->SetWbDevice(true);
+
+    auto parametersCache = std::make_shared<TDeviceParametersCache>();
+    std::string configFileName;
+    auto request = std::make_shared<TRPCDeviceLoadConfigRequest>(protocolParams,
+                                                                 device,
+                                                                 deviceTemplate,
+                                                                 false,
+                                                                 configFileName,
+                                                                 parametersCache);
+    request->Force = true;
+    bool gotResult = false;
+    std::string error;
+    request->OnResult = [&](const Json::Value& data) { gotResult = true; };
+    request->OnError = [&](auto, const std::string& message) { error = message; };
+
+    auto port = std::make_shared<TFakeSerialPort>(*this, "<no_parameters>");
+    port->Expect({0x01, 0x03, 0x00, 0xFA, 0x00, 0x10, 0x64, 0x37},
+                 {0x01, 0x03, 0x20, 0x00, 0x31, 0x00, 0x2E, 0x00, 0x32, 0x00, 0x2E, 0x00, 0x33,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x81, 0x21},
+                 "read fw version");
+    port->Expect({0x01, 0x03, 0x00, 0xC8, 0x00, 0x14, 0xC4, 0x3B},
+                 {0x01, 0x83, 0x03, 0x01, 0x31},
+                 "read extended model, illegal data value");
+    port->Expect({0x01, 0x03, 0x00, 0xC8, 0x00, 0x06, 0x44, 0x36},
+                 {0x01, 0x83, 0x02, 0xC0, 0xF1},
+                 "read model, illegal data address");
+
+    TSerialClientDeviceAccessHandler accessHandler(nullptr);
+    TRPCDeviceLoadConfigSerialClientTask task(request);
+    task.Run(std::make_shared<TFeaturePort>(port, false), accessHandler, {});
+
+    EXPECT_FALSE(gotResult);
+    EXPECT_EQ(error, "Port IO error: unable to read device model: illegal data address");
+}
+
+/**
  * Checks that GetChannelsRegisterList without condition params returns all readable channels.
  */
 TEST(TDeviceLoadTest, GetChannelsRegisterListAllChannels)
