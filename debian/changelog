@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.285.0) stable; urgency=medium
+wb-mqtt-serial (2.288.0) stable; urgency=medium
 
   * WB device templates: firmware version limits are set in the parameters,
     redundant parameter descriptions are removed, swapped descriptions of the
@@ -11,7 +11,70 @@ wb-mqtt-serial (2.285.0) stable; urgency=medium
   * WB-MR6CU template: fix "Outputs State After Power On" parameter not being
     applied
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 06 Oct 2026 10:33:55 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 20 Oct 2026 13:18:09 +0300
+
+wb-mqtt-serial (2.287.2) stable; urgency=medium
+
+  * Start the service after mosquitto
+  * Restart the service without a start rate limit, so it does not end up
+    failed when mosquitto starts late (it waits for network-online.target
+    on trixie)
+  * Increase the restart delay exponentially from 1 to 3 seconds
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 06:36:48 +0000
+
+wb-mqtt-serial (2.287.1) stable; urgency=medium
+
+  * Fix device/LoadConfig RPC failure on Wiren Board devices without extended
+    model register
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Oct 2026 12:00:00 +0500
+
+wb-mqtt-serial (2.287.0) stable; urgency=medium
+
+  * Extend fan speed selection to 1..10 in Ventmachine Colibri 650 GTC template
+  * Fix Russian translation of "T-outdoor Sensor Break" error in Ventmachine
+    Colibri 650 GTC template
+  * Add units to Temperature Setpoint in Ventmachine Colibri 650 GTC template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 15 Oct 2026 23:36:49 +0300
+
+wb-mqtt-serial (2.286.1) stable; urgency=medium
+
+  * Add Modbus settings parameters (device address, baud rate, parity) to the
+    NEVOTON BCG-1.0.4-W template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 13 Oct 2026 15:32:30 +0300
+
+wb-mqtt-serial (2.286.0) stable; urgency=medium
+
+  * templates/Upload and templates/Delete update the configuration of the
+    devices using the template, if possible
+  * device/LoadConfig reads only devices with "hw" in the template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 13 Oct 2026 12:00:00 +0500
+
+wb-mqtt-serial (2.285.0) stable; urgency=medium
+
+  * Add NEVOTON BCG-1.0.4-W template (OpenTherm - Modbus boiler bridge)
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 12 Oct 2026 17:05:02 +0300
+
+wb-mqtt-serial (2.284.2) stable; urgency=medium
+
+  * Drop /etc/wb-mqtt-serial.conf.sample
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 05 Oct 2026 11:20:00 +0400
+
+wb-mqtt-serial (2.284.1) stable; urgency=medium
+
+  * Set the 1-Wire erroneous readings filter default to 2 °C and limit it to
+    0 … 1200 °C in templates for WB-M1W2, WB-MIR and WB-MS
+  * WB-MS v.2 fw 4.36: rename the "Input N Sensor Presense" channel to
+    "Input N Sensor Connected And Working" in the web UI, as it shows the same
+    state as "Input N Sensor OK". The MQTT topic is unchanged
+
+ -- Dmitry Kuryatnikov <dmitry.kuryatnikov@wirenboard.com>  Tue, 06 Oct 2026 13:52:22 +0300
 
 wb-mqtt-serial (2.284.0) stable; urgency=medium
 

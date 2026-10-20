@@ -1,27 +1,13 @@
 #include "serial_driver_core.h"
+#include "confed_json_generator.h"
+#include "file_utils.h"
 #include "log.h"
-#include "port/serial_port.h"
-#include "port/tcp_port.h"
 #include <exception>
-#include <wblib/utils.h>
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
 namespace
 {
-    const size_t MAX_TASK_EXECUTORS = 5;
-
-    PFeaturePort InitPort(const TPortSettings& portSettings)
-    {
-        if (const auto* tcpPort = std::get_if<TFramedTcpPortSettings>(&portSettings)) {
-            LOG(Debug) << "Create tcp port: " << tcpPort->GetDescription();
-            return std::make_shared<TFeaturePort>(std::make_shared<TTcpPort>(*tcpPort), tcpPort->ModbusTcp);
-        }
-        const auto& serialPort = std::get<TSerialPortSettings>(portSettings);
-        LOG(Debug) << "Create serial port: " << serialPort.Device;
-        return std::make_shared<TFeaturePort>(std::make_shared<TSerialPort>(serialPort), false);
-    }
-
     //! The data of a device is dropped when the device disconnects
     PDeviceParametersCache MakeParametersCache(PHandlerConfig handlerConfig)
     {
@@ -41,13 +27,25 @@ namespace
         }
         return cache;
     }
+
+    PTemplateMap LoadTemplates(const TSerialDriverCoreFiles& files, const Json::Value& commonDeviceSchema)
+    {
+        auto templates =
+            std::make_shared<TTemplateMap>(LoadConfigTemplatesSchema(files.TemplatesSchema, commonDeviceSchema),
+                                           files.UserTemplatesDir);
+        templates->AddTemplatesDir(files.TemplatesDir);
+        // templates/Upload creates the directory
+        try {
+            templates->AddTemplatesDir(files.UserTemplatesDir);
+        } catch (const TNoDirError& e) {
+            LOG(Warn) << "No user templates are loaded: " << e.what();
+        }
+        return templates;
+    }
 }
 
 TSerialDriverCoreBusyError::TSerialDriverCoreBusyError()
-    : std::runtime_error("config/Save is running or the service is stopped")
-{}
-
-TTaskTargetNotFoundError::TTaskTargetNotFoundError(): std::runtime_error("no polled device with the id and no port")
+    : std::runtime_error("a configuration or template change is running or the service is stopped")
 {}
 
 TApplyConfigError::TApplyConfigError(TReason reason, const std::string& message)
@@ -55,43 +53,131 @@ TApplyConfigError::TApplyConfigError(TReason reason, const std::string& message)
       Reason(reason)
 {}
 
+TApplyConfigError::TApplyConfigError(const std::string& message, const TApplyProblems& problems)
+    : std::runtime_error(message),
+      Reason(TReason::ApplyProblems),
+      Problems(problems)
+{}
+
 TApplyConfigError::TReason TApplyConfigError::GetReason() const
 {
     return Reason;
 }
 
+const TApplyProblems& TApplyConfigError::GetProblems() const
+{
+    return Problems;
+}
+
 TSerialDriverCore::TSerialDriverCore(WBMQTT::PDeviceDriver mqttDriver,
-                                     PHandlerConfig handlerConfig,
-                                     TConfigLoader& configLoader,
+                                     const TSerialDriverCoreFiles& files,
                                      bool debugFromCommandLine,
+                                     TFeaturePortFactoryFn portFactory,
                                      std::chrono::milliseconds portTasksWaitTimeout)
     : MqttDriver(mqttDriver),
-      ConfigLoader(configLoader),
+      ConfigPath(files.Config),
+      CommonDeviceSchema(WBMQTT::JSON::Parse(files.CommonDeviceSchema)),
+      PortsSchema(WBMQTT::JSON::Parse(files.PortsSchema)),
+      ProtocolConfedSchemas(files.ProtocolSchemasDir, CommonDeviceSchema),
+      ConfigLoadParams{DeviceFactory, CommonDeviceSchema, PortsSchema, ProtocolConfedSchemas, portFactory},
+      Templates(LoadTemplates(files, CommonDeviceSchema)),
+      DeviceConfedSchemas(*Templates, DeviceFactory, CommonDeviceSchema),
       DebugFromCommandLine(debugFromCommandLine),
       PortTasksWaitTimeout(portTasksWaitTimeout),
-      Started(false),
       Applying(false),
-      Stopped(false)
+      Stopped(false),
+      PortTasks(portFactory)
 {
     if (!MqttDriver) {
         throw std::invalid_argument("no MQTT driver to publish the devices");
     }
+    RegisterProtocols(DeviceFactory);
+    // The service goes on without the polling, config/Save can fix the configuration
+    PHandlerConfig handlerConfig;
+    try {
+        handlerConfig = ::LoadConfig(ConfigPath,
+                                     DeviceFactory,
+                                     CommonDeviceSchema,
+                                     *Templates,
+                                     PortsSchema,
+                                     ProtocolConfedSchemas,
+                                     ConfigLoadParams.PortFactory);
+    } catch (const std::exception& e) {
+        LOG(Error) << e.what();
+    }
+    PMQTTSerialDriver serialDriver;
     if (handlerConfig) {
-        // The service goes on without the polling, config/Save can fix the configuration
+        if (handlerConfig->Debug) {
+            ::Debug.SetEnabled(true);
+        }
         try {
-            SerialDriver = std::make_shared<TMQTTSerialDriver>(MqttDriver, handlerConfig);
+            serialDriver = std::make_shared<TMQTTSerialDriver>(MqttDriver, handlerConfig);
             Config = handlerConfig;
         } catch (const std::exception& e) {
             LOG(Error) << "the polling is not started: " << e.what();
         }
     }
-    ParametersCache = MakeParametersCache(Config);
+    PortTasks.Switch(serialDriver, MakeParametersCache(Config));
+    TemplatesWatcher =
+        std::make_unique<TFilesWatcher>(std::vector<std::string>{files.TemplatesDir, files.UserTemplatesDir},
+                                        [this](const std::string& fileName, TFilesWatcher::TEvent event) {
+                                            HandleTemplateChangeEvent(fileName, event);
+                                        });
 }
 
 TSerialDriverCore::~TSerialDriverCore()
 {
-    SerialDriver.reset();
-    Executors.clear();
+    TemplatesWatcher.reset();
+}
+
+const std::string& TSerialDriverCore::GetConfigPath() const
+{
+    return ConfigPath;
+}
+
+const TSerialDeviceFactory& TSerialDriverCore::GetDeviceFactory() const
+{
+    return DeviceFactory;
+}
+
+const Json::Value& TSerialDriverCore::GetPortsSchema() const
+{
+    return PortsSchema;
+}
+
+TProtocolConfedSchemasMap& TSerialDriverCore::GetProtocolConfedSchemas()
+{
+    return ProtocolConfedSchemas;
+}
+
+PTemplateMap TSerialDriverCore::GetTemplates()
+{
+    return Templates;
+}
+
+TDevicesConfedSchemasMap& TSerialDriverCore::GetDeviceConfedSchemas()
+{
+    return DeviceConfedSchemas;
+}
+
+void TSerialDriverCore::HandleTemplateChangeEvent(const std::string& fileName, TFilesWatcher::TEvent event)
+{
+    if (event == TFilesWatcher::TEvent::CloseWrite) {
+        LOG(Debug) << fileName << " changed. Reloading template";
+        try {
+            auto updatedTypes = Templates->UpdateTemplate(fileName);
+            for (const auto& deviceType: updatedTypes) {
+                DeviceConfedSchemas.InvalidateCache(deviceType);
+            }
+        } catch (const std::exception& e) {
+            LOG(Error) << "Failed to reload template: " << e.what();
+        }
+        return;
+    }
+    if (event == TFilesWatcher::TEvent::Delete) {
+        LOG(Debug) << fileName << " deleted";
+        DeviceConfedSchemas.InvalidateCache(Templates->DeleteTemplate(fileName));
+    }
 }
 
 bool TSerialDriverCore::IsBusyLocked() const
@@ -112,94 +198,18 @@ bool TSerialDriverCore::IsBusy()
     return IsBusyLocked();
 }
 
-TSerialDriverCore::TPolledDevice TSerialDriverCore::FindPolledDeviceLocked(const TTaskTarget& target)
-{
-    if (!SerialDriver) {
-        return {};
-    }
-    if (!target.DeviceId.empty()) {
-        for (const auto& portDriver: SerialDriver->GetPortDrivers()) {
-            auto serialClient = portDriver->GetSerialClient();
-            for (const auto& device: serialClient->GetDevices()) {
-                if (device->DeviceConfig()->Id == target.DeviceId) {
-                    return {serialClient, device};
-                }
-            }
-        }
-    }
-    if (!target.Port) {
-        return {};
-    }
-    for (const auto& portDriver: SerialDriver->GetPortDrivers()) {
-        auto serialClient = portDriver->GetSerialClient();
-        if (!PortMatches(*target.Port, *serialClient->GetPort())) {
-            continue;
-        }
-        for (const auto& device: serialClient->GetDevices()) {
-            if (device->DeviceConfig()->SlaveId == target.SlaveId &&
-                (device->DeviceConfig()->DeviceType == target.DeviceType ||
-                 (target.DeviceType.empty() && WBMQTT::StringStartsWith(device->Protocol()->GetName(), "modbus"))))
-            {
-                return {serialClient, device};
-            }
-        }
-        return {serialClient, nullptr};
-    }
-    return {};
-}
-
 void TSerialDriverCore::SetPoll(const TTaskTarget& target, bool poll)
 {
-    // SuspendPoll calls the callbacks of the port driver, ApplyConfig does not destroy it while the mutex is held
     std::lock_guard<std::mutex> lock(Mutex);
     ThrowIfBusy();
-    auto polledDevice = FindPolledDeviceLocked(target);
-    if (!polledDevice.Device) {
-        throw TTaskTargetNotFoundError();
-    }
-    if (poll) {
-        polledDevice.SerialClient->ResumePoll(polledDevice.Device);
-    } else {
-        polledDevice.SerialClient->SuspendPoll(polledDevice.Device, std::chrono::steady_clock::now());
-    }
+    PortTasks.SetPoll(target, poll);
 }
 
 void TSerialDriverCore::AddTask(const TTaskTarget& target, const TMakeTaskFn& makeTask)
 {
     std::lock_guard<std::mutex> lock(Mutex);
     ThrowIfBusy();
-    auto polledDevice = FindPolledDeviceLocked(target);
-    if (polledDevice.SerialClient) {
-        polledDevice.SerialClient->AddTask(makeTask(polledDevice.Device, ParametersCache));
-        return;
-    }
-    if (!target.Port) {
-        throw TTaskTargetNotFoundError();
-    }
-    auto executor = std::find_if(Executors.begin(), Executors.end(), [&target](const auto& executor) {
-        return PortMatches(*target.Port, *executor->GetPort());
-    });
-    if (executor != Executors.end()) {
-        (*executor)->AddTask(makeTask(nullptr, ParametersCache));
-        return;
-    }
-    auto task = makeTask(nullptr, ParametersCache);
-    RemoveUnusedExecutors();
-    auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(*target.Port));
-    Executors.push_back(newExecutor);
-    newExecutor->AddTask(task);
-}
-
-void TSerialDriverCore::RemoveUnusedExecutors()
-{
-    while (Executors.size() >= MAX_TASK_EXECUTORS) {
-        auto executorIt =
-            std::find_if(Executors.begin(), Executors.end(), [](const auto& executor) { return executor->IsIdle(); });
-        if (executorIt == Executors.end()) {
-            break;
-        }
-        Executors.erase(executorIt);
-    }
+    PortTasks.AddTask(target, makeTask);
 }
 
 PHandlerConfig TSerialDriverCore::GetConfig()
@@ -211,15 +221,7 @@ PHandlerConfig TSerialDriverCore::GetConfig()
 void TSerialDriverCore::Start()
 {
     std::lock_guard<std::mutex> applyConfigLock(ApplyConfigMutex);
-    Started = true;
-    PMQTTSerialDriver serialDriver;
-    {
-        std::lock_guard<std::mutex> lock(Mutex);
-        serialDriver = SerialDriver;
-    }
-    if (serialDriver) {
-        serialDriver->Start();
-    }
+    PortTasks.Start();
 }
 
 void TSerialDriverCore::Stop()
@@ -230,20 +232,7 @@ void TSerialDriverCore::Stop()
         Stopped = true;
     }
     std::lock_guard<std::mutex> applyConfigLock(ApplyConfigMutex);
-    PMQTTSerialDriver serialDriver;
-    std::vector<PSerialClientTaskExecutor> executors;
-    {
-        std::lock_guard<std::mutex> lock(Mutex);
-        serialDriver = SerialDriver;
-        executors.swap(Executors);
-    }
-    if (serialDriver && Started) {
-        serialDriver->Stop();
-    }
-    Started = false;
-    for (const auto& executor: executors) {
-        executor->RequestStop();
-    }
+    PortTasks.Switch(nullptr, MakeParametersCache(nullptr));
 }
 
 void TSerialDriverCore::ApplyConfig(const Json::Value& config)
@@ -266,126 +255,197 @@ void TSerialDriverCore::ApplyConfig(const Json::Value& config)
     Applying = false;
 }
 
-void TSerialDriverCore::ResumeClients(const std::vector<PSerialClient>& serialClients,
-                                      const std::vector<PSerialClientTaskExecutor>& executors)
+TTemplateApplyResult TSerialDriverCore::UploadTemplate(const std::string& content,
+                                                       const std::string& fileName,
+                                                       bool force)
 {
-    for (const auto& serialClient: serialClients) {
-        serialClient->Resume();
+    {
+        std::lock_guard<std::mutex> lock(Mutex);
+        if (IsBusyLocked()) {
+            throw TApplyConfigError(TApplyConfigError::TReason::Busy, TSerialDriverCoreBusyError().what());
+        }
+        Applying = true;
     }
-    for (const auto& executor: executors) {
-        executor->Resume();
+    TTemplateApplyResult res;
+    try {
+        // The paths are chosen by the templates, so the change is made while no other change runs
+        auto change = MakeUploadChange(*Templates, content, fileName);
+        DoApplyTemplate(change, force);
+        res.Template = FindTemplate(*Templates, change.DeviceType);
+        res.Config = LoadConfedConfig();
+    } catch (...) {
+        std::lock_guard<std::mutex> lock(Mutex);
+        Applying = false;
+        throw;
+    }
+    std::lock_guard<std::mutex> lock(Mutex);
+    Applying = false;
+    return res;
+}
+
+TTemplateApplyResult TSerialDriverCore::DeleteTemplate(const std::string& deviceType, bool force)
+{
+    {
+        std::lock_guard<std::mutex> lock(Mutex);
+        if (IsBusyLocked()) {
+            throw TApplyConfigError(TApplyConfigError::TReason::Busy, TSerialDriverCoreBusyError().what());
+        }
+        Applying = true;
+    }
+    TTemplateApplyResult res;
+    try {
+        // The path is chosen by the templates, so the change is made while no other change runs
+        auto change = MakeDeleteChange(*Templates, deviceType);
+        DoApplyTemplate(change, force);
+        res.Template = FindTemplate(*Templates, change.DeviceType);
+        res.Config = LoadConfedConfig();
+    } catch (...) {
+        std::lock_guard<std::mutex> lock(Mutex);
+        Applying = false;
+        throw;
+    }
+    std::lock_guard<std::mutex> lock(Mutex);
+    Applying = false;
+    return res;
+}
+
+void TSerialDriverCore::PausePortTasks()
+{
+    if (!PortTasks.Pause(PortTasksWaitTimeout)) {
+        throw TApplyConfigError(TApplyConfigError::TReason::PortTasksTimeout,
+                                "the port tasks did not stop in " + std::to_string(PortTasksWaitTimeout.count()) +
+                                    " ms");
     }
 }
 
 void TSerialDriverCore::DoApplyConfig(const Json::Value& config)
 {
     std::lock_guard<std::mutex> applyConfigLock(ApplyConfigMutex);
-    std::vector<PSerialClient> serialClients;
-    std::vector<PSerialClientTaskExecutor> executors;
-    {
-        std::lock_guard<std::mutex> lock(Mutex);
-        // The clients of a driver which is not started are not run, there is nothing to stop
-        if (SerialDriver && Started) {
-            for (const auto& portDriver: SerialDriver->GetPortDrivers()) {
-                serialClients.push_back(portDriver->GetSerialClient());
-            }
-        }
-        executors = Executors;
-    }
     PHandlerConfig handlerConfig;
     try {
-        handlerConfig = ConfigLoader.Load(config);
+        handlerConfig = LoadConfigJson(config, ConfigLoadParams, *Templates);
     } catch (const std::exception& e) {
         throw TApplyConfigError(TApplyConfigError::TReason::ConfigInvalid, e.what());
     }
-    for (const auto& serialClient: serialClients) {
-        serialClient->RequestStop();
-    }
-    for (const auto& executor: executors) {
-        executor->RequestStop();
-    }
-    auto deadline = std::chrono::steady_clock::now() + PortTasksWaitTimeout;
-    size_t notStopped = 0;
-    for (const auto& serialClient: serialClients) {
-        if (!serialClient->WaitStopped(deadline)) {
-            ++notStopped;
-        }
-    }
-    for (const auto& executor: executors) {
-        if (!executor->WaitStopped(deadline)) {
-            ++notStopped;
-        }
-    }
-    if (notStopped != 0) {
-        ResumeClients(serialClients, executors);
-        throw TApplyConfigError(TApplyConfigError::TReason::PortTasksTimeout,
-                                std::to_string(notStopped) + " port client(s) did not stop in " +
-                                    std::to_string(PortTasksWaitTimeout.count()) + " ms");
-    }
+    PausePortTasks();
     try {
-        ConfigLoader.Write(config);
+        WriteConfigFile(ConfigPath, config);
     } catch (const std::exception& e) {
-        ResumeClients(serialClients, executors);
+        PortTasks.Resume();
         throw TApplyConfigError(TApplyConfigError::TReason::WriteFailed,
                                 std::string("unable to write the configuration: ") + e.what());
     }
-    ::Debug.SetEnabled(DebugFromCommandLine || handlerConfig->Debug);
-    serialClients.clear();
-    executors.clear();
+    RestartPolling(handlerConfig);
+}
+
+void TSerialDriverCore::DoApplyTemplate(const TTemplateChange& change, bool force)
+{
+    std::lock_guard<std::mutex> applyConfigLock(ApplyConfigMutex);
+    Json::Value config;
+    try {
+        config = WBMQTT::JSON::Parse(ConfigPath);
+    } catch (const std::exception& e) {
+        // Missing or broken config can't refer to the template, nothing to protect
+        LOG(Debug) << "the configuration is not read: " << e.what();
+    }
+    auto devicesCount = CountDevicesOfType(config, change.DeviceType);
+    if (devicesCount == 0) {
+        try {
+            WriteTemplateFile(change);
+        } catch (const std::exception& e) {
+            throw TApplyConfigError(TApplyConfigError::TReason::WriteFailed,
+                                    std::string("unable to change the template file: ") + e.what());
+        }
+        CommitTemplates(change, *Templates, DeviceConfedSchemas);
+        return;
+    }
+    auto newTemplates = MakeChangedTemplates(*Templates, change);
+    auto changedConfig = MakeChangedConfig(config,
+                                           change.DeviceType,
+                                           ConfigLoadParams,
+                                           ConfigPath,
+                                           *Templates,
+                                           *newTemplates,
+                                           PortTasks);
+    if (!force) {
+        // Without a template every device fails the check, that is what template-in-use tells
+        if (!changedConfig.Problems.Empty() && FindTemplate(*newTemplates, change.DeviceType)) {
+            throw TApplyConfigError("some devices of \"" + change.DeviceType + "\" can not take the template as is",
+                                    changedConfig.Problems);
+        }
+        throw TApplyConfigError(TApplyConfigError::TReason::TemplateInUse,
+                                "device type \"" + change.DeviceType + "\" is used by " + std::to_string(devicesCount) +
+                                    " device(s) of the configuration, \"force\" is required to change its template");
+    }
+
+    PausePortTasks();
+    try {
+        if (changedConfig.Config == config) {
+            WriteTemplateFile(change);
+        } else {
+            WriteTemplateAndConfigFiles(change, ConfigPath, changedConfig.Config);
+        }
+    } catch (const std::exception& e) {
+        PortTasks.Resume();
+        throw TApplyConfigError(TApplyConfigError::TReason::WriteFailed,
+                                std::string("unable to write the files: ") + e.what());
+    }
+    CommitTemplates(change, *Templates, DeviceConfedSchemas);
+    RestartPolling(changedConfig.HandlerConfig);
+}
+
+Json::Value TSerialDriverCore::LoadConfedConfig()
+{
+    try {
+        return MakeJsonForConfed(ConfigPath, *Templates);
+    } catch (const std::exception& e) {
+        LOG(Debug) << "the configuration is not read: " << e.what();
+        return Json::Value();
+    }
+}
+
+void TSerialDriverCore::RestartPolling(PHandlerConfig handlerConfig)
+{
+    if (handlerConfig) {
+        ::Debug.SetEnabled(DebugFromCommandLine || handlerConfig->Debug);
+    }
     try {
         SwitchDriver(handlerConfig);
     } catch (const std::exception& e) {
         throw TApplyConfigError(TApplyConfigError::TReason::PollingRestartFailed,
-                                std::string("the configuration is written, but the polling is not started: ") +
-                                    e.what());
+                                std::string("the files are written, but the polling is not started: ") + e.what());
     }
 }
 
 void TSerialDriverCore::SwitchDriver(PHandlerConfig handlerConfig)
 {
-    PMQTTSerialDriver oldDriver;
-    std::vector<PSerialClientTaskExecutor> oldExecutors;
-    {
-        // The old configuration is reported until the new one is polled
-        std::lock_guard<std::mutex> lock(Mutex);
-        oldDriver.swap(SerialDriver);
-        oldExecutors.swap(Executors);
-    }
-    if (oldDriver) {
-        if (Started) {
-            oldDriver->Stop();
-        } else {
-            oldDriver->ClearDevices();
-        }
-        oldDriver.reset();
-    }
-    oldExecutors.clear();
+    // The old configuration is reported until the new one is polled
+    PortTasks.Switch(nullptr, MakeParametersCache(nullptr));
 
     auto parametersCache = MakeParametersCache(handlerConfig);
     PMQTTSerialDriver newDriver;
     std::exception_ptr error;
-    try {
-        newDriver = std::make_shared<TMQTTSerialDriver>(MqttDriver, handlerConfig);
-    } catch (...) {
-        error = std::current_exception();
+    if (handlerConfig) {
+        try {
+            newDriver = std::make_shared<TMQTTSerialDriver>(MqttDriver, handlerConfig);
+        } catch (...) {
+            error = std::current_exception();
+        }
     }
     {
         std::lock_guard<std::mutex> lock(Mutex);
         if (newDriver && !Stopped) {
-            SerialDriver = newDriver;
-            Config = handlerConfig;
-            ParametersCache = parametersCache;
             // Under the mutex, so Stop does not miss the started driver
-            if (Started) {
-                newDriver->Start();
-            }
+            PortTasks.Switch(newDriver, parametersCache);
+            Config = handlerConfig;
             return;
         }
         Config = nullptr;
-        ParametersCache = MakeParametersCache(nullptr);
     }
     if (error) {
         std::rethrow_exception(error);
     }
-    newDriver->ClearDevices();
+    if (newDriver) {
+        newDriver->ClearDevices();
+    }
 }

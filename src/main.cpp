@@ -17,13 +17,12 @@
 
 #include "device_template_generator.h"
 #include "file_utils.h"
-#include "files_watcher.h"
 #include "port/serial_port.h"
+#include "rpc/rpc_config_change_handler.h"
 #include "rpc/rpc_config_handler.h"
 #include "rpc/rpc_device_handler.h"
 #include "rpc/rpc_fw_update_handler.h"
 #include "rpc/rpc_port_handler.h"
-#include "rpc/rpc_templates_handler.h"
 
 #define STR(x) #x
 #define XSTR(x) STR(x)
@@ -100,23 +99,6 @@ namespace
              << "  -T       prefix    MQTT topic prefix (optional)" << endl
              << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl
              << "  -v                 Print the version" << endl;
-    }
-
-    pair<shared_ptr<Json::Value>, PTemplateMap> LoadTemplates()
-    {
-        auto commonDeviceSchema =
-            make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH));
-        auto templates = make_shared<TTemplateMap>(
-            LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *commonDeviceSchema),
-            USER_TEMPLATES_DIR);
-        templates->AddTemplatesDir(TEMPLATES_DIR);
-        // templates/Upload creates the directory
-        try {
-            templates->AddTemplatesDir(USER_TEMPLATES_DIR);
-        } catch (const TNoDirError& e) {
-            LOG(Warn) << "No user templates are loaded: " << e.what();
-        }
-        return {commonDeviceSchema, templates};
     }
 
     void SetDebugLevel(const char* optarg)
@@ -208,29 +190,6 @@ namespace
             }
         }
     }
-
-    void HandleTemplateChangeEvent(TTemplateMap& templates,
-                                   TDevicesConfedSchemasMap& confedSchemasMap,
-                                   const std::string& fileName,
-                                   TFilesWatcher::TEvent event)
-    {
-        if (event == TFilesWatcher::TEvent::CloseWrite) {
-            LOG(Debug) << fileName << " changed. Reloading template";
-            try {
-                auto updatedTypes = templates.UpdateTemplate(fileName);
-                for (const auto& deviceType: updatedTypes) {
-                    confedSchemasMap.InvalidateCache(deviceType);
-                }
-            } catch (const exception& e) {
-                LOG(Error) << "Failed to reload template: " << e.what();
-            }
-            return;
-        }
-        if (event == TFilesWatcher::TEvent::Delete) {
-            LOG(Debug) << fileName << " deleted";
-            confedSchemasMap.InvalidateCache(templates.DeleteTemplate(fileName));
-        }
-    }
 }
 
 int main(int argc, char* argv[])
@@ -246,20 +205,6 @@ int main(int argc, char* argv[])
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
-    TSerialDeviceFactory deviceFactory;
-    RegisterProtocols(deviceFactory);
-
-    shared_ptr<Json::Value> commonDeviceSchema;
-    PTemplateMap templates;
-    std::tie(commonDeviceSchema, templates) = LoadTemplates();
-    TDevicesConfedSchemasMap confedSchemasMap(*templates, deviceFactory, *commonDeviceSchema);
-    TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, *commonDeviceSchema);
-    auto portsSchema = WBMQTT::JSON::Parse(PORTS_JSON_SCHEMA_FULL_FILE_PATH);
-
-    TFilesWatcher watcher({TEMPLATES_DIR, USER_TEMPLATES_DIR}, [&](std::string fileName, TFilesWatcher::TEvent event) {
-        HandleTemplateChangeEvent(*templates, confedSchemasMap, fileName, event);
-    });
-
     try {
         if (mqttConfig.Id.empty())
             mqttConfig.Id = driverName;
@@ -267,26 +212,11 @@ int main(int argc, char* argv[])
         auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
 
         auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
+        auto configChangeRpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
 
         auto groupTranslations = WBMQTT::JSON::Parse(DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH);
 
-        PHandlerConfig handlerConfig;
-
-        try {
-            handlerConfig = LoadConfig(configFilename,
-                                       deviceFactory,
-                                       *commonDeviceSchema,
-                                       *templates,
-                                       portsSchema,
-                                       protocolSchemasMap);
-        } catch (const exception& e) {
-            LOG(Error) << e.what();
-        }
-
         auto debugFromCommandLine = Debug.IsEnabled();
-        if (handlerConfig && handlerConfig->Debug) {
-            Debug.SetEnabled(true);
-        }
 
         // The driver is needed without a configuration too: config/Save can set one later
         auto backend = WBMQTT::NewDriverBackend(mqtt);
@@ -304,33 +234,23 @@ int main(int argc, char* argv[])
         });
 
         driver->WaitForReady();
-        TConfigLoader configLoader(configFilename,
-                                   deviceFactory,
-                                   *commonDeviceSchema,
-                                   *templates,
-                                   portsSchema,
-                                   protocolSchemasMap);
-        TSerialDriverCore serialDriverCore(driver, handlerConfig, configLoader, debugFromCommandLine);
-        handlerConfig.reset();
+        TSerialDriverCore serialDriverCore(driver,
+                                           TSerialDriverCoreFiles{configFilename,
+                                                                  TEMPLATES_DIR,
+                                                                  USER_TEMPLATES_DIR,
+                                                                  TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH,
+                                                                  CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH,
+                                                                  PORTS_JSON_SCHEMA_FULL_FILE_PATH,
+                                                                  PROTOCOL_SCHEMAS_DIR},
+                                           debugFromCommandLine);
         TSerialClientTaskRunner serialClientTaskRunner(serialDriverCore);
 
-        TRPCConfigHandler rpcConfigHandler(configFilename,
-                                           portsSchema,
-                                           templates,
-                                           confedSchemasMap,
-                                           protocolSchemasMap,
-                                           groupTranslations,
-                                           serialDriverCore,
-                                           rpcServer);
-        TRPCTemplatesHandler rpcTemplatesHandler(USER_TEMPLATES_DIR,
-                                                 configFilename,
-                                                 templates,
-                                                 confedSchemasMap,
-                                                 groupTranslations,
-                                                 RPC_TEMPLATES_UPLOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                 RPC_TEMPLATES_DELETE_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                 serialDriverCore);
-        RegisterTemplatesRpcHandlers(rpcTemplatesHandler, rpcServer);
+        TRPCConfigHandler rpcConfigHandler(groupTranslations, serialDriverCore, rpcServer);
+        TRPCConfigChangeHandler rpcConfigChangeHandler(groupTranslations,
+                                                       RPC_TEMPLATES_UPLOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                       RPC_TEMPLATES_DELETE_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                       serialDriverCore);
+        RegisterConfigChangeRpcHandlers(rpcConfigChangeHandler, configChangeRpcServer);
 
         auto rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                 RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
@@ -345,8 +265,8 @@ int main(int argc, char* argv[])
                                                 RPC_DEVICE_SET_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_PROBE_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 RPC_DEVICE_SET_POLL_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                deviceFactory,
-                                                templates,
+                                                serialDriverCore.GetDeviceFactory(),
+                                                serialDriverCore.GetTemplates(),
                                                 serialClientTaskRunner,
                                                 rpcServer);
 
@@ -357,11 +277,13 @@ int main(int argc, char* argv[])
 
         serialDriverCore.Start();
         rpcServer->Start();
+        configChangeRpcServer->Start();
 
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
             rpcServer->Stop();
             fwUpdateRpcServer->Stop();
             serialDriverCore.Stop();
+            configChangeRpcServer->Stop();
             rpcFwUpdateHandler->Stop();
         });
         WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&] {

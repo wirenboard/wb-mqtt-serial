@@ -1,5 +1,8 @@
 #pragma once
 
+#include <functional>
+
+#include "port_settings.h"
 #include "serial_port.h"
 #include "tcp_port.h"
 
@@ -49,3 +52,15 @@ private:
 };
 
 using PFeaturePort = std::shared_ptr<TFeaturePort>;
+
+//! What a feature port is made of
+struct TFeaturePortSettings
+{
+    TPortSettings Port;
+    bool ConnectedToMge = false;
+    bool FastModbusDisabled = false;
+};
+
+typedef std::function<PFeaturePort(const TFeaturePortSettings& settings)> TFeaturePortFactoryFn;
+
+PFeaturePort DefaultPortFactory(const TFeaturePortSettings& settings);

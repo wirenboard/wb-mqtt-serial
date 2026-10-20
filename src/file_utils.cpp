@@ -43,41 +43,58 @@ namespace
     }
 }
 
-void WriteFileAtomically(const std::string& fileName, const std::string& content)
+TAtomicFileWrite::TAtomicFileWrite(const std::string& fileName, const std::string& content): Path(fileName)
 {
-    std::filesystem::path path(fileName);
-    if (std::filesystem::is_symlink(path)) {
-        path = std::filesystem::canonical(path);
+    if (std::filesystem::is_symlink(Path)) {
+        Path = std::filesystem::canonical(Path);
     }
-    auto tmpFileName = path.string() + ".tmp";
+    TmpFileName = Path.string() + ".tmp";
     try {
         {
             std::ofstream file;
-            OpenWithException(file, tmpFileName);
+            OpenWithException(file, TmpFileName);
             file << content;
             file.flush();
             if (!file.good()) {
-                throw std::runtime_error("Failed to write file: " + tmpFileName);
+                throw std::runtime_error("Failed to write file: " + TmpFileName);
             }
         }
         // Closing the file leaves the data in the kernel cache, without the sync the renamed file
         // may be empty after a power loss
-        if (!SyncFile(tmpFileName)) {
-            throw std::runtime_error("Failed to sync file: " + tmpFileName);
+        if (!SyncFile(TmpFileName)) {
+            throw std::runtime_error("Failed to sync file: " + TmpFileName);
         }
-        std::filesystem::rename(tmpFileName, path);
     } catch (...) {
         std::error_code ec;
-        std::filesystem::remove(tmpFileName, ec);
+        std::filesystem::remove(TmpFileName, ec);
         throw;
     }
+}
+
+TAtomicFileWrite::~TAtomicFileWrite()
+{
+    if (!Committed) {
+        std::error_code ec;
+        std::filesystem::remove(TmpFileName, ec);
+    }
+}
+
+void TAtomicFileWrite::Commit()
+{
+    std::filesystem::rename(TmpFileName, Path);
+    Committed = true;
     // The rename is in the kernel cache too, without the sync the old file may come back after a power loss.
     // Nothing is known about the disk after a failed sync, the file is replaced for the readers anyway
-    auto dirName = path.parent_path().empty() ? std::string(".") : path.parent_path().string();
+    auto dirName = Path.parent_path().empty() ? std::string(".") : Path.parent_path().string();
     if (!SyncFile(dirName)) {
-        LOG(Warn) << "Failed to sync directory " << dirName << ", " << path.string()
+        LOG(Warn) << "Failed to sync directory " << dirName << ", " << Path.string()
                   << " may be old after a power loss";
     }
+}
+
+void WriteFileAtomically(const std::string& fileName, const std::string& content)
+{
+    TAtomicFileWrite(fileName, content).Commit();
 }
 
 void IterateDir(const std::string& dirName, std::function<bool(const std::string&)> fn)

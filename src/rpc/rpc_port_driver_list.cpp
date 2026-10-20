@@ -11,13 +11,13 @@ namespace
     }
 
     //! A request with "device_id" may have no valid port, then the port of the target is not set
-    TSerialDriverCore::TTaskTarget MakeTaskTarget(const Json::Value& request)
+    TTaskTarget MakeTaskTarget(const Json::Value& request)
     {
         std::string deviceId;
         if (request["device_id"].isString()) {
             deviceId = request["device_id"].asString();
         }
-        TSerialDriverCore::TTaskTarget target;
+        TTaskTarget target;
         try {
             target.Port = ParseRequestPort(request);
         } catch (const TRPCException&) {
@@ -55,7 +55,7 @@ void TSerialClientTaskRunner::SetPoll(const Json::Value& request, bool poll)
     }
 }
 
-void TSerialClientTaskRunner::RunTask(const Json::Value& request, const TSerialDriverCore::TMakeTaskFn& makeTask)
+void TSerialClientTaskRunner::RunTask(const Json::Value& request, const TMakeTaskFn& makeTask)
 {
     auto target = MakeTaskTarget(request);
     try {
@@ -74,7 +74,7 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, const TSerialD
 void TSerialClientTaskRunner::RunTask(const TPortSettings& portSettings, PSerialClientTask task)
 {
     try {
-        TSerialDriverCore::TTaskTarget target;
+        TTaskTarget target;
         target.Port = portSettings;
         SerialDriverCore.AddTask(target, [&task](PSerialDevice, PDeviceParametersCache) { return task; });
     } catch (const TSerialDriverCoreBusyError&) {

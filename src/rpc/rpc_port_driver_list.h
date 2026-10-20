@@ -19,12 +19,12 @@ public:
     TSerialClientTaskRunner(TSerialDriverCore& serialDriverCore);
 
     //! Suspends or resumes the polling of the config device of the request
-    //! @throws TRPCException with "config-busy" during config/Save and after the service stop
+    //! @throws TRPCException with "config-busy" during a configuration or template change and after the service stop
     void SetPoll(const Json::Value& request, bool poll);
 
     //! Adds the task to the client of the config device or the port of the request
-    //! @throws TRPCException with "config-busy" during config/Save and after the service stop
-    void RunTask(const Json::Value& request, const TSerialDriverCore::TMakeTaskFn& makeTask);
+    //! @throws TRPCException with "config-busy" during a configuration or template change and after the service stop
+    void RunTask(const Json::Value& request, const TMakeTaskFn& makeTask);
 
     void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override;
 

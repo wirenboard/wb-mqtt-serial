@@ -46,7 +46,9 @@
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
-                "default": 1,
+                "default": 2,
+                "min": 0,
+                "max": 1200,
                 "group": "general",
                 "order": 2
             },

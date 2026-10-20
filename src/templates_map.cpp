@@ -390,6 +390,42 @@ namespace
             ConvertParametersObjectToArray(root);
         }
     }
+
+    //! The "device" section of the template ready for use
+    Json::Value PrepareDeviceTemplate(Json::Value root, bool deprecated, WBMQTT::JSON::TValidator& validator)
+    {
+        // Skip deprecated template validation, it may be broken according to latest schema
+        if (!deprecated) {
+            FixAndValidateDeviceTemplate(root, validator);
+            AnnotateDeviceTemplate(root);
+        } else {
+            FixDeviceTemplate(root);
+        }
+        return root["device"];
+    }
+
+    void SetMetadata(TDeviceTemplate& deviceTemplate, const Json::Value& data)
+    {
+        deviceTemplate.SetTitle(GetTranslations(data.get("title", deviceTemplate.Type).asString(), data["device"]));
+        deviceTemplate.SetGroup(data.get("group", "").asString());
+        if (data.get("deprecated", false).asBool()) {
+            deviceTemplate.SetDeprecated();
+        }
+        if (data["device"].isMember("subdevices")) {
+            deviceTemplate.SetWithSubdevices();
+        }
+        if (data.isMember("hw")) {
+            std::vector<TDeviceTemplateHardware> hws;
+            for (const auto& hwItem: data["hw"]) {
+                TDeviceTemplateHardware hw;
+                Get(hwItem, "signature", hw.Signature);
+                Get(hwItem, "fw", hw.Fw);
+                hws.push_back(std::move(hw));
+            }
+            deviceTemplate.SetHardware(hws);
+        }
+        deviceTemplate.SetMqttId(data["device"].get("id", "").asString());
+    }
 }
 
 //=============================================================================
@@ -408,25 +444,7 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
                                                             Validator,
                                                             ValidatorMutex,
                                                             filePath);
-    deviceTemplate->SetTitle(GetTranslations(data.get("title", deviceType).asString(), data["device"]));
-    deviceTemplate->SetGroup(data.get("group", "").asString());
-    if (data.get("deprecated", false).asBool()) {
-        deviceTemplate->SetDeprecated();
-    }
-    if (data["device"].isMember("subdevices")) {
-        deviceTemplate->SetWithSubdevices();
-    }
-    if (data.isMember("hw")) {
-        std::vector<TDeviceTemplateHardware> hws;
-        for (const auto& hwItem: data["hw"]) {
-            TDeviceTemplateHardware hw;
-            Get(hwItem, "signature", hw.Signature);
-            Get(hwItem, "fw", hw.Fw);
-            hws.push_back(std::move(hw));
-        }
-        deviceTemplate->SetHardware(hws);
-    }
-    deviceTemplate->SetMqttId(data["device"].get("id", "").asString());
+    SetMetadata(*deviceTemplate, data);
     if (!UserTemplatesDir.empty() && WBMQTT::StringStartsWith(filePath, UserTemplatesDir)) {
         deviceTemplate->SetUserDefined();
     }
@@ -488,21 +506,49 @@ std::vector<PDeviceTemplate> TTemplateMap::GetTemplates()
 
 std::vector<std::string> TTemplateMap::UpdateTemplate(const std::string& path)
 {
-    std::vector<std::string> res;
     if (!EndsWith(path, ".json")) {
-        return res;
+        return std::vector<std::string>();
     }
     std::unique_lock m(Mutex);
     auto deletedType = DeleteTemplateUnsafe(path);
+    auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
+    auto it = Templates.find(deviceTemplate->Type);
+    if (it != Templates.end() && IsPreferredTemplatePath(path)) {
+        TemplateUpdatedWarning(it->second.back(), path);
+    }
+    return InsertTemplateUnsafe(deviceTemplate, path, deletedType);
+}
+
+void TTemplateMap::AddTemplate(const Json::Value& root, const std::string& path)
+{
+    auto deviceTemplate = std::make_shared<TDeviceTemplate>(root, Validator, ValidatorMutex);
+    std::unique_lock m(Mutex);
+    auto deletedType = DeleteTemplateUnsafe(path);
+    InsertTemplateUnsafe(deviceTemplate, path, deletedType);
+}
+
+std::shared_ptr<TTemplateMap> TTemplateMap::Clone()
+{
+    std::unique_lock m(Mutex);
+    auto res = std::make_shared<TTemplateMap>();
+    res->Templates = Templates;
+    res->Validator = Validator;
+    res->ValidatorMutex = ValidatorMutex;
+    res->PreferredTemplatesDir = PreferredTemplatesDir;
+    res->UserTemplatesDir = UserTemplatesDir;
+    return res;
+}
+
+std::vector<std::string> TTemplateMap::InsertTemplateUnsafe(PDeviceTemplate deviceTemplate,
+                                                            const std::string& path,
+                                                            const std::string& deletedType)
+{
+    std::vector<std::string> res;
     if (!deletedType.empty()) {
         res.push_back(deletedType);
     }
-    auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
     auto& typeArray = Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{}).first->second;
-    if (!PreferredTemplatesDir.empty() && WBMQTT::StringStartsWith(path, PreferredTemplatesDir)) {
-        if (!typeArray.empty()) {
-            TemplateUpdatedWarning(typeArray.back(), path);
-        }
+    if (IsPreferredTemplatePath(path)) {
         typeArray.push_back(deviceTemplate);
     } else {
         typeArray.insert(typeArray.begin(), deviceTemplate);
@@ -511,6 +557,11 @@ std::vector<std::string> TTemplateMap::UpdateTemplate(const std::string& path)
         res.push_back(deviceTemplate->Type);
     }
     return res;
+}
+
+bool TTemplateMap::IsPreferredTemplatePath(const std::string& path) const
+{
+    return !PreferredTemplatesDir.empty() && WBMQTT::StringStartsWith(path, PreferredTemplatesDir);
 }
 
 std::string TTemplateMap::DeleteTemplateUnsafe(const std::string& path)
@@ -560,6 +611,11 @@ PDeviceTemplate TTemplateMap::FindUserDefinedTemplate(const std::string& deviceT
     return item != it->second.rend() ? *item : nullptr;
 }
 
+const std::string& TTemplateMap::GetUserTemplatesDir() const
+{
+    return UserTemplatesDir;
+}
+
 //=============================================================================
 //                              TDeviceTemplate
 //=============================================================================
@@ -577,6 +633,22 @@ TDeviceTemplate::TDeviceTemplate(const std::string& type,
       Subdevices(false),
       Protocol(protocol)
 {}
+
+TDeviceTemplate::TDeviceTemplate(const Json::Value& root,
+                                 std::shared_ptr<WBMQTT::JSON::TValidator> validator,
+                                 std::shared_ptr<std::mutex> validatorMutex)
+    : Type(root["device_type"].asString()),
+      Deprecated(false),
+      UserDefined(false),
+      Validator(validator),
+      ValidatorMutex(validatorMutex),
+      Subdevices(false),
+      Protocol(root["device"].get("protocol", "modbus").asString())
+{
+    SetMetadata(*this, root);
+    std::unique_lock m(*ValidatorMutex);
+    Template = PrepareDeviceTemplate(root, Deprecated, *Validator);
+}
 
 std::string TDeviceTemplate::GetTitle(const std::string& lang) const
 {
@@ -651,18 +723,11 @@ const Json::Value& TDeviceTemplate::GetTemplate()
     std::unique_lock m(*ValidatorMutex);
     if (Template.isNull()) {
         Json::Value root(WBMQTT::JSON::Parse(GetFilePath()));
-        // Skip deprecated template validation, it may be broken according to latest schema
-        if (!IsDeprecated()) {
-            try {
-                FixAndValidateDeviceTemplate(root, *Validator);
-            } catch (const std::runtime_error& e) {
-                throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
-            }
-            AnnotateDeviceTemplate(root);
-        } else {
-            FixDeviceTemplate(root);
+        try {
+            Template = PrepareDeviceTemplate(root, IsDeprecated(), *Validator);
+        } catch (const std::runtime_error& e) {
+            throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
         }
-        Template = root["device"];
     }
     return Template;
 }
