@@ -1151,6 +1151,11 @@ namespace Modbus // modbus protocol common utilities
                 {
                     throw;
                 }
+            } catch (const TMalformedResponseError&) {
+                if (i >= maxRetries) {
+                    throw;
+                }
+                port.SkipNoise();
             } catch (const TErrorBase&) {
                 if (i >= maxRetries) {
                     throw;
