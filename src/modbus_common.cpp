@@ -1082,52 +1082,36 @@ namespace Modbus // modbus protocol common utilities
                                   std::chrono::milliseconds responseTimeout,
                                   std::chrono::milliseconds frameTimeout)
     {
-        const int TRY_COUNT = 3;
+        const int MAX_RETRIES = 2;
 
         // Extended model register, old firmwares don't have it
-        for (int i = 0; i < TRY_COUNT; ++i) {
-            try {
-                return ReadRegister(traits,
-                                    port,
-                                    slaveId,
-                                    *WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME),
-                                    requestDelay,
-                                    responseTimeout,
-                                    frameTimeout)
-                    .Get<std::string>();
-            } catch (const TModbusExceptionError& err) {
-                if (err.GetExceptionCode() == ILLEGAL_FUNCTION || err.GetExceptionCode() == ILLEGAL_DATA_ADDRESS ||
-                    err.GetExceptionCode() == ILLEGAL_DATA_VALUE)
-                {
-                    break;
-                }
-            } catch (const std::exception&) {
+        try {
+            return ReadRegister(traits,
+                                port,
+                                slaveId,
+                                *WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME),
+                                requestDelay,
+                                responseTimeout,
+                                frameTimeout,
+                                MAX_RETRIES)
+                .Get<std::string>();
+        } catch (const TModbusExceptionError& err) {
+            if (err.GetExceptionCode() != ILLEGAL_FUNCTION && err.GetExceptionCode() != ILLEGAL_DATA_ADDRESS &&
+                err.GetExceptionCode() != ILLEGAL_DATA_VALUE)
+            {
+                throw;
             }
         }
 
-        // Standard model register
-        for (int i = 0;; ++i) {
-            try {
-                return ReadRegister(traits,
-                                    port,
-                                    slaveId,
-                                    *WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME),
-                                    requestDelay,
-                                    responseTimeout,
-                                    frameTimeout)
-                    .Get<std::string>();
-            } catch (const TModbusExceptionError& err) {
-                if (err.GetExceptionCode() == ILLEGAL_FUNCTION || err.GetExceptionCode() == ILLEGAL_DATA_ADDRESS ||
-                    err.GetExceptionCode() == ILLEGAL_DATA_VALUE || i == TRY_COUNT - 1)
-                {
-                    throw;
-                }
-            } catch (const std::exception&) {
-                if (i == TRY_COUNT - 1) {
-                    throw;
-                }
-            }
-        }
+        return ReadRegister(traits,
+                            port,
+                            slaveId,
+                            *WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME),
+                            requestDelay,
+                            responseTimeout,
+                            frameTimeout,
+                            MAX_RETRIES)
+            .Get<std::string>();
     }
 
     TRegisterValue ReadRegister(IModbusTraits& traits,
@@ -1136,28 +1120,47 @@ namespace Modbus // modbus protocol common utilities
                                 const TRegisterConfig& reg,
                                 std::chrono::microseconds requestDelay,
                                 std::chrono::milliseconds responseTimeout,
-                                std::chrono::milliseconds frameTimeout)
+                                std::chrono::milliseconds frameTimeout,
+                                int maxRetries)
     {
         size_t modbusRegisterCount = GetModbusDataWidthIn16BitWords(reg);
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
         auto function = GetFunctionImpl(reg.Type, OperationType::OP_READ, reg.TypeName, false);
         auto requestPdu = Modbus::MakePDU(function, addr, modbusRegisterCount, {});
 
-        port.SleepSinceLastInteraction(requestDelay);
-        auto res = traits.Transaction(port,
-                                      slaveId,
-                                      requestPdu,
-                                      Modbus::CalcResponsePDUSize(function, modbusRegisterCount),
-                                      responseTimeout,
-                                      frameTimeout);
+        for (int i = 0;; ++i) {
+            try {
+                port.SleepSinceLastInteraction(requestDelay);
+                auto res = traits.Transaction(port,
+                                              slaveId,
+                                              requestPdu,
+                                              Modbus::CalcResponsePDUSize(function, modbusRegisterCount),
+                                              responseTimeout,
+                                              frameTimeout);
 
-        auto data = Modbus::ExtractResponseData(function, res.Pdu);
-        if (IsSingleBitType(reg.Type)) {
-            return TRegisterValue{data[0]};
+                auto data = Modbus::ExtractResponseData(function, res.Pdu);
+                if (IsSingleBitType(reg.Type)) {
+                    return TRegisterValue{data[0]};
+                }
+
+                Modbus::TRegisterCache cache;
+                return GetRegisterValue(data, reg, cache);
+            } catch (const TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == ILLEGAL_FUNCTION || err.GetExceptionCode() == ILLEGAL_DATA_ADDRESS ||
+                    err.GetExceptionCode() == ILLEGAL_DATA_VALUE || i >= maxRetries)
+                {
+                    throw;
+                }
+            } catch (const TErrorBase&) {
+                if (i >= maxRetries) {
+                    throw;
+                }
+            } catch (const TResponseTimeoutException&) {
+                if (i >= maxRetries) {
+                    throw;
+                }
+            }
         }
-
-        Modbus::TRegisterCache cache;
-        return GetRegisterValue(data, reg, cache);
     }
 
 } // modbus protocol utilities

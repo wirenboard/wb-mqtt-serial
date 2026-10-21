@@ -135,36 +135,14 @@ void ReadModbusRegister(TPort& port, TRPCDeviceRequest& request, PRegisterConfig
 {
     auto slaveId = GetModbusSlaveId(*request.Device);
     auto traits = MakeModbusTraits(request.ProtocolParams.protocol->GetName());
-    for (int i = 0; i <= MAX_RPC_RETRIES; ++i) {
-        try {
-            value = Modbus::ReadRegister(*traits,
-                                         port,
-                                         slaveId,
-                                         *registerConfig,
-                                         std::chrono::microseconds(0),
-                                         request.ResponseTimeout,
-                                         request.FrameTimeout);
-            return;
-        } catch (const Modbus::TModbusExceptionError& err) {
-            if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
-                err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
-                err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
-            {
-                throw;
-            }
-            if (i == MAX_RPC_RETRIES) {
-                throw;
-            }
-        } catch (const Modbus::TErrorBase& err) {
-            if (i == MAX_RPC_RETRIES) {
-                throw;
-            }
-        } catch (const TResponseTimeoutException& e) {
-            if (i == MAX_RPC_RETRIES) {
-                throw;
-            }
-        }
-    }
+    value = Modbus::ReadRegister(*traits,
+                                 port,
+                                 slaveId,
+                                 *registerConfig,
+                                 std::chrono::microseconds(0),
+                                 request.ResponseTimeout,
+                                 request.FrameTimeout,
+                                 MAX_RPC_RETRIES);
 }
 
 void WriteModbusRegister(TPort& port,
