@@ -1,3 +1,21 @@
+wb-mqtt-serial (2.288.0) stable; urgency=medium
+
+  * WB device templates: firmware version limits are set in the parameters,
+    redundant parameter descriptions are removed, swapped descriptions of the
+    WB-MAO4 and WB-MDM3 increase and decrease rates are fixed
+  * WB-MR, WB-MRWM2 templates: options for the latching switch input mode are
+    shown only if an input is in this mode
+  * WB-MR templates: the default input mode is "Latching switch" as in the
+    firmware, "Status LED" parameter is added, hardware info channels have
+    units, HW Batch Number channel is added to WB-MR6C/NC and WB-MRM2-mini
+  * WB-MR6CU template: fix "Outputs State After Power On" parameter not being
+    applied
+  * WB-MR templates: "Outputs State After Power On" is hidden when all outputs
+    are used for actuator control, its description says that it does not
+    apply to such outputs
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 21 Oct 2026 17:37:09 +0300
+
 wb-mqtt-serial (2.287.3) stable; urgency=medium
 
   * Refactor Wiren Board device model reading, no functional changes
