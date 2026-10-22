@@ -11,19 +11,14 @@ namespace
     std::string ReadDeviceModel(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         try {
-            TRegisterValue value;
-            try {
-                ReadModbusRegister(port,
-                                   *rpcRequest,
-                                   WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_EX_REGISTER_NAME),
-                                   value);
-            } catch (const Modbus::TModbusExceptionError& err) {
-                ReadModbusRegister(port,
-                                   *rpcRequest,
-                                   WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME),
-                                   value);
-            }
-            return value.Get<std::string>();
+            auto traits = MakeModbusTraits(rpcRequest->ProtocolParams.protocol->GetName());
+            auto slaveId = GetModbusSlaveId(*rpcRequest->Device);
+            return Modbus::ReadWbDeviceModel(*traits,
+                                             port,
+                                             slaveId,
+                                             std::chrono::microseconds(0),
+                                             rpcRequest->ResponseTimeout,
+                                             rpcRequest->FrameTimeout);
         } catch (const std::exception& e) {
             LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
                       << " unable to read device model: " << e.what();
