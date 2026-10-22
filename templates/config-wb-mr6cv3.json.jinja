@@ -700,19 +700,19 @@
             },
             {
                 "id": "curtain{{curtain_num}}_safety_action",
-                "title": "Action when safety mode is activated",
-                "group": "gg_curtain_{{curtain_num}}",
+                "title": "Curtain {{curtain_num}}",
+                "group": "g_safety_behaviour",
                 "address": {{1288 + curtain_num - 1}},
                 "reg_type": "holding",
                 "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "no action",
-                    "open",
-                    "close"
+                    "No action",
+                    "Open",
+                    "Close"
                 ],
-                "order": 5,
+                "order": {{2 * curtain_num - 1}},
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {
@@ -725,18 +725,18 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "no action",
-                    "open",
-                    "close"
+                    "No action",
+                    "Open",
+                    "Close"
                 ],
-                "order": 6,
+                "order": 5,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {
                 "id": "curtain{{curtain_num}}_safety_input_control",
                 "title": "Curtain {{curtain_num}}",
                 "group": "gg_safety_input_control",
-                "order": {{curtain_num}},
+                "order": {{2 * curtain_num - 1}},
                 "address": {{1292 + curtain_num - 1}},
                 "reg_type": "holding",
                 "fw": "1.21.0",
@@ -1159,6 +1159,17 @@
                 "group": "g_hw_info"
             },
             {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "fw": "1.21.2",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
                 "name": "Bus Power Supply",
                 "reg_type": "input",
                 "address": 4,
@@ -1176,8 +1187,9 @@
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
+                "Minimum MCU Voltage Since Startup": "Min MCU Voltage Since Startup",
 
-                "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "outputs_safe_state_description": "Outputs state after module power on (if the \"Safe state\" option is selected in the \"Outputs State After Power On\" setting) and in the safe mode, if the transition to the safe state is activated",
 
                 "sp_title": "Short Press",
@@ -1191,7 +1203,7 @@
 
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
-                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
+                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons.",
                 "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -1253,7 +1265,7 @@
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
-                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояния выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
+                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояние выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
 
                 "no action": "нет действия",
                 "reset": "выключить",
@@ -1288,8 +1300,8 @@
                 "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
-                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
-                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "Outputs State After Power On": "Состояние выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
                 "According to inputs": "Установить согласно состоянию входов",
@@ -1354,7 +1366,9 @@
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
-                "Action when safety mode is activated": "Действие при переходе в безопасный режим",
+                "No action": "Ничего не делать",
+                "Open": "Открыть",
+                "Close": "Закрыть",
                 "Power up action": "Действие при подаче питания",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -1366,7 +1380,7 @@
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
-                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа",
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
 
 
                 "Baud rate": "Скорость обмена",
@@ -1383,6 +1397,7 @@
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения",
                 "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
+                "Minimum MCU Voltage Since Startup": "Мин. напряжение питания МК с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
                 "Bus Power Supply": "Состояние питания на шине"

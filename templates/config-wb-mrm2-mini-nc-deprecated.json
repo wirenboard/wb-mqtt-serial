@@ -262,7 +262,7 @@
                 "Button 2 Mode": "Режим работы входа 2",
                 "push button": "кнопка без фиксации",
                 "latching switch": "переключатель с фиксацией",
-                "turn off all outputs": "отключить все выходы",
+                "turn on all outputs": "включить все выходы",
                 "control disabled": "управление отключено",
                 "operate according to mapping-matrix": "управлять по mapping-матрице",
                 "Button 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",

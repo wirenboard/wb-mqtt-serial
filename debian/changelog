@@ -4,8 +4,22 @@ wb-mqtt-serial (2.289.0) stable; urgency=medium
     channels and settings as WB-MRM2-mini, plus the "1-Wire temperature
     sensor" input mode with DS18B20 temperature, status and debug channels,
     the status LED setting and the HW batch number
+  * WB-MR6C/NC, WB-MRM2-mini/NC templates: on/off texts describe the load
+    state (input mode "Turn on all outputs", timer functions, startup and
+    restart delays), "On K"/"Off K" buttons turn the load on and off as
+    named (they were reversed), the input mode description explains that
+    a latching switch controls the output inversely
+  * WB-MR templates: the actuator action in safety mode is moved to the
+    "Safety Mode" tab next to the outputs, actuator power-up and safety
+    actions are "No action", "Open" and "Close"
+  * WB-MR3, WB-MR6C, WB-MR6C/NC, WB-MR6CU, WB-MR6C v.3 templates: "Minimum
+    MCU Voltage Since Startup" channel is added (firmware 1.21.2 and later)
+  * WB-MRM2-mini template: the 100 ms minimum interval between requests is
+    removed
+  * WB-MR, WB-MRWM2 templates: typos in the Russian title of "Outputs State
+    After Power On" and in parameter descriptions are fixed
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 22 Oct 2026 11:22:34 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 22 Oct 2026 14:25:12 +0300
 
 wb-mqtt-serial (2.288.0) stable; urgency=medium
 

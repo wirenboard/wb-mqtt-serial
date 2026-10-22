@@ -19,7 +19,6 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
         "enable_wb_continuous_read": true,
-        "min_request_interval": 100,
 
         "groups": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
@@ -657,18 +656,18 @@
             },
             {
                 "id": "curtain{{curtain_num}}_safety_action",
-                "title": "Action when safety mode is activated",
-                "group": "gg_curtain_{{curtain_num}}",
+                "title": "Curtain {{curtain_num}}",
+                "group": "gg_safety_behaviour",
                 "address": {{1288 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "no action",
-                    "open",
-                    "close"
+                    "No action",
+                    "Open",
+                    "Close"
                 ],
-                "order": 5,
+                "order": {{2 * curtain_num - 1}},
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {
@@ -680,18 +679,18 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "no action",
-                    "open",
-                    "close"
+                    "No action",
+                    "Open",
+                    "Close"
                 ],
-                "order": 6,
+                "order": 5,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {
                 "id": "curtain{{curtain_num}}_safety_input_control",
                 "title": "Curtain {{curtain_num}}",
                 "group": "gg_safety_input_control",
-                "order": {{curtain_num}},
+                "order": {{2 * curtain_num - 1}},
                 "address": {{1292 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -1166,7 +1165,7 @@
 
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
-                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons",
+                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons.",
                 "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -1282,7 +1281,7 @@
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
-                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Outputs State After Power On": "Состояние выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
                 "According to inputs": "Установить согласно состоянию входов",
@@ -1323,7 +1322,9 @@
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
-                "Action when safety mode is activated": "Действие при переходе в безопасный режим",
+                "No action": "Ничего не делать",
+                "Open": "Открыть",
+                "Close": "Закрыть",
                 "Power up action": "Действие при подаче питания",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -1335,7 +1336,7 @@
                 "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
-                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа",
+                "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
                 "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Startup Delay (s)": "Задержка включения при подаче питания (с)",
@@ -1360,7 +1361,7 @@
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
 
                 "Serial": "Серийный номер",

@@ -149,15 +149,17 @@
 
         "parameters": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
-            {% if in_num == 0 -%}
             {
                 "id": "in{{in_num}}_mode",
                 "title": "Mode",
-                "address": 16,
+                "description": "nc_input_mode_description",
+                "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
-                "enum": [2, 3, 4, 6],
-                "default": 2,
+                "enum": [0, 1, 2, 3, 4, 6],
+                "default": 1,
                 "enum_titles": [
+                    "Push button",
+                    "Latching switch",
                     "Turn on all outputs",
                     "Control disabled / Frequency measurement",
                     "Operate according to mapping-matrix",
@@ -166,36 +168,12 @@
                 "group": "g_in{{in_num}}",
                 "order": 1
             },
-            {% else -%}
-            {
-                "id": "in{{in_num}}_mode",
-                "title": "Mode",
-                "address": {{9 + in_num - 1}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 6],
-                "default": 1,
-                "enum_titles": [
-                    "Push button",
-                    "Latching switch",
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
-                ],
-                "group": "g_in{{in_num}}",
-                "order": 1
-            },
-            {% endif -%}
             {% for debounce_fw, debounce_max in DEBOUNCE_FW_VARIANTS -%}
             {
                 "id": "in{{in_num}}_debounce_ms",
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
-                {% if in_num == 0 -%}
-                "address": 27,
-                {% else -%}
                 "address": {{20 + in_num - 1}},
-                {% endif -%}
                 "reg_type": "holding",
                 {% if debounce_fw -%}
                 "fw": "{{ debounce_fw }}",
@@ -212,11 +190,7 @@
                 "group": "gg_in{{in_num}}_press_params",
                 "title": "lp_hold_time_title",
                 "order": 1,
-                {% if in_num == 0 -%}
-                "address": 1107,
-                {% else %}
                 "address": {{1100 + in_num - 1}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 1000,
                 "min": 500,
@@ -229,11 +203,7 @@
                 "title": "secp_waiting_time_title",
                 "description": "secp_waiting_time_description",
                 "order": 2,
-                {% if in_num == 0 -%}
-                "address": 1147,
-                {% else -%}
                 "address": {{1140 + in_num - 1}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 300,
                 "min": 0,
@@ -246,11 +216,7 @@
                 "group": "gg_in{{in_num}}_mapping_matrix_actions",
                 "title": "Output {{out_num}}",
                 "order": {{out_num}},
-                {% if in_num == 0 -%}
-                "address": {{440 + out_num - 1}},
-                {% else -%}
                 "address": {{384 + out_num - 1 + (in_num-1)*MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -282,11 +248,7 @@
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "sp_title",
                 "order": 1,
-                {% if in_num == 0 -%}
-                "address": {{600 + out_num - 1}},
-                {% else -%}
                 "address": {{544 + out_num - 1 + (in_num-1)*MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
@@ -298,11 +260,7 @@
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "lp_title",
                 "order": 2,
-                {% if in_num == 0 -%}
-                "address": {{664 + out_num - 1}},
-                {% else -%}
                 "address": {{608 + out_num - 1 + (in_num-1)*MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
@@ -314,11 +272,7 @@
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "dp_title",
                 "order": 3,
-                {% if in_num == 0 -%}
-                "address": {{728 + out_num - 1}},
-                {% else -%}
                 "address": {{672 + out_num - 1 + (in_num-1)*MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
@@ -330,11 +284,7 @@
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "slp_title",
                 "order": 4,
-                {% if in_num == 0 -%}
-                "address": {{792 + out_num - 1}},
-                {% else -%}
                 "address": {{736 + out_num - 1 + (in_num-1)*MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
@@ -434,13 +384,13 @@
                 {% if timer_autoreset %}"enum": [0, 1, 2, 3, 6, 4, 7, 5],{% else %}"enum": [0, 1, 2, 3, 4, 5],{% endif %}
                 "enum_titles": [
                     "Not Used",
-                    "On Delay",
                     "Off Delay",
-                    "On Pulse",{% if timer_autoreset %}
-                    "On Pulse (Reset Command)",{% endif %}
+                    "On Delay",
                     "Off Pulse",{% if timer_autoreset %}
                     "Off Pulse (Reset Command)",{% endif %}
-                    "On/Off Cycle"
+                    "On Pulse",{% if timer_autoreset %}
+                    "On Pulse (Reset Command)",{% endif %}
+                    "Off/On Cycle"
                 ],
                 "fw": "{{timer_fw}}"
             },
@@ -503,7 +453,7 @@
             },
             {
                 "id": "out{{out_num}}_cyclic_on_time_params",
-                "title": "On Time (s)",
+                "title": "Off Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
                 "address": {{1800 + out_num - 1}},
@@ -517,7 +467,7 @@
             },
             {
                 "id": "out{{out_num}}_cyclic_off_time_params",
-                "title": "Off Time (s)",
+                "title": "On Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 2}},
                 "address": {{1808 + out_num - 1}},
@@ -610,11 +560,7 @@
             {
                 "name": "Input {{in_num}}",
                 "reg_type": "discrete",
-                {% if in_num == 0 -%}
-                "address": 7,
-                {% else -%}
                 "address": {{in_num - 1}},
-                {% endif -%}
                 "type": "switch",
                 "sporadic": {{s_en}},
                 "condition": "{{s_cond}}",
@@ -623,11 +569,7 @@
             {
                 "name": "Input {{in_num}} counter",
                 "reg_type": "input",
-                {% if in_num == 0 -%}
-                "address": 39,
-                {% else -%}
                 "address": {{32 + in_num - 1}},
-                {% endif -%}
                 "type": "value",
                 "sporadic": {{s_en}},
                 "condition": "{{s_cond}}",
@@ -637,11 +579,7 @@
             {
                 "name": "Input {{in_num}} freq",
                 "reg_type": "input",
-                {% if in_num == 0 -%}
-                "address": 54,
-                {% else -%}
                 "address": {{40 + (in_num - 1) * 2}},
-                {% endif -%}
                 "type": "value",
                 "format": "u32",
                 "scale": 1.52588e-5,
@@ -654,11 +592,7 @@
                 "name": "Input {{in_num}} Single Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 471,
-                {% else -%}
                 "address": {{464 + in_num - 1}},
-                {% endif -%}
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
@@ -668,11 +602,7 @@
                 "name": "Input {{in_num}} Long Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 487,
-                {% else -%}
                 "address": {{480 + in_num - 1}},
-                {% endif -%}
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
@@ -682,11 +612,7 @@
                 "name": "Input {{in_num}} Double Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 503,
-                {% else -%}
                 "address": {{496 + in_num - 1}},
-                {% endif -%}
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
@@ -696,11 +622,7 @@
                 "name": "Input {{in_num}} Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "press_counter",
-                {% if in_num == 0 -%}
-                "address": 519,
-                {% else -%}
                 "address": {{512 + in_num - 1}},
-                {% endif -%}
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
@@ -733,7 +655,7 @@
             {
                 "name": "Off K{{out_num}}",
                 "reg_type": "coil",
-                "address": {{100 + out_num - 1}},
+                "address": {{108 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
@@ -742,7 +664,7 @@
             {
                 "name": "On K{{out_num}}",
                 "reg_type": "coil",
-                "address": {{108 + out_num - 1}},
+                "address": {{100 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
@@ -893,6 +815,7 @@
                 "scale": 0.001,
                 "type": "value",
                 "units": "V",
+                "fw": "1.21.2",
                 "enabled": false,
                 "group": "g_hw_info"
             }
@@ -901,6 +824,7 @@
         "translations": {
             "en": {
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
+                "nc_input_mode_description": "The relay contacts are normally closed, so the output works inversely to the input: in \"Latching switch\" mode a closed input turns the output off and an open input turns it on. The options that set the output according to the input state work the same way.",
                 "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Serial": "Serial Number",
@@ -925,12 +849,12 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Power-On Turn-Off Delay K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Repeated Turn-Off Delay K{{out_num}}",
                 {% endfor -%}
 
-                "Startup Delay (s)": "Startup Delay When Power On (s)",
-                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)"
+                "Startup Delay (s)": "Turn-Off Delay When Power On (s)",
+                "Restart Delay (s)": "Repeated Turn-Off Delay After Output Turn On (s)"
             },
             "ru": {
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-канальный модуль реле)",
@@ -966,8 +890,8 @@
                 "On K{{out_num}}": "Включить K{{out_num}}",
                 "Toggle K{{out_num}}": "Переключить K{{out_num}}",
 
-                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "ЗО при подаче питания K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "ЗПО K{{out_num}}",
                 "Timer K{{out_num}}": "Таймер K{{out_num}}",
 
                 {% endfor -%}
@@ -1001,14 +925,14 @@
 
                 "Push button": "Кнопка без фиксации",
                 "Latching switch": "Переключатель с фиксацией",
-                "Turn off all outputs": "Отключить все выходы",
+                "Turn on all outputs": "Включить все выходы",
                 "Control disabled / Frequency measurement": "Управление отключено, вход измеряет частоту",
                 "Operate according to mapping-matrix": "Управлять по mapping-матрице",
                 "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
-                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Outputs State After Power On": "Состояние выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
                 "According to inputs": "Установить согласно состоянию входов",
@@ -1037,8 +961,8 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
-                "Startup Delay (s)": "Задержка включения при подаче питания (с)",
-                "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
+                "Startup Delay (s)": "Задержка отключения при подаче питания (с)",
+                "Restart Delay (s)": "Задержка повторного отключения выхода после его включения (с)",
 
                 "Function": "Функция",
                 "Not Used": "Не используется",
@@ -1048,7 +972,7 @@
                 "On Pulse (Reset Command)": "Включить на время (со сбросом команды)",
                 "Off Pulse": "Отключить на время",
                 "Off Pulse (Reset Command)": "Отключить на время (со сбросом команды)",
-                "On/Off Cycle": "Цикл On/Off",
+                "Off/On Cycle": "Цикл Off/On",
                 "On Time (s)": "Включено (с)",
                 "Off Time (s)": "Отключено (с)",
                 "Timeout (s)": "Таймаут (с)",
@@ -1059,6 +983,7 @@
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "nc_input_mode_description": "Контакты реле нормально замкнутые, поэтому выход работает инверсно входу: в режиме \"Переключатель с фиксацией\" замкнутый вход отключает выход, а разомкнутый — включает. Так же работают настройки, которые устанавливают выход согласно состоянию входа.",
                 "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
 
                 "Serial": "Серийный номер",

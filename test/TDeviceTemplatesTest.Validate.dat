@@ -25917,6 +25917,7 @@ WB-MR3
 	K3  =>  K3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Off K1  =>  Off K1
 	Off K2  =>  Off K2
@@ -26027,6 +26028,7 @@ WB-MR6C
 	K6  =>  K6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Off K1  =>  Off K1
 	Off K2  =>  Off K2
@@ -26140,6 +26142,7 @@ WB-MR6C v.3
 	K6  =>  K6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Off K1  =>  Off K1
 	Off K2  =>  Off K2
@@ -26246,6 +26249,7 @@ WB-MR6C-NC
 	K6  =>  K6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Off K1  =>  Off K1
 	Off K2  =>  Off K2
@@ -26309,6 +26313,7 @@ WB-MR6CU
 	K6  =>  K6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Off K1  =>  Off K1
 	Off K2  =>  Off K2
@@ -31578,6 +31583,7 @@ tpl1_oni_plc_w_emd_0706
 	K6  =>  K6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Off K1  =>  Off K1
 	Off K2  =>  Off K2

@@ -164,6 +164,7 @@
             {
                 "id": "in{{in_num}}_mode",
                 "title": "Mode",
+                "description": "nc_input_mode_description",
                 "address": {{9 + in_num - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 4, 6],
@@ -428,13 +429,13 @@
                 {% if timer_autoreset %}"enum": [0, 1, 2, 3, 6, 4, 7, 5],{% else %}"enum": [0, 1, 2, 3, 4, 5],{% endif %}
                 "enum_titles": [
                     "Not Used",
-                    "On Delay",
                     "Off Delay",
-                    "On Pulse",{% if timer_autoreset %}
-                    "On Pulse (Reset Command)",{% endif %}
+                    "On Delay",
                     "Off Pulse",{% if timer_autoreset %}
                     "Off Pulse (Reset Command)",{% endif %}
-                    "On/Off Cycle"
+                    "On Pulse",{% if timer_autoreset %}
+                    "On Pulse (Reset Command)",{% endif %}
+                    "Off/On Cycle"
                 ],
                 "fw": "{{timer_fw}}"
             },
@@ -497,7 +498,7 @@
             },
             {
                 "id": "out{{out_num}}_cyclic_on_time_params",
-                "title": "On Time (s)",
+                "title": "Off Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 1}},
                 "address": {{1800 + out_num - 1}},
@@ -511,7 +512,7 @@
             },
             {
                 "id": "out{{out_num}}_cyclic_off_time_params",
-                "title": "Off Time (s)",
+                "title": "On Time (s)",
                 "group": "gg_timer_{{out_num}}",
                 "order": {{out_num + 2}},
                 "address": {{1808 + out_num - 1}},
@@ -725,7 +726,7 @@
             {
                 "name": "Off K{{out_num}}",
                 "reg_type": "coil",
-                "address": {{100 + out_num - 1}},
+                "address": {{108 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
@@ -734,7 +735,7 @@
             {
                 "name": "On K{{out_num}}",
                 "reg_type": "coil",
-                "address": {{108 + out_num - 1}},
+                "address": {{100 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
@@ -877,17 +878,30 @@
                 "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "fw": "1.21.2",
+                "enabled": false,
+                "group": "g_hw_info"
             }
         ],
 
         "translations": {
             "en": {
                 "WB-MR6C-NC_template_title": "WB-MR6C/NC (6-channel relay)",
+                "nc_input_mode_description": "The relay contacts are normally closed, so the output works inversely to the input: in \"Latching switch\" mode a closed input turns the output off and an open input turns it on. The options that set the output according to the input state work the same way.",
                 "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
+                "Minimum MCU Voltage Since Startup": "Min MCU Voltage Since Startup",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
 
@@ -906,12 +920,12 @@
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Startup Delay K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Restart Delay K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Power-On Turn-Off Delay K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Repeated Turn-Off Delay K{{out_num}}",
                 {% endfor -%}
 
-                "Startup Delay (s)": "Startup Delay When Power On (s)",
-                "Restart Delay (s)": "Restart Delay After Output Turn Off (s)"
+                "Startup Delay (s)": "Turn-Off Delay When Power On (s)",
+                "Restart Delay (s)": "Repeated Turn-Off Delay After Output Turn On (s)"
             },
             "ru": {
                 "WB-MR6C-NC_template_title": "WB-MR6C/NC (6-канальный модуль реле)",
@@ -947,8 +961,8 @@
                 "On K{{out_num}}": "Включить K{{out_num}}",
                 "Toggle K{{out_num}}": "Переключить K{{out_num}}",
 
-                "Startup Delay Countdown K{{out_num}}": "ЗВ при подаче питания K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "ЗПВ K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "ЗО при подаче питания K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "ЗПО K{{out_num}}",
                 "Timer K{{out_num}}": "Таймер K{{out_num}}",
 
                 {% endfor -%}
@@ -989,7 +1003,7 @@
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
-                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Outputs State After Power On": "Состояние выходов при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
                 "According to inputs": "Установить согласно состоянию входов",
@@ -1019,8 +1033,8 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
-                "Startup Delay (s)": "Задержка включения при подаче питания (с)",
-                "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
+                "Startup Delay (s)": "Задержка отключения при подаче питания (с)",
+                "Restart Delay (s)": "Задержка повторного отключения выхода после его включения (с)",
 
                 "Function": "Функция",
                 "Not Used": "Не используется",
@@ -1030,7 +1044,7 @@
                 "On Pulse (Reset Command)": "Включить на время (со сбросом команды)",
                 "Off Pulse": "Отключить на время",
                 "Off Pulse (Reset Command)": "Отключить на время (со сбросом команды)",
-                "On/Off Cycle": "Цикл On/Off",
+                "Off/On Cycle": "Цикл Off/On",
                 "On Time (s)": "Включено (с)",
                 "Off Time (s)": "Отключено (с)",
                 "Timeout (s)": "Таймаут (с)",
@@ -1041,6 +1055,7 @@
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "nc_input_mode_description": "Контакты реле нормально замкнутые, поэтому выход работает инверсно входу: в режиме \"Переключатель с фиксацией\" замкнутый вход отключает выход, а разомкнутый — включает. Так же работают настройки, которые устанавливают выход согласно состоянию входа.",
                 "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
 
                 "Serial": "Серийный номер",
@@ -1049,6 +1064,7 @@
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения",
                 "Minimum Voltage Since Startup": "Мин. напряжение питания с момента включения",
+                "Minimum MCU Voltage Since Startup": "Мин. напряжение питания МК с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК"
             }
