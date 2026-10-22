@@ -228,6 +228,7 @@
                 "description": "phase_loss_detection_description",
                 "address": 102,
                 "reg_type": "holding",
+                "fw": "2.6.3",
                 "enum": [0, 1],
                 "default": 1,
                 "enum_titles": [
@@ -1188,7 +1189,7 @@
             "en": {
                 "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase energy meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
+                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime",
                 "Peaks Measurement Period (s)": "Peaks Aggregation Period (s)",
@@ -1222,7 +1223,7 @@
                 "Disabled": "Выключено",
                 "Yes": "Да",
                 "No": "Нет",
-                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
+                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",

@@ -46,7 +46,6 @@
             {
                 "title": "Actions when the input is closed / opened",
                 "id": "gg_in{{ in_num }}_mapping_matrix_actions",
-                "description": "mapping_matrix_actions_description",
                 "group": "input_f{{ in_num }}"
             },
             {% set titles = {
@@ -111,7 +110,6 @@
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
-                "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
             {
@@ -294,6 +292,9 @@
                 "order": {{ out_num }},
                 "address": {{ 384 + ((in_num - 1) * 8) + (out_num - 1) }},
                 "reg_type": "holding",
+                {% if out_num == OUT_NUM_CLEANING_MODE -%}
+                "fw": "1.21.0",
+                {% endif -%}
                 {%- if i == 0 %}
                     {%- if in_num < 4 %}
                 "default": {% if in_num == 1 and out_num == OUT_NUM_K1 %}9{% elif in_num == 2 and out_num == OUT_NUM_K2 %}9{% elif in_num == 3 and out_num == OUT_NUM_ALARM %}4{% else %}0{% endif %},
@@ -431,7 +432,6 @@
 
             "wet_cleaning_mode_timer_min": {
                 "title": "\"Wet cleaning\" mode timer (min)",
-                "description": "wet_cleaning_mode_timer_description",
                 "address": 975,
                 "reg_type": "holding",
                 "min": 1,
@@ -642,14 +642,12 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
                 "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs and \"Leak\" mode in case of connection loss. For this purpose, there is a safety mode.",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
                 "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings. By default, safe mode is disabled and safe states are set to \"Off\".",
-                "mapping_matrix_actions_description": "Assignment of action for \"Wet cleaning\" mode is available starting from firmware version 1.21.0",
-                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
+                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
                 "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
-                "buzzer_beep_duration_description": "0...60, default: 0 (without timeout)",
+                "buzzer_beep_duration_description": "0 - without timeout",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
                 "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
@@ -661,7 +659,6 @@
 
                 "Cleaning Mode": "\"Wet cleaning\" Mode",
                 "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors",
-                "wet_cleaning_mode_timer_description": "1 - 360 min",
 
                 "Alarm": "\"Leakage\" Mode"
             },
@@ -674,7 +671,6 @@
 
                 "Cleaning Mode": "Режим \"Влажная уборка\"",
                 "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки",
-                "wet_cleaning_mode_timer_description": "1 — 360 мин",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
 
                 "Debounce (ms)": "Время подавления дребезга (мс)",
@@ -693,7 +689,6 @@
                 "Input {{ letter }}{{ in_num - in_num_offset }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Mode": "Режим работы входа {{ letter }}{{ in_num - in_num_offset }}",
-                "Input {{ letter }}{{ in_num - in_num_offset }} Debounce (ms)": "Время защиты от дребезга входа {{ letter }}{{ in_num - in_num_offset }} (мс)",
                 "{{ letter }}{{ in_num - in_num_offset }} Counter": "Счетчик {{ letter }}{{ in_num - in_num_offset }}",
                 "{{ letter }}{{ in_num - in_num_offset }} Freq": "Частота {{ letter }}{{ in_num - in_num_offset }}",
                 {% endfor -%}
@@ -740,8 +735,7 @@
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов и режима \"Протечка\" в случае обрыва связи. Для этого существует безопасный режим.",
                 "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\". По умолчанию безопасный режим отключен, а настройки безопасных состояний установлены в \"Выключен\".",
-                "mapping_matrix_actions_description": "Назначение действия для режима \"Влажная уборка\" доступно начиная с прошивки версии 1.21.0",
-                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. 1 — 65534 с, 10 по умолчанию.",
+                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим.",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
                 "Don't change state": "Ничего не делать",
                 "Switch to safety state": "Перевести в безопасное состояние",
@@ -750,10 +744,9 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Safe State": "Безопасное состояние",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
                 "Relays State After Power On": "Состояния реле при подаче питания",
                 "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\"",
-                "buzzer_beep_duration_description": "0...60, по умолчанию: 0 (без таймаута)",
+                "buzzer_beep_duration_description": "0 — без таймаута",
 
                 "Short Press": "Короткое нажатие",
                 "Long Press": "Длинное нажатие",

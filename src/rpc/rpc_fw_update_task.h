@@ -20,20 +20,9 @@ const TSerialPortConnectionSettings FACTORY_PORT_SETTINGS(9600, 'N', 8, 2);
 namespace FwRegisters
 {
     // Read registers (function 3 = READ_HOLDING)
-    const uint16_t FW_SIGNATURE_ADDR = 290;
-    const uint16_t FW_SIGNATURE_COUNT = 12;
-
-    const uint16_t FW_VERSION_ADDR = 250;
-    const uint16_t FW_VERSION_COUNT = 16;
-
     const uint16_t BOOTLOADER_VERSION_ADDR = 330;
     const uint16_t BOOTLOADER_VERSION_COUNT = 7;
     const uint16_t BOOTLOADER_VERSION_FULL_COUNT = 8;
-
-    const uint16_t DEVICE_MODEL_EXTENDED_ADDR = 200;
-    const uint16_t DEVICE_MODEL_EXTENDED_COUNT = 20;
-    const uint16_t DEVICE_MODEL_ADDR = 200;
-    const uint16_t DEVICE_MODEL_COUNT = 6;
 
     // Reboot registers (function 6 = WRITE_SINGLE_REGISTER)
     const uint16_t REBOOT_PRESERVE_PORT_SETTINGS_ADDR = 131;
@@ -65,6 +54,8 @@ struct TFwDeviceInfo
     std::string FwVersion;
     std::string BootloaderVersion;
     bool CanPreservePortSettings = false;
+    // Only low bytes of the model registers are used, so 0x02 which some WB-MAP firmwares
+    // put into high bytes is dropped: "MAP12E", not "MAP12\x02E"
     std::string DeviceModel;
 
     struct TComponentInfo
