@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.288.2) stable; urgency=medium
+
+  * Fix titles and translations in the NEVOTON BCG-1.0.4-W template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 22 Oct 2026 16:15:58 +0300
+
 wb-mqtt-serial (2.288.1) stable; urgency=medium
 
   * OWEN SMI2-M template: switch to id translation keys, move communication
