@@ -1,5 +1,4 @@
 {
-    "title": "owen_smi2_m_template_title",
     "device_type": "owen-smi2-m",
     "group": "g-control-panel",
     "device": {
@@ -7,23 +6,19 @@
         "id": "owen_smi2_m",
         "groups": [
             {
-                "title": "g_display",
                 "id": "g_display",
                 "order": 1
             },
             {
-                "title": "g_safety",
                 "id": "g_safety",
                 "order": 2
             },
             {
-                "title": "g_modbus",
-                "id": "g_modbus",
+                "id": "g_general",
                 "order": 3
             },
             {
-                "title": "g_general",
-                "id": "g_general",
+                "id": "g_indication",
                 "order": 4
             }
         ],
@@ -37,7 +32,6 @@
         "parameters": [
             {
                 "id": "data_type",
-                "title": "data_type",
                 "description": "data_type_description",
                 "address": 4107,
                 "enum": [0, 4, 5],
@@ -48,7 +42,6 @@
             },
             {
                 "id": "slope_coefficient",
-                "title": "slope_coefficient",
                 "description": "slope_coefficient_description",
                 "address": 4111,
                 "format": "float",
@@ -62,7 +55,6 @@
             },
             {
                 "id": "offset_coefficient",
-                "title": "offset_coefficient",
                 "description": "offset_coefficient_description",
                 "address": 4109,
                 "format": "float",
@@ -76,7 +68,6 @@
             },
             {
                 "id": "string_length",
-                "title": "string_length",
                 "description": "string_length_description",
                 "address": 4249,
                 "default": 4,
@@ -88,7 +79,6 @@
             },
             {
                 "id": "logic_enabled",
-                "title": "logic_enabled",
                 "description": "logic_enabled_description",
                 "address": 4300,
                 "enum": [0, 1],
@@ -99,7 +89,6 @@
             },
             {
                 "id": "safe_state_timeout",
-                "title": "safe_state_timeout",
                 "description": "safe_state_timeout_description",
                 "address": 4062,
                 "default": 0,
@@ -110,7 +99,6 @@
             },
             {
                 "id": "safe_state_color",
-                "title": "safe_state_color",
                 "address": 4065,
                 "enum": [0, 1, 2],
                 "enum_titles": ["safe_state_color_enum_0", "safe_state_color_enum_1", "safe_state_color_enum_2"],
@@ -120,7 +108,6 @@
             },
             {
                 "id": "safe_state_blink",
-                "title": "safe_state_blink",
                 "address": 4066,
                 "enum": [0, 1],
                 "enum_titles": ["safe_state_blink_enum_0", "safe_state_blink_enum_1"],
@@ -130,38 +117,35 @@
             },
             {
                 "id": "modbus_address",
-                "title": "modbus_address",
+                "description": "modbus_address_description",
                 "address": 527,
                 "min": 1,
                 "max": 247,
-                "group": "g_modbus",
+                "group": "g_general",
                 "order": 1
             },
             {
                 "id": "baud_rate",
-                "title": "baud_rate",
                 "address": 521,
                 "enum": [3, 4, 5, 6, 7, 8, 9, 10],
                 "enum_titles": ["2400", "4800", "9600", "14400", "19200", "38400", "57600", "115200"],
-                "group": "g_modbus",
+                "group": "g_general",
                 "order": 2
             },
             {
                 "id": "parity",
-                "title": "parity",
                 "address": 524,
                 "enum": [0, 1, 2],
                 "enum_titles": ["N", "E", "O"],
-                "group": "g_modbus",
+                "group": "g_general",
                 "order": 3
             },
             {
                 "id": "stop_bits",
-                "title": "stop_bits",
                 "address": 523,
                 "enum": [0, 1],
                 "enum_titles": ["1", "2"],
-                "group": "g_modbus",
+                "group": "g_general",
                 "order": 4
             }
         ],
@@ -173,7 +157,7 @@
                 "min": -32768,
                 "max": 32767,
                 "condition": "data_type==0",
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "value_real",
@@ -181,7 +165,7 @@
                 "format": "float",
                 "word_order": "little_endian",
                 "condition": "data_type==4",
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "value_string",
@@ -191,14 +175,14 @@
                 "string_data_size": 16,
                 "byte_order": "little_endian",
                 "condition": "data_type==5",
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "color",
                 "address": 4100,
                 "enum": ["0", "1", "2"],
                 "enum_titles": ["color_enum_0", "color_enum_1", "color_enum_2"],
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "brightness",
@@ -207,13 +191,13 @@
                 "min": 0,
                 "max": 100,
                 "units": "%",
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "blink",
                 "address": 4102,
                 "type": "switch",
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "blink_period",
@@ -222,14 +206,14 @@
                 "units": "s",
                 "min": 0.25,
                 "max": 3,
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "display_mode",
                 "address": 4106,
                 "enum": ["0", "1", "2"],
                 "enum_titles": ["display_mode_enum_0", "display_mode_enum_1", "display_mode_enum_2"],
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "scroll_period",
@@ -238,21 +222,21 @@
                 "units": "s",
                 "min": 0.1,
                 "max": 1.5,
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "leading_zeros",
                 "address": 4104,
                 "enum": ["0", "1", "2", "3"],
                 "enum_titles": ["0", "1", "2", "3"],
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "decimal_point",
                 "address": 4108,
                 "enum": ["0", "1", "2", "3"],
                 "enum_titles": ["----", "---.-", "--.--", "-.---"],
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "alarm_zone_misconfig",
@@ -261,7 +245,7 @@
                 "word_order": "little_endian",
                 "type": "alarm",
                 "readonly": true,
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "alarm_underrange",
@@ -270,7 +254,7 @@
                 "word_order": "little_endian",
                 "type": "alarm",
                 "readonly": true,
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "alarm_overrange",
@@ -279,37 +263,37 @@
                 "word_order": "little_endian",
                 "type": "alarm",
                 "readonly": true,
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "flash_resource",
                 "address": 61624,
                 "units": "%",
                 "readonly": true,
-                "group": "g_general"
+                "group": "g_indication"
             },
             {
                 "name": "cmd_save_settings",
                 "address": 5000,
                 "type": "pushbutton",
                 "on_value": 1,
-                "group": "g_general"
+                "group": "g_indication"
             }
         ],
         "translations": {
             "en": {
-                "owen_smi2_m_template_title": "OWEN SMI2-M",
+                "owen-smi2-m": "OWEN SMI2-M",
                 "g_display": "Display",
                 "g_safety": "Safety Mode",
-                "g_modbus": "Modbus Settings",
                 "g_general": "General",
+                "g_indication": "Indication",
 
                 "data_type": "Data Type",
                 "data_type_description": "Value type shown on the display",
                 "slope_coefficient": "Slope Coefficient",
-                "slope_coefficient_description": "Display = value * slope + offset. A slope other than 1 makes the value a float, and the decimal point stops shifting digits: 235 with slope 0.1 is shown as 23.5",
+                "slope_coefficient_description": "Display = value * slope + offset. A slope other than 1 turns an integer into a float: 5 with slope 5.0 is shown as 25.00, with slope -1.0 as -5.00. The result must stay within -999...9999, otherwise the display shows ERRL or ERRH",
                 "offset_coefficient": "Offset Coefficient",
-                "offset_coefficient_description": "Display = value * slope + offset. A non-zero offset makes the value a float, and the decimal point stops shifting digits: 2600 with offset 1 is shown as 2601.00, not 26.01",
+                "offset_coefficient_description": "Display = value * slope + offset. A non-zero offset turns an integer into a float: 5 with offset 1.0 is shown as 6.000, with offset 5.0 as 10.00. The result must stay within -999...9999, otherwise the display shows ERRL or ERRH",
                 "string_length": "String Length",
                 "string_length_description": "Number of characters shown when the string is scrolled",
                 "logic_enabled": "Built-in Logic",
@@ -327,7 +311,8 @@
                 "safe_state_blink_enum_0": "Disabled",
                 "safe_state_blink_enum_1": "Enabled",
 
-                "modbus_address": "Device Address",
+                "modbus_address": "New Modbus Address",
+                "modbus_address_description": "The device switches to the new address right after the write",
                 "baud_rate": "Baud Rate",
                 "parity": "Parity",
                 "stop_bits": "Stop Bits",
@@ -356,18 +341,18 @@
                 "cmd_save_settings": "Save Settings To Flash"
             },
             "ru": {
-                "owen_smi2_m_template_title": "ОВЕН СМИ2-М",
+                "owen-smi2-m": "ОВЕН СМИ2-М",
                 "g_display": "Дисплей",
                 "g_safety": "Безопасный режим",
-                "g_modbus": "Настройки Modbus",
                 "g_general": "Общее",
+                "g_indication": "Индикация",
 
                 "data_type": "Тип переменной",
                 "data_type_description": "Тип значения, отображаемого на дисплее",
                 "slope_coefficient": "Коэффициент наклона",
-                "slope_coefficient_description": "На дисплее = значение * наклон + сдвиг. Наклон, отличный от 1, делает значение дробным, и точка перестает сдвигать разряды: 235 с наклоном 0.1 покажет 23.5",
+                "slope_coefficient_description": "На дисплее = значение * наклон + сдвиг. Наклон, отличный от 1, превращает целое значение в дробное: 5 с наклоном 5.0 покажет 25.00, с наклоном -1.0 покажет -5.00. Результат должен укладываться в диапазон -999...9999, иначе на дисплее ERRL или ERRH",
                 "offset_coefficient": "Коэффициент сдвига",
-                "offset_coefficient_description": "На дисплее = значение * наклон + сдвиг. Ненулевой сдвиг делает значение дробным, и точка перестает сдвигать разряды: 2600 со сдвигом 1 покажет 2601.00, а не 26.01",
+                "offset_coefficient_description": "На дисплее = значение * наклон + сдвиг. Ненулевой сдвиг превращает целое значение в дробное: 5 со сдвигом 1.0 покажет 6.000, со сдвигом 5.0 покажет 10.00. Результат должен укладываться в диапазон -999...9999, иначе на дисплее ERRL или ERRH",
                 "string_length": "Длина строки",
                 "string_length_description": "Число символов, отображаемых при прокрутке бегущей строки",
                 "logic_enabled": "Встроенная логика",
@@ -385,7 +370,8 @@
                 "safe_state_blink_enum_0": "Выключено",
                 "safe_state_blink_enum_1": "Включено",
 
-                "modbus_address": "Адрес устройства",
+                "modbus_address": "Новый адрес Modbus",
+                "modbus_address_description": "Прибор переходит на новый адрес сразу после записи",
                 "baud_rate": "Скорость обмена",
                 "parity": "Контроль четности",
                 "stop_bits": "Стоп-биты",
@@ -407,9 +393,9 @@
                 "scroll_period": "Период сдвига бегущей строки",
                 "leading_zeros": "Число ведущих нулей",
                 "decimal_point": "Положение десятичной точки",
-                "alarm_zone_misconfig": "Настройка зон",
-                "alarm_underrange": "Диапазон дисплея: ниже",
-                "alarm_overrange": "Диапазон дисплея: выше",
+                "alarm_zone_misconfig": "Ошибка настройки зон",
+                "alarm_underrange": "Значение ниже диапазона дисплея",
+                "alarm_overrange": "Значение выше диапазона дисплея",
                 "flash_resource": "Остаток ресурса flash-памяти",
                 "cmd_save_settings": "Сохранить настройки во flash-память"
             }

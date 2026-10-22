@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.288.1) stable; urgency=medium
+
+  * OWEN SMI2-M template: switch to id translation keys, move communication
+    parameters to the General group, rename the address parameter, reword
+    alarm names and slope/offset descriptions
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 22 Oct 2026 15:04:41 +0300
+
 wb-mqtt-serial (2.288.0) stable; urgency=medium
 
   * WB device templates: firmware version limits are set in the parameters,
