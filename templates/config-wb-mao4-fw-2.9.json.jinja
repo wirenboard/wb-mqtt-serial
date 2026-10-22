@@ -177,8 +177,7 @@
             },
             {
                 "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
+                "id": "g_power_up_behaviour"
             },
             {
                 "title": "Safety Behaviour",
@@ -200,7 +199,6 @@
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "gg_safety_input_control",
-                "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
 
@@ -248,7 +246,6 @@
             {
                 "id": "output{{ ch_number }}_min",
                 "title": "Voltage at 1% dimming level (mV)",
-                "description": "level_1_voltage_description",
                 "group": "output{{ ch_number }}",
                 "address": {{ 912 + ch_number - 1 }},
                 "reg_type": "holding",
@@ -260,7 +257,6 @@
             {
                 "id": "output{{ ch_number }}_max",
                 "title": "Voltage at 100% dimming level (mV)",
-                "description": "level_100_voltage_description",
                 "group": "output{{ch_number}}",
                 "address": {{928 + ch_number - 1}},
                 "reg_type": "holding",
@@ -326,7 +322,6 @@
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
-                "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
                 "reg_type": "holding",
                 "default": 1000,
@@ -1045,7 +1040,6 @@
                 "Input {{n}} Short Long Press Counter": "Input {{n}} Shortlong Press Counter",
                 {% endfor -%}
                 "Supply voltage": "Supply Voltage",
-                "g_power_up_behaviour_description": "Configures output behaviour when the device is powered up",
                 "Input Counters": "Input Channels",
                 "template_title": "{{ title_en }}",
                 "encoder_steps_counter_desc": "Takes into account the 'Pulses per Step' parameter",
@@ -1064,24 +1058,19 @@
                 "encoder_{{encoder_number}}_mode_description": "When disabled inputs {{input1_num}} and {{input2_num}} work as usual with own mode configuration. <br>AB mode use {{input1_num}} and {{input2_num}} inputs for represent position in pulses count. <br>For the encoder to work correctly, it is necessary to reduce the debounce time of the inputs {{input1_num}} and {{input2_num}} to 2-5 ms.",
                 {% endfor -%}
 
-                "level_1_voltage_description": "Sets voltage range boundary corresponding to 1% dimming level",
-                "level_100_voltage_description": "Sets voltage range boundary corresponding to 100% dimming level",
-
                 "level_after_actions_description": "It is possible to set level to 0% (channel off)",
 
                 "increase_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will increase instantly",
                 "decrease_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will decrease instantly",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
-                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
 
                 "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. It is necessary to define actions when the scene light is turned on or off",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
 
-                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters"
             },
             "ru": {
                 "Input Parameters": "Параметры нажатий",
@@ -1168,14 +1157,11 @@
 
                 "Outputs Common Settings": "Общие настройки выходов",
 
-                "Voltage at 1% dimming level (mV)": "Нижний порог диммирования (мВ)",
-                "Voltage at 100% dimming level (mV)": "Верхний порог диммирования (мВ)",
+                "Voltage at 1% dimming level (mV)": "Напряжение при 1% уровня диммирования (мВ)",
+                "Voltage at 100% dimming level (mV)": "Напряжение при 100% уровня диммирования (мВ)",
                 "Dimming level decrement rate (ms/%)": "Темп уменьшения уровня яркости (мс/%)",
                 "Dimming level increment rate (ms/%)": "Темп увеличения уровня яркости (мс/%)",
                 "Action repeat time (ms)": "Длительность периода повторения действий (мс)",
-
-                "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
-                "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
 
                 "level_after_actions_description": "Можно установить уровень на 0% (канал выключен)",
 
@@ -1214,10 +1200,8 @@
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
 
                 "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
                 "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
@@ -1234,7 +1218,6 @@
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
 
 
-                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия <br>При подключении энкодера рекомендуется установить значение 2-5 мс.",
 
