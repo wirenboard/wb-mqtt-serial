@@ -4,6 +4,10 @@ wb-mqtt-serial (2.289.0) stable; urgency=medium
     channels and settings as WB-MRM2-mini, plus the "1-Wire temperature
     sensor" input mode with DS18B20 temperature, status and debug channels,
     the status LED setting and the HW batch number
+  * WB-MRM2-mini v.3/NO and WB-MRM2-mini v.3/NC templates: "Thermostat
+    Control" tab is added: an output can be switched by the temperature of
+    a 1-Wire sensor on an input for heating or cooling, with a setpoint,
+    a hysteresis, a status channel and an action in safety mode
   * WB-MR6C/NC, WB-MRM2-mini/NC templates: on/off texts describe the load
     state (input mode "Turn on all outputs", timer functions, startup and
     restart delays), "On K"/"Off K" buttons turn the load on and off as
@@ -19,7 +23,7 @@ wb-mqtt-serial (2.289.0) stable; urgency=medium
   * WB-MR, WB-MRWM2 templates: typos in the Russian title of "Outputs State
     After Power On" and in parameter descriptions are fixed
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 22 Oct 2026 14:25:12 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 23 Oct 2026 13:43:47 +0300
 
 wb-mqtt-serial (2.288.0) stable; urgency=medium
 
