@@ -12,6 +12,15 @@
 {# (latching, fw) of the output safety behaviour: "according to input state" is only for a latching switch input.
    The latching chain has its own variant without fw: fw variants of a parameter must have the same condition -#}
 {% set SAFETY_BEHAVIOUR_VARIANTS = [(false, ""), (true, ""), (true, SAFETY_ACCORDING_TO_INPUT_FW)] -%}
+{#- Output actions in the order of their register values -#}
+{% set OUTPUT_ACTIONS = [("No Action", "Ничего не делать"), ("Turn Off", "Выключить"), ("Turn On", "Включить"), ("Toggle", "Переключить")] -%}
+{#- Mapping-matrix value = 4 * action on close + action on open -#}
+{% set MAPPING_MATRIX_ACTIONS = [] -%}
+{% for on_close in OUTPUT_ACTIONS -%}
+    {% for on_open in OUTPUT_ACTIONS -%}
+        {% set _ = MAPPING_MATRIX_ACTIONS.append((on_close, on_open)) -%}
+    {% endfor -%}
+{% endfor -%}
 {
     "title": "WB-MRM2-mini-NO_template_title",
     "device_type": "WB-MRM2-mini-NO-inputs",
@@ -256,25 +265,9 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                 "enum_titles": [
-                    "no action / no action",
-                    "no action / reset",
-                    "no action / set",
-                    "no action / toggle",
-
-                    "reset / no action",
-                    "reset / reset",
-                    "reset / set",
-                    "reset / toggle",
-
-                    "set / no action",
-                    "set / reset",
-                    "set / set",
-                    "set / toggle",
-
-                    "toggle / no action",
-                    "toggle / reset",
-                    "toggle / set",
-                    "toggle / toggle"
+                    {% for on_close, on_open in MAPPING_MATRIX_ACTIONS -%}
+                    "{{ on_close[0] }} / {{ on_open[0] }}"{% if not loop.last %},{% endif %}
+                    {% endfor %}
                 ],
                 "condition": "in{{in_num}}_mode==4&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
@@ -287,7 +280,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             {
@@ -299,7 +292,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             {
@@ -311,7 +304,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             {
@@ -323,7 +316,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             {% endfor -%}
@@ -339,7 +332,7 @@
                 "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop"],
+                "enum_titles": ["No Action", "Open", "Close", "Open/Close", "Stop"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             {
@@ -352,7 +345,7 @@
                 "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
+                "enum_titles": ["No Action", "Open", "Close", "Open/Close", "Stop", "Open While Pressed", "Close While Pressed", "Open/Close While Pressed"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             {
@@ -365,7 +358,7 @@
                 "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop"],
+                "enum_titles": ["No Action", "Open", "Close", "Open/Close", "Stop"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             {
@@ -378,7 +371,7 @@
                 "fw": "1.21.0",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
-                "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
+                "enum_titles": ["No Action", "Open", "Close", "Open/Close", "Stop", "Open While Pressed", "Close While Pressed", "Open/Close While Pressed"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
@@ -414,9 +407,9 @@
                 {% endif -%}
                 {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
-                    "Don't change output state",
-                    "Switch output to safety state"{% if safety_fw %},
-                    "Switch output according to input state"{% endif %}
+                    "No Action",
+                    "Switch Output To Safe State"{% if safety_fw %},
+                    "Switch Output According To Input State"{% endif %}
                 ],
                 "condition": "(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)&&in{{out_num}}_mode{{ '==' if latching else '!=' }}1"
             },
@@ -599,7 +592,7 @@
                 "reg_type": "holding",
                 {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
-                "enum_titles": ["Safe state", "Restore last state"{% if any_latching %}, "According to inputs"{% endif %}],
+                "enum_titles": ["Switch Output To Safe State", "Restore Last State"{% if any_latching %}, "According To Inputs"{% endif %}],
                 "condition": "({{ restore_cond }})&&({{ curtain_free_cond | join('||') }})",
                 "order": 1,
                 "group": "g_outputs"
@@ -694,7 +687,7 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No action",
+                    "No Action",
                     "Open",
                     "Close"
                 ],
@@ -711,7 +704,7 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No action",
+                    "No Action",
                     "Open",
                     "Close"
                 ],
@@ -886,7 +879,8 @@
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
-                "enabled": false
+                "enabled": false,
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
                 "name": "On K{{out_num}}",
@@ -895,7 +889,8 @@
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
-                "enabled": false
+                "enabled": false,
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
                 "name": "Toggle K{{out_num}}",
@@ -904,7 +899,8 @@
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
-                "enabled": false
+                "enabled": false,
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -1073,7 +1069,7 @@
         "translations": {
             "en": {
                 "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-channel relay)",
-                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
+                "outputs_state_after_power_on_description": "Warning! The \"According To Inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Serial": "Serial Number",
                 "FW Version": "Firmware Version",
@@ -1086,7 +1082,6 @@
                 "lp_title": "Long Press",
                 "dp_title": "Double Press",
                 "slp_title": "Shortlong Press",
-
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -1157,30 +1152,23 @@
 
                 "Output Safe State": "Безопасное состояние выходов",
 
-                "no action": "нет действия",
-                "reset": "выключить",
-                "set": "включить",
-                "toggle": "переключить",
-
-                "no action / no action": "нет действия / нет действия",
-                "no action / reset": "нет действия / выключить",
-                "no action / set": "нет действия / включить",
-                "no action / toggle": "нет действия / переключить",
-
-                "reset / no action": "выключить / нет действия",
-                "reset / reset": "выключить / выключить",
-                "reset / set": "выключить / включить",
-                "reset / toggle": "выключить / переключить",
-
-                "set / no action": "включить / нет действия",
-                "set / reset": "включить / выключить",
-                "set / set": "включить / включить",
-                "set / toggle": "включить / переключить",
-
-                "toggle / no action": "переключить / нет действия",
-                "toggle / reset": "переключить / выключить",
-                "toggle / set": "переключить / включить",
-                "toggle / toggle": "переключить / переключить",
+                {% for action in OUTPUT_ACTIONS -%}
+                "{{ action[0] }}": "{{ action[1] }}",
+                {% endfor -%}
+                {% for on_close, on_open in MAPPING_MATRIX_ACTIONS -%}
+                "{{ on_close[0] }} / {{ on_open[0] }}": "{{ on_close[1] }} / {{ on_open[1] | lower }}",
+                {% endfor -%}
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Open/Close": "Открыть/закрыть",
+                "Stop": "Остановить",
+                "Open While Pressed": "Открывать, пока кнопка нажата",
+                "Close While Pressed": "Закрывать, пока кнопка нажата",
+                "Open/Close While Pressed": "Открывать/закрывать, пока кнопка нажата",
+                "Switch Output To Safe State": "Перевести выход в безопасное состояние",
+                "Switch Output According To Input State": "Установить выход согласно состоянию входа",
+                "Restore Last State": "Восстановить последнее состояние",
+                "According To Inputs": "Установить согласно состоянию входов",
 
                 "Push button": "Кнопка без фиксации",
                 "Latching switch": "Переключатель с фиксацией",
@@ -1192,9 +1180,6 @@
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
                 "Outputs State After Power On": "Состояние выходов при подаче питания",
-                "Safe state": "Перевести выход в безопасное состояние",
-                "Restore last state": "Восстановить последнее состояние",
-                "According to inputs": "Установить согласно состоянию входов",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
@@ -1212,29 +1197,15 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
-                "Don't change output state": "Ничего не делать",
-                "Switch output to safety state": "Перевести выход в безопасное состояние",
-                "Switch output according to input state": "Установить выход согласно состоянию входа",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
-                "open": "открыть",
-                "close": "закрыть",
-                "open/close": "открыть/закрыть",
-                "stop": "остановить",
-                "opening while pressed": "открывать пока кнопка нажата",
-                "closing while pressed": "закрывать пока кнопка нажата",
-                "opening/closing while pressed": "открывать/закрывать пока кнопка нажата",
-
                 "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
-                "No action": "Ничего не делать",
-                "Open": "Открыть",
-                "Close": "Закрыть",
                 "Power up action": "Действие при подаче питания",
 
                 {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
@@ -1266,13 +1237,12 @@
                 "Timeout (s)": "Таймаут (с)",
                 "Time (s)": "Время (с)",
 
-
                 "Baud rate": "Скорость обмена",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
+                "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован",
 
                 "Serial": "Серийный номер",
                 "HW Batch Number": "Номер партии",

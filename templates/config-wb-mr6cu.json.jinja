@@ -133,7 +133,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
-                "enum_titles": ["Safe state", "Restore last state"],
+                "enum_titles": ["Switch Output To Safe State", "Restore Last State"],
                 "condition": "{{ curtain_free_cond | join('||') }}",
                 "order": 1,
                 "group": "g_outputs"
@@ -177,8 +177,8 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Don't change output state",
-                    "Switch output to safety state"
+                    "No Action",
+                    "Switch Output To Safe State"
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
@@ -398,7 +398,7 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No action",
+                    "No Action",
                     "Open",
                     "Close"
                 ],
@@ -414,7 +414,7 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No action",
+                    "No Action",
                     "Open",
                     "Close"
                 ],
@@ -494,7 +494,8 @@
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
-                "enabled": false
+                "enabled": false,
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
                 "name": "On K{{out_num}}",
@@ -503,7 +504,8 @@
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
-                "enabled": false
+                "enabled": false,
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
                 "name": "Toggle K{{out_num}}",
@@ -512,7 +514,8 @@
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
                 "fw": "1.26.0",
-                "enabled": false
+                "enabled": false,
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -735,23 +738,21 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
-                "Don't change output state": "Ничего не делать",
-                "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "No Action": "Ничего не делать",
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Switch Output To Safe State": "Перевести выход в безопасное состояние",
+                "Restore Last State": "Восстановить последнее состояние",
 
                 "Output Safe State": "Безопасное состояние выходов",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
                 "Outputs State After Power On": "Состояние выходов при подаче питания",
-                "Safe state": "Перевести выход в безопасное состояние",
-                "Restore last state": "Восстановить последнее состояние",
 
                 "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
-                "No action": "Ничего не делать",
-                "Open": "Открыть",
-                "Close": "Закрыть",
                 "Power up action": "Действие при подаче питания",
 
                 "Startup Delay (s)": "Задержка включения при подаче питания (с)",

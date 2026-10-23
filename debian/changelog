@@ -15,7 +15,13 @@ wb-mqtt-serial (2.289.0) stable; urgency=medium
     a latching switch controls the output inversely
   * WB-MR templates: the actuator action in safety mode is moved to the
     "Safety Mode" tab next to the outputs, actuator power-up and safety
-    actions are "No action", "Open" and "Close"
+    actions are "No Action", "Open" and "Close"
+  * WB-MR templates: the same output action has the same name everywhere
+    ("Ничего не делать" instead of "нет действия", "Turn On" and "Turn Off"
+    instead of "set" and "reset"), English action names are in Title Case
+  * WB-MR3, WB-MR6C, WB-MR6CU, WB-MR6C v.3, WB-MRM2-mini templates: "Off K",
+    "On K" and "Toggle K" buttons are hidden for the outputs used for
+    actuator control
   * WB-MR3, WB-MR6C, WB-MR6C/NC, WB-MR6CU, WB-MR6C v.3 templates: "Minimum
     MCU Voltage Since Startup" channel is added (firmware 1.21.2 and later)
   * WB-MRM2-mini template: the 100 ms minimum interval between requests is
@@ -23,7 +29,7 @@ wb-mqtt-serial (2.289.0) stable; urgency=medium
   * WB-MR, WB-MRWM2 templates: typos in the Russian title of "Outputs State
     After Power On" and in parameter descriptions are fixed
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 23 Oct 2026 13:43:47 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 23 Oct 2026 13:44:21 +0300
 
 wb-mqtt-serial (2.288.0) stable; urgency=medium
 
