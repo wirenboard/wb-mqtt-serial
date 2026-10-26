@@ -307,8 +307,8 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.01,
-                "min": -30,
-                "max": 30,
+                "min": -10,
+                "max": 10,
                 "default": {{ TC_COLD_JUNCTION_OFFSET_DEFAULTS[ch_num - 1] }},
                 "fw": "2.6.0",
                 "condition": "in{{ ch_num }}_type==4096"
@@ -1305,7 +1305,7 @@
                 "maximum_value_title": "Upper limit of the measurement range",
                 "physical_value_scale_title": "Range",
                 "tc_cold_junction_offset_title": "Cold junction temperature offset (°C)",
-                "tc_cold_junction_offset_description": "The terminals (cold junction) are colder than the internal temperature sensor of the module. The offset is subtracted from the internal temperature when the cold junction temperature is calculated. Supported since firmware 2.6.0."
+                "tc_cold_junction_offset_description": "The terminals (cold junction) are colder than the internal temperature sensor of the module. The offset is subtracted from the internal temperature when the cold junction temperature is calculated."
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1445,7 +1445,7 @@
                 "Conversion to physical value": "Пересчет в физическую величину",
                 "physical_value_scale_title": "Диапазон значений",
                 "tc_cold_junction_offset_title": "Поправка температуры холодного спая (°C)",
-                "tc_cold_junction_offset_description": "Клеммы (холодный спай) холоднее внутреннего датчика температуры модуля. Поправка вычитается из внутренней температуры при расчёте температуры холодного спая. Поддерживается с прошивки 2.6.0.",
+                "tc_cold_junction_offset_description": "Клеммы (холодный спай) холоднее внутреннего датчика температуры модуля. Поправка вычитается из внутренней температуры при расчёте температуры холодного спая.",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
