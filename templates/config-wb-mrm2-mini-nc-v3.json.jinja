@@ -11,13 +11,6 @@
         {% set _ = MAPPING_MATRIX_ACTIONS.append((on_close, on_open)) -%}
     {% endfor -%}
 {% endfor -%}
-{#- Comparisons with != are true for a parameter absent from the config, so they are guarded by isDefined -#}
-{% macro thermostat_on(out_num) -%}
-    (isDefined(out{{out_num}}_thermostat_source)&&out{{out_num}}_thermostat_source!=0)
-{%- endmacro -%}
-{% macro thermostat_off(out_num) -%}
-    (isDefined(out{{out_num}}_thermostat_source)==0||out{{out_num}}_thermostat_source==0)
-{%- endmacro %}
 {
     "device_type": "wb-mrm2-mini-nc-v3",
     "group": "g-wb",
@@ -138,28 +131,6 @@
                 }
             },
             {
-                "title": "Thermostat Control",
-                "description": "thermostat_control_description",
-                "id": "g_thermostat_control"
-            },
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title": "Output {{out_num}}",
-                "id": "gg_thermostat_{{out_num}}",
-                "group": "g_thermostat_control"
-            },
-            {% endfor -%}
-            {
-                "title": "Thermostat Channels",
-                "id": "gg_thermostat_channels",
-                "group": "g_thermostat_control",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
                 "title": "General",
                 "id": "g_general"
             },
@@ -269,7 +240,7 @@
                     "{{ on_close[0] }} / {{ on_open[0] }}"{% if not loop.last %},{% endif %}
                     {% endfor %}
                 ],
-                "condition": "in{{in_num}}_mode==4&&{{ thermostat_off(out_num) }}"
+                "condition": "in{{in_num}}_mode==4"
             },
             {
                 "id": "in{{in_num}}_out{{out_num}}_sp",
@@ -281,7 +252,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["No Action", "Turn On", "Turn Off", "Toggle"],
-                "condition": "in{{in_num}}_mode==6&&{{ thermostat_off(out_num) }}"
+                "condition": "in{{in_num}}_mode==6"
             },
             {
                 "id": "in{{in_num}}_out{{out_num}}_lp",
@@ -293,7 +264,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["No Action", "Turn On", "Turn Off", "Toggle"],
-                "condition": "in{{in_num}}_mode==6&&{{ thermostat_off(out_num) }}"
+                "condition": "in{{in_num}}_mode==6"
             },
             {
                 "id": "in{{in_num}}_out{{out_num}}_dp",
@@ -305,7 +276,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["No Action", "Turn On", "Turn Off", "Toggle"],
-                "condition": "in{{in_num}}_mode==6&&{{ thermostat_off(out_num) }}"
+                "condition": "in{{in_num}}_mode==6"
             },
             {
                 "id": "in{{in_num}}_out{{out_num}}_slp",
@@ -317,7 +288,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["No Action", "Turn On", "Turn Off", "Toggle"],
-                "condition": "in{{in_num}}_mode==6&&{{ thermostat_off(out_num) }}"
+                "condition": "in{{in_num}}_mode==6"
             },
             {% endfor -%}
             {% endfor -%}
@@ -334,8 +305,7 @@
                 "enum_titles": [
                     "On",
                     "Off"
-                ],
-                "condition": "{{ thermostat_off(out_num) }}"
+                ]
             },
             {% for latching in [false, true] -%}
             {
@@ -352,26 +322,9 @@
                     "Switch Output To Safe State"{% if latching %},
                     "Switch Output According To Input State"{% endif %}
                 ],
-                "condition": "in{{out_num}}_mode{{ '==' if latching else '!=' }}1&&{{ thermostat_off(out_num) }}"
+                "condition": "in{{out_num}}_mode{{ '==' if latching else '!=' }}1"
             },
             {% endfor -%}
-            {
-                "id": "out{{out_num}}_thermostat_safety_action",
-                "title": "Output {{out_num}}",
-                "description": "thermostat_safety_action_description",
-                "group": "gg_safety_behaviour",
-                "order": {{out_num}},
-                "address": {{1648 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "No Action",
-                    "Turn On",
-                    "Turn Off"
-                ],
-                "condition": "{{ thermostat_on(out_num) }}"
-            },
             {
                 "id": "out{{out_num}}_safety_input_control",
                 "title": "Output {{out_num}}",
@@ -385,8 +338,7 @@
                     "Don't change",
                     "Disable in safety mode",
                     "Enable only in safety mode"
-                ],
-                "condition": "{{ thermostat_off(out_num) }}"
+                ]
             },
             {
                 "id": "out{{out_num}}_startup_delay_params",
@@ -411,7 +363,7 @@
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "condition": "isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0||{{ thermostat_on(out_num) }}"
+                "condition": "isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0"
             },
             {
                 "id": "out{{out_num}}_timer_mode_selection",
@@ -431,8 +383,7 @@
                     "On Pulse",
                     "On Pulse (Reset Command)",
                     "Off/On Cycle"
-                ],
-                "condition": "{{ thermostat_off(out_num) }}"
+                ]
             },
             {
                 "id": "out{{out_num}}_on_delay_params",
@@ -445,7 +396,7 @@
                 "min": 0.1,
                 "max": 6500,
                 "default": 3,
-                "condition": "out{{out_num}}_timer_mode_selection==1&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==1"
             },
             {
                 "id": "out{{out_num}}_off_delay_params",
@@ -458,7 +409,7 @@
                 "min": 0.1,
                 "max": 6500,
                 "default": 3,
-                "condition": "out{{out_num}}_timer_mode_selection==2&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==2"
             },
             {
                 "id": "out{{out_num}}_on_pulse_params",
@@ -471,7 +422,7 @@
                 "min": 0.1,
                 "max": 6500,
                 "default": 3,
-                "condition": "(out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6)&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6"
             },
             {
                 "id": "out{{out_num}}_off_pulse_params",
@@ -484,7 +435,7 @@
                 "min": 0.1,
                 "max": 6500,
                 "default": 3,
-                "condition": "(out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7)&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7"
             },
             {
                 "id": "out{{out_num}}_cyclic_on_time_params",
@@ -497,7 +448,7 @@
                 "min": 1,
                 "max": 65000,
                 "default": 3,
-                "condition": "out{{out_num}}_timer_mode_selection==5&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==5"
             },
             {
                 "id": "out{{out_num}}_cyclic_off_time_params",
@@ -510,7 +461,7 @@
                 "min": 1,
                 "max": 65000,
                 "default": 3,
-                "condition": "out{{out_num}}_timer_mode_selection==5&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
             {% set any_latching_cond = [] -%}
@@ -519,32 +470,22 @@
                 {% set _ = any_latching_cond.append("in" ~ in_num ~ "_mode==1") -%}
                 {% set _ = no_latching_cond.append("in" ~ in_num ~ "_mode!=1") -%}
             {% endfor -%}
-            {% set free_output_cond = [] -%}
-            {% set any_thermostat_cond = [] -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                {% set _ = free_output_cond.append(thermostat_off(out_num)) -%}
-                {% set _ = any_thermostat_cond.append(thermostat_on(out_num)) -%}
-            {% endfor -%}
-            {% for any_latching, any_thermostat, description in [
-                (true, false, "outputs_state_after_power_on_description"),
-                (false, false, ""),
-                (true, true, "outputs_state_after_power_on_latching_thermostat_description"),
-                (false, true, "outputs_state_after_power_on_thermostat_description"),
+            {% for any_latching, restore_cond in [
+                (true, any_latching_cond | join("||")),
+                (false, no_latching_cond | join("&&")),
             ] -%}
-            {% set restore_cond = any_latching_cond | join("||") if any_latching else no_latching_cond | join("&&") -%}
-            {% set thermostat_cond = any_thermostat_cond | join("||") if any_thermostat else free_output_cond | join("&&") -%}
             {
                 "id": "outputs_restore_state",
                 "title": "Outputs State After Power On",
-                {% if description -%}
-                "description": "{{ description }}",
+                {% if any_latching -%}
+                "description": "outputs_state_after_power_on_description",
                 {% endif -%}
                 "address": 6,
                 "reg_type": "holding",
                 {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
                 "enum_titles": ["Switch Output To Safe State", "Restore Last State"{% if any_latching %}, "According To Inputs"{% endif %}],
-                "condition": "({{ restore_cond }})&&({{ thermostat_cond }})&&({{ free_output_cond | join('||') }})",
+                "condition": "{{ restore_cond }}",
                 "order": 1,
                 "group": "g_outputs"
             },
@@ -561,84 +502,6 @@
                 "max": 65534,
                 "default": 10
             },
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {#- One variant per combination of inputs in 1-Wire mode: only these inputs can be selected.
-                The parameter is never hidden: homeui does not save a hidden parameter, so the firmware would keep
-                the old source. A source that is no longer a 1-Wire input fails the enum check and has to be changed -#}
-            {% for w1_mask in range(2 ** (OUTPUTS_NUMBER - FIRST_INPUT + 1)) -%}
-            {% set w1_inputs = [] -%}
-            {% set w1_cond = [] -%}
-            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
-                {% if (w1_mask // 2 ** (in_num - FIRST_INPUT)) % 2 -%}
-                    {% set _ = w1_inputs.append(in_num) -%}
-                    {% set _ = w1_cond.append("in" ~ in_num ~ "_mode==" ~ W1_MODE) -%}
-                {% else -%}
-                    {% set _ = w1_cond.append("in" ~ in_num ~ "_mode!=" ~ W1_MODE) -%}
-                {% endif -%}
-            {% endfor -%}
-            {
-                "id": "out{{out_num}}_thermostat_source",
-                "title": "Temperature Sensor",
-                "description": "thermostat_source_description",
-                "group": "gg_thermostat_{{out_num}}",
-                "order": 1,
-                "address": {{1632 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0{% for in_num in w1_inputs %}, {{in_num - FIRST_INPUT + 1}}{% endfor %}],
-                "enum_titles": [
-                    "Not Used"{% for in_num in w1_inputs %},
-                    "Input {{in_num}}"{% endfor %}
-                ],
-                "condition": "{{ w1_cond | join('&&') }}"
-            },
-            {% endfor -%}
-            {
-                "id": "out{{out_num}}_thermostat_mode",
-                "title": "Mode",
-                "group": "gg_thermostat_{{out_num}}",
-                "order": 2,
-                "address": {{1640 + out_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Heating",
-                    "Cooling"
-                ],
-                "condition": "{{ thermostat_on(out_num) }}"
-            },
-            {
-                "id": "out{{out_num}}_thermostat_setpoint",
-                "title": "Temperature Setpoint (°C)",
-                "group": "gg_thermostat_{{out_num}}",
-                "order": 3,
-                "address": {{1664 + out_num - 1}},
-                "reg_type": "holding",
-                "format": "s16",
-                "scale": 0.0625,
-                "default": 22,
-                "min": -55,
-                "max": 125,
-                "condition": "{{ thermostat_on(out_num) }}"
-            },
-            {% for cooling in [false, true] -%}
-            {
-                "id": "out{{out_num}}_thermostat_hysteresis",
-                "title": "Hysteresis (°C)",
-                "description": "thermostat_hysteresis_{{ 'cooling' if cooling else 'heating' }}_description",
-                "group": "gg_thermostat_{{out_num}}",
-                "order": 4,
-                "address": {{1672 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.0625,
-                "default": 1,
-                "min": 0.0625,
-                "max": 10,
-                "condition": "{{ thermostat_on(out_num) }}&&out{{out_num}}_thermostat_mode{{ '==' if cooling else '!=' }}1"
-            },
-            {% endfor -%}
-            {% endfor -%}
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
@@ -860,20 +723,7 @@
                 "sporadic": true,
                 "scale": -1,
                 "offset": 1,
-                "group": "gg_outputs_channels",
-                "condition": "{{ thermostat_off(out_num) }}"
-            },
-            {
-                "name": "K{{out_num}}",
-                "reg_type": "coil",
-                "readonly": true,
-                "address": {{out_num - 1}},
-                "type": "switch",
-                "sporadic": true,
-                "scale": -1,
-                "offset": 1,
-                "group": "gg_outputs_channels",
-                "condition": "{{ thermostat_on(out_num) }}"
+                "group": "gg_outputs_channels"
             },
             {
                 "name": "Real State K{{out_num}}",
@@ -892,8 +742,7 @@
                 "address": {{108 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
-                "enabled": false,
-                "condition": "{{ thermostat_off(out_num) }}"
+                "enabled": false
             },
             {
                 "name": "On K{{out_num}}",
@@ -901,8 +750,7 @@
                 "address": {{100 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
-                "enabled": false,
-                "condition": "{{ thermostat_off(out_num) }}"
+                "enabled": false
             },
             {
                 "name": "Toggle K{{out_num}}",
@@ -910,8 +758,7 @@
                 "address": {{116 + out_num - 1}},
                 "type": "pushbutton",
                 "group": "gg_outputs_channels",
-                "enabled": false,
-                "condition": "{{ thermostat_off(out_num) }}"
+                "enabled": false
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -933,7 +780,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_restart_delay_params",
-                "condition": "out{{out_num}}_restart_delay_params>0&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0||{{ thermostat_on(out_num) }})"
+                "condition": "out{{out_num}}_restart_delay_params>0&&(isDefined(out{{out_num}}_timer_mode_selection)==0||out{{out_num}}_timer_mode_selection==0)"
             },
             {
                 "name": "Timer K{{out_num}}",
@@ -944,7 +791,7 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "gg_timer_channels",
-                "condition": "(out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6||out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7)&&{{ thermostat_off(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==1||out{{out_num}}_timer_mode_selection==2||out{{out_num}}_timer_mode_selection==3||out{{out_num}}_timer_mode_selection==6||out{{out_num}}_timer_mode_selection==4||out{{out_num}}_timer_mode_selection==7"
             },
             {
                 "name": "Timer K{{out_num}}",
@@ -955,25 +802,7 @@
                 "scale": 1,
                 "enabled": false,
                 "group": "gg_timer_channels",
-                "condition": "out{{out_num}}_timer_mode_selection==5&&{{ thermostat_off(out_num) }}"
-            },
-            {% endfor -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "name": "Thermostat K{{out_num}}",
-                "reg_type": "input",
-                "address": {{1696 + out_num - 1}},
-                "enum": [0, 1, 2, 3, 4, 5],
-                "enum_titles": [
-                    "Not Used",
-                    "Temperature OK",
-                    "Heating",
-                    "Cooling",
-                    "Sensor Error",
-                    "Suspended By Safety Mode"
-                ],
-                "group": "gg_thermostat_channels",
-                "condition": "{{ thermostat_on(out_num) }}"
+                "condition": "out{{out_num}}_timer_mode_selection==5"
             },
             {% endfor -%}
             {
@@ -1113,14 +942,6 @@
                 "Restart Delay Countdown K{{out_num}}": "Repeated Turn-Off Delay K{{out_num}}",
                 {% endfor -%}
 
-                "thermostat_control_description": "The thermostat switches the output by the temperature of a 1-Wire sensor on one of the inputs. One input can be selected for several outputs, for example for heating and cooling. Then the cooling setpoint must be above the heating setpoint, and their ranges including the hysteresis must not overlap, otherwise heating and cooling may run at the same time",
-                "thermostat_source_description": "Only an input in \"1-Wire temperature sensor\" mode can be selected",
-                "thermostat_safety_action_description": "\"No Action\": the thermostat keeps working. \"Turn On\" and \"Turn Off\": the thermostat is suspended until the safety mode ends",
-                "thermostat_hysteresis_heating_description": "Heating turns on when the temperature falls below the setpoint by the hysteresis value and turns off when it rises above the setpoint by the same value",
-                "thermostat_hysteresis_cooling_description": "Cooling turns on when the temperature rises above the setpoint by the hysteresis value and turns off when it falls below the setpoint by the same value",
-                "outputs_state_after_power_on_thermostat_description": "Does not apply to outputs controlled by the thermostat: they stay off until the first temperature measurement",
-                "outputs_state_after_power_on_latching_thermostat_description": "Warning! The \"According To Inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs. The parameter does not apply to outputs controlled by the thermostat: they stay off until the first temperature measurement",
-
                 "Startup Delay (s)": "Turn-Off Delay When Power On (s)",
                 "Restart Delay (s)": "Repeated Turn-Off Delay After Output Turn On (s)"
             },
@@ -1179,7 +1000,6 @@
                 "Startup Delay Countdown K{{out_num}}": "ЗО при подаче питания K{{out_num}}",
                 "Restart Delay Countdown K{{out_num}}": "ЗПО K{{out_num}}",
                 "Timer K{{out_num}}": "Таймер K{{out_num}}",
-                "Thermostat K{{out_num}}": "Термостат K{{out_num}}",
 
                 {% endfor -%}
 
@@ -1227,23 +1047,6 @@
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
-
-                "Thermostat Control": "Управление термостатом",
-                "thermostat_control_description": "Термостат включает и выключает выход по температуре датчика 1-Wire на одном из входов. Один вход можно выбрать для нескольких выходов, например для нагрева и охлаждения. Тогда уставка охлаждения должна быть выше уставки нагрева, а их диапазоны с учётом гистерезиса не должны пересекаться, иначе нагрев и охлаждение могут работать одновременно",
-                "thermostat_source_description": "Можно выбрать только вход в режиме \"Датчик температуры 1-Wire\"",
-                "thermostat_safety_action_description": "\"Ничего не делать\" — термостат продолжает работать. \"Включить\" и \"Выключить\" — термостат приостанавливается до выхода из безопасного режима",
-                "Temperature Sensor": "Датчик температуры",
-                "Heating": "Нагрев",
-                "Cooling": "Охлаждение",
-                "Temperature Setpoint (°C)": "Уставка температуры (°C)",
-                "Hysteresis (°C)": "Гистерезис (°C)",
-                "thermostat_hysteresis_heating_description": "Нагрев включается, когда температура опускается ниже уставки на величину гистерезиса, и выключается, когда поднимается выше уставки на ту же величину",
-                "thermostat_hysteresis_cooling_description": "Охлаждение включается, когда температура поднимается выше уставки на величину гистерезиса, и выключается, когда опускается ниже уставки на ту же величину",
-                "Temperature OK": "Температура в норме",
-                "Sensor Error": "Ошибка датчика",
-                "Suspended By Safety Mode": "Приостановлен безопасным режимом",
-                "outputs_state_after_power_on_thermostat_description": "Не действует на выходы, которыми управляет термостат: они выключены до первого измерения температуры",
-                "outputs_state_after_power_on_latching_thermostat_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован. Параметр не действует на выходы, которыми управляет термостат: они выключены до первого измерения температуры",
 
                 "Startup Delay (s)": "Задержка отключения при подаче питания (с)",
                 "Restart Delay (s)": "Задержка повторного отключения выхода после его включения (с)",
