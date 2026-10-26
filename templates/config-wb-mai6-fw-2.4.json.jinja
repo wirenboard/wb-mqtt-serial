@@ -10,6 +10,8 @@
 {% set TYPES_WITH_GAIN = [3, 257, 261] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
+{# Дефолтные поправки температуры холодного спая термопары по каналам IN1..IN6, °C (прошивка 2.6.0) #}
+{% set TC_COLD_JUNCTION_OFFSET_DEFAULTS = [3, 3, 3, 3, 2, 1] -%}
 {% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 5890, 5891, 5892, 5893, 5894, 5895, 6144] -%}
 
 {% macro is_ntc_p(ch_num) -%}(in{{ ch_num }}_type>=5889&&in{{ ch_num }}_type<=5895){% endmacro -%}
@@ -294,6 +296,22 @@
                 "enum_titles": ["auto"],
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_tc_cold_junction_offset",
+                "title": "tc_cold_junction_offset_title",
+                "description": "tc_cold_junction_offset_description",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}412",
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -30,
+                "max": 30,
+                "default": {{ TC_COLD_JUNCTION_OFFSET_DEFAULTS[ch_num - 1] }},
+                "fw": "2.6.0",
+                "condition": "in{{ ch_num }}_type==4096"
             },
 
             {
@@ -1285,7 +1303,9 @@
                 "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V).",
                 "minimum_value_title": "Lower limit of the measurement range",
                 "maximum_value_title": "Upper limit of the measurement range",
-                "physical_value_scale_title": "Range"
+                "physical_value_scale_title": "Range",
+                "tc_cold_junction_offset_title": "Cold junction temperature offset (°C)",
+                "tc_cold_junction_offset_description": "The terminals (cold junction) are colder than the internal temperature sensor of the module. The offset is subtracted from the internal temperature when the cold junction temperature is calculated. Supported since firmware 2.6.0."
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1424,6 +1444,8 @@
                 "maximum_value_title": "Верхняя граница диапазона",
                 "Conversion to physical value": "Пересчет в физическую величину",
                 "physical_value_scale_title": "Диапазон значений",
+                "tc_cold_junction_offset_title": "Поправка температуры холодного спая (°C)",
+                "tc_cold_junction_offset_description": "Клеммы (холодный спай) холоднее внутреннего датчика температуры модуля. Поправка вычитается из внутренней температуры при расчёте температуры холодного спая. Поддерживается с прошивки 2.6.0.",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
