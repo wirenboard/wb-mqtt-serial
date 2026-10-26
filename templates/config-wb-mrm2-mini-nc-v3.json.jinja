@@ -562,20 +562,37 @@
                 "default": 10
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {#- One variant per combination of inputs in 1-Wire mode: only these inputs can be selected.
+                The parameter is never hidden: homeui does not save a hidden parameter, so the firmware would keep
+                the old source. A source that is no longer a 1-Wire input fails the enum check and has to be changed -#}
+            {% for w1_mask in range(2 ** (OUTPUTS_NUMBER - FIRST_INPUT + 1)) -%}
+            {% set w1_inputs = [] -%}
+            {% set w1_cond = [] -%}
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+                {% if (w1_mask // 2 ** (in_num - FIRST_INPUT)) % 2 -%}
+                    {% set _ = w1_inputs.append(in_num) -%}
+                    {% set _ = w1_cond.append("in" ~ in_num ~ "_mode==" ~ W1_MODE) -%}
+                {% else -%}
+                    {% set _ = w1_cond.append("in" ~ in_num ~ "_mode!=" ~ W1_MODE) -%}
+                {% endif -%}
+            {% endfor -%}
             {
                 "id": "out{{out_num}}_thermostat_source",
                 "title": "Temperature Sensor",
+                "description": "thermostat_source_description",
                 "group": "gg_thermostat_{{out_num}}",
                 "order": 1,
                 "address": {{1632 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0{% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) %}, {{in_num - FIRST_INPUT + 1}}{% endfor %}],
+                "enum": [0{% for in_num in w1_inputs %}, {{in_num - FIRST_INPUT + 1}}{% endfor %}],
                 "enum_titles": [
-                    "Not Used"{% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) %},
+                    "Not Used"{% for in_num in w1_inputs %},
                     "Input {{in_num}}"{% endfor %}
-                ]
+                ],
+                "condition": "{{ w1_cond | join('&&') }}"
             },
+            {% endfor -%}
             {
                 "id": "out{{out_num}}_thermostat_mode",
                 "title": "Mode",
@@ -615,7 +632,7 @@
                 "address": {{1672 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.0625,
-                "default": 0.5,
+                "default": 1,
                 "min": 0.0625,
                 "max": 10,
                 "condition": "{{ thermostat_on(out_num) }}&&out{{out_num}}_thermostat_mode{{ '==' if cooling else '!=' }}1"
@@ -953,7 +970,7 @@
                     "Heating",
                     "Cooling",
                     "Sensor Error",
-                    "Suspended"
+                    "Suspended By Safety Mode"
                 ],
                 "group": "gg_thermostat_channels",
                 "condition": "{{ thermostat_on(out_num) }}"
@@ -1097,6 +1114,7 @@
                 {% endfor -%}
 
                 "thermostat_control_description": "The thermostat switches the output by the temperature of a 1-Wire sensor on one of the inputs. One input can be selected for several outputs, for example for heating and cooling. Then the cooling setpoint must be above the heating setpoint, and their ranges including the hysteresis must not overlap, otherwise heating and cooling may run at the same time",
+                "thermostat_source_description": "Only an input in \"1-Wire temperature sensor\" mode can be selected",
                 "thermostat_safety_action_description": "\"No Action\": the thermostat keeps working. \"Turn On\" and \"Turn Off\": the thermostat is suspended until the safety mode ends",
                 "thermostat_hysteresis_heating_description": "Heating turns on when the temperature falls below the setpoint by the hysteresis value and turns off when it rises above the setpoint by the same value",
                 "thermostat_hysteresis_cooling_description": "Cooling turns on when the temperature rises above the setpoint by the hysteresis value and turns off when it falls below the setpoint by the same value",
@@ -1212,6 +1230,7 @@
 
                 "Thermostat Control": "Управление термостатом",
                 "thermostat_control_description": "Термостат включает и выключает выход по температуре датчика 1-Wire на одном из входов. Один вход можно выбрать для нескольких выходов, например для нагрева и охлаждения. Тогда уставка охлаждения должна быть выше уставки нагрева, а их диапазоны с учётом гистерезиса не должны пересекаться, иначе нагрев и охлаждение могут работать одновременно",
+                "thermostat_source_description": "Можно выбрать только вход в режиме \"Датчик температуры 1-Wire\"",
                 "thermostat_safety_action_description": "\"Ничего не делать\" — термостат продолжает работать. \"Включить\" и \"Выключить\" — термостат приостанавливается до выхода из безопасного режима",
                 "Temperature Sensor": "Датчик температуры",
                 "Heating": "Нагрев",
@@ -1222,7 +1241,7 @@
                 "thermostat_hysteresis_cooling_description": "Охлаждение включается, когда температура поднимается выше уставки на величину гистерезиса, и выключается, когда опускается ниже уставки на ту же величину",
                 "Temperature OK": "Температура в норме",
                 "Sensor Error": "Ошибка датчика",
-                "Suspended": "Приостановлен",
+                "Suspended By Safety Mode": "Приостановлен безопасным режимом",
                 "outputs_state_after_power_on_thermostat_description": "Не действует на выходы, которыми управляет термостат: они выключены до первого измерения температуры",
                 "outputs_state_after_power_on_latching_thermostat_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован. Параметр не действует на выходы, которыми управляет термостат: они выключены до первого измерения температуры",
 
