@@ -160,8 +160,7 @@ TEST_F(TNevaIntegrationTest, Poll)
     EnqueueGoToProgMode();
     EnqueueSendPassword();
     EnqueuePollRequests();
-    for (auto i = 0; i < 5; ++i) {
-        Note() << "LoopOnce()";
-        SerialDriver->LoopOnce();
-    }
+    // All parameters are read in one session within one poll cycle
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
 }

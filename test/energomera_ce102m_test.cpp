@@ -84,8 +84,7 @@ TEST_F(TEnergomeraCe102MIntegrationTest, Poll)
     EnqueueGoToProgMode();
     EnqueueSendPassword();
     EnqueuePollRequests();
-    for (auto i = 0; i < 4; ++i) {
-        Note() << "LoopOnce()";
-        SerialDriver->LoopOnce();
-    }
+    // All parameters are read in one session within one poll cycle
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
 }
