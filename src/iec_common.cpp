@@ -269,6 +269,26 @@ void TIEC61107ModeCDevice::EndSession(TPort& port)
     TIEC61107Device::EndSession(port);
 }
 
+bool TIEC61107ModeCRegisterRange::Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit)
+{
+    // Opening a session takes sign on, switching to programming mode and sending a password.
+    // Reading only registers with the same address per session makes the bus busy several times longer
+    const size_t MAX_REGISTERS_PER_SESSION = 32;
+    if (!RegisterList().empty() && reg->Device() != RegisterList().front()->Device()) {
+        return false;
+    }
+    if (RegisterList().size() >= MAX_REGISTERS_PER_SESSION) {
+        return false;
+    }
+    RegisterList().push_back(reg);
+    return true;
+}
+
+PRegisterRange TIEC61107ModeCDevice::CreateRegisterRange() const
+{
+    return std::make_shared<TIEC61107ModeCRegisterRange>();
+}
+
 void TIEC61107ModeCDevice::InvalidateReadCache()
 {
     CmdResultCache.clear();

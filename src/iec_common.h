@@ -66,6 +66,17 @@ public:
 };
 
 /**
+ *  Register range for IEC 61107 mode C devices.
+ *  Collects registers of one device with different parameters,
+ *  so they are read in one session.
+ */
+class TIEC61107ModeCRegisterRange: public TRegisterRange
+{
+public:
+    bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override;
+};
+
+/**
  *  Base class for devices with IEC 61107 mode C protocol.
  *  Implements session management logic and read requests for single parameters.
  */
@@ -79,6 +90,7 @@ public:
 
     void InvalidateReadCache() override;
     void EndSession(TPort& port) override;
+    PRegisterRange CreateRegisterRange() const override;
 
     //! Set the read command. Default: "R1"
     void SetReadCommand(const std::string& command);
