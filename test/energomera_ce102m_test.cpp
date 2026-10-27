@@ -73,7 +73,7 @@ namespace
     protected:
         std::shared_ptr<TEnergomeraIecModeCDevice> Dev;
 
-        void SetUp()
+        void SetUp() override
         {
             TSerialDeviceTest::SetUp();
             Dev = std::make_shared<TEnergomeraIecModeCDevice>(GetDeviceConfig(),
