@@ -130,6 +130,7 @@ private:
     int CurrentBaudRate;
     int DesiredBaudRate;
     std::vector<uint8_t> ToProgModeCommand;
+    bool ShortReactionTime;
 
     std::string GetCachedResponse(TPort& port, const std::string& paramAddress);
     bool Probe(TPort& port);
@@ -138,6 +139,7 @@ private:
     void SendPassword(TPort& port);
     void SendEndSession(TPort& port);
     size_t ReadFrameProgMode(TPort& port, uint8_t* buffer, size_t size, uint8_t startByte);
+    std::chrono::milliseconds GetPauseBeforeMessage(TPort& port) const;
     void WriteBytes(TPort& port, const std::vector<uint8_t>& data);
     void WriteBytes(TPort& port, const std::string& str);
 };
