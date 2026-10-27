@@ -7,10 +7,10 @@ namespace
     class TEnergomeraCe102MExpectations: public virtual TExpectorProvider
     {
     public:
-        void EnqueueStartSession()
+        void EnqueueStartSession(const std::string& identification = "/EKT5CE102Mv01\r\n")
         {
             Expector()->Expect(ExpectVectorFromString("/?141628345!\r\n"),
-                               ExpectVectorFromString("/EKT5CE102Mv01\r\n"),
+                               ExpectVectorFromString(identification),
                                __func__);
         }
 
@@ -34,7 +34,7 @@ namespace
         void EnqueueEndSession()
         {
             Expector()->Expect(ExpectVectorFromString("\x01"
-                                                      "B0\x03\x71"),
+                                                      "B0\x03\x75"),
                                {},
                                __func__);
         }
@@ -68,6 +68,38 @@ namespace
         }
     };
 
+    class TEnergomeraCe102MTest: public TSerialDeviceTest, public TEnergomeraCe102MExpectations
+    {
+    protected:
+        std::shared_ptr<TEnergomeraIecModeCDevice> Dev;
+
+        void SetUp()
+        {
+            TSerialDeviceTest::SetUp();
+            Dev = std::make_shared<TEnergomeraIecModeCDevice>(GetDeviceConfig(),
+                                                              DeviceFactory.GetProtocol("energomera_iec_mode_c"));
+            SerialPort->Open();
+        }
+
+        PDeviceConfig GetDeviceConfig() const
+        {
+            auto cfg = std::make_shared<TDeviceConfig>("ce102m", "141628345", "energomera_iec_mode_c");
+            cfg->FrameTimeout = std::chrono::milliseconds(100);
+            cfg->Password = {0x77, 0x77, 0x77};
+            return cfg;
+        }
+
+        void Session(const std::string& identification)
+        {
+            EnqueueStartSession(identification);
+            EnqueueGoToProgMode();
+            EnqueueSendPassword();
+            EnqueueEndSession();
+            Dev->Prepare(*SerialPort);
+            Dev->EndSession(*SerialPort);
+        }
+    };
+
     class TEnergomeraCe102MIntegrationTest: public TSerialDeviceIntegrationTest, public TEnergomeraCe102MExpectations
     {
     protected:
@@ -76,6 +108,24 @@ namespace
             return "configs/config-energomera-ce102m-test.json";
         }
     };
+}
+
+TEST_F(TEnergomeraCe102MTest, PauseBeforeMessage)
+{
+    // Upper case third letter of manufacturer's identification: reaction time is at least 200 ms,
+    // frame timeout (100 ms) before every message
+    Note() << "/EKT";
+    Session("/EKT5CE102Mv01\r\n");
+
+    // Lower case third letter: reaction time is at least 20 ms,
+    // 30 ms before messages after the identification
+    Note() << "/EKt";
+    Session("/EKt5CE102Mv01\r\n");
+
+    // A new session starts with frame timeout again
+    Note() << "/EKT";
+    Session("/EKT5CE102Mv01\r\n");
+    SerialPort->Close();
 }
 
 TEST_F(TEnergomeraCe102MIntegrationTest, Poll)
