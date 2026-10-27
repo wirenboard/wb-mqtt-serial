@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.289.0) stable; urgency=medium
+
+  * WB-MAI6 fw 2.4 template: add per-channel thermocouple cold junction
+    temperature offset parameters (holding 0xN412, firmware 2.6.0)
+  * WB-MAI6 fw 2.4 template: add NTC thermistor 50k (B = 3920 K) channel mode
+    (0x1708, firmware 2.6.0) as an fw variant of the mode parameters
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 26 Oct 2026 19:50:09 +0700
+
 wb-mqtt-serial (2.288.2) stable; urgency=medium
 
   * Fix titles and translations in the NEVOTON BCG-1.0.4-W template
