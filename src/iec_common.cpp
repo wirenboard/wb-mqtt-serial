@@ -1,5 +1,6 @@
 #include "iec_common.h"
 
+#include <ctype.h>
 #include <iomanip>
 #include <sstream>
 #include <string.h>
@@ -11,6 +12,12 @@
 namespace IEC
 {
     const size_t RESPONSE_BUF_LEN = 1000;
+
+    // IEC 62056-21, 6.4.3.6: the time between the reception of a message and the transmission of an answer
+    // is 200 ms <= tr <= 1500 ms or 20 ms <= tr if the third letter of manufacturer's identification
+    // is in lower case (item 12 of 6.3.14). Frame timeout may be much longer as some meters make pauses
+    // inside a response, so after such identification the pause before a message is limited
+    const std::chrono::milliseconds SHORT_REACTION_TIME_PAUSE(30);
 
     TPort::TFrameCompletePred GetCRLFPacketPred()
     {
@@ -188,7 +195,8 @@ TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig device_config,
       LogPrefix(logPrefix),
       ReadCommand(IEC::UnformattedReadCommand),
       DefaultBaudRate(9600),
-      CurrentBaudRate(9600)
+      CurrentBaudRate(9600),
+      ShortReactionTime(false)
 {
     SetDesiredBaudRate(9600);
 }
@@ -214,6 +222,7 @@ void TIEC61107ModeCDevice::PrepareImpl(TPort& port)
 
 void TIEC61107ModeCDevice::StartSession(TPort& port)
 {
+    ShortReactionTime = false;
     if (DefaultBaudRate != DesiredBaudRate) {
         CurrentBaudRate = DefaultBaudRate;
     }
@@ -243,14 +252,15 @@ bool TIEC61107ModeCDevice::Probe(TPort& port)
             port.SkipNoise();
             // Send session start request
             WriteBytes(port, "/?" + SlaveId + "!\r\n");
-            // Pass identification response
-            IEC::ReadFrame(port,
-                           buf,
-                           sizeof(buf),
-                           GetResponseTimeout(port),
-                           GetFrameTimeout(port),
-                           IEC::GetCRLFPacketPred(),
-                           LogPrefix);
+            // Identification response: /XXXZ Ident CR LF, XXX - manufacturer's identification
+            auto len = IEC::ReadFrame(port,
+                                      buf,
+                                      sizeof(buf),
+                                      GetResponseTimeout(port),
+                                      GetFrameTimeout(port),
+                                      IEC::GetCRLFPacketPred(),
+                                      LogPrefix);
+            ShortReactionTime = (len > 3) && (buf[0] == '/') && islower(buf[3]);
             return true;
         } catch (const TSerialDeviceTransientErrorException& e) {
             --retryCount;
@@ -267,6 +277,26 @@ void TIEC61107ModeCDevice::EndSession(TPort& port)
     SendEndSession(port);
     port.ResetSerialPortSettings(); // Return old port settings
     TIEC61107Device::EndSession(port);
+}
+
+bool TIEC61107ModeCRegisterRange::Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit)
+{
+    // Opening a session takes sign on, switching to programming mode and sending a password.
+    // Reading only registers with the same address per session makes the bus busy several times longer
+    const size_t MAX_REGISTERS_PER_SESSION = 32;
+    if (!RegisterList().empty() && reg->Device() != RegisterList().front()->Device()) {
+        return false;
+    }
+    if (RegisterList().size() >= MAX_REGISTERS_PER_SESSION) {
+        return false;
+    }
+    RegisterList().push_back(reg);
+    return true;
+}
+
+PRegisterRange TIEC61107ModeCDevice::CreateRegisterRange() const
+{
+    return std::make_shared<TIEC61107ModeCRegisterRange>();
 }
 
 void TIEC61107ModeCDevice::InvalidateReadCache()
@@ -398,15 +428,23 @@ size_t TIEC61107ModeCDevice::ReadFrameProgMode(TPort& port, uint8_t* buf, size_t
     return len;
 }
 
+std::chrono::milliseconds TIEC61107ModeCDevice::GetPauseBeforeMessage(TPort& port) const
+{
+    if (ShortReactionTime) {
+        return std::min(GetFrameTimeout(port), IEC::SHORT_REACTION_TIME_PAUSE);
+    }
+    return GetFrameTimeout(port);
+}
+
 void TIEC61107ModeCDevice::WriteBytes(TPort& port, const std::vector<uint8_t>& data)
 {
-    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    port.SleepSinceLastInteraction(GetPauseBeforeMessage(port));
     IEC::WriteBytes(port, data.data(), data.size(), LogPrefix);
 }
 
 void TIEC61107ModeCDevice::WriteBytes(TPort& port, const std::string& data)
 {
-    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    port.SleepSinceLastInteraction(GetPauseBeforeMessage(port));
     IEC::WriteBytes(port, data, LogPrefix);
 }
 

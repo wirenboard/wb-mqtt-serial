@@ -1,0 +1,56 @@
+Open()
+>>> /EKT
+Sleep(100000)
+SkipNoise()
+Sleep(100000)
+EnqueueStartSession()
+>> 2F 3F 31 34 31 36 32 38 33 34 35 21 0D 0A
+<< 2F 45 4B 54 35 43 45 31 30 32 4D 76 30 31 0D 0A
+Sleep(100000)
+EnqueueGoToProgMode()
+>> 06 30 35 31 0D 0A
+<< 01 50 30 02 28 31 34 31 36 32 38 33 34 35 29 03 28
+Sleep(100000)
+EnqueueSendPassword()
+>> 01 50 31 02 28 37 37 37 37 37 37 29 03 21
+<< 06
+Sleep(100000)
+EnqueueEndSession()
+>> 01 42 30 03 75
+>>> /EKt
+Sleep(100000)
+SkipNoise()
+Sleep(100000)
+EnqueueStartSession()
+>> 2F 3F 31 34 31 36 32 38 33 34 35 21 0D 0A
+<< 2F 45 4B 74 35 43 45 31 30 32 4D 76 30 31 0D 0A
+Sleep(30000)
+EnqueueGoToProgMode()
+>> 06 30 35 31 0D 0A
+<< 01 50 30 02 28 31 34 31 36 32 38 33 34 35 29 03 28
+Sleep(30000)
+EnqueueSendPassword()
+>> 01 50 31 02 28 37 37 37 37 37 37 29 03 21
+<< 06
+Sleep(30000)
+EnqueueEndSession()
+>> 01 42 30 03 75
+>>> /EKT
+Sleep(100000)
+SkipNoise()
+Sleep(100000)
+EnqueueStartSession()
+>> 2F 3F 31 34 31 36 32 38 33 34 35 21 0D 0A
+<< 2F 45 4B 54 35 43 45 31 30 32 4D 76 30 31 0D 0A
+Sleep(100000)
+EnqueueGoToProgMode()
+>> 06 30 35 31 0D 0A
+<< 01 50 30 02 28 31 34 31 36 32 38 33 34 35 29 03 28
+Sleep(100000)
+EnqueueSendPassword()
+>> 01 50 31 02 28 37 37 37 37 37 37 29 03 21
+<< 06
+Sleep(100000)
+EnqueueEndSession()
+>> 01 42 30 03 75
+Close()

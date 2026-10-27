@@ -1,3 +1,15 @@
+wb-mqtt-serial (2.289.0) stable; urgency=medium
+
+  * IEC 61107 mode C (energomera_iec_mode_c, neva, iec_mode_c): all due
+    parameters of a meter are read in one session instead of a session per
+    parameter when other devices share the port
+  * IEC 61107 mode C: if the meter declares a 20 ms reaction time (lower case
+    third letter of the manufacturer's identification, IEC 62056-21), the
+    pause before a message inside a session is min(frame timeout, 30 ms),
+    so a long frame timeout no longer slows down the session
+
+ -- EVS <95586614+ugin82@users.noreply.github.com>  Tue, 27 Oct 2026 12:00:00 +0500
+
 wb-mqtt-serial (2.288.2) stable; urgency=medium
 
   * Fix titles and translations in the NEVOTON BCG-1.0.4-W template
