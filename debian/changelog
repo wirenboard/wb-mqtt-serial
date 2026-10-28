@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.288.3) stable; urgency=medium
+wb-mqtt-serial (2.290.1) stable; urgency=medium
 
   * Eliwell IDPlus 9xx: fix swapped Operating Mode (HC) titles, rename the
     Standby and pressure alarm channels in the web UI
@@ -6,7 +6,24 @@ wb-mqtt-serial (2.288.3) stable; urgency=medium
   * Eliwell IDPlus 9xx and ID 985 LX (WB-REF-U): commands are push buttons
   * Fix typos in Eliwell templates
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 26 Oct 2026 15:16:44 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 28 Oct 2026 15:16:44 +0300
+
+wb-mqtt-serial (2.290.0) stable; urgency=medium
+
+  * WB-MSW v.3, WB-MSW v.4 and WB-MSW v.4 LoRa templates: add IR command banks
+    33 … 80 (play, record, size and ROM -> RAM channels, disabled by default).
+    The firmware stores 80 banks since 4.22.0, the templates exposed only 32
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Tue, 27 Oct 2026 16:41:48 +0700
+
+wb-mqtt-serial (2.289.0) stable; urgency=medium
+
+  * WB-MAI6 fw 2.4 template: add per-channel thermocouple cold junction
+    temperature offset parameters (holding 0xN412, firmware 2.6.0)
+  * WB-MAI6 fw 2.4 template: add NTC thermistor 50k (B = 3920 K) channel mode
+    (0x1708, firmware 2.6.0) as an fw variant of the mode parameters
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 26 Oct 2026 19:50:09 +0700
 
 wb-mqtt-serial (2.288.2) stable; urgency=medium
 

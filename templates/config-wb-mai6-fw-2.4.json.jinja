@@ -10,10 +10,12 @@
 {% set TYPES_WITH_GAIN = [3, 257, 261] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
-{% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 5890, 5891, 5892, 5893, 5894, 5895, 6144] -%}
+{% set TC_COLD_JUNCTION_OFFSET_DEFAULTS = [3, 3, 3, 3, 2, 1] -%}
+{% set MODE_FW_VARIANTS = [none, "2.6.0"] -%}
+{% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 5890, 5891, 5892, 5893, 5894, 5895, 5896, 6144] -%}
 
-{% macro is_ntc_p(ch_num) -%}(in{{ ch_num }}_type>=5889&&in{{ ch_num }}_type<=5895){% endmacro -%}
-{% macro is_ntc_n(ch_num) -%}(in{{ ch_num }}_n_type>=5889&&in{{ ch_num }}_n_type<=5895){% endmacro -%}
+{% macro is_ntc_p(ch_num) -%}(in{{ ch_num }}_type>=5889&&in{{ ch_num }}_type<=5896){% endmacro -%}
+{% macro is_ntc_n(ch_num) -%}(in{{ ch_num }}_n_type>=5889&&in{{ ch_num }}_n_type<=5896){% endmacro -%}
 {% macro is_rtd2w_p(ch_num) -%}(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402){% endmacro -%}
 {% macro is_rtd2w_n(ch_num) -%}(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402){% endmacro -%}
 
@@ -104,6 +106,7 @@
 
         "parameters": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            {% for fw_variant in MODE_FW_VARIANTS -%}
             {
                 "id": "in{{ ch_num }}_type",
                 "title": "Mode",
@@ -112,6 +115,9 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
+                {% if fw_variant -%}
+                "fw": "{{ fw_variant }}",
+                {% endif -%}
                 "enum": [
                     0,
 
@@ -166,6 +172,9 @@
                     5893,
                     5894,
                     5895,
+                    {% if fw_variant -%}
+                    5896,
+                    {% endif -%}
 
                     6144,
 
@@ -232,6 +241,9 @@
                     "P: NTC thermistor 10k (B = 3470 K)",
                     "P: NTC thermistor 5k (B = 3470 K)",
                     "P: NTC thermistor 1.8k (B = 3380 K)",
+                    {% if fw_variant -%}
+                    "P: NTC thermistor 50k (B = 3920 K)",
+                    {% endif -%}
 
                     "P: Hall effect current sensor (2.5V±0.625V), single ended",
 
@@ -245,6 +257,7 @@
                     "voltage measurement in differential with WB-VDIV"
                 ]
             },
+            {% endfor -%}
             {
                 "id": "in{{ ch_num }}_data_rate",
                 "title": "Sampling time",
@@ -294,6 +307,22 @@
                 "enum_titles": ["auto"],
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_type==%s") }}"
+            },
+            {
+                "id": "in{{ ch_num }}_tc_cold_junction_offset",
+                "title": "tc_cold_junction_offset_title",
+                "description": "tc_cold_junction_offset_description",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}412",
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -10,
+                "max": 10,
+                "default": {{ TC_COLD_JUNCTION_OFFSET_DEFAULTS[ch_num - 1] }},
+                "fw": "2.6.0",
+                "condition": "in{{ ch_num }}_type==4096"
             },
 
             {
@@ -398,6 +427,7 @@
                 "default": 10,
                 "condition": "in{{ ch_num }}_type==6"
             },
+            {% for fw_variant in MODE_FW_VARIANTS -%}
             {
                 "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
@@ -407,6 +437,9 @@
                 "required": true,
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_END, "in%s_type==%s") }}",
+                {% if fw_variant -%}
+                "fw": "{{ fw_variant }}",
+                {% endif -%}
                 "enum": [
                     0,
 
@@ -442,6 +475,9 @@
                     5893,
                     5894,
                     5895,
+                    {% if fw_variant -%}
+                    5896,
+                    {% endif -%}
 
                     6144,
 
@@ -485,6 +521,9 @@
                     "NTC thermistor 10k (B = 3470 K)",
                     "NTC thermistor 5k (B = 3470 K)",
                     "NTC thermistor 1.8k (B = 3380 K)",
+                    {% if fw_variant -%}
+                    "NTC thermistor 50k (B = 3920 K)",
+                    {% endif -%}
 
                     "Hall effect current sensor (2.5V±0.625V), single ended",
 
@@ -494,6 +533,8 @@
                     "current measurement"
                 ]
             },
+            {% endfor -%}
+            {% for fw_variant in MODE_FW_VARIANTS -%}
             {
                 "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
@@ -503,6 +544,9 @@
                 "required": true,
                 "default": 0,
                 "condition": "in{{ ch_num }}_type==0",
+                {% if fw_variant -%}
+                "fw": "{{ fw_variant }}",
+                {% endif -%}
                 "enum": [
                     0,
 
@@ -538,6 +582,9 @@
                     5893,
                     5894,
                     5895,
+                    {% if fw_variant -%}
+                    5896,
+                    {% endif -%}
 
                     6144,
 
@@ -582,6 +629,9 @@
                     "NTC thermistor 10k (B = 3470 K)",
                     "NTC thermistor 5k (B = 3470 K)",
                     "NTC thermistor 1.8k (B = 3380 K)",
+                    {% if fw_variant -%}
+                    "NTC thermistor 50k (B = 3920 K)",
+                    {% endif -%}
 
                     "Hall effect current sensor (2.5V±0.625V), single ended",
 
@@ -592,6 +642,7 @@
                     "current measurement"
                 ]
             },
+            {% endfor -%}
             {
                 "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
@@ -1285,7 +1336,9 @@
                 "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V).",
                 "minimum_value_title": "Lower limit of the measurement range",
                 "maximum_value_title": "Upper limit of the measurement range",
-                "physical_value_scale_title": "Range"
+                "physical_value_scale_title": "Range",
+                "tc_cold_junction_offset_title": "Cold junction temperature offset (°C)",
+                "tc_cold_junction_offset_description": "The terminals (cold junction) are colder than the internal temperature sensor of the module. The offset is subtracted from the internal temperature when the cold junction temperature is calculated."
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1317,6 +1370,7 @@
                 "NTC thermistor 10k (B = 3470 K)": "термистор NTC 10 кОм (B = 3470 K)",
                 "NTC thermistor 5k (B = 3470 K)": "термистор NTC 5 кОм (B = 3470 K)",
                 "NTC thermistor 1.8k (B = 3380 K)": "термистор NTC 1.8 кОм (B = 3380 K)",
+                "NTC thermistor 50k (B = 3920 K)": "термистор NTC 50 кОм (B = 3920 K)",
                 "0-5 mA sensor": "измерение тока 0-5 мА",
                 "0-20 mA sensor": "измерение тока 0-20 мА",
                 "4-20 mA sensor": "измерение тока 4-20 мА",
@@ -1390,6 +1444,7 @@
                 "P: NTC thermistor 10k (B = 3470 K)": "P: термистор NTC 10 кОм (B = 3470 K)",
                 "P: NTC thermistor 5k (B = 3470 K)": "P: термистор NTC 5 кОм (B = 3470 K)",
                 "P: NTC thermistor 1.8k (B = 3380 K)": "P: термистор NTC 1.8 кОм (B = 3380 K)",
+                "P: NTC thermistor 50k (B = 3920 K)": "P: термистор NTC 50 кОм (B = 3920 K)",
                 "P: current measurement": "P: измерение тока",
                 "single-ended voltage measurement from 0 to 30 V": "измерение положительного напряжения 0-30 В",
                 "single-ended voltage measurement with WB-VDIV": "измерение положительного напряжения с делителем WB-VDIV",
@@ -1424,6 +1479,8 @@
                 "maximum_value_title": "Верхняя граница диапазона",
                 "Conversion to physical value": "Пересчет в физическую величину",
                 "physical_value_scale_title": "Диапазон значений",
+                "tc_cold_junction_offset_title": "Поправка температуры холодного спая (°C)",
+                "tc_cold_junction_offset_description": "Клеммы (холодный спай) холоднее внутреннего датчика температуры модуля. Поправка вычитается из внутренней температуры при расчёте температуры холодного спая.",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
