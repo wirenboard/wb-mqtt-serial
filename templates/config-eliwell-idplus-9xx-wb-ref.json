@@ -120,8 +120,8 @@
                 "address": 14156,
                 "format": "u16",
                 "enum": [0, 1],
-                "enum_titles": ["heating", "cooling"],
-                "default": 1,
+                "enum_titles": ["cooling", "heating"],
+                "default": 0,
                 "group": "compressor",
                 "order": 5
             },
@@ -138,7 +138,7 @@
                 "order": 6
             },
             "waiting_time_with_faulty_probe": {
-                "title": "Waitnig Time With Faulty Pb1 Probe (OFt)",
+                "title": "Waiting Time With Faulty Pb1 Probe (OFt)",
                 "reg_type": "holding",
                 "address": 14162,
                 "format": "u16",
@@ -1075,7 +1075,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrost",
-                    "reducet set",
+                    "reduced set",
                     "standby",
                     "reset HACCP alarms",
                     "disable HACCP alarms",
@@ -1095,7 +1095,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrost",
-                    "reducet set",
+                    "reduced set",
                     "standby",
                     "reset HACCP alarms",
                     "disable HACCP alarms",
@@ -1388,7 +1388,7 @@
                 "name": "Controller Start",
                 "reg_type": "coil",
                 "address": 1782,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1396,7 +1396,7 @@
                 "name": "Controller Stop",
                 "reg_type": "coil",
                 "address": 1783,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1404,7 +1404,7 @@
                 "name": "Manual Defrost Start",
                 "reg_type": "coil",
                 "address": 1776,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1412,7 +1412,7 @@
                 "name": "Economy Mode On",
                 "reg_type": "coil",
                 "address": 1777,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1420,7 +1420,7 @@
                 "name": "Economy Mode Off",
                 "reg_type": "coil",
                 "address": 1778,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1428,7 +1428,7 @@
                 "name": "Reset Parameters Changed Indicator",
                 "reg_type": "coil",
                 "address": 1779,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1436,7 +1436,7 @@
                 "name": "Auxilary Output On",
                 "reg_type": "coil",
                 "address": 1780,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1444,7 +1444,7 @@
                 "name": "Auxilary Output Off",
                 "reg_type": "coil",
                 "address": 1781,
-                "type": "switch",
+                "type": "pushbutton",
                 "format": "u16",
                 "group": "control"
             },
@@ -1487,6 +1487,15 @@
                 "readonly": true,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "Standby": "Controller Running",
+                "Auxilary Output On": "Auxiliary Output On",
+                "Auxilary Output Off": "Auxiliary Output Off",
+                "Critical Pressure": "Pressure Switch Alarm, Auto Reset (nPA)",
+                "Pressure Switch": "Pressure Switch Alarm, Manual Reset (PAL)"
+            }
+        }
     }
 }

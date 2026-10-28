@@ -1,3 +1,14 @@
+wb-mqtt-serial (2.290.1) stable; urgency=medium
+
+  * Eliwell IDPlus 9xx: fix swapped Operating Mode (HC) titles, rename the
+    Standby and pressure alarm channels in the web UI
+  * Eliwell ID 974 LX and ID 985 LX (WB-REF-U): show Standby Mode as
+    Controller Running
+  * Eliwell IDPlus 9xx and ID 985 LX (WB-REF-U): commands are push buttons
+  * Fix typos in Eliwell templates
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 28 Oct 2026 15:16:44 +0300
+
 wb-mqtt-serial (2.290.0) stable; urgency=medium
 
   * WB-MSW v.3, WB-MSW v.4 and WB-MSW v.4 LoRa templates: add IR command banks
