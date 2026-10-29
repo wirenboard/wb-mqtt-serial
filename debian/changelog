@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.290.2) stable; urgency=medium
+
+  * Mercury 200.02: show units for Voltage (V) and Current (A)
+
+ -- Dmitry Kuryatnikov <dmitry.kuryatnikov@wirenboard.com>  Thu, 29 Oct 2026 13:58:57 +0300
+
 wb-mqtt-serial (2.290.1) stable; urgency=medium
 
   * Eliwell IDPlus 9xx: fix swapped Operating Mode (HC) titles, rename the
