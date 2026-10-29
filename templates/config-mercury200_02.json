@@ -45,6 +45,7 @@
                 "address": "0x6300",
                 "format": "bcd16",
                 "type": "value",
+                "units": "V",
                 "scale": 0.1
             },
             {
@@ -53,6 +54,7 @@
                 "address": "0x6302",
                 "format": "bcd16",
                 "type": "value",
+                "units": "A",
                 "scale": 0.01
             },
             {
