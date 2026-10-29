@@ -1,3 +1,7 @@
+{# (fw, min, max) of the safety poll timeout: older firmware has an 8-bit register -#}
+{% set SAFETY_TIMER_FW_VARIANTS = [("", 1, 255), ("3.9.1", 1, 65534)] -%}
+{# Button actions set by the firmware on a settings reset (button_controls_init_default_settings) -#}
+{% set FACTORY_BUTTON_ACTIONS = {1: {"sp": 12297, "lp": 45072}, 2: {"sp": 36878, "lp": 36878}, 3: {"sp": 12291, "lp": 45059}} -%}
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set ENCODERS_NUMBER = 2 -%}
@@ -336,7 +340,6 @@
             {
                 "id": "input_{{ch_number}}_mode",
                 "title": "Input Mode",
-                "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -457,6 +460,7 @@
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
             {% for name in range(4) -%}
+            {% set factory_action = FACTORY_BUTTON_ACTIONS.get(in_num, {}).get(name_actions[name], 0) -%}
             {
                 "id": "in{{in_num}}_{{name_actions[name]}}",
                 "group": "gg_in_{{ in_num }}_{{name_actions[name]}}_action",
@@ -464,7 +468,7 @@
                 "order": 0,
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ factory_action if factory_action in enum[dimmer_mode_number][name] else 0 }},
                 "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}){{enc_cond}})",
                 "enum": {{ enum[dimmer_mode_number][name] }},
                 "enum_titles": [
@@ -561,7 +565,7 @@
                 "order": 2,
                 "address": {{736 + (16 * loop.index0) + in_num - 1}},
                 "reg_type": "holding",
-                "default": {{ (off_on == "on") | int }},
+                "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(in{{in_num}}_switch_{{off_on}}_name>0)&&(in{{in_num}}_switch_{{off_on}}_name!=100){{enc_cond}})",
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -577,7 +581,7 @@
                 "order": 2,
                 "address": {{736 + (16 * loop.index0) + in_num - 1}},
                 "reg_type": "holding",
-                "default": {{ (off_on == "on") | int }},
+                "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(in{{in_num}}_switch_{{off_on}}_name>0)&&(in{{in_num}}_switch_{{off_on}}_name==100){{enc_cond}})",
                 "enum": [0],
                 "enum_titles": ["Turn Off"]
@@ -936,8 +940,8 @@
                 "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 2,
-                "max": 200
+                "min": 0,
+                "max": 2000
             },
             {% endfor -%}
             {# describe the output settings in the output group, such as minimum PWM, maximum PWM -#}
@@ -980,6 +984,7 @@
                 "max": 240
             },
             {# describe the output settings in the safe-modes group, depending on the selected dimmer operating mode -#}
+            {% for safety_timer_fw, safety_timer_min, safety_timer_max in SAFETY_TIMER_FW_VARIANTS -%}
             {
                 "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
@@ -988,10 +993,14 @@
                 "address": 8,
                 "order": 2,
                 "reg_type": "holding",
-                "min": 1,
-                "max": 65534,
+                {% if safety_timer_fw -%}
+                "fw": "{{ safety_timer_fw }}",
+                {% endif -%}
+                "min": {{ safety_timer_min }},
+                "max": {{ safety_timer_max }},
                 "default": 10
             },
+            {% endfor -%}
 
             {#
             "W + W + W + W"     0
@@ -1023,6 +1032,7 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{648 + ptr[loop.index0] - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -1051,6 +1061,7 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{664 + ptr[loop.index0] - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -1091,6 +1102,7 @@
             {
                 "id": "safety_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
+                "default": 0,
                 "type": "enum",
                 "address": {{648 + ptr[loop.index0] - 1}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -1116,6 +1128,7 @@
             {
                 "id": "powerup_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
+                "default": 0,
                 "type": "enum",
                 "address": {{664 + ptr[loop.index0] - 1}},
                 {% if type_action.find('TEMP') != -1 -%}
@@ -1147,7 +1160,7 @@
                 {% endif -%}
                 "reg_type": "holding",
                 "address": {{656 + ptr[loop.index0] - 1}},
-                "min": 1,
+                "min": {{ 0 if "TEMP" in type_action else 1 }},
                 "max": 100,
                 "default": 50,
                 "required": true,
@@ -1163,7 +1176,7 @@
                 {% endif -%}
                 "reg_type": "holding",
                 "address": {{672 + ptr[loop.index0] - 1}},
-                "min": 1,
+                "min": {{ 0 if "TEMP" in type_action else 1 }},
                 "max": 100,
                 "default": 50,
                 "required": true,
@@ -1178,6 +1191,7 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{648 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -1202,6 +1216,7 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{664 + loop.index0}},
                 "type": "enum",
                 {% if loop.index0 < 2 -%}
@@ -1230,7 +1245,7 @@
                 "address": 656,
                 "min": 0,
                 "max": 360,
-                "default": 0,
+                "default": 50,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_H",
                 "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_H_action==3)"
@@ -1242,7 +1257,7 @@
                 "address": 657,
                 "min": 0,
                 "max": 100,
-                "default": 100,
+                "default": 50,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_S",
                 "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_S_action==3)"
@@ -1266,7 +1281,7 @@
                 "address": 672,
                 "min": 0,
                 "max": 360,
-                "default": 0,
+                "default": 50,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_H",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_H_action==3)"
@@ -1278,7 +1293,7 @@
                 "address": 673,
                 "min": 0,
                 "max": 100,
-                "default": 100,
+                "default": 50,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_S",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_S_action==3)"
@@ -2375,7 +2390,6 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "Uptime": "Uptime (s)",
-                "input_mode_description" : "Button is the default mode. Switch mode is supported",
                 "input_switch_on_title" : "Out action",
                 "input_switch_off_title" : "Out action",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
@@ -2705,7 +2719,6 @@
                 "Turn On" : "Включить",
                 "Turn On and Set Brightness" : "Включить и установить яркость",
                 "Turn On and Set Level" : "Включить и установить уровень",
-                "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации",
                 "input_switch_on_title" : "Выход",
                 "input_switch_off_title" : "Выход",
                 "Input Mode" : "Режим работы входа",

@@ -116,8 +116,11 @@
                 "description": "selfheating_compensation_deg_description",
                 "address": 245,
                 "reg_type": "holding",
+                "default": 0,
                 "format": "s16",
                 "scale": 0.01,
+                "min": -10,
+                "max": 10,
                 "group": "air_quality",
                 "order": 5
             },
@@ -126,7 +129,9 @@
                 "address": 91,
                 "reg_type": "holding",
                 "scale": 10,
-                "default": 20,
+                "default": 200,
+                "min": 0,
+                "max": 65530,
                 "group": "sound_level",
                 "order": 1
             },
@@ -212,7 +217,9 @@
                 "title": "RS-485 Response Delay (ms)",
                 "address": 113,
                 "reg_type": "holding",
-                "default": 8,
+                "default": 0,
+                "min": 0,
+                "max": 254,
                 "group": "general",
                 "order": 2
             },

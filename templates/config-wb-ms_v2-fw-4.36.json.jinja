@@ -217,8 +217,11 @@
                 "description": "selfheating_compensation_deg_description",
                 "address": 245,
                 "reg_type": "holding",
+                "default": 0,
                 "format": "s16",
                 "scale": 0.01,
+                "min": -10,
+                "max": 10,
                 "group": "g_air_quality",
                 "order": 2
             },
@@ -226,8 +229,10 @@
                 "title": "Low-pass Filter Time Constant (ms)",
                 "address": 90,
                 "reg_type": "holding",
-                "scale": 0.1,
-                "default": 20,
+                "scale": 10,
+                "default": 200,
+                "min": 0,
+                "max": 65530,
                 "group": "g_illuminance",
                 "order": 1
             },
@@ -252,7 +257,9 @@
                 "title": "RS-485 Response Delay (ms)",
                 "address": 113,
                 "reg_type": "holding",
-                "default": 8,
+                "default": 0,
+                "min": 0,
+                "max": 254,
                 "group": "g_general",
                 "order": 2
             },
@@ -824,9 +831,9 @@
                 "FW Version": "Firmware Version",
                 "Minimum Voltage Since Startup": "Min Supply Voltage Since Startup",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
-                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 2",
+                "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter.",
                 "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
-                "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
+                "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient.",
                 "w1_sensors_description": "{{
                     "Adding new sensors:<br>"
                     ~ "1) Make sure that the new sensors are connected to the bus<br>"
@@ -848,9 +855,9 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
-                "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
-                "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
-                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
+                "lp_hold_time_description": "If the press is longer than the specified time, then it is long.",
+                "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press.",
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses.",
 
                 {# Input 376/377 shows the same state as discrete 16/17 ("Input N Sensor OK"). The channel is kept
                    per WB-STD-003 10.2 and retitled here; drop it in the next template generation (10.3). -#}
@@ -877,9 +884,9 @@
                 {% endfor -%}
 
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
-                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 2",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр.",
                 "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
-                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
+                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений.",
                 "w1_sensors_description": "{{
                     "Добавление новых датчиков:<br>"
                     ~ "1) убедитесь, что новые датчики подключены на шину;<br>"
@@ -898,9 +905,9 @@
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
-                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным. Значение по умолчанию - 1000",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
-                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным.",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие.",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия.",
                 "Reset All Counters": "Сбросить все счетчики",
 
                 {% for sens_num in range(FIRST_SENSOR, SENSORS_NUMBER + FIRST_SENSOR) -%}
