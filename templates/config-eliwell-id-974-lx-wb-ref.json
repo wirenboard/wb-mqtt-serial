@@ -1334,7 +1334,12 @@
                 "readonly": true,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "Standby Mode": "Controller Running"
+            }
+        }
     },
     "translations": {}
 }

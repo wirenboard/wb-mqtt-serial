@@ -680,7 +680,7 @@
             },
             {
                 "id": "Afd",
-                "title": "Allarm Fan Differential (Afd)",
+                "title": "Alarm Fan Differential (Afd)",
                 "description": "units: degrees",
                 "address": 24112,
                 "reg_type": "holding",
@@ -1216,7 +1216,7 @@
                     8
                 ],
                 "enum_titles": [
-                    "Maintenence request (opening)",
+                    "Maintenance request (opening)",
                     "Standby (opening)",
                     "Disable storage HACCP alarms (opening)",
                     "external alarm (opening)",
@@ -1232,7 +1232,7 @@
                     "external alarm (closing)",
                     "Disable storage HACCP alarms (closing)",
                     "Standby (closing)",
-                    "Maintenence request (closing)"
+                    "Maintenance request (closing)"
                 ],
                 "group": "configuration",
                 "order": 5
@@ -1264,7 +1264,7 @@
                     8
                 ],
                 "enum_titles": [
-                    "Maintenence request (opening)",
+                    "Maintenance request (opening)",
                     "Standby (opening)",
                     "Disable storage HACCP alarms (opening)",
                     "external alarm (opening)",
@@ -1280,7 +1280,7 @@
                     "external alarm (closing)",
                     "Disable storage HACCP alarms (closing)",
                     "Standby (closing)",
-                    "Maintenence request (closing)"
+                    "Maintenance request (closing)"
                 ],
                 "group": "configuration",
                 "order": 6
@@ -1442,7 +1442,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrosting",
-                    "auxilary",
+                    "auxiliary",
                     "reduced set",
                     "HACCP alarm reset",
                     "disable alarms HACCP",
@@ -1474,7 +1474,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrosting",
-                    "auxilary",
+                    "auxiliary",
                     "reduced set",
                     "HACCP alarm reset",
                     "disable alarms HACCP",
@@ -1506,7 +1506,7 @@
                 "enum_titles": [
                     "disabled",
                     "defrosting",
-                    "auxilary",
+                    "auxiliary",
                     "reduced set",
                     "HACCP alarm reset",
                     "disable alarms HACCP",
@@ -1690,7 +1690,7 @@
             },
             {
                 "id": "dSd",
-                "title": "Lght Relay Enabled From Door Switch (dSd)",
+                "title": "Light Relay Enabled From Door Switch (dSd)",
                 "address": 14220,
                 "reg_type": "holding",
                 "format": "u16",
@@ -1997,42 +1997,42 @@
                 "name": "Controller On",
                 "address": 1782,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Controller Off",
                 "address": 1783,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Economy On",
                 "address": 1778,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Economy Off",
                 "address": 1779,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Mabual Defrost On",
                 "address": 1785,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Reset Parameters Changed Indicator",
                 "address": 1787,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control",
                 "enabled": false
             },
@@ -2040,28 +2040,28 @@
                 "name": "Light On",
                 "address": 1776,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Light Off",
                 "address": 1777,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Silence Alarm",
                 "address": 1784,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
                 "name": "Stop For Maintenance",
                 "address": 1788,
                 "reg_type": "coil",
-                "type": "switch",
+                "type": "pushbutton",
                 "group": "control"
             },
             {
@@ -2091,7 +2091,12 @@
                 "readonly": true,
                 "group": "hw_info"
             }
-        ]
-    },
-    "translations": {}
+        ],
+        "translations": {
+            "en": {
+                "Standby Mode": "Controller Running",
+                "Mabual Defrost On": "Manual Defrost On"
+            }
+        }
+    }
 }
