@@ -277,7 +277,8 @@
                 "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
                 "reg_type": "holding",
                 "default":
-                    {%- if out_num == OUT_NUM_ALARM or out_num == OUT_NUM_BUZZER %} 2,
+                    {%- if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM %} 0,
+                    {%- elif out_num == OUT_NUM_ALARM or out_num == OUT_NUM_BUZZER %} 2,
                     {%- else %} 1,
                     {%- endif -%}
                 {% if out_num == OUT_NUM_ALARM or out_num == OUT_NUM_BUZZER %}
@@ -311,7 +312,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
-                "default": {{ 2 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
+                "default": {{ 2 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM and out_num == OUT_NUM_CLEANING_MODE else 0 }},
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
@@ -328,7 +329,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
-                "default": {{ 1 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
+                "default": {{ 1 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM and out_num == OUT_NUM_CLEANING_MODE else 0 }},
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
@@ -407,7 +408,6 @@
 
             "outputs_restore_state": {
                 "title": "Relays State After Power On",
-                "description": "relays_state_after_poweron_description",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -976,7 +976,6 @@
                 "safety_buzzer_description": "\"Does not affect\" - buzzer behaves according to the input settings. \"On\" - the buzzer will be ON regardless of the input settings when the device is in safety mode and the leakage sensor is triggered",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately",
                 "buzzer_beep_duration_description": "0 - without timeout",
-                "relays_state_after_poweron_description": "Default - Switch To the Safety State",
 
                 "Cleaning Mode": "Wet Cleaning Mode",
                 "wet_cleaning_mode_description": "In the Wet Cleaning mode the module does not respond to leakage sensors",
@@ -1103,7 +1102,6 @@
                 "Don't Change": "Не блокировать",
                 "Disable in Safety Mode": "Блокировать в безопасном режиме",
                 "Enable Only in Safety Mode": "Разрешить только в безопасном режиме",
-                "relays_state_after_poweron_description": "По умолчанию - перевести в безопасное состояние",
 
                 "Press Parameters": "Параметры нажатий",
                 "debounce_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс",

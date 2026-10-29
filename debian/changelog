@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.290.2) stable; urgency=medium
+
+  * WB device templates: parameter defaults and limits match the device
+    firmware, default values are removed from parameter descriptions
+  * WB-MS v2: fix the illuminance filter time constant scale, the web UI
+    showed a value 100 times less than the real one
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 29 Oct 2026 10:28:12 +0300
+
 wb-mqtt-serial (2.290.1) stable; urgency=medium
 
   * Eliwell IDPlus 9xx: fix swapped Operating Mode (HC) titles, rename the

@@ -299,7 +299,7 @@
                     "Turn On",
                     "Toggle"
                 ],
-                "default": {{ 0 if sw_act == "off" else 1}},
+                "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=3&&{{encoder_disabled_condition}}",
                 "order": 2
@@ -314,7 +314,7 @@
                     "Turn Off",
                     "Turn On"
                 ],
-                "default": {{ 0 if sw_act == "off" else 1}},
+                "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100&&{{encoder_disabled_condition}}",
                 "order": 2
@@ -337,6 +337,7 @@
                 "id": "safety_mode_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -365,6 +366,7 @@
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{664 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -414,7 +416,6 @@
             {
                 "id": "input_{{ch_number + 1}}_mode",
                 "title": "Input Mode",
-                "description": "input_mode_description",
                 "address": {{416 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -459,8 +460,8 @@
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 2,
-                "max": 200,
+                "min": 0,
+                "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
             },
@@ -600,7 +601,7 @@
                 "address": {{140 + ch_number}},
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 500,
                 "default": 10,
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 5
@@ -612,7 +613,7 @@
                 "address": {{150 + ch_number}},
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 500,
                 "default": 10,
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 6
@@ -918,7 +919,6 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. <br>When connecting an encoder, it is recommended to set the value to 2-5 ms.",
 
-                "input_mode_description": "Button is the default mode. Switch mode is supported",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
 
                 "level_after_actions_description": "It is possible to set the brightness level to 0% (channel off)",
@@ -1035,7 +1035,6 @@
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
                 "Action Repeat Time (ms)": "Длительность периода повторения действий (мс)",
 
-                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией поддерживается",
 
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия <br>При подключении энкодера рекомендуется установить значение 2-5 мс.",

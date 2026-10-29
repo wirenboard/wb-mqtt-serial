@@ -140,11 +140,13 @@
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
                 "fw": "1.21.0",
-                "enum": [0, 1, 2, 3, 4, 5, 6],
+                "enum": {% if in_num < 4 %}[0, 1, 2, 3, 4, 5, 6]{% else %}[2, 3, 4, 5, 6]{% endif %},
                 "default": {% if in_num < 4 %}4{% else %}5{% endif %},
                 "enum_titles": [
+                    {% if in_num < 4 -%}
                     "push button",
                     "latching switch",
+                    {% endif -%}
                     "turn off all outputs",
                     "control disabled",
                     "operate according to mapping-matrix",
@@ -295,19 +297,11 @@
                 {% if out_num == OUT_NUM_CLEANING_MODE -%}
                 "fw": "1.21.0",
                 {% endif -%}
-                {%- if i == 0 %}
-                    {%- if in_num < 4 %}
+                {%- if in_num < 4 %}
                 "default": {% if in_num == 1 and out_num == OUT_NUM_K1 %}9{% elif in_num == 2 and out_num == OUT_NUM_K2 %}9{% elif in_num == 3 and out_num == OUT_NUM_ALARM %}4{% else %}0{% endif %},
-                    {%- else %}
-                "default": 0,
-                    {%- endif %}
-                {% elif i == 1 %}
-                    {%- if in_num < 4 %}
-                "default": 0,
-                    {%- else %}
-                "default": {% if out_num == OUT_NUM_ALARM %}8{% else %}4{% endif %},
-                    {%- endif %}
-                {% endif -%}
+                {%- else %}
+                "default": {% if out_num == OUT_NUM_ALARM %}8{% elif out_num == OUT_NUM_CLEANING_MODE %}0{% else %}4{% endif %},
+                {%- endif %}
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                 "enum_titles": [
                     "no action / no action",
@@ -350,7 +344,6 @@
             },
             "outputs_restore_state": {
                 "title": "Relays State After Power On",
-                "description": "relays_state_after_poweron_description",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -644,9 +637,8 @@
 
                 "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs and \"Leak\" mode in case of connection loss. For this purpose, there is a safety mode.",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
-                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings. By default, safe mode is disabled and safe states are set to \"Off\".",
+                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings.",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
-                "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
                 "buzzer_beep_duration_description": "0 - without timeout",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
@@ -734,7 +726,7 @@
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов и режима \"Протечка\" в случае обрыва связи. Для этого существует безопасный режим.",
-                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\". По умолчанию безопасный режим отключен, а настройки безопасных состояний установлены в \"Выключен\".",
+                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\".",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим.",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
                 "Don't change state": "Ничего не делать",
@@ -745,7 +737,6 @@
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Safe State": "Безопасное состояние",
                 "Relays State After Power On": "Состояния реле при подаче питания",
-                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\"",
                 "buzzer_beep_duration_description": "0 — без таймаута",
 
                 "Short Press": "Короткое нажатие",
