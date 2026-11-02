@@ -1,3 +1,7 @@
+{# (fw, min, max) of the input debounce time: the firmware accepts 0..2000 ms since 3.3.2 -#}
+{% set DEBOUNCE_FW_VARIANTS = [("", 5, 200), ("3.3.2", 0, 2000)] -%}
+{# Button actions set by the firmware on a settings reset (button_controls_init_default_settings) -#}
+{% set FACTORY_BUTTON_ACTIONS = {1: {"sp": 12297, "lp": 45072}, 2: {"sp": 36878, "lp": 36878}, 3: {"sp": 12291, "lp": 45059}} -%}
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {
@@ -202,7 +206,6 @@
             {
                 "id": "input_{{ch_number}}_mode",
                 "title": "Input Mode",
-                "description": "input_mode_description",
                 "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
                 "fw":"3.5.0",
@@ -311,6 +314,7 @@
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for name in range(4) -%}
+            {% set factory_action = FACTORY_BUTTON_ACTIONS.get(in_num, {}).get(name_actions[name], 0) -%}
             {
                 "id": "in{{in_num}}_{{name_actions[name]}}",
                 "group": "gg_in_{{ in_num }}_{{name_actions[name]}}_action",
@@ -318,7 +322,7 @@
                 "order": {{name}},
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ factory_action if factory_action in enum[dimmer_mode_number][name] else 0 }},
                 "condition": "(((isDefined(input_{{in_num}}_mode)==0)||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}))",
                 "enum": {{ enum[dimmer_mode_number][name] }},
                 "enum_titles": [
@@ -348,7 +352,7 @@
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "fw": "3.5.0",
-                "default": {{ (off_on == "on") | int }},
+                "default": 0,
                 "condition": "(input_{{in_num}}_mode==1)",
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -598,6 +602,7 @@
                 "max": 2000,
                 "condition": "input_{{in_num}}_mode!=1"
             },
+            {% for debounce_fw, debounce_min, debounce_max in DEBOUNCE_FW_VARIANTS -%}
             {
                 "id": "in{{in_num}}_debounce_time",
                 "title": "debounce_time_title",
@@ -607,9 +612,13 @@
                 "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
-                "max": 200
+                {% if debounce_fw -%}
+                "fw": "{{ debounce_fw }}",
+                {% endif -%}
+                "min": {{ debounce_min }},
+                "max": {{ debounce_max }}
             },
+            {% endfor -%}
             {% endfor -%}
             {# опишем в группе выхода настройки выходов, такие как минимальный ШИМ, максимальный ШИМ -#}
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -661,7 +670,7 @@
                 "reg_type": "holding",
                 "fw": "3.5.0",
                 "min": 1,
-                "max": 65534,
+                "max": 255,
                 "default": 10
             },
 
@@ -695,6 +704,7 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{648 + ptr[loop.index0] - 1}},
                 "fw": "3.5.0",
                 "type": "enum",
@@ -725,6 +735,7 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{664 + ptr[loop.index0] - 1}},
                 "fw": "3.5.0",
                 "type": "enum",
@@ -763,6 +774,7 @@
             {
                 "id": "safety_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "3.5.0",
                 "type": "enum",
                 "address": {{648 + loop.index0}},
@@ -793,6 +805,7 @@
             {
                 "id": "powerup_mode_ch_{{ type_action }}_action",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "3.5.0",
                 "type": "enum",
                 "address": {{664 + loop.index0}},
@@ -830,7 +843,7 @@
                 "reg_type": "holding",
                 "fw": "3.5.0",
                 "address": {{656 + loop.index0}},
-                "min": 1,
+                "min": {{ 0 if "TEMP" in type_action else 1 }},
                 "max": 100,
                 "default": 50,
                 "required": true,
@@ -851,7 +864,7 @@
                 "reg_type": "holding",
                 "fw": "3.5.0",
                 "address": {{672 + loop.index0}},
-                "min": 1,
+                "min": {{ 0 if "TEMP" in type_action else 1 }},
                 "max": 100,
                 "default": 50,
                 "required": true,
@@ -870,6 +883,7 @@
                 "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "3.5.0",
                 "address": {{648 + loop.index0}},
                 "type": "enum",
@@ -895,6 +909,7 @@
                 "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action {{titles[loop.index0]}}",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "3.5.0",
                 "address": {{664 + loop.index0}},
                 "type": "enum",
@@ -925,7 +940,7 @@
                 "address": 656,
                 "min": 0,
                 "max": 360,
-                "default": 0,
+                "default": 50,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_H",
                 "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_H_action==3)"
@@ -938,7 +953,7 @@
                 "address": 657,
                 "min": 0,
                 "max": 100,
-                "default": 100,
+                "default": 50,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_S",
                 "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_S_action==3)"
@@ -964,7 +979,7 @@
                 "address": 672,
                 "min": 0,
                 "max": 360,
-                "default": 0,
+                "default": 50,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_H",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_H_action==3)"
@@ -977,7 +992,7 @@
                 "address": 673,
                 "min": 0,
                 "max": 100,
-                "default": 100,
+                "default": 50,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_S",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_S_action==3)"
@@ -1620,7 +1635,6 @@
                 "Action_lp" : "Action long press",
                 "Action_dp" : "Action double press",
                 "Action_slp" : "Action short and after long press",
-                "input_mode_description" : "Button is the default mode",
                 "input_switch_on_title" : "Out action",
                 "input_switch_off_title" : "Out action",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time",
@@ -1822,7 +1836,6 @@
                 "Action_lp" : "Действие для длинного нажатия",
                 "Action_dp" : "Действие для двойного нажатия",
                 "Action_slp" : "Действие для короткого, затем длинного нажатия",
-                "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации",
                 "input_switch_on_title" : "Выход",
                 "input_switch_off_title" : "Выход",
                 "Input Mode" : "Режим работы входа",

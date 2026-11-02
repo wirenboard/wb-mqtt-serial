@@ -194,8 +194,8 @@
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
-                "max": 200,
+                "min": 0,
+                "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
             },
@@ -288,7 +288,7 @@
                     "Turn On",
                     "Toggle"
                 ],
-                "default": {{ 0 if sw_act == "off" else 1}},
+                "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4",
                 "order": 2
@@ -303,7 +303,7 @@
                     "Turn Off",
                     "Turn On"
                 ],
-                "default": {{ 0 if sw_act == "off" else 1}},
+                "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
                 "order": 2
@@ -395,7 +395,7 @@
                 "order": 2,
                 "reg_type": "holding",
                 "min": 1,
-                "max": 65534,
+                "max": 255,
                 "default": 10
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -403,6 +403,7 @@
                 "id": "safety_mode_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -429,7 +430,7 @@
                 "min": {{ level_min }},
                 "max": 100,
                 "scale": 0.1,
-                "default": 50,
+                "default": 5,
                 "required": true,
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
@@ -439,6 +440,7 @@
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "address": {{664 + ch_number - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
@@ -464,7 +466,7 @@
                 "address": {{672 + ch_number - 1}},
                 "min": {{ level_min }},
                 "max": 100,
-                "default": 50,
+                "default": 5,
                 "scale": 0.1,
                 "required": true,
                 "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",

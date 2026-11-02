@@ -1,3 +1,7 @@
+{# (fw, min, max) of the input debounce time: the firmware accepts 0..2000 ms since 3.3.2 -#}
+{% set DEBOUNCE_FW_VARIANTS = [("", 5, 200), ("3.3.2", 0, 2000)] -%}
+{# Button actions set by the firmware on a settings reset (button_controls_init_default_settings) -#}
+{% set FACTORY_BUTTON_ACTIONS = {1: {"sp": 12297, "lp": 45072}, 2: {"sp": 36878, "lp": 36878}, 3: {"sp": 12291, "lp": 45059}} -%}
 {% set INPUTS_NUMBER = 3 -%}
 {% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
 {
@@ -210,6 +214,7 @@
                 "min": 0,
                 "max": 2000
             },
+            {% for debounce_fw, debounce_min, debounce_max in DEBOUNCE_FW_VARIANTS -%}
             {
                 "id": "in{{in_num}}_debounce_time",
                 "title": "debounce_time_title",
@@ -219,9 +224,13 @@
                 "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
-                "max": 200
+                {% if debounce_fw -%}
+                "fw": "{{ debounce_fw }}",
+                {% endif -%}
+                "min": {{ debounce_min }},
+                "max": {{ debounce_max }}
             },
+            {% endfor -%}
             {% endfor -%}
             {
                 "id": "fader_inc_w1",
@@ -581,7 +590,7 @@
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [3] else 0 }},
                 "condition": "(dimmer_mode==0)",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
@@ -619,7 +628,7 @@
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [3] else 0 }},
                 "condition": "(dimmer_mode==0)",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
@@ -743,7 +752,7 @@
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [3] else 0 }},
                 "condition": "(dimmer_mode==1)",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
@@ -776,7 +785,7 @@
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [3] else 0 }},
                 "condition": "(dimmer_mode==1)",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
@@ -881,7 +890,7 @@
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [3] else 0 }},
                 "condition": "(dimmer_mode==2)",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
@@ -916,7 +925,7 @@
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [3] else 0 }},
                 "condition": "(dimmer_mode==2)",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
@@ -1813,7 +1822,7 @@
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [1, 2, 3] else 0 }},
                 "condition": "(dimmer_mode==256)",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
@@ -1857,7 +1866,7 @@
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [1, 2, 3] else 0 }},
                 "condition": "(dimmer_mode==256)",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,

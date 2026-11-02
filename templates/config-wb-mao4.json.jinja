@@ -321,8 +321,8 @@
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
                 "default": 50,
-                "min": 5,
-                "max": 200,
+                "min": 0,
+                "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
             },
@@ -391,6 +391,7 @@
                 "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
+                "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off Scene Light",
@@ -438,7 +439,7 @@
                     "Turn On",
                     "Toggle"
                 ],
-                "default": {{ 0 if sw_act == "off" else 1}},
+                "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4",
                 "order": 2
@@ -453,7 +454,7 @@
                     "Turn Off",
                     "Turn On"
                 ],
-                "default": {{ 0 if sw_act == "off" else 1}},
+                "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
                 "order": 2
@@ -483,6 +484,7 @@
                 "id": "ls_{{ls_number}}_light_on_off_condition",
                 "title": "Scene Light On/Off Condition",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "2.5.0",
                 "address": {{1264 + (ls_number - 1)}},
                 "type": "enum",
@@ -498,6 +500,7 @@
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_action_off",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "2.5.0",
                 "address": {{1280 + 0 + 64 * (ls_number - 1) + (ch_number - 1)}},
                 "type": "enum",
@@ -539,6 +542,7 @@
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_action_on",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "2.5.0",
                 "address": {{1280 + 32 + 64 * (ls_number - 1) + (ch_number - 1)}},
                 "type": "enum",
@@ -589,7 +593,7 @@
                 "reg_type": "holding",
                 "fw": "2.5.0",
                 "min": 1,
-                "max": 65534,
+                "max": 255,
                 "default": 10
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
@@ -597,6 +601,7 @@
                 "id": "safety_mode_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "2.5.0",
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
@@ -631,6 +636,7 @@
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
                 "title": "Action",
                 "reg_type": "holding",
+                "default": 0,
                 "fw": "2.5.0",
                 "address": {{664 + ch_number - 1}},
                 "type": "enum",

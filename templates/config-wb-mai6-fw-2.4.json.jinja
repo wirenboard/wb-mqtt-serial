@@ -1,3 +1,5 @@
+{# (fw, min, max) of the input lowpass time: values above 32767 ms break the filter before 2.5.0 -#}
+{% set LOWPASS_FW_VARIANTS = [("", 0, 32767), ("2.5.0", 0, 65000)] -%}
 {% set title_en = title_en | default("WB-MAI6 fw 2.4 (6-channel analog input module)") -%}
 {% set title_ru = title_ru | default("WB-MAI6 fw 2.4 (6-канальный модуль аналоговых входов)") -%}
 {% set device_type = device_type | default("WB-MAI6-since-fw-2.4") -%}
@@ -262,6 +264,7 @@
                 "id": "in{{ ch_num }}_data_rate",
                 "title": "Sampling time",
                 "address": "0x{{ "%x"|format(ch_num) }}402",
+                "default": 20,
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 2,
                 "condition": "in{{ ch_num }}_type!=0",
@@ -283,20 +286,27 @@
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}404",
+                "default": 1,
                 "min": 1,
                 "max": 50,
                 "condition": "in{{ ch_num }}_type!=0"
             },
+            {% for lowpass_fw, lowpass_min, lowpass_max in LOWPASS_FW_VARIANTS -%}
             {
                 "id": "in{{ ch_num }}_lowpass",
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
                 "address": "0x{{ "%x"|format(ch_num) }}406",
-                "min": 0,
-                "max": 65000,
+                "default": 0,
+                {% if lowpass_fw -%}
+                "fw": "{{ lowpass_fw }}",
+                {% endif -%}
+                "min": {{ lowpass_min }},
+                "max": {{ lowpass_max }},
                 "condition": "in{{ ch_num }}_type!=0"
             },
+            {% endfor -%}
             {
                 "id": "in{{ch_num}}_gain",
                 "title": "Gain",
@@ -401,7 +411,7 @@
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
-                "default": 100,
+                "default": 1000,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -414,6 +424,8 @@
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40E",
                 "scale": 0.1,
+                "min": 0.1,
+                "max": 1000,
                 "default": 150,
                 "condition": "in{{ ch_num }}_type==6"
             },
@@ -424,6 +436,8 @@
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}410",
                 "scale": 0.1,
+                "min": 0.1,
+                "max": 1000,
                 "default": 10,
                 "condition": "in{{ ch_num }}_type==6"
             },
@@ -667,6 +681,7 @@
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}403",
+                "default": 20,
                 "enum_titles": [
                     "50 ms (20 SPS)",
                     "22 ms (45 SPS)",
@@ -686,20 +701,27 @@
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}405",
+                "default": 1,
                 "min": 1,
                 "max": 50,
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
+            {% for lowpass_fw, lowpass_min, lowpass_max in LOWPASS_FW_VARIANTS -%}
             {
                 "id": "in{{ ch_num }}_n_lowpass",
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
                 "address": "0x{{ "%x"|format(ch_num) }}407",
-                "min": 0,
-                "max": 65000,
+                "default": 0,
+                {% if lowpass_fw -%}
+                "fw": "{{ lowpass_fw }}",
+                {% endif -%}
+                "min": {{ lowpass_min }},
+                "max": {{ lowpass_max }},
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
+            {% endfor -%}
             {
                 "id": "in{{ch_num}}_n_gain",
                 "title": "Gain",
@@ -788,7 +810,7 @@
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
-                "default": 100,
+                "default": 1000,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -801,6 +823,8 @@
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40F",
                 "scale": 0.1,
+                "min": 0.1,
+                "max": 1000,
                 "default": 150,
                 "condition": "in{{ ch_num }}_n_type==6"
             },
@@ -811,6 +835,8 @@
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}411",
                 "scale": 0.1,
+                "min": 0.1,
+                "max": 1000,
                 "default": 10,
                 "condition": "in{{ ch_num }}_n_type==6"
             },
