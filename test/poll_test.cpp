@@ -49,6 +49,7 @@ namespace
     {
         std::deque<microseconds> FrameReadTimes;
         TTimeMock& TimeMock;
+        bool FailNextWriteFlag = false;
 
     public:
         TFakeSerialPortWithTime(WBMQTT::Testing::TLoggedFixture& fixture, TTimeMock& timeMock)
@@ -57,6 +58,28 @@ namespace
         {}
 
         using TFakeSerialPort::Expect;
+        using TFakeSerialPort::WriteBytes;
+
+        void ExpectNoResponse(const std::vector<int>& request, const char* func, microseconds frameReadTime)
+        {
+            TFakeSerialPort::ExpectNoResponse(request, func);
+            FrameReadTimes.push_back(frameReadTime);
+        }
+
+        void FailNextWrite()
+        {
+            FailNextWriteFlag = true;
+        }
+
+        void WriteBytes(const uint8_t* buf, int count) override
+        {
+            if (FailNextWriteFlag) {
+                FailNextWriteFlag = false;
+                GetFixture().Emit() << "write error EIO";
+                throw TSerialDeviceErrnoException("write error ", EIO);
+            }
+            TFakeSerialPort::WriteBytes(buf, count);
+        }
 
         void Expect(const std::vector<int>& request,
                     const std::vector<int>& response,
@@ -286,6 +309,43 @@ public:
                      readTime);
     }
 
+    std::vector<int> EnableEventsRequest(uint16_t addr)
+    {
+        return WrapPDU({
+            0x46,               // function code
+            0x18,               // subcommand
+            0x0A,               // data size
+            0x03,               // holding
+            (addr >> 8) & 0xFF, // address Hi
+            addr & 0xFF,        // address Lo
+            0x01,               // count
+            0x01,               // enable
+            0x0F,               // disable reset event
+            0x00,               //
+            0x00,               //
+            0x01,               //
+            0x00                //
+        });
+    }
+
+    void EnqueueEnableEventsNoResponse(uint8_t slaveId, uint16_t addr, microseconds readTime)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        Port->ExpectNoResponse(EnableEventsRequest(addr), __func__, readTime);
+    }
+
+    void EnqueueEnableEventsException(uint8_t slaveId, uint16_t addr, microseconds readTime)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        Port->Expect(EnableEventsRequest(addr),
+                     WrapPDU({
+                         0xC6,                // function code + exception bit
+                         SLAVE_DEVICE_FAILURE //
+                     }),
+                     __func__,
+                     readTime);
+    }
+
     void EnqueueEnableEvents(uint8_t slaveId,
                              uint16_t addr,
                              microseconds readTime,
@@ -293,21 +353,7 @@ public:
                              bool error = false)
     {
         SetModbusRTUSlaveId(slaveId);
-        Port->Expect(WrapPDU({
-                         0x46,               // function code
-                         0x18,               // subcommand
-                         0x0A,               // data size
-                         0x03,               // holding
-                         (addr >> 8) & 0xFF, // address Hi
-                         addr & 0xFF,        // address Lo
-                         0x01,               // count
-                         0x01,               // enable
-                         0x0F,               // disable reset event
-                         0x00,               //
-                         0x00,               //
-                         0x01,               //
-                         0x00                //
-                     }),
+        Port->Expect(EnableEventsRequest(addr),
                      WrapPDU({
                          0x46,                // function code
                          error ? 0x14 : 0x18, // subcommand
@@ -390,6 +436,34 @@ public:
         return {0x46, 0x12};
     }
 
+    void EnqueueWriteSetupRegister(uint16_t addr, uint16_t value, microseconds readTime)
+    {
+        SetModbusRTUSlaveId(1);
+        std::vector<int> pdu = {
+            0x06,                // function code
+            (addr >> 8) & 0xFF,  // address Hi
+            addr & 0xFF,         // address Lo
+            (value >> 8) & 0xFF, // value Hi
+            value & 0xFF         // value Lo
+        };
+        Port->Expect(WrapPDU(pdu), WrapPDU(pdu), __func__, readTime);
+    }
+
+    // Cycles through malformed response, response timeout and port error
+    void EnqueueEnableEventsFailure(size_t attempt)
+    {
+        switch (attempt % 3) {
+            case 0:
+                EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
+                break;
+            case 1:
+                EnqueueEnableEventsNoResponse(1, 1, 10ms);
+                break;
+            default:
+                Port->FailNextWrite();
+        }
+    }
+
     PExpector Expector() const override
     {
         return Port;
@@ -424,6 +498,18 @@ public:
         return std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
                                                config,
                                                DeviceFactory.GetProtocol("modbus"));
+    }
+
+    std::shared_ptr<TModbusDevice> MakeOnlyEventsDevice()
+    {
+        Port->SetBaudRate(115200);
+        auto config = MakeDeviceConfig("device1", "1");
+        config.CommonConfig->RequestDelay = 10ms;
+        config.CommonConfig->DeviceTimeout = 0ms;
+        config.CommonConfig->DeviceMaxFailCycles = 1;
+        auto device = MakeDevice(config);
+        AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+        return device;
     }
 
     std::shared_ptr<TFakeSerialPortWithTime> Port;
@@ -764,10 +850,9 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
 TEST_F(TPollTest, SingleDeviceEnableEventsError)
 {
     // One register with events
-    // 1. Events must be enabled
-    // 2. Read once by normal request
-    // 3. Events read requests are sent every 50ms
-    // 4. Some read requests have errors
+    // 1. Enabling events fails with a malformed response, the device stays connected and the register is polled
+    // 2. Enabling events is retried on the next cycle, the device reports that events are not enabled
+    // 3. The register is polled by normal requests
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
@@ -780,7 +865,9 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
 
     // Read registers
     EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
+    EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 
     // Events are disabled, poll register
     EnqueueEnableEvents(1, 1, 10ms, 0x00);
@@ -791,6 +878,204 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
         EnqueueReadHolding(1, 1, 1, 10ms);
         Cycle(serialClient, lastAccessedDevice);
     }
+}
+
+TEST_F(TPollTest, EnableEventsProgressiveRetry)
+{
+    // One register with events, the device stays connected all the time
+    // 1. Enabling events fails with a malformed response, a timeout or a port error in turn
+    // 2. The register is polled by normal requests
+    // 3. The first retry is made on the next access, then after 10, 20, 40 seconds and so on up to 30 minutes
+    // 4. No enabling requests are sent a second before the retry time
+    // 5. The last retry succeeds and events are read
+    auto device = MakeOnlyEventsDevice();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    size_t attempt = 0;
+    for (size_t i = 0; i < 2; ++i) {
+        EnqueueEnableEventsFailure(attempt++);
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+    }
+
+    std::vector<seconds> intervals = {10s, 20s, 40s, 80s, 160s, 320s, 640s, 1280s, 1800s, 1800s};
+    for (size_t i = 0; i < intervals.size(); ++i) {
+        TimeMock.AddTime(intervals[i] - 1s);
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+
+        TimeMock.AddTime(1s);
+        if (i + 1 < intervals.size()) {
+            EnqueueEnableEventsFailure(attempt++);
+        } else {
+            EnqueueEnableEvents(1, 1, 10ms);
+        }
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+    }
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+}
+
+TEST_F(TPollTest, EnableEventsNoRetryAfterException)
+{
+    // One register with events
+    // 1. Enabling events fails with a malformed response
+    // 2. The retry on the next access gets a Modbus exception
+    // 3. Enabling events is not retried anymore
+    auto device = MakeOnlyEventsDevice();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    EnqueueEnableEventsException(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    for (auto interval: {0s, 10s, 3600s}) {
+        TimeMock.AddTime(interval);
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+}
+
+TEST_F(TPollTest, EnableEventsReconnect)
+{
+    // One register with events
+    // 1. Enabling events fails on the connected device until the retry interval grows to 20 seconds
+    // 2. The device is disconnected
+    // 3. Enabling events is tried before each register read while the device is disconnected
+    // 4. The device is reconnected, the retry is made on the next access and then after 10 seconds
+    auto device = MakeOnlyEventsDevice();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    for (auto interval: {0s, 0s, 10s}) {
+        TimeMock.AddTime(interval);
+        EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    EnqueueReadHoldingError(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueEnableEventsNoResponse(1, 1, 10ms);
+        EnqueueReadHoldingError(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
+    }
+
+    EnqueueEnableEventsNoResponse(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+
+    EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    TimeMock.AddTime(9s);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    TimeMock.AddTime(1s);
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+}
+
+TEST_F(TPollTest, EnableEventsAfterSetup)
+{
+    // One register with events and one setup register
+    // 1. The setup register is written, then enabling events fails with a malformed response
+    // 2. The register is polled by normal requests
+    // 3. Enabling events is retried on the next access and succeeds
+
+    auto device = MakeOnlyEventsDevice();
+    device->AddSetupItem(
+        std::make_shared<TDeviceSetupItemConfig>("setup", TRegisterConfig::Create(Modbus::REG_HOLDING, 100), "5"));
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteSetupRegister(100, 5, 10ms);
+    EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, EnableEventsPartialFailure)
+{
+    // Registers with events are enabled by two requests
+    // 1. The first request succeeds, the second one fails with a malformed response
+    // 2. Events are not read, all registers are polled by normal requests
+    // 3. The retry on the next access fails
+    // 4. The next retry succeeds, but the device reports that no events are enabled
+    // 5. Events are not read, all registers are still polled by normal requests
+
+    const uint16_t REG_COUNT = 120;
+    const uint16_t FIRST_REQUEST_REG_COUNT = 119;
+    auto device = MakeOnlyEventsDevice();
+    for (uint16_t addr = 2; addr <= REG_COUNT; ++addr) {
+        AddRegister(*device, addr, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+    }
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    std::vector<int> firstRequest =
+        {0x46, 0x18, 4 + FIRST_REQUEST_REG_COUNT, 0x03, 0x00, 0x01, FIRST_REQUEST_REG_COUNT};
+    firstRequest.insert(firstRequest.end(), FIRST_REQUEST_REG_COUNT, 0x01);
+    std::vector<int> enabledResponse = {0x46, 0x18, 15};
+    enabledResponse.insert(enabledResponse.end(), 15, 0xFF);
+    std::vector<int> notEnabledResponse = {0x46, 0x18, 15};
+    notEnabledResponse.insert(notEnabledResponse.end(), 15, 0x00);
+    std::vector<int> secondRequest =
+        {0x46, 0x18, 0x0A, 0x03, 0x00, REG_COUNT, 0x01, 0x01, 0x0F, 0x00, 0x00, 0x01, 0x00};
+    std::vector<int> badResponse = {0x46, 0x14, 0x02, 0x01, 0x00};
+
+    SetModbusRTUSlaveId(1);
+    Port->Expect(WrapPDU(firstRequest), WrapPDU(enabledResponse), "EnableEventsFirstRequest", 10ms);
+    Port->Expect(WrapPDU(secondRequest), WrapPDU(badResponse), "EnableEventsSecondRequest", 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_FALSE(serialClient.GetEventsReader()->HasDevicesWithEnabledEvents());
+    EXPECT_FALSE(device->GetRegisters().front()->IsExcludedFromPolling());
+
+    SetModbusRTUSlaveId(1);
+    Port->Expect(WrapPDU(firstRequest), WrapPDU(badResponse), "EnableEventsFirstRequest", 10ms);
+    for (uint16_t addr = 2; addr <= 5; ++addr) {
+        EnqueueReadHolding(1, addr, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    TimeMock.AddTime(10s);
+    SetModbusRTUSlaveId(1);
+    Port->Expect(WrapPDU(firstRequest), WrapPDU(notEnabledResponse), "EnableEventsFirstRequest", 10ms);
+    Port->Expect(WrapPDU(secondRequest), WrapPDU({0x46, 0x18, 0x02, 0x00, 0x00}), "EnableEventsSecondRequest", 10ms);
+    for (uint16_t addr = 6; addr <= 9; ++addr) {
+        EnqueueReadHolding(1, addr, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+    EXPECT_FALSE(serialClient.GetEventsReader()->HasDevicesWithEnabledEvents());
+    EXPECT_FALSE(device->GetRegisters().front()->IsExcludedFromPolling());
 }
 
 TEST_F(TPollTest, SemiSporadicRegister)

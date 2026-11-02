@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.290.4) stable; urgency=medium
+
+  * Fast Modbus: a failure to enable events no longer disconnects the device,
+    it is polled without events and enabling is retried
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 02 Nov 2026 07:28:27 +0000
+
 wb-mqtt-serial (2.290.3) stable; urgency=medium
 
   * WB device templates: parameter defaults and limits match the device

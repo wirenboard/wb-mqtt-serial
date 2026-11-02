@@ -26,15 +26,8 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(TFeaturePort& port, PSeri
                 bool devWasDisconnected = dev->GetConnectionState() != TDeviceConnectionState::CONNECTED;
                 if (devWasDisconnected || dev != LastAccessedDevice) {
                     dev->Prepare(port);
-                    if (devWasDisconnected) {
-                        try {
-                            EventsReader->EnableEvents(dev, port);
-                        } catch (const TSerialDeviceException& e) {
-                            dev->SetDisconnected();
-                            throw;
-                        }
-                    }
                 }
+                EventsReader->EnableEvents(dev, port, devWasDisconnected);
             }
             LastAccessedDevice = dev;
             return true;
