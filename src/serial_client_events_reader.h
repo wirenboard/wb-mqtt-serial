@@ -36,11 +36,11 @@ public:
     // but represent different value regions
     typedef std::unordered_map<TEventsReaderRegisterDesc, std::vector<PRegister>> TRegsMap;
 
-    TSerialClientEventsReader(size_t maxReadErrors);
+    TSerialClientEventsReader(size_t maxReadErrors, util::TGetNowFn nowFn);
 
     void SetDevices(const std::list<PSerialDevice>& devices);
 
-    void EnableEvents(PSerialDevice device, TFeaturePort& port);
+    void EnableEvents(PSerialDevice device, TFeaturePort& port, bool deviceWasDisconnected);
 
     void ReadEvents(TFeaturePort& port,
                     std::chrono::milliseconds maxReadingTime,
@@ -52,6 +52,12 @@ public:
     bool HasDevicesWithEnabledEvents() const;
 
 private:
+    struct TEnableEventsRetry
+    {
+        std::chrono::steady_clock::time_point Time;
+        std::chrono::milliseconds Interval;
+    };
+
     uint8_t StartSlaveId;
     size_t ConsecutiveReadsFromSameSlave;
     ModbusExt::TEventConfirmationState EventState;
@@ -61,6 +67,13 @@ private:
 
     TRegsMap Regs;
     std::unordered_set<uint8_t> DevicesWithEnabledEvents;
+    std::unordered_map<uint32_t, TEnableEventsRetry> EnableEventsRetries;
+    util::TGetNowFn NowFn;
+
+    void EnableEventsFailed(TEnableEventsRetry& retry,
+                            bool deviceWasDisconnected,
+                            uint8_t slaveId,
+                            const std::string& errorMessage);
 
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
     void ClearReadErrors(TRegisterCallback callback);

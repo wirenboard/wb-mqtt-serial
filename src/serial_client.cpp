@@ -307,7 +307,7 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
                                                                            util::TGetNowFn nowFn,
                                                                            util::TGetSystemTimeFn systemTimeFn,
                                                                            size_t lowPriorityRateLimit)
-    : EventsReader(std::make_shared<TSerialClientEventsReader>(MAX_EVENT_READ_ERRORS)),
+    : EventsReader(std::make_shared<TSerialClientEventsReader>(MAX_EVENT_READ_ERRORS, nowFn)),
       RegisterPoller(lowPriorityRateLimit),
       TimeBalancer(BALANCING_THRESHOLD),
       ReadEventsPeriod(readEventsPeriod),

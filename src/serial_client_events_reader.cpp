@@ -4,6 +4,8 @@
 #include "serial_device.h"
 
 #include <string.h>
+#include <tuple>
+#include <vector>
 
 using namespace std::chrono;
 
@@ -13,6 +15,8 @@ namespace
 {
     const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
     const size_t MAX_CONSECUTIVE_EVENT_READS_PER_SLAVE = 5;
+    const auto ENABLE_EVENTS_RETRY_INITIAL_INTERVAL = std::chrono::seconds(10);
+    const auto ENABLE_EVENTS_RETRY_MAX_INTERVAL = std::chrono::minutes(30);
 
     std::string EventTypeToString(uint8_t eventType)
     {
@@ -211,12 +215,13 @@ public:
     }
 };
 
-TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
+TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors, util::TGetNowFn nowFn)
     : StartSlaveId(0),
       ConsecutiveReadsFromSameSlave(0),
       ReadErrors(0),
       MaxReadErrors(maxReadErrors),
-      ClearErrorsOnSuccessfulRead(false)
+      ClearErrorsOnSuccessfulRead(false),
+      NowFn(nowFn)
 {}
 
 void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback)
@@ -283,11 +288,17 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
     DisableEventsFromRegs(port, visitor.GetRegsToDisable());
 }
 
-void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort& port)
+void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort& port, bool deviceWasDisconnected)
 {
     auto modbusDevice = ToModbusDevice(device.get());
     if (!modbusDevice) {
         return;
+    }
+    if (!deviceWasDisconnected) {
+        auto retry = EnableEventsRetries.find(modbusDevice->SlaveId);
+        if (retry == EnableEventsRetries.end() || NowFn() < retry->second.Time) {
+            return;
+        }
     }
     if (device->DeviceConfig()->DisableFastModbus) {
         return;
@@ -306,16 +317,13 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
     } else {
         traits = std::make_unique<Modbus::TModbusRTUTraits>();
     }
-    ModbusExt::TEventsEnabler ev(slaveId,
-                                 port,
-                                 *traits,
-                                 std::bind(&TSerialClientEventsReader::OnEnabledEvent,
-                                           this,
-                                           slaveId,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3),
-                                 ModbusExt::TEventsEnabler::DISABLE_EVENTS_IN_HOLES);
+    std::vector<std::tuple<uint8_t, uint16_t, bool>> enableResults;
+    ModbusExt::TEventsEnabler ev(
+        slaveId,
+        port,
+        *traits,
+        [&enableResults](uint8_t type, uint16_t addr, bool res) { enableResults.emplace_back(type, addr, res); },
+        ModbusExt::TEventsEnabler::DISABLE_EVENTS_IN_HOLES);
 
     try {
         for (const auto& regArray: Regs) {
@@ -330,15 +338,36 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
             ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
+            for (const auto& [type, addr, res]: enableResults) {
+                OnEnabledEvent(slaveId, type, addr, res);
+            }
             EnableSporadicOnlyDevicePolling(device);
         }
+        EnableEventsRetries.erase(modbusDevice->SlaveId);
     } catch (const Modbus::TModbusExceptionError& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
-    } catch (const TResponseTimeoutException& e) {
-        LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
+        EnableEventsRetries.erase(modbusDevice->SlaveId);
     } catch (const Modbus::TErrorBase& e) {
-        throw TSerialDeviceTransientErrorException(std::string("Failed to enable events: ") + e.what());
+        EnableEventsFailed(EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
+    } catch (const TSerialDeviceException& e) {
+        EnableEventsFailed(EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
     }
+}
+
+void TSerialClientEventsReader::EnableEventsFailed(TEnableEventsRetry& retry,
+                                                   bool deviceWasDisconnected,
+                                                   uint8_t slaveId,
+                                                   const std::string& errorMessage)
+{
+    LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << errorMessage;
+    if (deviceWasDisconnected) {
+        retry.Interval = std::chrono::milliseconds::zero();
+    } else if (retry.Interval == std::chrono::milliseconds::zero()) {
+        retry.Interval = ENABLE_EVENTS_RETRY_INITIAL_INTERVAL;
+    } else {
+        retry.Interval = std::min<std::chrono::milliseconds>(retry.Interval * 2, ENABLE_EVENTS_RETRY_MAX_INTERVAL);
+    }
+    retry.Time = NowFn() + retry.Interval;
 }
 
 void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res)
@@ -397,6 +426,7 @@ void TSerialClientEventsReader::OnDeviceConnectionStateChanged(PSerialDevice dev
         auto dev = ToModbusDevice(device.get());
         if (dev != nullptr) {
             DevicesWithEnabledEvents.erase(dev->SlaveId);
+            EnableEventsRetries.erase(dev->SlaveId);
         }
     }
 }
