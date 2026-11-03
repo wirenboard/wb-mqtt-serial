@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.291.0) stable; urgency=medium
+
+  * Add parameter and register details to RPC errors
+  * Add port to polling warnings
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 03 Nov 2026 13:19:33 +0300
+
 wb-mqtt-serial (2.290.4) stable; urgency=medium
 
   * Fast Modbus: a failure to enable events no longer disconnects the device,
