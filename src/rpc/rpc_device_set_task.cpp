@@ -51,7 +51,7 @@ namespace
         EndSession(*port, rpcRequest->Device);
 
         if (!error.empty()) {
-            LOG(Warn) << port->GetDescription() << rpcRequest->Device->ToString() << ": " << error;
+            LOG(Warn) << port->GetDescription() << " " << rpcRequest->Device->ToString() << ": " << error;
             throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
