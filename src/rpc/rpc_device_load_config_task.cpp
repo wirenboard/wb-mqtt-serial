@@ -20,10 +20,11 @@ namespace
                                              rpcRequest->ResponseTimeout,
                                              rpcRequest->FrameTimeout);
         } catch (const std::exception& e) {
-            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
-                      << " unable to read device model: " << e.what();
-            throw TRPCException(std::string("unable to read device model: ") + e.what(),
-                                TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            auto error = "Failed to read device model <" +
+                         WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME)->ToString() +
+                         ">: " + e.what();
+            LOG(Warn) << port.GetDescription() << " " << rpcRequest->Device->ToString() << ": " << error;
+            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
     }
 
@@ -196,7 +197,7 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {
-            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, MakeRPCTaskErrorMessage(error));
         }
     }
     return ISerialClientTask::TRunResult::OK;

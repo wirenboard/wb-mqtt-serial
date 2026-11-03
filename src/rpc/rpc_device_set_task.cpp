@@ -240,7 +240,7 @@ ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PFeaturePort po
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {
-            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, MakeRPCTaskErrorMessage(error));
         }
     }
     return ISerialClientTask::TRunResult::OK;

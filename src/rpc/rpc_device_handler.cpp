@@ -368,19 +368,22 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
     while (index < registerList.size() && error.empty()) {
         auto first = registerList[index].Register;
         auto range = device->CreateRegisterRange();
+        std::string ids;
         while (index < registerList.size() &&
                range->Add(port, registerList[index].Register, std::chrono::milliseconds::max()))
         {
+            ids += (ids.empty() ? "" : ", ") + registerList[index].Id;
             ++index;
         }
+        auto description = std::to_string(range->RegisterList().size()) + " registers starting from <" +
+                           first->GetConfig()->ToString() + "> (" + ids + ")";
         for (int i = 0; i <= maxRetries; ++i) {
             try {
                 device->ReadRegisterRange(port, range, true);
                 break;
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
-                          << "Failed to read " << std::to_string(range->RegisterList().size())
-                          << " registers starting from <" << first->GetConfig()->ToString() + ">: " + e.what();
+                          << "Failed to read " << description << ": " << e.what();
                 auto modbusDevice = dynamic_cast<TModbusDevice*>(device.get());
                 if (modbusDevice != nullptr &&
                     modbusDevice->GetContinuousReadStatus() == TContinuousReadStatus::DISABLED)
@@ -392,8 +395,7 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
                 break;
             } catch (const TSerialDeviceException& e) {
                 if (i == maxRetries) {
-                    error = "Failed to read " + std::to_string(range->RegisterList().size()) +
-                            " registers starting from <" + first->GetConfig()->ToString() + ">: " + e.what();
+                    error = "Failed to read " + description + ": " + e.what();
                 }
             }
         }

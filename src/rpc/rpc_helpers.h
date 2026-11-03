@@ -77,6 +77,9 @@ void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema);
 //! Answers a request whose task is cancelled
 void AnswerRequestCancelled(const WBMQTT::TMqttRpcServer::TErrorCallback& onError);
 
+//! Makes an error message of a serial client task, only port errors get the "Port IO error" prefix
+std::string MakeRPCTaskErrorMessage(const std::exception& error);
+
 /**
  * @brief Loads the JSON schema for an RPC request from a specified file.
  *        Prints a message to the log if the file cannot be read and throws an exception.
