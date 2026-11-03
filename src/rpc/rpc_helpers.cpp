@@ -102,18 +102,6 @@ void AnswerRequestCancelled(const WBMQTT::TMqttRpcServer::TErrorCallback& onErro
     }
 }
 
-std::string MakeRPCTaskErrorMessage(const std::exception& error)
-{
-    if (dynamic_cast<const TRPCException*>(&error) != nullptr ||
-        dynamic_cast<const Modbus::TErrorBase*>(&error) != nullptr ||
-        dynamic_cast<const TSerialDeviceTransientErrorException*>(&error) != nullptr ||
-        dynamic_cast<const TSerialDevicePermanentRegisterException*>(&error) != nullptr)
-    {
-        return error.what();
-    }
-    return std::string("Port IO error: ") + error.what();
-}
-
 void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema)
 {
     try {

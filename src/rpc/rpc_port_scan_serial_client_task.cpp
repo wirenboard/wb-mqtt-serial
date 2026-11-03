@@ -296,7 +296,7 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PFeaturePort por
         ExecRPCPortScanRequest(*port, Request, polledDevices, port->IsModbusTcp());
     } catch (const std::exception& error) {
         if (Request->OnError) {
-            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, MakeRPCTaskErrorMessage(error));
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
         }
     }
     return ISerialClientTask::TRunResult::OK;

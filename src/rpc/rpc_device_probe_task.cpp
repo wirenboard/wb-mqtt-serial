@@ -55,7 +55,7 @@ ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PFeaturePort 
         OnResult(RpcPortScan::GetDeviceDetails(reader, SlaveId, polledDevices));
     } catch (const std::exception& error) {
         if (OnError) {
-            OnError(WBMQTT::E_RPC_SERVER_ERROR, MakeRPCTaskErrorMessage(error));
+            OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
         }
     }
 
