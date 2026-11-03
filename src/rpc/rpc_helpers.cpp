@@ -236,20 +236,6 @@ bool CheckUnsupportedValue(const TRegisterConfig& config, const TRegisterValue& 
     return true;
 }
 
-namespace
-{
-    [[noreturn]] void ThrowParameterReadError(TPort& port,
-                                              TRPCDeviceRequest& request,
-                                              const TRPCRegister& item,
-                                              const std::exception& err)
-    {
-        auto error = "Failed to read parameter \"" + item.Id + "\" <" + item.Register->GetConfig()->ToString() +
-                     ">: " + err.what();
-        LOG(Warn) << port.GetDescription() << " " << request.Device->ToString() << ": " << error;
-        throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-}
-
 void MarkUnsupportedRegisterItems(TPort& port,
                                   TRPCDeviceRequest& request,
                                   TRPCRegisterList& registerList,
@@ -272,6 +258,7 @@ void MarkUnsupportedRegisterItems(TPort& port,
                     SetContinuousRead(port, request, TContinuousReadStatus::DISABLED);
                     enabled = false;
                 }
+                std::string error;
                 try {
                     TRegisterValue value;
                     ReadModbusRegister(port, request, item.Register->GetConfig(), value);
@@ -281,9 +268,15 @@ void MarkUnsupportedRegisterItems(TPort& port,
                         (*data)[item.Id] = UNSUPPORTED_VALUE;
                     }
                 } catch (const Modbus::TErrorBase& err) {
-                    ThrowParameterReadError(port, request, item, err);
+                    error = err.what();
                 } catch (const TResponseTimeoutException& err) {
-                    ThrowParameterReadError(port, request, item, err);
+                    error = err.what();
+                }
+                if (!error.empty()) {
+                    error = "Failed to read parameter \"" + item.Id + "\" <" + item.Register->GetConfig()->ToString() +
+                            ">: " + error;
+                    LOG(Warn) << port.GetDescription() << " " << request.Device->ToString() << ": " << error;
+                    throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
                 }
             }
         } catch (const TRegisterValueException& e) {

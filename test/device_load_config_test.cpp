@@ -673,7 +673,7 @@ TEST_F(TRPCDeviceLoadConfigTaskExecTest, ReportsModelReadError)
     task.Run(std::make_shared<TFeaturePort>(port, false), accessHandler, {});
 
     EXPECT_FALSE(gotResult);
-    EXPECT_EQ(error, "Port IO error: unable to read device model: illegal data address");
+    EXPECT_EQ(error, "Failed to read device model <holding: 200>: illegal data address");
 }
 
 /**
