@@ -81,7 +81,7 @@ namespace // general utilities
             try {
                 port.SkipNoise();
             } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
+                LOG(Warn) << port.GetDescription() << ": SkipNoise failed: " << e.what();
             }
             throw TSerialDeviceTransientErrorException(err.what());
         } catch (const Modbus::TErrorBase& err) {
@@ -759,14 +759,15 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
+    void ProcessRangeException(TPort& port, TModbusRegisterRange& range, const char* msg)
     {
         for (auto& reg: range.RegisterList()) {
             reg->SetError(TRegister::TError::ReadError);
         }
 
         auto& logger = (range.Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
-        LOG(logger) << "failed to read " << range << ": " << msg;
+        LOG(logger) << port.GetDescription() << " " << range.Device()->ToString() << ": failed to read "
+                    << range.GetCount() << " " << range.TypeName() << "(s) @ " << range.GetStart() << ": " << msg;
         range.Device()->SetTransferResult(false);
     }
 
@@ -790,16 +791,17 @@ namespace Modbus // modbus protocol common utilities
                 if (!range.Device()->DeviceConfig()->ContinuePollingOnIllegalModbusException) {
                     for (auto& reg: range.RegisterList()) {
                         reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-                        LOG(Warn) << reg->ToString() << " is now marked as unavailable: " << e.what();
+                        LOG(Warn) << port.GetDescription() << " " << reg->ToString()
+                                  << " is now marked as unavailable: " << e.what();
                     }
                 }
             }
-            ProcessRangeException(range, e.what());
+            ProcessRangeException(port, range, e.what());
             if (breakOnError) {
                 throw;
             }
         } catch (const TSerialDeviceException& e) {
-            ProcessRangeException(range, e.what());
+            ProcessRangeException(port, range, e.what());
             if (breakOnError) {
                 throw;
             }
@@ -871,6 +873,7 @@ namespace Modbus // modbus protocol common utilities
         PDeviceSetupItem last = nullptr;
         auto start = GetUint32RegisterAddress(first->RegisterConfig->GetWriteAddress());
         auto count = 0;
+        std::string names;
         while (startIt != endIt) {
             auto item = *startIt;
             if (item->RegisterConfig->IsPartial()) {
@@ -896,10 +899,13 @@ namespace Modbus // modbus protocol common utilities
             ComposeRawMultipleWriteRequestData(data, *item->RegisterConfig, item->RawValue, cache, tmpCache);
             LOG(Info) << item->ToString();
 
+            names += (names.empty() ? "" : ", ") + item->Name;
             count += width;
             last = item;
             ++startIt;
         }
+        auto description = std::to_string(count) + " registers starting from <" + first->RegisterConfig->ToString() +
+                           "> (" + names + ")";
         try {
             auto function = count > 1 ? FN_WRITE_MULTIPLE_REGISTERS : FN_WRITE_SINGLE_REGISTER;
             WriteTransaction(traits,
@@ -915,12 +921,13 @@ namespace Modbus // modbus protocol common utilities
                 cache.insert_or_assign(item.first, item.second);
             }
         } catch (const TSerialDevicePermanentRegisterException& e) {
-            std::string error = "Failed to write " + std::to_string(count) + " registers starting from <" +
-                                first->RegisterConfig->ToString() + ">: " + e.what();
-            LOG(Warn) << error;
+            std::string error = "Failed to write " + description + ": " + e.what();
+            LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << ": " << error;
             if (breakOnError) {
                 throw TSerialDeviceException(error);
             }
+        } catch (const TSerialDeviceTransientErrorException& e) {
+            throw TSerialDeviceTransientErrorException("Failed to write " + description + ": " + e.what());
         }
         return startIt;
     }
@@ -981,12 +988,15 @@ namespace Modbus // modbus protocol common utilities
                                   shift);
                     LOG(Info) << item->ToString();
                 } catch (const TSerialDevicePermanentRegisterException& e) {
-                    std::string error =
-                        "Failed to write register <" + item->RegisterConfig->ToString() + ">: " + e.what();
-                    LOG(Warn) << error;
+                    std::string error = "Failed to write parameter \"" + item->Name + "\" <" +
+                                        item->RegisterConfig->ToString() + ">: " + e.what();
+                    LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << ": " << error;
                     if (breakOnError) {
                         throw TSerialDeviceException(error);
                     }
+                } catch (const TSerialDeviceTransientErrorException& e) {
+                    throw TSerialDeviceTransientErrorException("Failed to write parameter \"" + item->Name + "\" <" +
+                                                               item->RegisterConfig->ToString() + ">: " + e.what());
                 }
                 ++it;
             }
@@ -1051,7 +1061,7 @@ namespace Modbus // modbus protocol common utilities
             return value;
         } catch (const TSerialDevicePermanentRegisterException& e) {
             // A firmware doesn't support continuous read
-            LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+            LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": Continuous read is not enabled";
         }
         return TContinuousReadStatus::DISABLED;
     }

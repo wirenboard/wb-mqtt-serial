@@ -39,8 +39,8 @@ private:
     bool WriteFail;
     std::chrono::steady_clock::time_point WriteFirstTryTime;
 
-    void HandleWriteErrorNoRetry(const TRegisterValue& tempValue, const char* msg);
-    void HandleWriteErrorRetryWrite(const TRegisterValue& tempValue, const char* msg);
+    void HandleWriteErrorNoRetry(TPort& port, const TRegisterValue& tempValue, const char* msg);
+    void HandleWriteErrorRetryWrite(TPort& port, const TRegisterValue& tempValue, const char* msg);
 };
 
 typedef std::shared_ptr<TRegisterHandler> PRegisterHandler;

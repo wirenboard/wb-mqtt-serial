@@ -51,7 +51,7 @@ namespace
         EndSession(*port, rpcRequest->Device);
 
         if (!error.empty()) {
-            LOG(Warn) << port->GetDescription() << rpcRequest->Device->ToString() << ": " << error;
+            LOG(Warn) << port->GetDescription() << " " << rpcRequest->Device->ToString() << ": " << error;
             throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
@@ -237,6 +237,10 @@ ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PFeaturePort po
             ExecRPCRequest(port, Request);
         } else {
             ExecRPCRequest(port, Request);
+        }
+    } catch (const TRPCException& error) {
+        if (Request->OnError) {
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, error.what());
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {

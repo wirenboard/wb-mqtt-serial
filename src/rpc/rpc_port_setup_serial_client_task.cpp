@@ -121,20 +121,30 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PFeaturePort po
                 fastModbusTraits.SetSn(item.Sn.value());
             }
             Modbus::TRegisterCache cache;
-            Modbus::WriteSetupRegisters(item.Sn ? static_cast<Modbus::IModbusTraits&>(fastModbusTraits)
-                                                : static_cast<Modbus::IModbusTraits&>(rtuTraits),
-                                        *port,
-                                        item.SlaveId,
-                                        item.Regs,
-                                        cache,
-                                        std::chrono::microseconds(0),
-                                        std::chrono::milliseconds(1),
-                                        frameTimeout,
-                                        false);
+            try {
+                Modbus::WriteSetupRegisters(item.Sn ? static_cast<Modbus::IModbusTraits&>(fastModbusTraits)
+                                                    : static_cast<Modbus::IModbusTraits&>(rtuTraits),
+                                            *port,
+                                            item.SlaveId,
+                                            item.Regs,
+                                            cache,
+                                            std::chrono::microseconds(0),
+                                            std::chrono::milliseconds(1),
+                                            frameTimeout,
+                                            false);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                auto device =
+                    item.Sn ? "sn " + std::to_string(item.Sn.value()) : "modbus:" + std::to_string(item.SlaveId);
+                throw TRPCException(device + ": " + e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
         }
 
         if (Request->OnResult) {
             Request->OnResult(Json::Value(Json::objectValue));
+        }
+    } catch (const TRPCException& error) {
+        if (Request->OnError) {
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, error.what());
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {

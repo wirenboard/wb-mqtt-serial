@@ -70,14 +70,15 @@ private:
     std::unordered_map<uint32_t, TEnableEventsRetry> EnableEventsRetries;
     util::TGetNowFn NowFn;
 
-    void EnableEventsFailed(TEnableEventsRetry& retry,
+    void EnableEventsFailed(TFeaturePort& port,
+                            TEnableEventsRetry& retry,
                             bool deviceWasDisconnected,
                             uint8_t slaveId,
                             const std::string& errorMessage);
 
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
     void ClearReadErrors(TRegisterCallback callback);
-    void ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback);
+    void ReadEventsFailed(TFeaturePort& port, const std::string& errorMessage, TRegisterCallback registerCallback);
     void OnDeviceConnectionStateChanged(PSerialDevice device);
 };
 
