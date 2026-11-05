@@ -20,9 +20,8 @@ namespace
                                              rpcRequest->ResponseTimeout,
                                              rpcRequest->FrameTimeout);
         } catch (const std::exception& e) {
-            auto error = "Failed to read device model <" +
-                         WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME)->ToString() +
-                         ">: " + e.what();
+            auto config = WbRegisters::GetRegisterConfig(WbRegisters::DEVICE_MODEL_REGISTER_NAME);
+            auto error = "Failed to read device model <holding: " + config->GetAddress().ToString() + ">: " + e.what();
             LOG(Warn) << port.GetDescription() << " " << rpcRequest->Device->ToString() << ": " << error;
             throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
