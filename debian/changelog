@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.248.1-wb109) stable; urgency=medium
+
+  * Fix communication errors with MTDX62-MB
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 06 Nov 2026 04:42:19 +0000
+
 wb-mqtt-serial (2.248.1-wb108) stable; urgency=medium
 
   * Fix writing to devices which have no registers to poll
