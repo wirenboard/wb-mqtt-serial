@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.291.1) stable; urgency=medium
+
+  * Fix communication errors with MTDX62-MB
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 06 Nov 2026 04:42:19 +0000
+
 wb-mqtt-serial (2.291.0) stable; urgency=medium
 
   * Add parameter and register details to RPC errors
