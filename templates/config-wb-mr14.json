@@ -309,7 +309,8 @@
                 "name": "Safety Timer",
                 "reg_type": "holding",
                 "address": 8,
-                "type": "range"
+                "type": "range",
+                "max": 65534
             },
             {
                 "name": "Input 1",

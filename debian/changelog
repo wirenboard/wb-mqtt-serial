@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.292.0) stable; urgency=medium
+
+  * Use 255 as default max for range controls without explicit max, as per MQTT conventions
+  * Set explicit max for WB-MR11, WB-MR14, WB-MRM2, WB-MRPS6 safety timer and WB-MSGR range channels
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 06 Nov 2026 12:00:00 +0400
+
 wb-mqtt-serial (2.291.1) stable; urgency=medium
 
   * Fix communication errors with MTDX62-MB

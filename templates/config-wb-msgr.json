@@ -29,7 +29,8 @@
                 "reg_type": "holding",
                 "address": 60,
                 "format": "u16",
-                "scale": 10
+                "scale": 10,
+                "max": 655350
             },
             {
                 "name": "Rs ratio",
@@ -45,7 +46,8 @@
                 "reg_type": "holding",
                 "address": 61,
                 "format": "u16",
-                "scale": 0.001
+                "scale": 0.001,
+                "max": 65
             },
             {
                 "name": "Low threshold",
@@ -53,7 +55,8 @@
                 "reg_type": "holding",
                 "address": 62,
                 "format": "u16",
-                "scale": 0.001
+                "scale": 0.001,
+                "max": 65
             },
             {
                 "name": "Input Voltage",
