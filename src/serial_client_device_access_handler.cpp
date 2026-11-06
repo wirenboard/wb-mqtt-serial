@@ -21,6 +21,8 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(TFeaturePort& port, PSeri
         LastAccessedDevice = nullptr;
     }
     if (dev) {
+        // Prepare may disconnect the device, the level depends on the state before it
+        bool wasDisconnected = dev->GetConnectionState() == TDeviceConnectionState::DISCONNECTED;
         try {
             if (EventsReader) {
                 bool devWasDisconnected = dev->GetConnectionState() != TDeviceConnectionState::CONNECTED;
@@ -32,7 +34,7 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(TFeaturePort& port, PSeri
             LastAccessedDevice = dev;
             return true;
         } catch (const TSerialDeviceException& e) {
-            auto& logger = (dev->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
+            auto& logger = wasDisconnected ? Debug : Warn;
             LOG(logger) << "Failed to open session: " << e.what() << " [slave_id is " << dev->ToString() + "]";
         }
     }
