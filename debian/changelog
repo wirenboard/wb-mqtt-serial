@@ -1,8 +1,34 @@
-wb-mqtt-serial (2.290.5) stable; urgency=medium
+wb-mqtt-serial (2.291.4) stable; urgency=medium
 
-  * Ridan Greencon-R: limit reads to 8 registers per request, add enums, groups and translations
+  * Ridan Greencon-R: limit reads to 8 registers per request, wait frame timeout between requests,
+    add enums, groups and translations
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 03 Nov 2026 13:50:40 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 09 Nov 2026 12:40:00 +0300
+
+wb-mqtt-serial (2.291.3) stable; urgency=medium
+
+  * Log the first error of device setup as a warning
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 09 Nov 2026 09:49:13 +0000
+
+wb-mqtt-serial (2.291.2) stable; urgency=medium
+
+  * Document that range and dimmer channels without explicit max use 65535 as default
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 09 Nov 2026 12:00:00 +0400
+
+wb-mqtt-serial (2.291.1) stable; urgency=medium
+
+  * Fix communication errors with MTDX62-MB
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 06 Nov 2026 04:42:19 +0000
+
+wb-mqtt-serial (2.291.0) stable; urgency=medium
+
+  * Add parameter and register details to RPC errors
+  * Add port to polling warnings
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 03 Nov 2026 13:19:33 +0300
 
 wb-mqtt-serial (2.290.4) stable; urgency=medium
 

@@ -258,6 +258,7 @@ void MarkUnsupportedRegisterItems(TPort& port,
                     SetContinuousRead(port, request, TContinuousReadStatus::DISABLED);
                     enabled = false;
                 }
+                std::string error;
                 try {
                     TRegisterValue value;
                     ReadModbusRegister(port, request, item.Register->GetConfig(), value);
@@ -266,6 +267,16 @@ void MarkUnsupportedRegisterItems(TPort& port,
                     if (data != nullptr) {
                         (*data)[item.Id] = UNSUPPORTED_VALUE;
                     }
+                } catch (const Modbus::TErrorBase& err) {
+                    error = err.what();
+                } catch (const TResponseTimeoutException& err) {
+                    error = err.what();
+                }
+                if (!error.empty()) {
+                    error = "Failed to read parameter \"" + item.Id + "\" <" + item.Register->GetConfig()->ToString() +
+                            ">: " + error;
+                    LOG(Warn) << port.GetDescription() << " " << request.Device->ToString() << ": " << error;
+                    throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
                 }
             }
         } catch (const TRegisterValueException& e) {

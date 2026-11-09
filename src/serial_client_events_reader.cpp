@@ -98,7 +98,8 @@ namespace
         auto regIt = regs.cbegin();
         while (regIt != regs.cend()) {
             uint8_t slaveId = regIt->SlaveId;
-            LOG(Warn) << "Disable unexpected events from " << MakeDeviceDescriptionString(slaveId);
+            LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
+                      << ": Disable unexpected events";
             ModbusExt::TEventsEnabler enabler(slaveId, port, *traits, [](uint8_t, uint16_t, bool) {});
             for (; regIt != regs.cend() && slaveId == regIt->SlaveId; ++regIt) {
                 enabler.AddRegister(regIt->Addr,
@@ -108,9 +109,11 @@ namespace
             try {
                 enabler.SendRequests();
             } catch (const Modbus::TErrorBase& ex) {
-                LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
+                LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
+                          << ": Failed to disable unexpected events: " << ex.what();
             } catch (const TSerialDeviceException& ex) {
-                LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
+                LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
+                          << ": Failed to disable unexpected events: " << ex.what();
             }
         }
     }
@@ -224,9 +227,11 @@ TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors, util:
       NowFn(nowFn)
 {}
 
-void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback)
+void TSerialClientEventsReader::ReadEventsFailed(TFeaturePort& port,
+                                                 const std::string& errorMessage,
+                                                 TRegisterCallback registerCallback)
 {
-    LOG(Warn) << "Reading events failed: " << errorMessage;
+    LOG(Warn) << port.GetDescription() << ": Reading events failed: " << errorMessage;
     ++ReadErrors;
     if (ReadErrors > MaxReadErrors) {
         SetReadErrors(registerCallback);
@@ -280,9 +285,9 @@ void TSerialClientEventsReader::ReadEvents(TFeaturePort& port,
                 StartSlaveId = slaveId;
             }
         } catch (const TSerialDeviceException& ex) {
-            ReadEventsFailed(ex.what(), registerCallback);
+            ReadEventsFailed(port, ex.what(), registerCallback);
         } catch (const Modbus::TErrorBase& ex) {
-            ReadEventsFailed(ex.what(), registerCallback);
+            ReadEventsFailed(port, ex.what(), registerCallback);
         }
     }
     DisableEventsFromRegs(port, visitor.GetRegsToDisable());
@@ -345,21 +350,24 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
         }
         EnableEventsRetries.erase(modbusDevice->SlaveId);
     } catch (const Modbus::TModbusExceptionError& e) {
-        LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
+        LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
+                  << ": Failed to enable events: " << e.what();
         EnableEventsRetries.erase(modbusDevice->SlaveId);
     } catch (const Modbus::TErrorBase& e) {
-        EnableEventsFailed(EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
+        EnableEventsFailed(port, EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
     } catch (const TSerialDeviceException& e) {
-        EnableEventsFailed(EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
+        EnableEventsFailed(port, EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
     }
 }
 
-void TSerialClientEventsReader::EnableEventsFailed(TEnableEventsRetry& retry,
+void TSerialClientEventsReader::EnableEventsFailed(TFeaturePort& port,
+                                                   TEnableEventsRetry& retry,
                                                    bool deviceWasDisconnected,
                                                    uint8_t slaveId,
                                                    const std::string& errorMessage)
 {
-    LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << errorMessage;
+    LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
+              << ": Failed to enable events: " << errorMessage;
     if (deviceWasDisconnected) {
         retry.Interval = std::chrono::milliseconds::zero();
     } else if (retry.Interval == std::chrono::milliseconds::zero()) {

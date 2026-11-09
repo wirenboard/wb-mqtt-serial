@@ -14,9 +14,10 @@ bool TRegisterHandler::NeedToFlush()
     return Dirty;
 }
 
-void TRegisterHandler::HandleWriteErrorNoRetry(const TRegisterValue& tempValue, const char* msg)
+void TRegisterHandler::HandleWriteErrorNoRetry(TPort& port, const TRegisterValue& tempValue, const char* msg)
 {
-    LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << msg;
+    LOG(Warn) << port.GetDescription() << " " << Reg->Device()->ToString() << ": failed to write <"
+              << Reg->GetConfig()->ToString() << ">: " << msg;
     {
         std::lock_guard<std::mutex> lock(SetValueMutex);
         Dirty = (tempValue != ValueToSet);
@@ -25,9 +26,10 @@ void TRegisterHandler::HandleWriteErrorNoRetry(const TRegisterValue& tempValue, 
     Reg->SetError(TRegister::TError::WriteError);
 }
 
-void TRegisterHandler::HandleWriteErrorRetryWrite(const TRegisterValue& tempValue, const char* msg)
+void TRegisterHandler::HandleWriteErrorRetryWrite(TPort& port, const TRegisterValue& tempValue, const char* msg)
 {
-    LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << msg;
+    LOG(Warn) << port.GetDescription() << " " << Reg->Device()->ToString() << ": failed to write <"
+              << Reg->GetConfig()->ToString() << ">: " << msg;
     {
         std::lock_guard<std::mutex> lock(SetValueMutex);
         if (!WriteFail) {
@@ -61,13 +63,13 @@ void TRegisterHandler::Flush(TPort& port)
         Reg->SetValue(tempValue, false);
         Reg->ClearError(TRegister::TError::WriteError);
     } catch (const TSerialDeviceInternalErrorException& e) {
-        HandleWriteErrorNoRetry(tempValue, e.what());
+        HandleWriteErrorNoRetry(port, tempValue, e.what());
         return;
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        HandleWriteErrorNoRetry(tempValue, e.what());
+        HandleWriteErrorNoRetry(port, tempValue, e.what());
         return;
     } catch (const TSerialDeviceException& e) {
-        HandleWriteErrorRetryWrite(tempValue, e.what());
+        HandleWriteErrorRetryWrite(port, tempValue, e.what());
     }
 }
 

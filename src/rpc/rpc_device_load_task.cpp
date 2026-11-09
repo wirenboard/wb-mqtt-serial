@@ -256,6 +256,10 @@ ISerialClientTask::TRunResult TRPCDeviceLoadSerialClientTask::Run(PFeaturePort p
         } else {
             ExecRPCRequest(port, Request);
         }
+    } catch (const TRPCException& error) {
+        if (Request->OnError) {
+            Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, error.what());
+        }
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());

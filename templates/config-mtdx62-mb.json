@@ -4,6 +4,7 @@
   "device": {
     "name": "MTDX62-MB",
     "id": "mtdx62-mb",
+    "force_frame_timeout": true,
     "groups": [
       {
         "title": "general",
