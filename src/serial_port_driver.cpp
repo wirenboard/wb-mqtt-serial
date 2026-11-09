@@ -269,7 +269,7 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
 
     if (isnan(channel->Max)) {
         if (channel->Type == "range" || channel->Type == "dimmer") {
-            args.SetMax(255);
+            args.SetMax(65535);
         }
     } else {
         args.SetMax(channel->Max);
