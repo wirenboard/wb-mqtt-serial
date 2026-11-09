@@ -1096,7 +1096,7 @@ flowchart TD
     Q1 -- "нет" --> P
     Q1 -- "да" --> Q2{"Устройство было отключено?"}
     Q2 -- "да" --> W["Для каждого регистра, ожидающего записи:<br/>подождать frame_timeout_ms,<br/>подождать guard_interval_us,<br/>записать регистр,<br/>дождаться подтверждения записи<br/>в течение response_timeout_ms"]
-    W --> WF2["Подождать frame_timeout_ms<br/>по умолчанию 0 мс или задано протоколом"]
+    W --> WF2["Подождать frame_timeout_ms<br/>по умолчанию 20 мс или задано протоколом"]
     Q2 -- "нет" --> WF2
     WF2 --> WG2["Подождать guard_interval_us<br/>по умолчанию 0 мкс"]
     WG2 --> READ["Послать запрос на чтение регистров"]
@@ -1149,7 +1149,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 - считанное значение совпадает со значением параметра `unsupported_value` в настройках канала
 - канал использует события быстрого Modbus (`"sporadic": true` в настройках канала)
 
-Поведение для Modbus-исключений можно изменить параметром `continue_polling_on_unsupported` в шаблоне или настройках устройства. Если он установлен в `true`, регистры, на которые устройство отвечает `ILLEGAL_FUNCTION`/`ILLEGAL_DATA_ADDRESS`/`ILLEGAL_DATA_VALUE`, остаются в опросе, а соответствующие контролы публикуются в MQTT с признаком ошибки. 
+Поведение для Modbus-исключений можно изменить параметром `continue_polling_on_illegal_modbus_exception` в шаблоне или настройках устройства. Если он установлен в `true`, регистры, на которые устройство отвечает `ILLEGAL_FUNCTION`/`ILLEGAL_DATA_ADDRESS`/`ILLEGAL_DATA_VALUE`, остаются в опросе, а соответствующие контролы публикуются в MQTT с признаком ошибки. 
 
 ### Поведение в случае, если отключен опрос всех каналов, кроме каналов с событиями
 
@@ -1312,13 +1312,13 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 4. Ошибка выполнения запроса (запрос в несуществующий порт)
    ```
    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-31337", "baud_rate": 9600, "parity": "N", "data_bits": 8, "stop_bits": 2, "msg": "0A03008000018499"}, "id": 1}
-   RPC Client -> {"error":{"code":-32000,"data":"Requested port doesn't exist","message":"Server error"},"id":1,"result":null}
+   RPC Client <- {"error":{"code":-32000,"data":"Port IO error: Serial protocol error: /dev/ttyRS485-31337, can't open serial port","message":"Server error"},"id":1,"result":null}
    ```
 
 5. Таймаут выполнения запроса (слишком малое значение таймаута)
    ```
    RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity": "N", "data_bits": 8, "stop_bits": 2, "msg": "0A03008000018499", "total_timeout": 10}, "id": 1}
-   RPC Client <- {"error":{"code":-32600,"data":"Request handler is not responding @ src/rpc_handler.cpp:179","message":"Request timeout"},"id":1,"result":null}
+   RPC Client <- {"error":{"code":-32600,"data":"RPC request timeout","message":"Request timeout"},"id":1,"result":null}
    ```
 
 <a name="чтение-и-запись-по-протоколу-modbus"></a>
@@ -1396,7 +1396,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 Существует возможность выполнить прямую установку параметров связи Modbus-устройства Wiren Board с помощью MQTT RPC запроса. Выполнение запроса встраивается в цикл опроса устройств таким образом, что запрос выполнится с высоким приоритетом сразу после окончания текущего цикла опроса.
 Для упрощенного использования данного функционала написана [Python-библиотека](https://github.com/wirenboard/python-mqtt-rpc/). Также по [ссылке](https://github.com/wirenboard/modbus-utils-rpc) доступна утилита для работы с modbus-устройствами при помощи RPC-функционала wb-mqtt-serial.
 Для выполнения запроса необходимо отправить в топик `wb-mqtt-serial/port/Setup/client_id`, где `client_id` - произвольное имя клиента, посылающего запрос, сообщение типа JSON со следующими параметрами:
-```json
+```jsonc
 {
     // Путь к последовательному порту, в который будет отправлено сообщение
     "path": "/dev/ttyRS485-1",
@@ -1409,7 +1409,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
             // Серийный номер устройства, необязательный
             "sn": 4291508789,
 
-             // Скорость порта
+            // Скорость порта
             "baud_rate": 115200,
 
             // Чётность - N, O или E
@@ -1448,10 +1448,10 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 Поле `cfg.slave_id` меняет адрес устройства. Драйвер только записывает регистры и не проверяет, что устройство отозвалось с новыми настройками. Файл конфигурации драйвера при этом не меняется, поэтому после смены адреса или параметров связи устройство выпадет из опроса, пока его настройки не поправят в конфигурации.
 
 При успешном выполнении запроса возвращается ответ следующей структуры:
-```json
+```jsonc
 {
     "error": null,
-    "id": ID_ЗАПРОСА,
+    "id": 1,
     "result": {}
 }
 ```
@@ -1466,9 +1466,9 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 Присутствие устройства на шине проверяется чтением серийного номера.
 Для упрощенного использования данного функционала написана [Python-библиотека](https://github.com/wirenboard/python-mqtt-rpc/).
 Для выполнения запроса необходимо отправить в топик `wb-mqtt-serial/device/Probe/client_id`, где `client_id` - произвольное имя клиента, посылающего запрос, сообщение типа JSON со следующими параметрами:
-```json
+```jsonc
 {
-    // Путь к последовательному порту, на которому будет производиться поиск
+    // Путь к последовательному порту, на котором будет производиться поиск
     "path": "/dev/ttyRS485-1",
 
     // Скорость порта
@@ -1490,7 +1490,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 
 или
 
-```json
+```jsonc
 {
     // IP адрес или имя хоста шлюза
     "ip": "1.1.1.1",
@@ -1509,7 +1509,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 ```
 
 При успешном выполнении запроса возвращается ответ следующей структуры:
-```json
+```jsonc
 {
     // серийный номер устройства
     "sn": "13453",
@@ -1560,7 +1560,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
     // прошивка устройства
     "fw": {
         // версия
-        "version": "1.2.3",
+        "version": "1.2.3"
     }
 }
 ```
@@ -1751,7 +1751,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 |------------------|-------------|----------------------|---------|
 |`slave_id`        |обязательный |                      |адрес устройства
 |`device_type`     |обязательный |                      |тип устройства, как указано в соответствующем шаблоне
-|`channels`        |опциональный |                      |JSON-объект с данными каналов, которые необходимо записать, например, `{"K1": 0, "K1": 1, "K2": 1}`
+|`channels`        |опциональный |                      |JSON-объект с данными каналов, которые необходимо записать, например, `{"K1": 0, "K2": 1, "K3": 1}`
 |`parameters`      |опциональный |                      |JSON-объект с данными параметров, которые необходимо записать, например, `{"in1_mode": 0, "in2_mode": 1, "in3_mode": 2}`. Значения должны быть числами, как в конфигурации устройства
 |`response_timeout`|опциональный |500 ms                |таймаут чтения первого байта в миллисекундах. Значение сравнивается с параметром `response_timeout_ms` соответствующего порта в настройках wb-mqtt-serial и используется максимальное
 |`frame_timeout`   |опциональный |20 ms                 |таймаут чтения каждого последующего байта в миллисекундах
@@ -1845,6 +1845,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 |Параметр   |Тип          |Описание |
 |-----------|-------------|---------|
 |`device_id`|обязательный |уникальный идентификатор устройства, как в соответствующих ему MQTT топиках ("id" из шаблона + "\_" + "slave_id", например, `wb-mr6cv3_25`)
+|`poll`     |обязательный |значение `false` останавливает опрос устройства, значение `true` возобновляет опрос устройства
 
 #### Ответ на запрос
 
@@ -2079,7 +2080,7 @@ OBIS-коды кодируются в адресе регистра следую
 
 ```bash
 # systemctl stop wb-mqtt-serial
-# wb-mqtt-serial -G print_all,/dev/ttyMOD3,9600-8-N-1,dlms_hdlc:75,32,low,12345678
+# wb-mqtt-serial -G generate,/dev/ttyMOD3,9600-8-N-1,dlms_hdlc:75,32,low,12345678
 # systemctl start wb-mqtt-serial
 ```
 
@@ -2161,24 +2162,24 @@ OBIS-коды кодируются в адресе регистра следую
 | "Разумный дом" четырёхканальный диммер светодиодов DDL4 |    DDL24    |   ddl24    |    DDL24      |
 |           "Разумный дом" релейный модуль DRB88          |    DRB88    |   drb88    |    DRB88      |
 |           RD DDL04R LED Strip Dimmer                    |    DDL04R   |   ddl04r   |    DDL04R     |
-|      "ICP DAS" модуль управления освещением LC-103      |    LC-103   |   lc-103   |    LC-103     |
+|      "ICP DAS" модуль управления освещением LC-103      |    LC-103   |   lc103    |    LC-103     |
 |                   "Разумный дом" MSU24                  |    MSU24    |   msu24    |    MSU24      |
 |                   "Разумный дом" MSU21                  |    MSU21    |   msu21    |    MSU21      |
 |                   "Разумный дом" MSU34+TLP              |    MSU34    |   msu34tlp |  MSU34+TLP    |
 |                   "Разумный дом" MSU34+TLHP             | MSU34TLHP   | msu34tlhp  |  MSU34+TLHP   |
-|          "ICP DAS" модуль ввода-вывода TM-P3R3          |   TM-P3R3   |  TM-P3R3   |    tmp3r3     |
+|          "ICP DAS" модуль ввода-вывода TM-P3R3          |   TM-P3R3   |  tmp3r3    |    TM-P3R3    |
 |     "Kvadro" модуль подключения термометров 1-wire      |kvadro-1wire |kvadro-1wire| Kvadro 1-Wire |
 |     PD561Z-9SY счётчик электроэнергии                   |    PD561Z   |  pd561z    | pd561z        |
 |     SDM220 счётчик электроэнергии                       |    SDM220   |  sdm220    |  sdm220       |
 |     SDM120 счётчик электроэнергии                       |    SDM120   |  sdm120    |  sdm120       |
 |     WELLPRO WP8028ADAM (8DI/8DO)                        | WP8028ADAM  | wp8028adam |   WP8028ADAM  |
-|  Wiren Board RGB-диммер WB-MRGB                         |   WB-MRGB   |  WB-MRGB   |   wb-mrgb     |
-|  Wiren Board Релейный модуль WB-MRM2                    |   WB-MRM2   |  WB-MRM2   |   wb-mrm2     |
-|  Wiren Board Релейный модуль WB-MR11                    |   WB-MR11   |  WB-MR11   |   wb-mr11     |
-|  Wiren Board Релейный модуль WB-MR14                    |   WB-MR14   |  WB-MR14   |   wb-mr14     |
-|  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
+|  Wiren Board RGB-диммер WB-MRGB                         |   WB-MRGB   |  wb-mrgb   |   WB-MRGB     |
+|  Wiren Board Релейный модуль WB-MRM2                    |   WB-MRM2   |  wb-mrm2   |   WB-MRM2     |
+|  Wiren Board Релейный модуль WB-MR11                    |   WB-MR11   |  wb-mr11   |   WB-MR11     |
+|  Wiren Board Релейный модуль WB-MR14                    |   WB-MR14   |  wb-mr14   |   WB-MR14     |
+|  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  wb-mcm16  |   WB-MCM16    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
-|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
+|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls-v2 | WB-MS / WB-MSW |
 |  Peacefair PZEM-016                                     |  PZEM-016   | pzem       | PZEM          |
 
 **Милур**
@@ -2221,7 +2222,8 @@ OBIS-коды кодируются в адресе регистра следую
 **Энергомера протокол CE**
 |                     Device                     | device_type    | id_prefix      | name_prefix           |
 |:----------------------------------------------:|:--------------:|:--------------:|:---------------------:|
-| Энергомера CE102-R5.1 Счетчик электроэнергии однофазный многотарифный | Energomera CE102   | energomera102   |  Energomera CE102   |
+| Энергомера CE102-R5.1 Счетчик электроэнергии однофазный многотарифный | energomera_ce102   | energomera102   |  Energomera CE102   |
+| Энергомера CE102M Счетчик электроэнергии однофазный многотарифный | energomera_ce102m   | energomera102m   |  Energomera CE102M   |
 
 **НЕВА МТ 323/324**
 |                       Device                     | device_type   | id_prefix      | name_prefix   |
@@ -2253,4 +2255,5 @@ OBIS-коды кодируются в адресе регистра следую
 **Dauerhaft**
 |                     Device                     | device_type    | id_prefix      | name_prefix           |
 |:----------------------------------------------:|:--------------:|:--------------:|:---------------------:|
-| Мотор управления шторами Dauerhaft             | Dauerhaft      | dauerhaft      |  Dauerhaft            |
+| Мотор управления шторами Dauerhaft Roll 35/45  | tpl1_dauerhaft_roll_35_45 | dauerhaft-35-45 | Dauerhaft Roll 35/45 |
+| Мотор управления шторами Dauerhaft CM5         | Dauerhaft CM5  | dauerhaft-cm5  |  Dauerhaft CM5        |
