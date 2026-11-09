@@ -1453,7 +1453,7 @@ effective_frame_timeout = max(frame_timeout_ms, ceil(3.5 × время_пере�
 ```jsonc
 {
     "error": null,
-    "id": 1,
+    "id": ID_ЗАПРОСА,
     "result": {}
 }
 ```
