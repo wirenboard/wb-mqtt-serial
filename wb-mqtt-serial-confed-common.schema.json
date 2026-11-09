@@ -342,6 +342,7 @@
         },
         "max": {
           "title": "Maximum value",
+          "description": "max_description",
           "$ref": "#/definitions/serial_num",
           "propertyOrder": 14,
           "format": "wb-serial-number",
@@ -1290,7 +1291,8 @@
       "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue",
       "hidden_channel_description": "Hidden channels are not displayed in UI, but are published in MQTT. They are useful for channels that are needed for internal purposes, but should not be exposed to users directly",
       "preserve_setup_order_desc": "If enabled, setup items are written to the device in the order they are defined in the template. Otherwise items are sorted by register type and address.",
-      "max_publish_interval_desc": "Publish a value even if it hasn't changed during the specified time. Zero disables publishing of unchanged values. Values less than 5 are replaced with 5. A value set for a channel overrides the device's one."
+      "max_publish_interval_desc": "Publish a value even if it hasn't changed during the specified time. Zero disables publishing of unchanged values. Values less than 5 are replaced with 5. A value set for a channel overrides the device's one.",
+      "max_description": "Upper limit of the control published in MQTT. If not set, 65535 is used for range and dimmer controls, other controls have no limit"
     },
     "ru": {
       "Response timeout (ms)": "Таймаут ответа (мс)",
@@ -1413,6 +1415,7 @@
       "Name": "Имя",
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
+      "max_description": "Верхняя граница значения контрола, публикуется в MQTT. Если не задана, для контролов range и dimmer используется 65535, у остальных контролов ограничения нет",
       "Read rate limit (ms)": "Читать не чаще (мс)",
       "Units": "Единицы измерения",
       "Poll": "Опрос",
