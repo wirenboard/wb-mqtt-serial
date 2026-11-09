@@ -1,3 +1,29 @@
+wb-mqtt-serial (2.292.0) stable; urgency=medium
+
+  * WB-MR6C/NC, WB-MRM2-mini/NC templates: on/off texts describe the load
+    state (input mode "Turn on all outputs", timer functions, startup and
+    restart delays), "On K"/"Off K" buttons turn the load on and off as
+    named (they were reversed), the input mode description explains that
+    a latching switch controls the output inversely
+  * WB-MR templates: the actuator action in safety mode is moved to the
+    "Safety Mode" tab next to the outputs, actuator power-up and safety
+    actions are "No Action", "Open" and "Close"
+  * WB-MR templates: the same output action has the same name everywhere
+    ("Ничего не делать" instead of "нет действия", "Turn On" and "Turn Off"
+    instead of "set" and "reset"), English action names are in Title Case
+  * WB-MR3, WB-MR6C, WB-MR6CU, WB-MR6C v.3, WB-MRM2-mini templates: "Off K",
+    "On K" and "Toggle K" buttons are hidden for the outputs used for
+    actuator control
+  * WB-MR3, WB-MR6C, WB-MR6C/NC, WB-MR6CU, WB-MR6C v.3 templates: "Minimum
+    MCU Voltage Since Startup" channel is added (firmware 1.21.2 and later),
+    WB-MRM2-mini and WB-MRM2-mini/NC templates show it from firmware 1.21.2
+  * WB-MRM2-mini template: the 100 ms minimum interval between requests is
+    removed
+  * WB-MR, WB-MRWM2 templates: typos in the Russian title of "Outputs State
+    After Power On" and in parameter descriptions are fixed
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 09 Nov 2026 15:48:29 +0300
+
 wb-mqtt-serial (2.291.3) stable; urgency=medium
 
   * Log the first error of device setup as a warning
