@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.291.2) stable; urgency=medium
+wb-mqtt-serial (2.291.3) stable; urgency=medium
 
   * Log the first error of device setup as a warning
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 06 Nov 2026 05:32:38 +0000
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 09 Nov 2026 09:49:13 +0000
+
+wb-mqtt-serial (2.291.2) stable; urgency=medium
+
+  * Document that range and dimmer channels without explicit max use 65535 as default
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 09 Nov 2026 12:00:00 +0400
 
 wb-mqtt-serial (2.291.1) stable; urgency=medium
 
