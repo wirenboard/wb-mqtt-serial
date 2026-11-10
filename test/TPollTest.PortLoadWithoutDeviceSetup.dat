@@ -1,0 +1,14 @@
+Open()
+SkipNoise()
+Sleep(20000)
+EnqueueReadHolding()
+>> 01 03 00 05 00 01 94 0B
+<< 01 03 02 00 00 B8 44
+port/Load result: 0000
+SkipNoise()
+Sleep(20000)
+EnqueueReadHolding()
+>> 01 03 00 05 00 01 94 0B
+<< 01 03 02 00 00 B8 44
+port/Load result: 0000
+Close()

@@ -68,6 +68,25 @@ PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& reque
     return RPCRequest;
 }
 
+PSerialClientTask MakeRPCPortLoadModbusTask(const Json::Value& request,
+                                            PDeviceParametersCache parametersCache,
+                                            PSerialDevice deviceFromConfig,
+                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                            WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    auto rpcRequest = ParseRPCPortLoadModbusRequest(request, parametersCache);
+    rpcRequest->OnResult = onResult;
+    rpcRequest->OnError = onError;
+    if (deviceFromConfig) {
+        rpcRequest->SlaveId = GetModbusSlaveId(*deviceFromConfig);
+        rpcRequest->Protocol = deviceFromConfig->Protocol()->GetName();
+        if (request.get("ensure", "nothing").asString() == "configured_device") {
+            return std::make_shared<TRPCPortLoadConfiguredDeviceTask>(rpcRequest, deviceFromConfig);
+        }
+    }
+    return std::make_shared<TRPCPortLoadModbusSerialClientTask>(rpcRequest);
+}
+
 void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequest)
 {
     try {
@@ -145,7 +164,9 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(*port, nullptr);
+        if (!PrepareDevice(*port, lastAccessedDevice)) {
+            return ISerialClientTask::TRunResult::OK;
+        }
         if (Request->SerialPortSettings) {
             TSerialPortSettingsGuard settingsGuard(port, *Request->SerialPortSettings);
             ExecRPCPortLoadModbusRequest(*port, Request);
@@ -158,4 +179,29 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
         }
     }
     return ISerialClientTask::TRunResult::OK;
+}
+
+bool TRPCPortLoadModbusSerialClientTask::PrepareDevice(TFeaturePort& port,
+                                                       TSerialClientDeviceAccessHandler& lastAccessedDevice)
+{
+    lastAccessedDevice.PrepareToAccess(port, nullptr);
+    return true;
+}
+
+TRPCPortLoadConfiguredDeviceTask::TRPCPortLoadConfiguredDeviceTask(PRPCPortLoadModbusRequest request,
+                                                                   PSerialDevice device)
+    : TRPCPortLoadModbusSerialClientTask(request),
+      Device(device)
+{}
+
+bool TRPCPortLoadConfiguredDeviceTask::PrepareDevice(TFeaturePort& port,
+                                                     TSerialClientDeviceAccessHandler& lastAccessedDevice)
+{
+    if (lastAccessedDevice.PrepareToAccess(port, Device)) {
+        return true;
+    }
+    if (Request->OnError) {
+        Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, "Device setup failed");
+    }
+    return false;
 }

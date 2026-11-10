@@ -1,0 +1,7 @@
+Open()
+Sleep(1000)
+Sleep(10000)
+EnqueueWriteSetupRegisterNoResponse()
+>> 01 06 00 64 00 05 08 16
+port/Load error -32000: Device setup failed
+Close()
