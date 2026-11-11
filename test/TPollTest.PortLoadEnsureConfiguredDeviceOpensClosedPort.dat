@@ -1,0 +1,43 @@
+Open()
+Close()
+0: Cycle
+0: <modbus:1:(type 0): 1> with errors: 001
+0: <modbus:1:(type 0): 1> with errors: 001
+0: Cycle end
+
+0: Cycle
+Open()
+Sleep(1000)
+Sleep(10000)
+EnqueueWriteSetupRegister()
+>> 01 06 00 64 00 05 08 16
+<< 01 06 00 64 00 05 08 16
+EnqueueEnableEvents()
+>> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
+<< 01 46 18 02 01 00 2E F5
+SkipNoise()
+Sleep(20000)
+EnqueueReadHolding()
+>> 01 03 00 05 00 01 94 0B
+<< 01 03 02 00 00 B8 44
+port/Load result: 0000
+61000: task 1
+81000: task 2
+101000: task 3
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+125670: task 4
+145670: task 5
+165670: task 6
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+190340: <modbus:1:(type 0): 1> with errors: 001
+190340: Cycle end
+
+Close()

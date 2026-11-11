@@ -2,6 +2,7 @@
 #include "fake_serial_port.h"
 #include "log.h"
 #include "modbus_expectations_base.h"
+#include "rpc/rpc_port_load_modbus_serial_client_task.h"
 #include "serial_driver.h"
 
 using namespace std::chrono_literals;
@@ -109,6 +110,35 @@ namespace
             TimeMock.AddTime(us);
         }
     };
+
+    //! Takes time without port exchange
+    class TFakeSerialClientTask: public ISerialClientTask
+    {
+        WBMQTT::Testing::TLoggedFixture& Fixture;
+        TTimeMock& TimeMock;
+        std::string Name;
+        microseconds Duration;
+
+    public:
+        TFakeSerialClientTask(WBMQTT::Testing::TLoggedFixture& fixture,
+                              TTimeMock& timeMock,
+                              const std::string& name,
+                              microseconds duration)
+            : Fixture(fixture),
+              TimeMock(timeMock),
+              Name(name),
+              Duration(duration)
+        {}
+
+        ISerialClientTask::TRunResult Run(PFeaturePort port,
+                                          TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                          const std::list<PSerialDevice>& polledDevices) override
+        {
+            Fixture.Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << Name;
+            TimeMock.AddTime(Duration);
+            return ISerialClientTask::TRunResult::OK;
+        }
+    };
 }
 
 class TPollTest: public TLoggedFixture, public TModbusExpectationsBase
@@ -138,17 +168,7 @@ public:
     void Cycle(TSerialClientRegisterAndEventsReader& serialClient, TSerialClientDeviceAccessHandler& lastAccessedDevice)
     {
         Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": Cycle";
-        serialClient.OpenPortCycle(
-            *FeaturePort,
-            [this](PRegister reg) {
-                std::string errorMsg;
-                if (reg->GetErrorState().any()) {
-                    errorMsg = " with errors: " + reg->GetErrorState().to_string();
-                }
-                Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString()
-                       << errorMsg;
-            },
-            lastAccessedDevice);
+        serialClient.OpenPortCycle(*FeaturePort, [this](PRegister reg) { EmitRegister(reg); }, lastAccessedDevice);
         auto deadline = serialClient.GetDeadline(TimeMock.GetTime());
         if (deadline > TimeMock.GetTime()) {
             TimeMock.AddTime(ceil<microseconds>(deadline - TimeMock.GetTime()));
@@ -334,13 +354,16 @@ public:
         Port->ExpectNoResponse(EnableEventsRequest(addr), __func__, readTime);
     }
 
-    void EnqueueEnableEventsException(uint8_t slaveId, uint16_t addr, microseconds readTime)
+    void EnqueueEnableEventsException(uint8_t slaveId,
+                                      uint16_t addr,
+                                      microseconds readTime,
+                                      uint8_t exceptionCode = Modbus::ILLEGAL_FUNCTION)
     {
         SetModbusRTUSlaveId(slaveId);
         Port->Expect(EnableEventsRequest(addr),
                      WrapPDU({
-                         0xC6,                // function code + exception bit
-                         SLAVE_DEVICE_FAILURE //
+                         0xC6,         // function code + exception bit
+                         exceptionCode //
                      }),
                      __func__,
                      readTime);
@@ -436,17 +459,27 @@ public:
         return {0x46, 0x12};
     }
 
-    void EnqueueWriteSetupRegister(uint16_t addr, uint16_t value, microseconds readTime)
+    std::vector<int> WriteSetupRegisterRequest(uint16_t addr, uint16_t value)
     {
         SetModbusRTUSlaveId(1);
-        std::vector<int> pdu = {
+        return WrapPDU({
             0x06,                // function code
             (addr >> 8) & 0xFF,  // address Hi
             addr & 0xFF,         // address Lo
             (value >> 8) & 0xFF, // value Hi
             value & 0xFF         // value Lo
-        };
-        Port->Expect(WrapPDU(pdu), WrapPDU(pdu), __func__, readTime);
+        });
+    }
+
+    void EnqueueWriteSetupRegisterNoResponse(uint16_t addr, uint16_t value, microseconds readTime)
+    {
+        Port->ExpectNoResponse(WriteSetupRegisterRequest(addr, value), __func__, readTime);
+    }
+
+    void EnqueueWriteSetupRegister(uint16_t addr, uint16_t value, microseconds readTime)
+    {
+        auto request = WriteSetupRegisterRequest(addr, value);
+        Port->Expect(request, request, __func__, readTime);
     }
 
     // Cycles through malformed response, response timeout and port error
@@ -512,11 +545,79 @@ public:
         return device;
     }
 
+    void EmitRegister(PRegister reg)
+    {
+        std::string errorMsg;
+        if (reg->GetErrorState().any()) {
+            errorMsg = " with errors: " + reg->GetErrorState().to_string();
+        }
+        Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString()
+               << errorMsg;
+    }
+
+    //! The client is kept till the end of the test, so it does not close the port before TearDown
+    void MakeSerialClient(PSerialDevice device)
+    {
+        SerialClient = std::make_shared<TSerialClient>(FeaturePort, TPortOpenCloseLogic::TSettings(), [this]() {
+            return TimeMock.GetTime();
+        });
+        SerialClient->AddDevice(device);
+        SerialClient->SetReadCallback([this](PRegister reg) { EmitRegister(reg); });
+        SerialClient->SetErrorCallback([this](PRegister reg) { EmitRegister(reg); });
+    }
+
+    void SerialClientCycle()
+    {
+        Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": Cycle";
+        SerialClient->Cycle();
+        Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": Cycle end\n";
+    }
+
+    void AddTaskStream(size_t count, microseconds taskDuration)
+    {
+        for (size_t i = 0; i < count; ++i) {
+            SerialClient->AddTask(std::make_shared<TFakeSerialClientTask>(*this,
+                                                                          TimeMock,
+                                                                          "task " + std::to_string(i + 1),
+                                                                          taskDuration));
+        }
+    }
+
+    //! Null deviceFromConfig makes the request to an address which is not in the config
+    PSerialClientTask MakePortLoadTask(PSerialDevice deviceFromConfig, const std::string& ensure = "configured_device")
+    {
+        Json::Value request;
+        request["slave_id"] = 1;
+        request["function"] = 3;
+        request["address"] = 5;
+        request["format"] = "HEX";
+        request["device_id"] = "device1";
+        request["protocol"] = "modbus";
+        request["ensure"] = ensure;
+        return MakeRPCPortLoadModbusTask(
+            request,
+            std::make_shared<TDeviceParametersCache>(),
+            deviceFromConfig,
+            [this](const Json::Value& result) { Emit() << "port/Load result: " << result["response"].asString(); },
+            [this](WBMQTT::TMqttRpcErrorCode code, const std::string& message) {
+                Emit() << "port/Load error " << code << ": " << message;
+            });
+    }
+
+    std::shared_ptr<TModbusDevice> MakeOnlyEventsDeviceWithSetup()
+    {
+        auto device = MakeOnlyEventsDevice();
+        device->AddSetupItem(
+            std::make_shared<TDeviceSetupItemConfig>("setup", TRegisterConfig::Create(Modbus::REG_HOLDING, 100), "5"));
+        return device;
+    }
+
     std::shared_ptr<TFakeSerialPortWithTime> Port;
     std::shared_ptr<TFeaturePort> FeaturePort;
     TTimeMock TimeMock;
     system_clock::time_point SystemTime;
     TSerialDeviceFactory DeviceFactory;
+    PSerialClient SerialClient;
 };
 
 TEST_F(TPollTest, SingleDeviceSingleRegister)
@@ -1681,4 +1782,161 @@ TEST_F(TPollTest, TimeSyncNotSupported)
     EnqueueWriteLocalTime(1, FAKE_LOCAL_TIME + duration_cast<seconds>(25h).count(), 10ms);
     Cycle(serialClient, lastAccessedDevice);
     EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+}
+
+TEST_F(TPollTest, RPCQueueDoesNotStarveEvents)
+{
+    // One register with events and one polled register, the queue is never empty
+    // 1. The tasks run in the order they are added
+    // 2. After the task during which the events period expires the events are read
+    // 3. The polled register is not read until the queue is empty
+
+    auto device = MakeOnlyEventsDevice();
+    AddRegister(*device, 2);
+    MakeSerialClient(device);
+
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    SerialClientCycle();
+
+    AddTaskStream(10, 20ms);
+    EnqueueReadEvents(4ms);
+    // The value is published between the tasks
+    EnqueueEventsExchange(4ms, 0, 0, 0, HoldingEventResponse(0, 1, 0x1234), 1);
+    EnqueueEventsExchange(4ms, 1, 1, 0, NoEventsResponse(), 0xFD);
+    EnqueueReadEvents(4ms);
+    EnqueueReadEvents(4ms);
+    // Polled after the last task
+    EnqueueReadHolding(1, 2, 1, 10ms);
+    SerialClientCycle();
+}
+
+TEST_F(TPollTest, SingleRPCIsExecutedImmediately)
+{
+    // One register with events, the events period has expired before the task is added
+    // The task runs first, the events are read after it
+
+    auto device = MakeOnlyEventsDevice();
+    MakeSerialClient(device);
+
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    SerialClientCycle();
+
+    TimeMock.AddTime(100ms);
+    SerialClient->AddTask(std::make_shared<TFakeSerialClientTask>(*this, TimeMock, "task", 20ms));
+    EnqueueReadEvents(4ms);
+    SerialClientCycle();
+}
+
+TEST_F(TPollTest, PortLoadEnsureConfiguredDevicePreparesDevice)
+{
+    // The first port/Load with ensure configured_device writes the setup register, enables events and sends the
+    // request. The next one only sends the request
+
+    auto device = MakeOnlyEventsDeviceWithSetup();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteSetupRegister(100, 5, 10ms);
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    MakePortLoadTask(device)->Run(FeaturePort, lastAccessedDevice, {device});
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+    EXPECT_TRUE(serialClient.GetEventsReader()->HasDevicesWithEnabledEvents());
+
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    MakePortLoadTask(device)->Run(FeaturePort, lastAccessedDevice, {device});
+}
+
+TEST_F(TPollTest, PortLoadWithoutDeviceSetup)
+{
+    // A config device which is not set up, port/Load only sends the request
+    // 1. With ensure nothing
+    // 2. With ensure configured_device to an address which is not in the config
+
+    auto device = MakeOnlyEventsDeviceWithSetup();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    MakePortLoadTask(device, "nothing")->Run(FeaturePort, lastAccessedDevice, {device});
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    MakePortLoadTask(nullptr)->Run(FeaturePort, lastAccessedDevice, {device});
+    EXPECT_NE(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+    EXPECT_FALSE(serialClient.GetEventsReader()->HasDevicesWithEnabledEvents());
+}
+
+TEST_F(TPollTest, EnableEventsAnswerConnectsDevice)
+{
+    // A device without setup registers
+    // 1. A gateway answers the events enabling with an exception, the device is not connected
+    // 2. The device answers the events enabling of port/Load with ensure configured_device with a Modbus
+    //    exception, the device is connected, the request is sent
+
+    auto device = MakeOnlyEventsDevice();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueEnableEventsException(1, 1, 10ms, Modbus::GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND);
+    lastAccessedDevice.PrepareToAccess(*FeaturePort, device);
+    EXPECT_NE(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+
+    EnqueueEnableEventsException(1, 1, 10ms);
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    MakePortLoadTask(device)->Run(FeaturePort, lastAccessedDevice, {device});
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
+}
+
+TEST_F(TPollTest, PortLoadEnsureConfiguredDeviceSetupFails)
+{
+    // The setup register write of port/Load with ensure configured_device is not answered
+    // The request is not sent, an error is returned
+
+    auto device = MakeOnlyEventsDeviceWithSetup();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteSetupRegisterNoResponse(100, 5, 10ms);
+    MakePortLoadTask(device)->Run(FeaturePort, lastAccessedDevice, {device});
+}
+
+TEST_F(TPollTest, PortLoadEnsureConfiguredDeviceEnablingNotAnswered)
+{
+    // port/Load with ensure configured_device writes the setup register, the events enabling is not answered,
+    // the request is sent
+
+    auto device = MakeOnlyEventsDeviceWithSetup();
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    EnqueueWriteSetupRegister(100, 5, 10ms);
+    EnqueueEnableEventsNoResponse(1, 1, 10ms);
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    MakePortLoadTask(device)->Run(FeaturePort, lastAccessedDevice, {device});
+    EXPECT_FALSE(serialClient.GetEventsReader()->HasDevicesWithEnabledEvents());
+}
+
+TEST_F(TPollTest, PortLoadEnsureConfiguredDeviceOpensClosedPort)
+{
+    // The port can not be opened, the polling goes on as for a closed port
+    // 1. port/Load with ensure configured_device opens the port, sets up the device and enables events
+    // 2. The queue is never empty, the events are read between them
+
+    auto device = MakeOnlyEventsDeviceWithSetup();
+    MakeSerialClient(device);
+
+    Port->Close();
+    Port->SetAllowOpen(false);
+    SerialClientCycle();
+
+    Port->SetAllowOpen(true);
+    SerialClient->AddTask(MakePortLoadTask(device));
+    AddTaskStream(6, 20ms);
+    EnqueueWriteSetupRegister(100, 5, 10ms);
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 5, 1, 10ms);
+    EnqueueReadEvents(4ms);
+    EnqueueReadEvents(4ms);
+    SerialClientCycle();
 }

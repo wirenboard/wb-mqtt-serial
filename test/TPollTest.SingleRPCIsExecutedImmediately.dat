@@ -1,0 +1,23 @@
+Open()
+0: Cycle
+Sleep(1000)
+EnqueueEnableEvents()
+>> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
+<< 01 46 18 02 01 00 2E F5
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+31000: <modbus:1:(type 0): 1>
+31000: Cycle end
+
+131000: Cycle
+131000: task
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+155670: Cycle end
+
+Close()

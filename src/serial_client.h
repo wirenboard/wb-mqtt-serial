@@ -38,6 +38,11 @@ public:
                                 TRegisterCallback regCallback,
                                 TSerialClientDeviceAccessHandler& lastAccessedDevice);
 
+    //! Never polls the registers
+    void ReadEventsIfDue(TFeaturePort& port,
+                         TRegisterCallback regCallback,
+                         TSerialClientDeviceAccessHandler& lastAccessedDevice);
+
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
 
     PSerialClientEventsReader GetEventsReader() const;
@@ -55,6 +60,12 @@ private:
     bool LastCycleWasTooSmallToPoll;
     util::TGetNowFn NowFn;
     util::TGetSystemTimeFn SystemTimeFn;
+
+    void ReadEvents(TFeaturePort& port,
+                    TRegisterCallback regCallback,
+                    TSerialClientDeviceAccessHandler& lastAccessedDevice);
+
+    void ScheduleEventsIfMissing(std::chrono::steady_clock::time_point periodStart);
 };
 
 class ISerialClientTask
