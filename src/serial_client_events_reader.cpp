@@ -343,6 +343,7 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
             ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
+            device->SetTransferResult(true);
             for (const auto& [type, addr, res]: enableResults) {
                 OnEnabledEvent(slaveId, type, addr, res);
             }
@@ -350,9 +351,22 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TFeaturePort&
         }
         EnableEventsRetries.erase(modbusDevice->SlaveId);
     } catch (const Modbus::TModbusExceptionError& e) {
-        LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
-                  << ": Failed to enable events: " << e.what();
-        EnableEventsRetries.erase(modbusDevice->SlaveId);
+        auto code = e.GetExceptionCode();
+        // Other codes can come from a gateway or a busy device
+        if (code == Modbus::ILLEGAL_FUNCTION || code == Modbus::ILLEGAL_DATA_ADDRESS ||
+            code == Modbus::ILLEGAL_DATA_VALUE)
+        {
+            LOG(Warn) << port.GetDescription() << " " << MakeDeviceDescriptionString(slaveId)
+                      << ": Failed to enable events: " << e.what();
+            device->SetTransferResult(true);
+            EnableEventsRetries.erase(modbusDevice->SlaveId);
+        } else {
+            EnableEventsFailed(port,
+                               EnableEventsRetries[modbusDevice->SlaveId],
+                               deviceWasDisconnected,
+                               slaveId,
+                               e.what());
+        }
     } catch (const Modbus::TErrorBase& e) {
         EnableEventsFailed(port, EnableEventsRetries[modbusDevice->SlaveId], deviceWasDisconnected, slaveId, e.what());
     } catch (const TSerialDeviceException& e) {

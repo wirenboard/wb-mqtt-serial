@@ -14,7 +14,7 @@ EnqueueReadHolding()
 31000: Cycle
 EnqueueEnableEventsException()
 >> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
-<< 01 C6 04 72 63
+<< 01 C6 01 B2 60
 Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA

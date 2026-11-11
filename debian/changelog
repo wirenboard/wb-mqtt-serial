@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.293.0) stable; urgency=medium
+
+  * Fast Modbus: events are read while RPC requests keep the port busy
+  * port/Load: add ensure parameter to set up the device and enable its events
+    before the request
+  * Fast Modbus: a device is online once it answers the request to enable events
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Nov 2026 12:00:00 +0000
+ 
 wb-mqtt-serial (2.292.2) stable; urgency=medium
 
   * ONOKOM templates update (external contribution):

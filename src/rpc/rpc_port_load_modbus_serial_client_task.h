@@ -32,12 +32,37 @@ public:
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                       const std::list<PSerialDevice>& polledDevices) override;
 
-private:
+protected:
     PRPCPortLoadModbusRequest Request;
+
+    //! Returns false if the request must not be sent, the error is already answered then
+    virtual bool PrepareDevice(TFeaturePort& port, TSerialClientDeviceAccessHandler& lastAccessedDevice);
+
+private:
     std::chrono::steady_clock::time_point ExpireTime;
+};
+
+//! The device is set up before the request as for polling
+class TRPCPortLoadConfiguredDeviceTask: public TRPCPortLoadModbusSerialClientTask
+{
+public:
+    TRPCPortLoadConfiguredDeviceTask(PRPCPortLoadModbusRequest request, PSerialDevice device);
+
+protected:
+    bool PrepareDevice(TFeaturePort& port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
+
+private:
+    PSerialDevice Device;
 };
 
 PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request,
                                                         PDeviceParametersCache parametersCache);
+
+//! deviceFromConfig is null if the request is not to a device from the config
+PSerialClientTask MakeRPCPortLoadModbusTask(const Json::Value& request,
+                                            PDeviceParametersCache parametersCache,
+                                            PSerialDevice deviceFromConfig,
+                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
 typedef std::shared_ptr<TRPCPortLoadModbusSerialClientTask> PRPCPortLoadModbusSerialClientTask;

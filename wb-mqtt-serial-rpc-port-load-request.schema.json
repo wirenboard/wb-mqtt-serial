@@ -117,6 +117,10 @@
         "write_count": {
           "type": "integer",
           "minimum": 1
+        },
+        "ensure": {
+          "type": "string",
+          "enum": ["nothing", "configured_device"]
         }
       },
       "required": [ "function", "address" ]

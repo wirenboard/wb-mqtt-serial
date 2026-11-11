@@ -117,6 +117,13 @@ void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, st
                 if (task->Run(Port, *LastAccessedDevice, Devices) == ISerialClientTask::TRunResult::RETRY) {
                     retryTasks.push_back(task);
                 }
+                // The events are read between the tasks, a task can open a closed port
+                if (Port->IsOpen() && !IsStopRequested()) {
+                    RegReader->ReadEventsIfDue(
+                        *Port,
+                        [this](PRegister reg) { ProcessPolledRegister(reg); },
+                        *LastAccessedDevice);
+                }
                 lock.lock();
             }
             if (StopRequested) {
@@ -364,15 +371,7 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TFeaturePort& 
     }
 
     if (handler.TaskType == TClientTaskType::EVENTS) {
-        if (EventsReader && EventsReader->HasDevicesWithEnabledEvents()) {
-            lastAccessedDevice.PrepareToAccess(port, nullptr);
-            EventsReader->ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
-            TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
-            TimeBalancer.AddEntry(TClientTaskType::EVENTS,
-                                  SpentTime.GetStartTime() + ReadEventsPeriod,
-                                  TPriority::High);
-        }
-        SpentTime.Start();
+        ReadEvents(port, regCallback, lastAccessedDevice);
 
         // TODO: Need to notify port open/close logic about errors
         return nullptr;
@@ -402,12 +401,45 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TFeaturePort& 
         TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::Low);
     }
 
-    if (EventsReader->HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
-        TimeBalancer.AddEntry(TClientTaskType::EVENTS, SpentTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
-    }
+    ScheduleEventsIfMissing(SpentTime.GetStartTime());
 
     SpentTime.Start();
     return res.Device;
+}
+
+void TSerialClientRegisterAndEventsReader::ReadEventsIfDue(TFeaturePort& port,
+                                                           TRegisterCallback regCallback,
+                                                           TSerialClientDeviceAccessHandler& lastAccessedDevice)
+{
+    auto currentTime = NowFn();
+    // The events can be enabled after the last cycle
+    ScheduleEventsIfMissing(currentTime);
+    // The events are the only high priority entry
+    if (TimeBalancer.GetHighPriorityDeadline() <= currentTime) {
+        TimeBalancer.Remove(TClientTaskType::EVENTS);
+        SpentTime.Start();
+        ReadEvents(port, regCallback, lastAccessedDevice);
+    }
+}
+
+void TSerialClientRegisterAndEventsReader::ReadEvents(TFeaturePort& port,
+                                                      TRegisterCallback regCallback,
+                                                      TSerialClientDeviceAccessHandler& lastAccessedDevice)
+{
+    if (EventsReader && EventsReader->HasDevicesWithEnabledEvents()) {
+        lastAccessedDevice.PrepareToAccess(port, nullptr);
+        EventsReader->ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
+        TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
+        TimeBalancer.AddEntry(TClientTaskType::EVENTS, SpentTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
+    }
+    SpentTime.Start();
+}
+
+void TSerialClientRegisterAndEventsReader::ScheduleEventsIfMissing(std::chrono::steady_clock::time_point periodStart)
+{
+    if (EventsReader->HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
+        TimeBalancer.AddEntry(TClientTaskType::EVENTS, periodStart + ReadEventsPeriod, TPriority::High);
+    }
 }
 
 std::chrono::steady_clock::time_point TSerialClientRegisterAndEventsReader::GetDeadline(

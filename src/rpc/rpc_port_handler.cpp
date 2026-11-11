@@ -59,14 +59,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
                     protocol = deviceFromConfig->Protocol()->GetName();
                 }
                 if ((protocol == "modbus") || (protocol == "modbus-tcp")) {
-                    auto rpcRequest = ParseRPCPortLoadModbusRequest(request, cache);
-                    rpcRequest->OnResult = onResult;
-                    rpcRequest->OnError = onError;
-                    if (deviceFromConfig) {
-                        rpcRequest->SlaveId = GetModbusSlaveId(*deviceFromConfig);
-                        rpcRequest->Protocol = protocol;
-                    }
-                    return std::make_shared<TRPCPortLoadModbusSerialClientTask>(rpcRequest);
+                    return MakeRPCPortLoadModbusTask(request, cache, deviceFromConfig, onResult, onError);
                 }
                 if (protocol != "raw") {
                     throw TRPCException("The device's protocol is not supported",
