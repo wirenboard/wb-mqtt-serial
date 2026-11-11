@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.292.1) stable; urgency=medium
+
+  * Remove deprecated ONOKOM templates duplicating device types of current ones.
+    They were never used and caused "Existing template data" warnings on startup
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Nov 2026 13:34:21 +0500
+
 wb-mqtt-serial (2.292.0) stable; urgency=medium
 
   * WB-MR6C/NC, WB-MRM2-mini/NC templates: on/off texts describe the load
@@ -29,7 +36,7 @@ wb-mqtt-serial (2.291.4) stable; urgency=medium
   * Ridan Greencon-R: limit reads to 8 registers per request, wait frame timeout between requests,
     add enums, groups and translations
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 09 Nov 2026 12:40:00 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 09 Nov 2026 13:00:00 +0300
 
 wb-mqtt-serial (2.291.3) stable; urgency=medium
 
