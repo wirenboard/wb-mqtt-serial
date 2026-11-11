@@ -3,7 +3,7 @@ wb-mqtt-serial (2.292.1) stable; urgency=medium
   * Remove deprecated ONOKOM templates duplicating device types of current ones.
     They were never used and caused "Existing template data" warnings on startup
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Nov 2026 08:01:32 +0000
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Nov 2026 13:34:21 +0500
 
 wb-mqtt-serial (2.292.0) stable; urgency=medium
 
@@ -42,7 +42,7 @@ wb-mqtt-serial (2.291.3) stable; urgency=medium
 
   * Log the first error of device setup as a warning
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 09 Nov 2026 09:49:13 +0000
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 09 Nov 2026 14:39:13 +0500
 
 wb-mqtt-serial (2.291.2) stable; urgency=medium
 
