@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.292.2) stable; urgency=medium
+
+  * ONOKOM templates update (external contribution):
+    - add "response_timeout_ms" device parameter (set to 1)
+    - add "external sensor validity period" channel
+    - add "readonly: false" to IDU channels for vrf templates
+    - add default values to group parameters
+
+ -- external contributor: zwg3 <zwg.work.mail@gmail.com>  Wed, 11 Nov 2026 14:20:09 +0300
+
 wb-mqtt-serial (2.292.1) stable; urgency=medium
 
   * Remove deprecated ONOKOM templates duplicating device types of current ones.

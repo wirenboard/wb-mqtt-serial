@@ -10,6 +10,7 @@
     "device": {
         "name": "ONOKOM-AIR-HS-VRF-MB-B",
         "id": "ONOKOM-AIR-HS-VRF-MB-B",
+        "response_timeout_ms": 1,
         "groups": [
             {
                 "title": "General",
@@ -54,7 +55,8 @@
                 "address": 100,
                 "reg_type": "holding",
                 "default": 1,
-                "order": 2
+                "order": 2,
+                "readonly": false
             },
             {
                 "id": "Allow_the_use_of_an_external_temperature_sensor",
@@ -70,12 +72,14 @@
                     "Yes"
                 ],
                 "group": "temperatureControl",
+                "default": 0,
                 "order": 1
             },
             {
                 "id": "Show_modes_as_range",
                 "title": "Show modes as range",
                 "address": 95,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -92,6 +96,7 @@
                 "id": "Show_fan_as_range",
                 "title": "Show fan as range",
                 "address": 92,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -108,6 +113,7 @@
                 "id": "Show_vanes_as_range",
                 "title": "Show vanes as range",
                 "address": 94,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -124,6 +130,7 @@
                 "id": "Show_thermostat_state_as_range",
                 "title": "Show thermostat state as range",
                 "address": 94,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -367,6 +374,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=1",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "0 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=1",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "0 - Indoor air temperature",
@@ -835,6 +856,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "1 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=2",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "1 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 10103,
@@ -1299,6 +1334,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=3",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "2 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=3",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "2 - Indoor air temperature",
@@ -1767,6 +1816,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "3 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=4",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "3 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 10303,
@@ -2231,6 +2294,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=5",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "4 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10440,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=5",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "4 - Indoor air temperature",
@@ -2699,6 +2776,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "5 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10540,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=6",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "5 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 10503,
@@ -3163,6 +3254,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=7",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "6 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10640,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=7",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "6 - Indoor air temperature",
@@ -3631,6 +3736,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "7 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10740,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=8",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "7 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 10703,
@@ -4095,6 +4214,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=9",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "8 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10840,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=9",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "8 - Indoor air temperature",
@@ -4563,6 +4696,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "9 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 10940,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=10",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "9 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 10903,
@@ -5027,6 +5174,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=11",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "10 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=11",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "10 - Indoor air temperature",
@@ -5495,6 +5656,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "11 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=12",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "11 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 11103,
@@ -5959,6 +6134,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=13",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "12 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=13",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "12 - Indoor air temperature",
@@ -6427,6 +6616,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "13 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=14",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "13 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 11303,
@@ -6891,6 +7094,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=15",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "14 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11440,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=15",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "14 - Indoor air temperature",
@@ -7359,6 +7576,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "15 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11540,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=16",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "15 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 11503,
@@ -7823,6 +8054,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=17",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "16 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11640,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=17",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "16 - Indoor air temperature",
@@ -8291,6 +8536,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "17 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11740,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=18",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "17 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 11703,
@@ -8755,6 +9014,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=19",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "18 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11840,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=19",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "18 - Indoor air temperature",
@@ -9223,6 +9496,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "19 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 11940,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=20",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "19 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 11903,
@@ -9687,6 +9974,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=21",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "20 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=21",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "20 - Indoor air temperature",
@@ -10155,6 +10456,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "21 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=22",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "21 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 12103,
@@ -10619,6 +10934,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=23",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "22 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=23",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "22 - Indoor air temperature",
@@ -11087,6 +11416,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "23 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=24",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "23 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 12303,
@@ -11551,6 +11894,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=25",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "24 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12440,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=25",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "24 - Indoor air temperature",
@@ -12019,6 +12376,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "25 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12540,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=26",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "25 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 12503,
@@ -12483,6 +12854,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=27",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "26 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12640,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=27",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "26 - Indoor air temperature",
@@ -12951,6 +13336,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "27 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12740,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=28",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "27 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 12703,
@@ -13415,6 +13814,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=29",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "28 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12840,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=29",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "28 - Indoor air temperature",
@@ -13883,6 +14296,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "29 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 12940,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=30",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "29 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 12903,
@@ -14347,6 +14774,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=31",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "30 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=31",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "30 - Indoor air temperature",
@@ -14815,6 +15256,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "31 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=32",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "31 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 13103,
@@ -15279,6 +15734,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=33",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "32 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=33",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "32 - Indoor air temperature",
@@ -15747,6 +16216,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "33 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=34",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "33 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 13303,
@@ -16211,6 +16694,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=35",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "34 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13440,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=35",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "34 - Indoor air temperature",
@@ -16679,6 +17176,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "35 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13540,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=36",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "35 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 13503,
@@ -17143,6 +17654,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=37",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "36 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13640,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=37",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "36 - Indoor air temperature",
@@ -17611,6 +18136,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "37 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13740,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=38",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "37 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 13703,
@@ -18075,6 +18614,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=39",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "38 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13840,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=39",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "38 - Indoor air temperature",
@@ -18543,6 +19096,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "39 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 13940,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=40",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "39 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 13903,
@@ -19007,6 +19574,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=41",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "40 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=41",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "40 - Indoor air temperature",
@@ -19475,6 +20056,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "41 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=42",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "41 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 14103,
@@ -19939,6 +20534,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=43",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "42 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=43",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "42 - Indoor air temperature",
@@ -20407,6 +21016,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "43 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=44",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "43 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 14303,
@@ -20871,6 +21494,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=45",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "44 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14440,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=45",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "44 - Indoor air temperature",
@@ -21339,6 +21976,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "45 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14540,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=46",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "45 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 14503,
@@ -21803,6 +22454,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=47",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "46 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14640,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=47",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "46 - Indoor air temperature",
@@ -22271,6 +22936,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "47 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14740,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=48",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "47 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 14703,
@@ -22735,6 +23414,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=49",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "48 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14840,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=49",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "48 - Indoor air temperature",
@@ -23203,6 +23896,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "49 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 14940,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=50",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "49 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 14903,
@@ -23667,6 +24374,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=51",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "50 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=51",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "50 - Indoor air temperature",
@@ -24135,6 +24856,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "51 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=52",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "51 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 15103,
@@ -24599,6 +25334,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=53",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "52 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=53",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "52 - Indoor air temperature",
@@ -25067,6 +25816,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "53 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=54",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "53 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 15303,
@@ -25531,6 +26294,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=55",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "54 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15440,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=55",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "54 - Indoor air temperature",
@@ -25999,6 +26776,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "55 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15540,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=56",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "55 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 15503,
@@ -26463,6 +27254,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=57",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "56 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15640,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=57",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "56 - Indoor air temperature",
@@ -26931,6 +27736,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "57 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15740,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=58",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "57 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 15703,
@@ -27395,6 +28214,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=59",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "58 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15840,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=59",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "58 - Indoor air temperature",
@@ -27863,6 +28696,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "59 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 15940,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=60",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "59 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 15903,
@@ -28327,6 +29174,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=61",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "60 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 16040,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=61",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "60 - Indoor air temperature",
@@ -28795,6 +29656,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "61 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 16140,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=62",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "61 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 16103,
@@ -29261,6 +30136,20 @@
                 "original_name": "External air temperature"
             },
             {
+                "name": "62 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 16240,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=63",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
+            },
+            {
                 "name": "62 - Indoor air temperature",
                 "reg_type": "holding",
                 "address": 16203,
@@ -29725,6 +30614,20 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=64",
                 "vrf": true,
                 "original_name": "External air temperature"
+            },
+            {
+                "name": "63 - External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 16340,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1&&IDU_count>=64",
+                "vrf": true,
+                "original_name": "External temperature sensor validity period"
             },
             {
                 "name": "63 - Indoor air temperature",
@@ -30256,6 +31159,7 @@
                 "0 - Active": "0 - Состояние",
                 "0 - Active mode": "0 - Состояние и режим",
                 "0 - External air temperature": "0 - Температура с внешнего датчика",
+                "0 - External temperature sensor validity period": "0 - Время ожидания данных с внешнего датчика температуры",
                 "0 - Fan speed": "0 - Скорость вентилятора",
                 "0 - First error code": "0 - Код первой ошибки",
                 "0 - Horizontal vanes": "0 - Горизонтальные жалюзи",
@@ -30269,6 +31173,7 @@
                 "1 - Active": "1 - Состояние",
                 "1 - Active mode": "1 - Состояние и режим",
                 "1 - External air temperature": "1 - Температура с внешнего датчика",
+                "1 - External temperature sensor validity period": "1 - Время ожидания данных с внешнего датчика температуры",
                 "1 - Fan speed": "1 - Скорость вентилятора",
                 "1 - First error code": "1 - Код первой ошибки",
                 "1 - Horizontal vanes": "1 - Горизонтальные жалюзи",
@@ -30282,6 +31187,7 @@
                 "2 - Active": "2 - Состояние",
                 "2 - Active mode": "2 - Состояние и режим",
                 "2 - External air temperature": "2 - Температура с внешнего датчика",
+                "2 - External temperature sensor validity period": "2 - Время ожидания данных с внешнего датчика температуры",
                 "2 - Fan speed": "2 - Скорость вентилятора",
                 "2 - First error code": "2 - Код первой ошибки",
                 "2 - Horizontal vanes": "2 - Горизонтальные жалюзи",
@@ -30295,6 +31201,7 @@
                 "3 - Active": "3 - Состояние",
                 "3 - Active mode": "3 - Состояние и режим",
                 "3 - External air temperature": "3 - Температура с внешнего датчика",
+                "3 - External temperature sensor validity period": "3 - Время ожидания данных с внешнего датчика температуры",
                 "3 - Fan speed": "3 - Скорость вентилятора",
                 "3 - First error code": "3 - Код первой ошибки",
                 "3 - Horizontal vanes": "3 - Горизонтальные жалюзи",
@@ -30308,6 +31215,7 @@
                 "4 - Active": "4 - Состояние",
                 "4 - Active mode": "4 - Состояние и режим",
                 "4 - External air temperature": "4 - Температура с внешнего датчика",
+                "4 - External temperature sensor validity period": "4 - Время ожидания данных с внешнего датчика температуры",
                 "4 - Fan speed": "4 - Скорость вентилятора",
                 "4 - First error code": "4 - Код первой ошибки",
                 "4 - Horizontal vanes": "4 - Горизонтальные жалюзи",
@@ -30321,6 +31229,7 @@
                 "5 - Active": "5 - Состояние",
                 "5 - Active mode": "5 - Состояние и режим",
                 "5 - External air temperature": "5 - Температура с внешнего датчика",
+                "5 - External temperature sensor validity period": "5 - Время ожидания данных с внешнего датчика температуры",
                 "5 - Fan speed": "5 - Скорость вентилятора",
                 "5 - First error code": "5 - Код первой ошибки",
                 "5 - Horizontal vanes": "5 - Горизонтальные жалюзи",
@@ -30334,6 +31243,7 @@
                 "6 - Active": "6 - Состояние",
                 "6 - Active mode": "6 - Состояние и режим",
                 "6 - External air temperature": "6 - Температура с внешнего датчика",
+                "6 - External temperature sensor validity period": "6 - Время ожидания данных с внешнего датчика температуры",
                 "6 - Fan speed": "6 - Скорость вентилятора",
                 "6 - First error code": "6 - Код первой ошибки",
                 "6 - Horizontal vanes": "6 - Горизонтальные жалюзи",
@@ -30347,6 +31257,7 @@
                 "7 - Active": "7 - Состояние",
                 "7 - Active mode": "7 - Состояние и режим",
                 "7 - External air temperature": "7 - Температура с внешнего датчика",
+                "7 - External temperature sensor validity period": "7 - Время ожидания данных с внешнего датчика температуры",
                 "7 - Fan speed": "7 - Скорость вентилятора",
                 "7 - First error code": "7 - Код первой ошибки",
                 "7 - Horizontal vanes": "7 - Горизонтальные жалюзи",
@@ -30360,6 +31271,7 @@
                 "8 - Active": "8 - Состояние",
                 "8 - Active mode": "8 - Состояние и режим",
                 "8 - External air temperature": "8 - Температура с внешнего датчика",
+                "8 - External temperature sensor validity period": "8 - Время ожидания данных с внешнего датчика температуры",
                 "8 - Fan speed": "8 - Скорость вентилятора",
                 "8 - First error code": "8 - Код первой ошибки",
                 "8 - Horizontal vanes": "8 - Горизонтальные жалюзи",
@@ -30373,6 +31285,7 @@
                 "9 - Active": "9 - Состояние",
                 "9 - Active mode": "9 - Состояние и режим",
                 "9 - External air temperature": "9 - Температура с внешнего датчика",
+                "9 - External temperature sensor validity period": "9 - Время ожидания данных с внешнего датчика температуры",
                 "9 - Fan speed": "9 - Скорость вентилятора",
                 "9 - First error code": "9 - Код первой ошибки",
                 "9 - Horizontal vanes": "9 - Горизонтальные жалюзи",
@@ -30386,6 +31299,7 @@
                 "10 - Active": "10 - Состояние",
                 "10 - Active mode": "10 - Состояние и режим",
                 "10 - External air temperature": "10 - Температура с внешнего датчика",
+                "10 - External temperature sensor validity period": "10 - Время ожидания данных с внешнего датчика температуры",
                 "10 - Fan speed": "10 - Скорость вентилятора",
                 "10 - First error code": "10 - Код первой ошибки",
                 "10 - Horizontal vanes": "10 - Горизонтальные жалюзи",
@@ -30399,6 +31313,7 @@
                 "11 - Active": "11 - Состояние",
                 "11 - Active mode": "11 - Состояние и режим",
                 "11 - External air temperature": "11 - Температура с внешнего датчика",
+                "11 - External temperature sensor validity period": "11 - Время ожидания данных с внешнего датчика температуры",
                 "11 - Fan speed": "11 - Скорость вентилятора",
                 "11 - First error code": "11 - Код первой ошибки",
                 "11 - Horizontal vanes": "11 - Горизонтальные жалюзи",
@@ -30412,6 +31327,7 @@
                 "12 - Active": "12 - Состояние",
                 "12 - Active mode": "12 - Состояние и режим",
                 "12 - External air temperature": "12 - Температура с внешнего датчика",
+                "12 - External temperature sensor validity period": "12 - Время ожидания данных с внешнего датчика температуры",
                 "12 - Fan speed": "12 - Скорость вентилятора",
                 "12 - First error code": "12 - Код первой ошибки",
                 "12 - Horizontal vanes": "12 - Горизонтальные жалюзи",
@@ -30425,6 +31341,7 @@
                 "13 - Active": "13 - Состояние",
                 "13 - Active mode": "13 - Состояние и режим",
                 "13 - External air temperature": "13 - Температура с внешнего датчика",
+                "13 - External temperature sensor validity period": "13 - Время ожидания данных с внешнего датчика температуры",
                 "13 - Fan speed": "13 - Скорость вентилятора",
                 "13 - First error code": "13 - Код первой ошибки",
                 "13 - Horizontal vanes": "13 - Горизонтальные жалюзи",
@@ -30438,6 +31355,7 @@
                 "14 - Active": "14 - Состояние",
                 "14 - Active mode": "14 - Состояние и режим",
                 "14 - External air temperature": "14 - Температура с внешнего датчика",
+                "14 - External temperature sensor validity period": "14 - Время ожидания данных с внешнего датчика температуры",
                 "14 - Fan speed": "14 - Скорость вентилятора",
                 "14 - First error code": "14 - Код первой ошибки",
                 "14 - Horizontal vanes": "14 - Горизонтальные жалюзи",
@@ -30451,6 +31369,7 @@
                 "15 - Active": "15 - Состояние",
                 "15 - Active mode": "15 - Состояние и режим",
                 "15 - External air temperature": "15 - Температура с внешнего датчика",
+                "15 - External temperature sensor validity period": "15 - Время ожидания данных с внешнего датчика температуры",
                 "15 - Fan speed": "15 - Скорость вентилятора",
                 "15 - First error code": "15 - Код первой ошибки",
                 "15 - Horizontal vanes": "15 - Горизонтальные жалюзи",
@@ -30464,6 +31383,7 @@
                 "16 - Active": "16 - Состояние",
                 "16 - Active mode": "16 - Состояние и режим",
                 "16 - External air temperature": "16 - Температура с внешнего датчика",
+                "16 - External temperature sensor validity period": "16 - Время ожидания данных с внешнего датчика температуры",
                 "16 - Fan speed": "16 - Скорость вентилятора",
                 "16 - First error code": "16 - Код первой ошибки",
                 "16 - Horizontal vanes": "16 - Горизонтальные жалюзи",
@@ -30477,6 +31397,7 @@
                 "17 - Active": "17 - Состояние",
                 "17 - Active mode": "17 - Состояние и режим",
                 "17 - External air temperature": "17 - Температура с внешнего датчика",
+                "17 - External temperature sensor validity period": "17 - Время ожидания данных с внешнего датчика температуры",
                 "17 - Fan speed": "17 - Скорость вентилятора",
                 "17 - First error code": "17 - Код первой ошибки",
                 "17 - Horizontal vanes": "17 - Горизонтальные жалюзи",
@@ -30490,6 +31411,7 @@
                 "18 - Active": "18 - Состояние",
                 "18 - Active mode": "18 - Состояние и режим",
                 "18 - External air temperature": "18 - Температура с внешнего датчика",
+                "18 - External temperature sensor validity period": "18 - Время ожидания данных с внешнего датчика температуры",
                 "18 - Fan speed": "18 - Скорость вентилятора",
                 "18 - First error code": "18 - Код первой ошибки",
                 "18 - Horizontal vanes": "18 - Горизонтальные жалюзи",
@@ -30503,6 +31425,7 @@
                 "19 - Active": "19 - Состояние",
                 "19 - Active mode": "19 - Состояние и режим",
                 "19 - External air temperature": "19 - Температура с внешнего датчика",
+                "19 - External temperature sensor validity period": "19 - Время ожидания данных с внешнего датчика температуры",
                 "19 - Fan speed": "19 - Скорость вентилятора",
                 "19 - First error code": "19 - Код первой ошибки",
                 "19 - Horizontal vanes": "19 - Горизонтальные жалюзи",
@@ -30516,6 +31439,7 @@
                 "20 - Active": "20 - Состояние",
                 "20 - Active mode": "20 - Состояние и режим",
                 "20 - External air temperature": "20 - Температура с внешнего датчика",
+                "20 - External temperature sensor validity period": "20 - Время ожидания данных с внешнего датчика температуры",
                 "20 - Fan speed": "20 - Скорость вентилятора",
                 "20 - First error code": "20 - Код первой ошибки",
                 "20 - Horizontal vanes": "20 - Горизонтальные жалюзи",
@@ -30529,6 +31453,7 @@
                 "21 - Active": "21 - Состояние",
                 "21 - Active mode": "21 - Состояние и режим",
                 "21 - External air temperature": "21 - Температура с внешнего датчика",
+                "21 - External temperature sensor validity period": "21 - Время ожидания данных с внешнего датчика температуры",
                 "21 - Fan speed": "21 - Скорость вентилятора",
                 "21 - First error code": "21 - Код первой ошибки",
                 "21 - Horizontal vanes": "21 - Горизонтальные жалюзи",
@@ -30542,6 +31467,7 @@
                 "22 - Active": "22 - Состояние",
                 "22 - Active mode": "22 - Состояние и режим",
                 "22 - External air temperature": "22 - Температура с внешнего датчика",
+                "22 - External temperature sensor validity period": "22 - Время ожидания данных с внешнего датчика температуры",
                 "22 - Fan speed": "22 - Скорость вентилятора",
                 "22 - First error code": "22 - Код первой ошибки",
                 "22 - Horizontal vanes": "22 - Горизонтальные жалюзи",
@@ -30555,6 +31481,7 @@
                 "23 - Active": "23 - Состояние",
                 "23 - Active mode": "23 - Состояние и режим",
                 "23 - External air temperature": "23 - Температура с внешнего датчика",
+                "23 - External temperature sensor validity period": "23 - Время ожидания данных с внешнего датчика температуры",
                 "23 - Fan speed": "23 - Скорость вентилятора",
                 "23 - First error code": "23 - Код первой ошибки",
                 "23 - Horizontal vanes": "23 - Горизонтальные жалюзи",
@@ -30568,6 +31495,7 @@
                 "24 - Active": "24 - Состояние",
                 "24 - Active mode": "24 - Состояние и режим",
                 "24 - External air temperature": "24 - Температура с внешнего датчика",
+                "24 - External temperature sensor validity period": "24 - Время ожидания данных с внешнего датчика температуры",
                 "24 - Fan speed": "24 - Скорость вентилятора",
                 "24 - First error code": "24 - Код первой ошибки",
                 "24 - Horizontal vanes": "24 - Горизонтальные жалюзи",
@@ -30581,6 +31509,7 @@
                 "25 - Active": "25 - Состояние",
                 "25 - Active mode": "25 - Состояние и режим",
                 "25 - External air temperature": "25 - Температура с внешнего датчика",
+                "25 - External temperature sensor validity period": "25 - Время ожидания данных с внешнего датчика температуры",
                 "25 - Fan speed": "25 - Скорость вентилятора",
                 "25 - First error code": "25 - Код первой ошибки",
                 "25 - Horizontal vanes": "25 - Горизонтальные жалюзи",
@@ -30594,6 +31523,7 @@
                 "26 - Active": "26 - Состояние",
                 "26 - Active mode": "26 - Состояние и режим",
                 "26 - External air temperature": "26 - Температура с внешнего датчика",
+                "26 - External temperature sensor validity period": "26 - Время ожидания данных с внешнего датчика температуры",
                 "26 - Fan speed": "26 - Скорость вентилятора",
                 "26 - First error code": "26 - Код первой ошибки",
                 "26 - Horizontal vanes": "26 - Горизонтальные жалюзи",
@@ -30607,6 +31537,7 @@
                 "27 - Active": "27 - Состояние",
                 "27 - Active mode": "27 - Состояние и режим",
                 "27 - External air temperature": "27 - Температура с внешнего датчика",
+                "27 - External temperature sensor validity period": "27 - Время ожидания данных с внешнего датчика температуры",
                 "27 - Fan speed": "27 - Скорость вентилятора",
                 "27 - First error code": "27 - Код первой ошибки",
                 "27 - Horizontal vanes": "27 - Горизонтальные жалюзи",
@@ -30620,6 +31551,7 @@
                 "28 - Active": "28 - Состояние",
                 "28 - Active mode": "28 - Состояние и режим",
                 "28 - External air temperature": "28 - Температура с внешнего датчика",
+                "28 - External temperature sensor validity period": "28 - Время ожидания данных с внешнего датчика температуры",
                 "28 - Fan speed": "28 - Скорость вентилятора",
                 "28 - First error code": "28 - Код первой ошибки",
                 "28 - Horizontal vanes": "28 - Горизонтальные жалюзи",
@@ -30633,6 +31565,7 @@
                 "29 - Active": "29 - Состояние",
                 "29 - Active mode": "29 - Состояние и режим",
                 "29 - External air temperature": "29 - Температура с внешнего датчика",
+                "29 - External temperature sensor validity period": "29 - Время ожидания данных с внешнего датчика температуры",
                 "29 - Fan speed": "29 - Скорость вентилятора",
                 "29 - First error code": "29 - Код первой ошибки",
                 "29 - Horizontal vanes": "29 - Горизонтальные жалюзи",
@@ -30646,6 +31579,7 @@
                 "30 - Active": "30 - Состояние",
                 "30 - Active mode": "30 - Состояние и режим",
                 "30 - External air temperature": "30 - Температура с внешнего датчика",
+                "30 - External temperature sensor validity period": "30 - Время ожидания данных с внешнего датчика температуры",
                 "30 - Fan speed": "30 - Скорость вентилятора",
                 "30 - First error code": "30 - Код первой ошибки",
                 "30 - Horizontal vanes": "30 - Горизонтальные жалюзи",
@@ -30659,6 +31593,7 @@
                 "31 - Active": "31 - Состояние",
                 "31 - Active mode": "31 - Состояние и режим",
                 "31 - External air temperature": "31 - Температура с внешнего датчика",
+                "31 - External temperature sensor validity period": "31 - Время ожидания данных с внешнего датчика температуры",
                 "31 - Fan speed": "31 - Скорость вентилятора",
                 "31 - First error code": "31 - Код первой ошибки",
                 "31 - Horizontal vanes": "31 - Горизонтальные жалюзи",
@@ -30672,6 +31607,7 @@
                 "32 - Active": "32 - Состояние",
                 "32 - Active mode": "32 - Состояние и режим",
                 "32 - External air temperature": "32 - Температура с внешнего датчика",
+                "32 - External temperature sensor validity period": "32 - Время ожидания данных с внешнего датчика температуры",
                 "32 - Fan speed": "32 - Скорость вентилятора",
                 "32 - First error code": "32 - Код первой ошибки",
                 "32 - Horizontal vanes": "32 - Горизонтальные жалюзи",
@@ -30685,6 +31621,7 @@
                 "33 - Active": "33 - Состояние",
                 "33 - Active mode": "33 - Состояние и режим",
                 "33 - External air temperature": "33 - Температура с внешнего датчика",
+                "33 - External temperature sensor validity period": "33 - Время ожидания данных с внешнего датчика температуры",
                 "33 - Fan speed": "33 - Скорость вентилятора",
                 "33 - First error code": "33 - Код первой ошибки",
                 "33 - Horizontal vanes": "33 - Горизонтальные жалюзи",
@@ -30698,6 +31635,7 @@
                 "34 - Active": "34 - Состояние",
                 "34 - Active mode": "34 - Состояние и режим",
                 "34 - External air temperature": "34 - Температура с внешнего датчика",
+                "34 - External temperature sensor validity period": "34 - Время ожидания данных с внешнего датчика температуры",
                 "34 - Fan speed": "34 - Скорость вентилятора",
                 "34 - First error code": "34 - Код первой ошибки",
                 "34 - Horizontal vanes": "34 - Горизонтальные жалюзи",
@@ -30711,6 +31649,7 @@
                 "35 - Active": "35 - Состояние",
                 "35 - Active mode": "35 - Состояние и режим",
                 "35 - External air temperature": "35 - Температура с внешнего датчика",
+                "35 - External temperature sensor validity period": "35 - Время ожидания данных с внешнего датчика температуры",
                 "35 - Fan speed": "35 - Скорость вентилятора",
                 "35 - First error code": "35 - Код первой ошибки",
                 "35 - Horizontal vanes": "35 - Горизонтальные жалюзи",
@@ -30724,6 +31663,7 @@
                 "36 - Active": "36 - Состояние",
                 "36 - Active mode": "36 - Состояние и режим",
                 "36 - External air temperature": "36 - Температура с внешнего датчика",
+                "36 - External temperature sensor validity period": "36 - Время ожидания данных с внешнего датчика температуры",
                 "36 - Fan speed": "36 - Скорость вентилятора",
                 "36 - First error code": "36 - Код первой ошибки",
                 "36 - Horizontal vanes": "36 - Горизонтальные жалюзи",
@@ -30737,6 +31677,7 @@
                 "37 - Active": "37 - Состояние",
                 "37 - Active mode": "37 - Состояние и режим",
                 "37 - External air temperature": "37 - Температура с внешнего датчика",
+                "37 - External temperature sensor validity period": "37 - Время ожидания данных с внешнего датчика температуры",
                 "37 - Fan speed": "37 - Скорость вентилятора",
                 "37 - First error code": "37 - Код первой ошибки",
                 "37 - Horizontal vanes": "37 - Горизонтальные жалюзи",
@@ -30750,6 +31691,7 @@
                 "38 - Active": "38 - Состояние",
                 "38 - Active mode": "38 - Состояние и режим",
                 "38 - External air temperature": "38 - Температура с внешнего датчика",
+                "38 - External temperature sensor validity period": "38 - Время ожидания данных с внешнего датчика температуры",
                 "38 - Fan speed": "38 - Скорость вентилятора",
                 "38 - First error code": "38 - Код первой ошибки",
                 "38 - Horizontal vanes": "38 - Горизонтальные жалюзи",
@@ -30763,6 +31705,7 @@
                 "39 - Active": "39 - Состояние",
                 "39 - Active mode": "39 - Состояние и режим",
                 "39 - External air temperature": "39 - Температура с внешнего датчика",
+                "39 - External temperature sensor validity period": "39 - Время ожидания данных с внешнего датчика температуры",
                 "39 - Fan speed": "39 - Скорость вентилятора",
                 "39 - First error code": "39 - Код первой ошибки",
                 "39 - Horizontal vanes": "39 - Горизонтальные жалюзи",
@@ -30776,6 +31719,7 @@
                 "40 - Active": "40 - Состояние",
                 "40 - Active mode": "40 - Состояние и режим",
                 "40 - External air temperature": "40 - Температура с внешнего датчика",
+                "40 - External temperature sensor validity period": "40 - Время ожидания данных с внешнего датчика температуры",
                 "40 - Fan speed": "40 - Скорость вентилятора",
                 "40 - First error code": "40 - Код первой ошибки",
                 "40 - Horizontal vanes": "40 - Горизонтальные жалюзи",
@@ -30789,6 +31733,7 @@
                 "41 - Active": "41 - Состояние",
                 "41 - Active mode": "41 - Состояние и режим",
                 "41 - External air temperature": "41 - Температура с внешнего датчика",
+                "41 - External temperature sensor validity period": "41 - Время ожидания данных с внешнего датчика температуры",
                 "41 - Fan speed": "41 - Скорость вентилятора",
                 "41 - First error code": "41 - Код первой ошибки",
                 "41 - Horizontal vanes": "41 - Горизонтальные жалюзи",
@@ -30802,6 +31747,7 @@
                 "42 - Active": "42 - Состояние",
                 "42 - Active mode": "42 - Состояние и режим",
                 "42 - External air temperature": "42 - Температура с внешнего датчика",
+                "42 - External temperature sensor validity period": "42 - Время ожидания данных с внешнего датчика температуры",
                 "42 - Fan speed": "42 - Скорость вентилятора",
                 "42 - First error code": "42 - Код первой ошибки",
                 "42 - Horizontal vanes": "42 - Горизонтальные жалюзи",
@@ -30815,6 +31761,7 @@
                 "43 - Active": "43 - Состояние",
                 "43 - Active mode": "43 - Состояние и режим",
                 "43 - External air temperature": "43 - Температура с внешнего датчика",
+                "43 - External temperature sensor validity period": "43 - Время ожидания данных с внешнего датчика температуры",
                 "43 - Fan speed": "43 - Скорость вентилятора",
                 "43 - First error code": "43 - Код первой ошибки",
                 "43 - Horizontal vanes": "43 - Горизонтальные жалюзи",
@@ -30828,6 +31775,7 @@
                 "44 - Active": "44 - Состояние",
                 "44 - Active mode": "44 - Состояние и режим",
                 "44 - External air temperature": "44 - Температура с внешнего датчика",
+                "44 - External temperature sensor validity period": "44 - Время ожидания данных с внешнего датчика температуры",
                 "44 - Fan speed": "44 - Скорость вентилятора",
                 "44 - First error code": "44 - Код первой ошибки",
                 "44 - Horizontal vanes": "44 - Горизонтальные жалюзи",
@@ -30841,6 +31789,7 @@
                 "45 - Active": "45 - Состояние",
                 "45 - Active mode": "45 - Состояние и режим",
                 "45 - External air temperature": "45 - Температура с внешнего датчика",
+                "45 - External temperature sensor validity period": "45 - Время ожидания данных с внешнего датчика температуры",
                 "45 - Fan speed": "45 - Скорость вентилятора",
                 "45 - First error code": "45 - Код первой ошибки",
                 "45 - Horizontal vanes": "45 - Горизонтальные жалюзи",
@@ -30854,6 +31803,7 @@
                 "46 - Active": "46 - Состояние",
                 "46 - Active mode": "46 - Состояние и режим",
                 "46 - External air temperature": "46 - Температура с внешнего датчика",
+                "46 - External temperature sensor validity period": "46 - Время ожидания данных с внешнего датчика температуры",
                 "46 - Fan speed": "46 - Скорость вентилятора",
                 "46 - First error code": "46 - Код первой ошибки",
                 "46 - Horizontal vanes": "46 - Горизонтальные жалюзи",
@@ -30867,6 +31817,7 @@
                 "47 - Active": "47 - Состояние",
                 "47 - Active mode": "47 - Состояние и режим",
                 "47 - External air temperature": "47 - Температура с внешнего датчика",
+                "47 - External temperature sensor validity period": "47 - Время ожидания данных с внешнего датчика температуры",
                 "47 - Fan speed": "47 - Скорость вентилятора",
                 "47 - First error code": "47 - Код первой ошибки",
                 "47 - Horizontal vanes": "47 - Горизонтальные жалюзи",
@@ -30880,6 +31831,7 @@
                 "48 - Active": "48 - Состояние",
                 "48 - Active mode": "48 - Состояние и режим",
                 "48 - External air temperature": "48 - Температура с внешнего датчика",
+                "48 - External temperature sensor validity period": "48 - Время ожидания данных с внешнего датчика температуры",
                 "48 - Fan speed": "48 - Скорость вентилятора",
                 "48 - First error code": "48 - Код первой ошибки",
                 "48 - Horizontal vanes": "48 - Горизонтальные жалюзи",
@@ -30893,6 +31845,7 @@
                 "49 - Active": "49 - Состояние",
                 "49 - Active mode": "49 - Состояние и режим",
                 "49 - External air temperature": "49 - Температура с внешнего датчика",
+                "49 - External temperature sensor validity period": "49 - Время ожидания данных с внешнего датчика температуры",
                 "49 - Fan speed": "49 - Скорость вентилятора",
                 "49 - First error code": "49 - Код первой ошибки",
                 "49 - Horizontal vanes": "49 - Горизонтальные жалюзи",
@@ -30906,6 +31859,7 @@
                 "50 - Active": "50 - Состояние",
                 "50 - Active mode": "50 - Состояние и режим",
                 "50 - External air temperature": "50 - Температура с внешнего датчика",
+                "50 - External temperature sensor validity period": "50 - Время ожидания данных с внешнего датчика температуры",
                 "50 - Fan speed": "50 - Скорость вентилятора",
                 "50 - First error code": "50 - Код первой ошибки",
                 "50 - Horizontal vanes": "50 - Горизонтальные жалюзи",
@@ -30919,6 +31873,7 @@
                 "51 - Active": "51 - Состояние",
                 "51 - Active mode": "51 - Состояние и режим",
                 "51 - External air temperature": "51 - Температура с внешнего датчика",
+                "51 - External temperature sensor validity period": "51 - Время ожидания данных с внешнего датчика температуры",
                 "51 - Fan speed": "51 - Скорость вентилятора",
                 "51 - First error code": "51 - Код первой ошибки",
                 "51 - Horizontal vanes": "51 - Горизонтальные жалюзи",
@@ -30932,6 +31887,7 @@
                 "52 - Active": "52 - Состояние",
                 "52 - Active mode": "52 - Состояние и режим",
                 "52 - External air temperature": "52 - Температура с внешнего датчика",
+                "52 - External temperature sensor validity period": "52 - Время ожидания данных с внешнего датчика температуры",
                 "52 - Fan speed": "52 - Скорость вентилятора",
                 "52 - First error code": "52 - Код первой ошибки",
                 "52 - Horizontal vanes": "52 - Горизонтальные жалюзи",
@@ -30945,6 +31901,7 @@
                 "53 - Active": "53 - Состояние",
                 "53 - Active mode": "53 - Состояние и режим",
                 "53 - External air temperature": "53 - Температура с внешнего датчика",
+                "53 - External temperature sensor validity period": "53 - Время ожидания данных с внешнего датчика температуры",
                 "53 - Fan speed": "53 - Скорость вентилятора",
                 "53 - First error code": "53 - Код первой ошибки",
                 "53 - Horizontal vanes": "53 - Горизонтальные жалюзи",
@@ -30958,6 +31915,7 @@
                 "54 - Active": "54 - Состояние",
                 "54 - Active mode": "54 - Состояние и режим",
                 "54 - External air temperature": "54 - Температура с внешнего датчика",
+                "54 - External temperature sensor validity period": "54 - Время ожидания данных с внешнего датчика температуры",
                 "54 - Fan speed": "54 - Скорость вентилятора",
                 "54 - First error code": "54 - Код первой ошибки",
                 "54 - Horizontal vanes": "54 - Горизонтальные жалюзи",
@@ -30971,6 +31929,7 @@
                 "55 - Active": "55 - Состояние",
                 "55 - Active mode": "55 - Состояние и режим",
                 "55 - External air temperature": "55 - Температура с внешнего датчика",
+                "55 - External temperature sensor validity period": "55 - Время ожидания данных с внешнего датчика температуры",
                 "55 - Fan speed": "55 - Скорость вентилятора",
                 "55 - First error code": "55 - Код первой ошибки",
                 "55 - Horizontal vanes": "55 - Горизонтальные жалюзи",
@@ -30984,6 +31943,7 @@
                 "56 - Active": "56 - Состояние",
                 "56 - Active mode": "56 - Состояние и режим",
                 "56 - External air temperature": "56 - Температура с внешнего датчика",
+                "56 - External temperature sensor validity period": "56 - Время ожидания данных с внешнего датчика температуры",
                 "56 - Fan speed": "56 - Скорость вентилятора",
                 "56 - First error code": "56 - Код первой ошибки",
                 "56 - Horizontal vanes": "56 - Горизонтальные жалюзи",
@@ -30997,6 +31957,7 @@
                 "57 - Active": "57 - Состояние",
                 "57 - Active mode": "57 - Состояние и режим",
                 "57 - External air temperature": "57 - Температура с внешнего датчика",
+                "57 - External temperature sensor validity period": "57 - Время ожидания данных с внешнего датчика температуры",
                 "57 - Fan speed": "57 - Скорость вентилятора",
                 "57 - First error code": "57 - Код первой ошибки",
                 "57 - Horizontal vanes": "57 - Горизонтальные жалюзи",
@@ -31010,6 +31971,7 @@
                 "58 - Active": "58 - Состояние",
                 "58 - Active mode": "58 - Состояние и режим",
                 "58 - External air temperature": "58 - Температура с внешнего датчика",
+                "58 - External temperature sensor validity period": "58 - Время ожидания данных с внешнего датчика температуры",
                 "58 - Fan speed": "58 - Скорость вентилятора",
                 "58 - First error code": "58 - Код первой ошибки",
                 "58 - Horizontal vanes": "58 - Горизонтальные жалюзи",
@@ -31023,6 +31985,7 @@
                 "59 - Active": "59 - Состояние",
                 "59 - Active mode": "59 - Состояние и режим",
                 "59 - External air temperature": "59 - Температура с внешнего датчика",
+                "59 - External temperature sensor validity period": "59 - Время ожидания данных с внешнего датчика температуры",
                 "59 - Fan speed": "59 - Скорость вентилятора",
                 "59 - First error code": "59 - Код первой ошибки",
                 "59 - Horizontal vanes": "59 - Горизонтальные жалюзи",
@@ -31036,6 +31999,7 @@
                 "60 - Active": "60 - Состояние",
                 "60 - Active mode": "60 - Состояние и режим",
                 "60 - External air temperature": "60 - Температура с внешнего датчика",
+                "60 - External temperature sensor validity period": "60 - Время ожидания данных с внешнего датчика температуры",
                 "60 - Fan speed": "60 - Скорость вентилятора",
                 "60 - First error code": "60 - Код первой ошибки",
                 "60 - Horizontal vanes": "60 - Горизонтальные жалюзи",
@@ -31049,6 +32013,7 @@
                 "61 - Active": "61 - Состояние",
                 "61 - Active mode": "61 - Состояние и режим",
                 "61 - External air temperature": "61 - Температура с внешнего датчика",
+                "61 - External temperature sensor validity period": "61 - Время ожидания данных с внешнего датчика температуры",
                 "61 - Fan speed": "61 - Скорость вентилятора",
                 "61 - First error code": "61 - Код первой ошибки",
                 "61 - Horizontal vanes": "61 - Горизонтальные жалюзи",
@@ -31062,6 +32027,7 @@
                 "62 - Active": "62 - Состояние",
                 "62 - Active mode": "62 - Состояние и режим",
                 "62 - External air temperature": "62 - Температура с внешнего датчика",
+                "62 - External temperature sensor validity period": "62 - Время ожидания данных с внешнего датчика температуры",
                 "62 - Fan speed": "62 - Скорость вентилятора",
                 "62 - First error code": "62 - Код первой ошибки",
                 "62 - Horizontal vanes": "62 - Горизонтальные жалюзи",
@@ -31075,6 +32041,7 @@
                 "63 - Active": "63 - Состояние",
                 "63 - Active mode": "63 - Состояние и режим",
                 "63 - External air temperature": "63 - Температура с внешнего датчика",
+                "63 - External temperature sensor validity period": "63 - Время ожидания данных с внешнего датчика температуры",
                 "63 - Fan speed": "63 - Скорость вентилятора",
                 "63 - First error code": "63 - Код первой ошибки",
                 "63 - Horizontal vanes": "63 - Горизонтальные жалюзи",
