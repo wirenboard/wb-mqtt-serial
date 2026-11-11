@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <gtest/gtest.h>
+#include <unordered_map>
 #include <wblib/json_utils.h>
 #include <wblib/testing/testlog.h>
 #include <wblib/utils.h>
@@ -89,19 +90,42 @@ namespace
         }
     };
 
-    void CheckTemplatesDir(const std::string& dir)
+    void CheckCyrillicUsage(const std::string& filePath, const Json::Value& root)
+    {
+        std::vector<std::string> errors;
+        TCyrillicChecker(errors).CheckTemplate(root);
+        for (const auto& error: errors) {
+            ADD_FAILURE() << filePath << ": " << error;
+        }
+    }
+
+    void CheckUniqueDeviceType(const std::string& filePath,
+                               const Json::Value& root,
+                               std::unordered_map<std::string, std::string>& fileByType)
+    {
+        auto deviceType = root["device_type"].asString();
+        auto res = fileByType.emplace(deviceType, filePath);
+        if (!res.second) {
+            ADD_FAILURE() << filePath << ": device type \"" << deviceType << "\" is already declared in "
+                          << res.first->second;
+        }
+    }
+
+    void CheckTemplate(const std::string& filePath, std::unordered_map<std::string, std::string>& fileByType)
+    {
+        auto root = WBMQTT::JSON::Parse(filePath);
+        CheckCyrillicUsage(filePath, root);
+        CheckUniqueDeviceType(filePath, root, fileByType);
+    }
+
+    void CheckTemplatesDir(const std::string& dir, std::unordered_map<std::string, std::string>& fileByType)
     {
         IterateDirByPattern(
             dir,
             ".json",
-            [](const std::string& filePath) {
-                if (!WBMQTT::StringHasSuffix(filePath, ".json")) {
-                    return false;
-                }
-                std::vector<std::string> errors;
-                TCyrillicChecker(errors).CheckTemplate(WBMQTT::JSON::Parse(filePath));
-                for (const auto& error: errors) {
-                    ADD_FAILURE() << filePath << ": " << error;
+            [&](const std::string& filePath) {
+                if (WBMQTT::StringHasSuffix(filePath, ".json")) {
+                    CheckTemplate(filePath, fileByType);
                 }
                 return false;
             },
@@ -109,8 +133,9 @@ namespace
     }
 }
 
-TEST(TTemplatesCharsetTest, CyrillicUsage)
+TEST(TTemplatesContentTest, CyrillicAndUniqueDeviceTypes)
 {
-    CheckTemplatesDir(TLoggedFixture::GetDataFilePath("../templates"));
-    CheckTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"));
+    std::unordered_map<std::string, std::string> fileByType;
+    CheckTemplatesDir(TLoggedFixture::GetDataFilePath("../templates"), fileByType);
+    CheckTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), fileByType);
 }
