@@ -5924,6 +5924,7 @@ Ridan Greencon-R
 	Temperature setting  =>  Temperature setting
 	Thermostat status  =>  Thermostat status
 	Valve status  =>  Valve status
+	button_lock_status  =>  button_lock_status
 S2K-SP1
 	Relay 1  =>  Relay 1
 	Relay 1 Default  =>  Relay 1 Default

@@ -22,7 +22,14 @@ wb-mqtt-serial (2.292.0) stable; urgency=medium
   * WB-MR, WB-MRWM2 templates: typos in the Russian title of "Outputs State
     After Power On" and in parameter descriptions are fixed
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 09 Nov 2026 15:48:29 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 11 Nov 2026 07:55:29 +0300
+
+wb-mqtt-serial (2.291.4) stable; urgency=medium
+
+  * Ridan Greencon-R: limit reads to 8 registers per request, wait frame timeout between requests,
+    add enums, groups and translations
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 09 Nov 2026 12:40:00 +0300
 
 wb-mqtt-serial (2.291.3) stable; urgency=medium
 

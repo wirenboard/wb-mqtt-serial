@@ -4,493 +4,671 @@
     "device": {
         "name": "Ridan Greencon-R",
         "id": "Ridan Greencon-R",
-
+        "force_frame_timeout": true,
+        "min_request_interval": 200,
+        "max_read_registers": 8,
+        "groups": [
+            {
+                "title": "Control",
+                "id": "g_control"
+            },
+            {
+                "title": "Clock",
+                "id": "g_clock"
+            },
+            {
+                "title": "Schedule Mo-Fr",
+                "id": "g_schedule_weekdays"
+            },
+            {
+                "title": "Schedule Saturday",
+                "id": "g_schedule_saturday"
+            },
+            {
+                "title": "Schedule Sunday",
+                "id": "g_schedule_sunday"
+            },
+            {
+                "title": "General",
+                "id": "g_general"
+            }
+        ],
         "channels": [
             {
                 "name": "Return air temperature",
                 "reg_type": "input",
                 "address": "0",
-                "type": "value",
                 "units": "deg C",
-                "format": "u16",
                 "min": 0,
                 "max": 50,
-                "readonly": true,
-                "scale": 0.1
+                "scale": 0.1,
+                "group": "g_control"
             },
             {
                 "name": "Fan status",
                 "reg_type": "input",
                 "address": "1",
-                "type": "value",
-                "format": "u16"
+                "enum": [
+                    0,
+                    2,
+                    4,
+                    8
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Low",
+                    "Medium",
+                    "High"
+                ],
+                "group": "g_control"
             },
             {
                 "name": "Valve status",
                 "reg_type": "input",
                 "address": "2",
-                "type": "value",
-                "format": "u16",
-                "readonly": true
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Heating",
+                    "Cooling"
+                ],
+                "group": "g_control"
+            },
+            {
+                "name": "button_lock_status",
+                "reg_type": "input",
+                "address": "3",
+                "enabled": false,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Unlock",
+                    "Lock"
+                ],
+                "group": "g_control"
             },
             {
                 "name": "Mode operation",
-                "reg_type": "holding",
                 "address": "0",
-                "type": "value",
-                "format": "u16",
-                "readonly": false
+                "enum": [
+                    1,
+                    4,
+                    8
+                ],
+                "enum_titles": [
+                    "Cooling",
+                    "Vent",
+                    "Heating"
+                ],
+                "group": "g_control"
             },
             {
                 "name": "Fan speed",
-                "reg_type": "holding",
                 "address": "1",
-                "type": "value",
-                "format": "u16",
-                "readonly": false
+                "enum": [
+                    2,
+                    4,
+                    8,
+                    128
+                ],
+                "enum_titles": [
+                    "Low",
+                    "Medium",
+                    "High",
+                    "Automatic"
+                ],
+                "group": "g_control"
             },
             {
                 "name": "Temperature setting",
-                "reg_type": "holding",
                 "address": "2",
-                "type": "range",
-                "format": "u16",
                 "min": 5,
                 "max": 35,
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "round_to": 1,
+                "group": "g_control"
             },
             {
                 "name": "Thermostat status",
-                "reg_type": "holding",
                 "address": "3",
                 "type": "switch",
-                "format": "u16",
                 "on_value": 1,
                 "off_value": 0,
-                "readonly": false
+                "group": "g_control"
             },
             {
                 "name": "Button lock",
-                "reg_type": "holding",
                 "address": "4",
                 "type": "switch",
                 "on_value": 1,
                 "off_value": 0,
-                "format": "u16",
-                "readonly": false
+                "group": "g_control"
             },
             {
                 "name": "Switching between manual and programmable modes",
-                "reg_type": "holding",
                 "address": "5",
-                "type": "value",
-                "format": "u16",
-                "readonly": false
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Manual",
+                    "Programme"
+                ],
+                "group": "g_control"
             },
             {
                 "name": "Real time, hour",
-                "reg_type": "holding",
                 "address": "6",
-                "type": "value",
                 "format": "bcd16",
                 "min": 0,
                 "max": 23,
-                "readonly": false
+                "group": "g_clock"
             },
             {
                 "name": "Real time, minutes",
-                "reg_type": "holding",
                 "address": "7",
-                "type": "value",
                 "format": "bcd16",
                 "min": 0,
                 "max": 59,
-                "readonly": false
+                "group": "g_clock"
             },
             {
                 "name": "Real time, day",
-                "reg_type": "holding",
                 "address": "8",
-                "type": "value",
                 "min": 1,
                 "max": 7,
-                "format": "u16",
-                "readonly": false
+                "group": "g_clock"
             },
             {
                 "name": "Address settings",
-                "reg_type": "holding",
                 "address": "9",
-                "type": "value",
                 "min": 1,
                 "max": 247,
-                "format": "u16",
-                "readonly": false
+                "enabled": false,
+                "group": "g_general"
             },
             {
                 "name": "Period 1 time (Mo-Fr), hour",
-                "reg_type": "holding",
                 "address": "10:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 1 time (Mo-Fr), minutes",
-                "reg_type": "holding",
                 "address": "10:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 1 temperature (Mo-Fr)",
-                "reg_type": "holding",
                 "address": "11",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 2 time (Mo-Fr), hour",
-                "reg_type": "holding",
                 "address": "12:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 2 time (Mo-Fr), minutes",
-                "reg_type": "holding",
                 "address": "12:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 2 temperature (Mo-Fr)",
-                "reg_type": "holding",
                 "address": "13",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 3 time (Mo-Fr), hour",
-                "reg_type": "holding",
                 "address": "14:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 3 time (Mo-Fr), minutes",
-                "reg_type": "holding",
                 "address": "14:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 3 temperature (Mo-Fr)",
-                "reg_type": "holding",
                 "address": "15",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 4 time (Mo-Fr), hour",
-                "reg_type": "holding",
                 "address": "16:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 4 time (Mo-Fr), minutes",
-                "reg_type": "holding",
                 "address": "16:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 4 temperature (Mo-Fr)",
-                "reg_type": "holding",
                 "address": "17",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_weekdays"
             },
             {
                 "name": "Period 1 time (Sat), hour",
-                "reg_type": "holding",
                 "address": "18:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 1 time (Sat), minutes",
-                "reg_type": "holding",
                 "address": "18:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 1 temperature (Sat)",
-                "reg_type": "holding",
                 "address": "19",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 2 time (Sat), hour",
-                "reg_type": "holding",
                 "address": "20:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 2 time (Sat), minutes",
-                "reg_type": "holding",
                 "address": "20:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 2 temperature (Sat)",
-                "reg_type": "holding",
                 "address": "21",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 3 time (Sat), hour",
-                "reg_type": "holding",
                 "address": "22:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 3 time (Sat), minutes",
-                "reg_type": "holding",
                 "address": "22:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 3 temperature (Sat)",
-                "reg_type": "holding",
                 "address": "23",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 4 time (Sat), hour",
-                "reg_type": "holding",
                 "address": "24:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 4 time (Sat), minutes",
-                "reg_type": "holding",
                 "address": "24:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 4 temperature (Sat)",
-                "reg_type": "holding",
                 "address": "25",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_saturday"
             },
             {
                 "name": "Period 1 time (Sun), hour",
-                "reg_type": "holding",
                 "address": "26:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 1 time (Sun), minutes",
-                "reg_type": "holding",
                 "address": "26:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 1 temperature (Sun)",
-                "reg_type": "holding",
                 "address": "27",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 2 time (Sun), hour",
-                "reg_type": "holding",
                 "address": "28:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 2 time (Sun), minutes",
-                "reg_type": "holding",
                 "address": "28:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 2 temperature (Sun)",
-                "reg_type": "holding",
                 "address": "29",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 3 time (Sun), hour",
-                "reg_type": "holding",
                 "address": "30:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 3 time (Sun), minutes",
-                "reg_type": "holding",
                 "address": "30:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 3 temperature (Sun)",
-                "reg_type": "holding",
                 "address": "31",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 4 time (Sun), hour",
-                "reg_type": "holding",
                 "address": "32:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
-                "format": "u16"
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 4 time (Sun), minutes",
-                "reg_type": "holding",
                 "address": "32:0:8",
-                "type": "range",
-                "min": 0,
-                "max": 59,
-                "format": "u8"
+                "format": "u8",
+                "enum": [
+                    0,
+                    15,
+                    30,
+                    45
+                ],
+                "enum_titles": [
+                    "0",
+                    "15",
+                    "30",
+                    "45"
+                ],
+                "group": "g_schedule_sunday"
             },
             {
                 "name": "Period 4 temperature (Sun)",
-                "reg_type": "holding",
                 "address": "33",
-                "type": "range",
                 "min": 5,
                 "max": 35,
-                "format": "u16",
                 "units": "deg C",
                 "scale": 0.1,
-                "readonly": false
+                "group": "g_schedule_sunday"
             }
         ],
         "translations": {
+            "en": {
+                "Return air temperature": "Return Air Temperature",
+                "Fan status": "Fan Status",
+                "Valve status": "Valve Status",
+                "button_lock_status": "Button Lock Status",
+                "Mode operation": "Operation Mode",
+                "Fan speed": "Fan Speed",
+                "Temperature setting": "Temperature Setting",
+                "Thermostat status": "Thermostat Status",
+                "Button lock": "Button Lock",
+                "Switching between manual and programmable modes": "Scenario (Manual or Weekly)",
+                "Real time, hour": "Time, Hours",
+                "Real time, minutes": "Time, Minutes",
+                "Real time, day": "Day of Week",
+                "Address settings": "Modbus Address",
+                "Period 1 time (Mo-Fr), hour": "Period 1 Time (Mo-Fr), Hours",
+                "Period 1 time (Mo-Fr), minutes": "Period 1 Time (Mo-Fr), Minutes",
+                "Period 1 temperature (Mo-Fr)": "Period 1 Temperature (Mo-Fr)",
+                "Period 2 time (Mo-Fr), hour": "Period 2 Time (Mo-Fr), Hours",
+                "Period 2 time (Mo-Fr), minutes": "Period 2 Time (Mo-Fr), Minutes",
+                "Period 2 temperature (Mo-Fr)": "Period 2 Temperature (Mo-Fr)",
+                "Period 3 time (Mo-Fr), hour": "Period 3 Time (Mo-Fr), Hours",
+                "Period 3 time (Mo-Fr), minutes": "Period 3 Time (Mo-Fr), Minutes",
+                "Period 3 temperature (Mo-Fr)": "Period 3 Temperature (Mo-Fr)",
+                "Period 4 time (Mo-Fr), hour": "Period 4 Time (Mo-Fr), Hours",
+                "Period 4 time (Mo-Fr), minutes": "Period 4 Time (Mo-Fr), Minutes",
+                "Period 4 temperature (Mo-Fr)": "Period 4 Temperature (Mo-Fr)",
+                "Period 1 time (Sat), hour": "Period 1 Time (Sat), Hours",
+                "Period 1 time (Sat), minutes": "Period 1 Time (Sat), Minutes",
+                "Period 1 temperature (Sat)": "Period 1 Temperature (Sat)",
+                "Period 2 time (Sat), hour": "Period 2 Time (Sat), Hours",
+                "Period 2 time (Sat), minutes": "Period 2 Time (Sat), Minutes",
+                "Period 2 temperature (Sat)": "Period 2 Temperature (Sat)",
+                "Period 3 time (Sat), hour": "Period 3 Time (Sat), Hours",
+                "Period 3 time (Sat), minutes": "Period 3 Time (Sat), Minutes",
+                "Period 3 temperature (Sat)": "Period 3 Temperature (Sat)",
+                "Period 4 time (Sat), hour": "Period 4 Time (Sat), Hours",
+                "Period 4 time (Sat), minutes": "Period 4 Time (Sat), Minutes",
+                "Period 4 temperature (Sat)": "Period 4 Temperature (Sat)",
+                "Period 1 time (Sun), hour": "Period 1 Time (Sun), Hours",
+                "Period 1 time (Sun), minutes": "Period 1 Time (Sun), Minutes",
+                "Period 1 temperature (Sun)": "Period 1 Temperature (Sun)",
+                "Period 2 time (Sun), hour": "Period 2 Time (Sun), Hours",
+                "Period 2 time (Sun), minutes": "Period 2 Time (Sun), Minutes",
+                "Period 2 temperature (Sun)": "Period 2 Temperature (Sun)",
+                "Period 3 time (Sun), hour": "Period 3 Time (Sun), Hours",
+                "Period 3 time (Sun), minutes": "Period 3 Time (Sun), Minutes",
+                "Period 3 temperature (Sun)": "Period 3 Temperature (Sun)",
+                "Period 4 time (Sun), hour": "Period 4 Time (Sun), Hours",
+                "Period 4 time (Sun), minutes": "Period 4 Time (Sun), Minutes",
+                "Period 4 temperature (Sun)": "Period 4 Temperature (Sun)"
+            },
             "ru": {
                 "Return air temperature": "Температура в помещении",
                 "Fan status": "Статус вентилятора",
@@ -500,7 +678,6 @@
                 "Temperature setting": "Температурная уставка",
                 "Thermostat status": "Статус термостата",
                 "Button lock": "Блокировка кнопок",
-                "Switching between manual and programm modes": "Выбор сценария (ручной или недельный)",
                 "Real time, hour": "Время, часы",
                 "Real time, minutes": "Время, минуты",
                 "Real time, day": "День недели",
@@ -531,7 +708,6 @@
                 "Period 4 temperature (Sat)": "Период 4 температура (Сб)",
                 "Period 1 time (Sun), hour": "Период 1, время (Вск), часы",
                 "Period 1 time (Sun), minutes": "Период 1, время (Вск), минуты",
-                "Period 1 temperature (Sun), minutes": "Период 1 температура (Вск)",
                 "Period 2 time (Sun), hour": "Период 2, время (Вск), часы",
                 "Period 2 time (Sun), minutes": "Период 2, время (Вск), минуты",
                 "Period 2 temperature (Sun)": "Период 2 температура (Вск)",
@@ -540,7 +716,28 @@
                 "Period 3 temperature (Sun)": "Период 3 температура (Вск)",
                 "Period 4 time (Sun), hour": "Период 4, время (Вск), часы",
                 "Period 4 time (Sun), minutes": "Период 4, время (Вск), минуты",
-                "Period 4 temperature (Sun)": "Период 4 температура (Вск)"
+                "Period 4 temperature (Sun)": "Период 4 температура (Вск)",
+                "Switching between manual and programmable modes": "Выбор сценария (ручной или недельный)",
+                "Period 1 temperature (Sun)": "Период 1 температура (Вск)",
+                "button_lock_status": "Статус блокировки кнопок",
+                "Control": "Управление",
+                "Clock": "Часы",
+                "Schedule Mo-Fr": "Расписание Пн-Пт",
+                "Schedule Saturday": "Расписание Сб",
+                "Schedule Sunday": "Расписание Вс",
+                "General": "Общее",
+                "Stop": "Стоп",
+                "Low": "Низкая",
+                "Medium": "Средняя",
+                "High": "Высокая",
+                "Heating": "Нагрев",
+                "Cooling": "Охлаждение",
+                "Vent": "Вентиляция",
+                "Automatic": "Авто",
+                "Manual": "Ручной",
+                "Programme": "Недельный",
+                "Unlock": "Разблокировано",
+                "Lock": "Заблокировано"
             }
         }
     }
