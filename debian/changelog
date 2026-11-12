@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.293.2) stable; urgency=medium
+
+  * Update LICENSE: Automation Technologies, LLC (Wiren Board) as the copyright holder,
+    2014 as the first publication year, use restricted to Wiren Board equipment
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 12 Nov 2026 14:40:07 +0300
+
 wb-mqtt-serial (2.293.1) stable; urgency=medium
 
   * IEC 61107 mode C: restore port settings after a failed session start
