@@ -25,7 +25,7 @@
                 "id": "g_input_{{in_num}}"
             },
             {# объявим группы типов нажатий и группы кнопок с фиксациями -#}
-            {% for name_action in ["sp", "lp", "dp", "slp", "switch_on", "switch_off"] -%}
+            {% for name_action in ["sp", "lp", "dp", "slp"] -%}
             {
                 "title": "Action_{{ name_action }}",
                 "id": "gg_in_{{ in_num }}_{{ name_action }}_action",
@@ -130,19 +130,6 @@
                     }
                 }
             },
-            {# объявим группы входов с типом switch -#}
-            {% for sw_act in ["off", "on"] -%}
-            {
-                "title": "Input {{in_num}} Switch {{sw_act}} Channels",
-                "id": "gg_in_{{ in_num }}_switch_{{sw_act}}_action",
-                "group": "g_input_{{in_num}}",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {% endfor -%}
             {% endfor -%}
             {
                 "title": "fader_hue_title",

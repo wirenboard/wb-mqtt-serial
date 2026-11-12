@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.268.0-wb106) stable; urgency=medium
+
+  * WB-LED template: remove unused groups declared twice
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 12 Nov 2026 14:05:22 +0300
+
 wb-mqtt-serial (2.268.0-wb105) stable; urgency=medium
 
   * Fix communication errors with MTDX62-MB
