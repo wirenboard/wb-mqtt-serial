@@ -1,4 +1,5 @@
 Open()
+ApplySerialPortSettings(9600 7E1)
 SkipNoise()
 EnqueueStartSession()
 >> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
@@ -8,4 +9,5 @@ EnqueueGoToProgMode()
 << 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 61
 EnqueueEndSession()
 >> 01 42 30 03 71
+ResetSerialPortSettings()
 Close()

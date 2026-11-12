@@ -136,6 +136,7 @@ TEST_F(TNevaTest, StartSessionError)
 
 TEST_F(TNevaTest, SwitchToProgModeError)
 {
+    SerialPort->LogSerialPortSettings(true);
     EnqueueStartSession();
     EnqueueGoToProgMode(true);
     EnqueueEndSession();

@@ -208,6 +208,7 @@ void TIEC61107ModeCDevice::PrepareImpl(TPort& port)
         if (sessionIsOpen) {
             SendEndSession(port);
         }
+        port.ResetSerialPortSettings();
         throw;
     }
 }
