@@ -163,15 +163,22 @@ TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& proto
                                               const Json::Value& knownValues = Json::Value(),
                                               const std::set<std::string>& ids = std::set<std::string>());
 
+typedef std::map<std::string, std::string> TRPCRegisterErrors;
+
 /**
  * @brief Reads TRPCRegisterList registers and puts value to JSON object.
  *
  * @param port - serial port reference
  * @param device - serial device object pointer
  * @param registerList - named PRegister map
+ * @param errors - if set, collects device error answers by item id instead of throwing
  * @param maxRetries - number of request retries in case of error
  */
-void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& registerList, int maxRetries = 0);
+void ReadRegisterList(TPort& port,
+                      PSerialDevice device,
+                      TRPCRegisterList& registerList,
+                      TRPCRegisterErrors* errors = nullptr,
+                      int maxRetries = 0);
 
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
 

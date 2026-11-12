@@ -104,7 +104,7 @@ namespace
                                                              rpcRequest->Device,
                                                              templateParams,
                                                              parameters);
-            ReadRegisterList(*port, rpcRequest->Device, registerList, MAX_RPC_RETRIES);
+            ReadRegisterList(*port, rpcRequest->Device, registerList, nullptr, MAX_RPC_RETRIES);
             MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList, &parameters);
             GetRegisterListParameters(registerList, parameters);
         } catch (...) {

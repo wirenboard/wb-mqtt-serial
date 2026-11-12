@@ -5,9 +5,16 @@
 
 namespace
 {
-    void ReadRegisters(PPort port, PRPCDeviceLoadRequest rpcRequest, TRPCRegisterList& registerList, Json::Value& data)
+    void ReadRegisters(PPort port,
+                       PRPCDeviceLoadRequest rpcRequest,
+                       TRPCRegisterList& registerList,
+                       TRPCRegisterErrors* errors,
+                       Json::Value& data)
     {
-        ReadRegisterList(*port, rpcRequest->Device, registerList);
+        ReadRegisterList(*port, rpcRequest->Device, registerList, errors);
+        if (errors != nullptr) {
+            std::erase_if(registerList, [&](const TRPCRegister& item) { return errors->count(item.Id) != 0; });
+        }
         for (const auto& item: registerList) {
             data[item.Id] = RegisterGotValue(item)
                                 ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
@@ -37,7 +44,8 @@ namespace
             Json::Value readonlyList(Json::arrayValue);
             Json::Value channelData(Json::objectValue);
             auto channelRegList = rpcRequest->GetChannelsRegisterList(conditionParamValues);
-            ReadRegisters(port, rpcRequest, channelRegList, channelData);
+            TRPCRegisterErrors errors; // only for channels
+            ReadRegisters(port, rpcRequest, channelRegList, &errors, channelData);
             for (const auto& item: channelRegList) {
                 if (item.Register->GetConfig()->AccessType == TRegisterConfig::EAccessType::READ_ONLY) {
                     readonlyList.append(item.Id);
@@ -46,12 +54,15 @@ namespace
             if (!channelData.empty()) {
                 result["channels"] = channelData;
             }
+            for (const auto& [id, message]: errors) {
+                result["errors"][id] = message;
+            }
 
             // Step 3: Read explicitly requested parameters, reusing values already
             // read for condition evaluation to avoid duplicate Modbus reads
             Json::Value paramData(Json::objectValue);
             auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues, &paramData);
-            ReadRegisters(port, rpcRequest, paramRegList, paramData);
+            ReadRegisters(port, rpcRequest, paramRegList, nullptr, paramData);
             if (!paramData.empty()) {
                 result["parameters"] = paramData;
             }
