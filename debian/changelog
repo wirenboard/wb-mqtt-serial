@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.293.1) stable; urgency=medium
+
+  * IEC 61107 mode C: restore port settings after a failed session start
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 12 Nov 2026 11:52:35 +0300
+
 wb-mqtt-serial (2.293.0) stable; urgency=medium
 
   * Fast Modbus: events are read while RPC requests keep the port busy
