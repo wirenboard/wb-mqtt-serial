@@ -10,6 +10,7 @@
     "device": {
         "name": "ONOKOM-AIR-TB-1-MB-B",
         "id": "ONOKOM-AIR-TB-1-MB-B",
+        "response_timeout_ms": 1,
         "groups": [
             {
                 "title": "General",
@@ -57,12 +58,14 @@
                     "Yes"
                 ],
                 "group": "temperatureControl",
+                "default": 0,
                 "order": 1
             },
             {
                 "id": "Show_modes_as_range",
                 "title": "Show modes as range",
                 "address": 95,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -79,6 +82,7 @@
                 "id": "Show_fan_as_range",
                 "title": "Show fan as range",
                 "address": 92,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -95,6 +99,7 @@
                 "id": "Show_vanes_as_range",
                 "title": "Show vanes as range",
                 "address": 94,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -111,6 +116,7 @@
                 "id": "Show_thermostat_state_as_range",
                 "title": "Show thermostat state as range",
                 "address": 94,
+                "default": 0,
                 "reg_type": "coil",
                 "enum": [
                     0,
@@ -302,6 +308,18 @@
                 "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
+                "name": "External temperature sensor validity period",
+                "reg_type": "holding",
+                "address": 40,
+                "type": "value",
+                "format": "s16",
+                "min": 0,
+                "max": 100,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
                 "name": "Indoor air temperature",
                 "reg_type": "holding",
                 "address": 3,
@@ -354,6 +372,18 @@
                 "sporadic": true,
                 "group": "temperatureControl",
                 "units": "deg C"
+            },
+            {
+                "name": "Temperature correction",
+                "reg_type": "holding",
+                "address": 20,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
                 "name": "Thermostat state",
@@ -608,9 +638,11 @@
                 "Smart fan speed": "Скорость вентилятора расширенная",
                 "Quiet mode": "Режим тихий",
                 "External air temperature": "Температура с внешнего датчика",
+                "External temperature sensor validity period": "Время ожидания данных с внешнего датчика температуры",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Outdoor air temperature": "Температура воздуха на улице",
                 "Target temperature": "Целевая температура",
+                "Temperature correction": "Коррекция температуры",
                 "Thermostat state": "Состояние термостата",
                 "Idle": "Простаивает",
                 "Heating": "Нагрев",
