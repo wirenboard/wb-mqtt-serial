@@ -401,6 +401,106 @@ TEST_F(TRPCDeviceLoadTaskExecTest, DropsItemsOnUnsupportedValueMarker)
     EXPECT_FALSE(result.isMember("readonly"));
 }
 
+/**
+ * Checks that a device/Load request does not fail when the device answers a channel
+ * with a modbus exception other than illegal address, "server device is busy" here.
+ * The channel comes in "errors" and not in "channels", the rest is read as usual.
+ */
+TEST_F(TRPCDeviceLoadTaskExecTest, ReportsChannelReadErrors)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+    TTemplateMap templates(GetTemplatesSchema());
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templates.GetTemplate("device_load_conditions");
+    auto config = std::make_shared<TDeviceConfig>("test", "1", "modbus");
+    auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
+
+    auto request = std::make_shared<TRPCDeviceLoadRequest>(protocolParams, device, deviceTemplate, true);
+    request->Channels = {"Always Visible", "Mode Not One"};
+    Json::Value result;
+    bool gotResult = false;
+    std::string error;
+    request->OnResult = [&](const Json::Value& data) {
+        result = data;
+        gotResult = true;
+    };
+    request->OnError = [&](auto, const std::string& message) { error = message; };
+
+    auto port = std::make_shared<TFakeSerialPort>(*this, "<device_load_conditions>");
+    port->Expect({0x01, 0x03, 0x00, 0x72, 0x00, 0x01, 0x24, 0x11},
+                 {0x01, 0x03, 0x02, 0x00, 0x00, 0xB8, 0x44},
+                 "read continuous read state");
+    port->Expect({0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
+                 {0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
+                 "enable continuous read");
+    port->Expect({0x01, 0x03, 0x00, 0x64, 0x00, 0x01, 0xC5, 0xD5},
+                 {0x01, 0x03, 0x02, 0x00, 0x00, 0xB8, 0x44},
+                 "read mode");
+    port->Expect({0x01, 0x04, 0x00, 0xC8, 0x00, 0x01, 0xB0, 0x34},
+                 {0x01, 0x84, 0x06, 0xC3, 0x02},
+                 "read Always Visible, the device is busy");
+    port->Expect({0x01, 0x04, 0x00, 0xCD, 0x00, 0x01, 0xA0, 0x35},
+                 {0x01, 0x04, 0x02, 0x00, 0x07, 0xF8, 0xF2},
+                 "read Mode Not One");
+
+    TSerialClientDeviceAccessHandler accessHandler(nullptr);
+    TRPCDeviceLoadSerialClientTask task(request);
+    task.Run(std::make_shared<TFeaturePort>(port, false), accessHandler, {});
+
+    ASSERT_TRUE(gotResult) << error;
+    EXPECT_FALSE(result["channels"].isMember("Always Visible"));
+    EXPECT_EQ(result["channels"]["Mode Not One"].asInt(), 7);
+    ASSERT_EQ(result["errors"].size(), 1u);
+    EXPECT_EQ(result["errors"]["Always Visible"].asString(), "Serial protocol error: server device is busy");
+}
+
+/**
+ * Checks that a device/Load request fails at once when the device does not answer:
+ * reading the rest of the channels would only add a timeout each.
+ */
+TEST_F(TRPCDeviceLoadTaskExecTest, FailsOnChannelReadTimeout)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+    TTemplateMap templates(GetTemplatesSchema());
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    auto deviceTemplate = templates.GetTemplate("device_load_conditions");
+    auto config = std::make_shared<TDeviceConfig>("test", "1", "modbus");
+    auto device = protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(), config, protocolParams.protocol);
+
+    auto request = std::make_shared<TRPCDeviceLoadRequest>(protocolParams, device, deviceTemplate, true);
+    request->Channels = {"Always Visible", "Mode Not One"};
+    bool gotResult = false;
+    std::string error;
+    request->OnResult = [&](const Json::Value&) { gotResult = true; };
+    request->OnError = [&](auto, const std::string& message) { error = message; };
+
+    auto port = std::make_shared<TFakeSerialPort>(*this, "<device_load_conditions>");
+    port->Expect({0x01, 0x03, 0x00, 0x72, 0x00, 0x01, 0x24, 0x11},
+                 {0x01, 0x03, 0x02, 0x00, 0x00, 0xB8, 0x44},
+                 "read continuous read state");
+    port->Expect({0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
+                 {0x01, 0x06, 0x00, 0x72, 0x00, 0x01, 0xE8, 0x11},
+                 "enable continuous read");
+    port->Expect({0x01, 0x03, 0x00, 0x64, 0x00, 0x01, 0xC5, 0xD5},
+                 {0x01, 0x03, 0x02, 0x00, 0x00, 0xB8, 0x44},
+                 "read mode");
+    port->ExpectNoResponse({0x01, 0x04, 0x00, 0xC8, 0x00, 0x01, 0xB0, 0x34}, "read Always Visible, no answer");
+
+    TSerialClientDeviceAccessHandler accessHandler(nullptr);
+    TRPCDeviceLoadSerialClientTask task(request);
+    task.Run(std::make_shared<TFeaturePort>(port, false), accessHandler, {});
+
+    EXPECT_FALSE(gotResult);
+    EXPECT_NE(error.find("Always Visible"), std::string::npos) << error;
+    EXPECT_NE(error.find("request timed out"), std::string::npos) << error;
+}
+
 class TRPCDeviceLoadConfigTaskExecTest: public TLoggedFixture
 {};
 

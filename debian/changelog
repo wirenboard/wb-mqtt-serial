@@ -1,8 +1,14 @@
+wb-mqtt-serial (2.294.0) stable; urgency=medium
+
+  * Report channel read errors for device/Load RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 13 Nov 2026 12:22:42 +0300
+
 wb-mqtt-serial (2.293.3) stable; urgency=medium
 
   * Add the expected exchange log for the firmware restore error test
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 13 Nov 2026 13:00:00 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 13 Nov 2026 12:15:00 +0300
 
 wb-mqtt-serial (2.293.2) stable; urgency=medium
 
