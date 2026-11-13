@@ -87,13 +87,6 @@ ISerialClientTask::TRunResult TFwUpdateSerialClientTask::Run(PFeaturePort port,
             }
         } catch (const std::exception& e) {
             LOG(Error) << "Firmware update error: " << e.what();
-            auto error = MakeFwUpdateStateError(e);
-            State->SetError(SlaveId,
-                            GetRPCPortDescription(PortSettings),
-                            GetFwSoftwareTypeName(SoftwareType),
-                            error.Id,
-                            error.Message,
-                            error.Metadata);
         }
         ReleaseLock();
     } catch (const TResponseTimeoutException& e) {
@@ -202,16 +195,8 @@ void TFwUpdateSerialClientTask::DoComponentsUpdate(TPort& port,
                         comp.Model);
             }
         } catch (const std::exception& e) {
-            // The other components are updated all the same, so the failure is reported here
-            // and not by the caller
+            // The other components are updated all the same
             LOG(Error) << "Cannot update component " << comp.Number << ": " << e.what();
-            auto error = MakeFwUpdateStateError(e);
-            State->SetError(SlaveId,
-                            GetRPCPortDescription(PortSettings),
-                            GetFwSoftwareTypeName(EFwSoftwareType::Component),
-                            error.Id,
-                            error.Message,
-                            error.Metadata);
         }
     }
 }
@@ -240,18 +225,25 @@ void TFwUpdateSerialClientTask::DoFlash(TPort& port,
     updateInfo.ComponentModel = componentModel;
     State->Update(updateInfo);
 
-    // Download and parse firmware file
-    auto firmware = Downloader->DownloadAndParseWBFW(fwUrl);
+    try {
+        // Download and parse firmware file
+        auto firmware = Downloader->DownloadAndParseWBFW(fwUrl);
 
-    // Flash with throttled progress updates
-    TUpdateNotifier notifier(30);
-    FlashFirmware(traits, port, SlaveId, firmware, reboot, canPreserve, [&](int percent) {
-        if (notifier.ShouldNotify(percent)) {
-            updateInfo.Progress = percent;
-            State->Update(updateInfo);
-        }
-    });
+        // Flash with throttled progress updates
+        TUpdateNotifier notifier(30);
+        FlashFirmware(traits, port, SlaveId, firmware, reboot, canPreserve, [&](int percent) {
+            if (notifier.ShouldNotify(percent)) {
+                updateInfo.Progress = percent;
+                State->Update(updateInfo);
+            }
+        });
+    } catch (const std::exception& e) {
+        // A bootloader update has already removed its own record by the time the firmware is restored
+        auto error = MakeFwUpdateStateError(e);
+        State->SetError(SlaveId, updateInfo.PortPath, updateInfo.Type, error.Id, error.Message, error.Metadata);
+        throw;
+    }
 
     // Success — remove from state
-    State->Remove(SlaveId, GetRPCPortDescription(PortSettings), GetFwSoftwareTypeName(type));
+    State->Remove(SlaveId, updateInfo.PortPath, updateInfo.Type);
 }

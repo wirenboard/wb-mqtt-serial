@@ -3144,6 +3144,36 @@ TEST_F(FwHandlerIntegrationTest, UpdateReportsResponseTimeout)
     EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.device.response_timeout_error");
 }
 
+//! The bootloader record is already removed, the error must go to the firmware one
+TEST_F(FwHandlerIntegrationTest, UpdateBootloaderReportsFirmwareRestoreError)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo("wbled", "2.0.0");
+    std::vector<uint8_t> wbfwData(168, 0xBB);
+    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.0.0.wbfw", wbfwData);
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueFlashExpectations(true, true, 0xBB);
+    std::vector<int> infoData(32, 0xAA);
+    EnqueueWriteMultipleRegistersNoResponse(FwRegisters::FW_INFO_BLOCK_ADDR,
+                                            FwRegisters::FW_INFO_BLOCK_COUNT,
+                                            infoData);
+
+    auto request = MakeRequest();
+    request["type"] = "bootloader";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_FALSE(GetUpdateInProgress());
+
+    auto devices = ParseLastPublishedState()["devices"];
+    ASSERT_EQ(devices.size(), 1u);
+    EXPECT_EQ(devices[0]["type"].asString(), "firmware");
+    EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.device.response_timeout_error");
+}
+
 //! A component left with a record of its own would block every later request for the device
 TEST_F(FwHandlerIntegrationTest, UpdateComponentReportsDownloadError)
 {
