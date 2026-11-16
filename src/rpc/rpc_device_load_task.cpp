@@ -8,13 +8,12 @@ namespace
     void ReadRegisters(PPort port,
                        PRPCDeviceLoadRequest rpcRequest,
                        TRPCRegisterList& registerList,
-                       TRPCRegisterErrors* errors,
-                       Json::Value& data)
+                       TRPCRegisterErrors& errors,
+                       Json::Value& data,
+                       ERPCReadErrorPolicy errorPolicy = ERPCReadErrorPolicy::THROW)
     {
-        ReadRegisterList(*port, rpcRequest->Device, registerList, errors);
-        if (errors != nullptr) {
-            std::erase_if(registerList, [&](const TRPCRegister& item) { return errors->count(item.Id) != 0; });
-        }
+        ReadRegisterList(*port, rpcRequest->Device, registerList, errors, 0, errorPolicy);
+        std::erase_if(registerList, [&](const TRPCRegister& item) { return errors.count(item.Id) != 0; });
         for (const auto& item: registerList) {
             data[item.Id] = RegisterGotValue(item)
                                 ? RawValueToJSON(*item.Register->GetConfig(), item.Register->GetValue())
@@ -36,7 +35,8 @@ namespace
             // Step 1: Read parameters that are referenced by conditions of the requested items.
             Json::Value conditionParamValues(Json::objectValue);
             auto condParamRegList = rpcRequest->GetConditionParametersRegisterList();
-            ReadRegisterList(*port, rpcRequest->Device, condParamRegList);
+            TRPCRegisterErrors errors;
+            ReadRegisterList(*port, rpcRequest->Device, condParamRegList, errors);
             MarkUnsupportedRegisterItems(*port, *rpcRequest, condParamRegList);
             MergeRegisterListValues(condParamRegList, conditionParamValues);
 
@@ -44,8 +44,7 @@ namespace
             Json::Value readonlyList(Json::arrayValue);
             Json::Value channelData(Json::objectValue);
             auto channelRegList = rpcRequest->GetChannelsRegisterList(conditionParamValues);
-            TRPCRegisterErrors errors; // only for channels
-            ReadRegisters(port, rpcRequest, channelRegList, &errors, channelData);
+            ReadRegisters(port, rpcRequest, channelRegList, errors, channelData, ERPCReadErrorPolicy::CONTINUE);
             for (const auto& item: channelRegList) {
                 if (item.Register->GetConfig()->AccessType == TRegisterConfig::EAccessType::READ_ONLY) {
                     readonlyList.append(item.Id);
@@ -62,7 +61,7 @@ namespace
             // read for condition evaluation to avoid duplicate Modbus reads
             Json::Value paramData(Json::objectValue);
             auto paramRegList = rpcRequest->GetParametersRegisterList(conditionParamValues, &paramData);
-            ReadRegisters(port, rpcRequest, paramRegList, nullptr, paramData);
+            ReadRegisters(port, rpcRequest, paramRegList, errors, paramData);
             if (!paramData.empty()) {
                 result["parameters"] = paramData;
             }

@@ -355,9 +355,11 @@ TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& proto
 void ReadRegisterList(TPort& port,
                       PSerialDevice device,
                       TRPCRegisterList& registerList,
-                      TRPCRegisterErrors* errors,
-                      int maxRetries)
+                      TRPCRegisterErrors& errors,
+                      int maxRetries,
+                      ERPCReadErrorPolicy errorPolicy)
 {
+    errors.clear();
     if (registerList.size() == 0) {
         return;
     }
@@ -398,23 +400,21 @@ void ReadRegisterList(TPort& port,
                     }
                 }
                 break;
-            } catch (const TResponseTimeoutException& e) {
-                if (i == maxRetries) {
-                    error = "Failed to read " + description + ": " + e.what();
-                }
             } catch (const TSerialDeviceException& e) {
                 if (i < maxRetries) {
                     continue;
                 }
-                if (errors == nullptr) {
-                    error = "Failed to read " + description + ": " + e.what();
-                } else {
+                for (auto j = start; j < index; ++j) {
+                    errors[registerList[j].Id] = e.what();
+                }
+                if (dynamic_cast<const TResponseTimeoutException*>(&e) == nullptr &&
+                    errorPolicy == ERPCReadErrorPolicy::CONTINUE)
+                {
                     LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
                               << "Failed to read " << description << ": " << e.what();
-                    for (auto j = start; j < index; ++j) {
-                        (*errors)[registerList[j].Id] = e.what();
-                    }
+                    continue;
                 }
+                error = "Failed to read " + description + ": " + e.what();
             }
         }
     }

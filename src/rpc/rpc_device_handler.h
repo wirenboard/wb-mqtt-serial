@@ -165,20 +165,28 @@ TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& proto
 
 typedef std::map<std::string, std::string> TRPCRegisterErrors;
 
+enum class ERPCReadErrorPolicy
+{
+    THROW,
+    CONTINUE
+};
+
 /**
  * @brief Reads TRPCRegisterList registers and puts value to JSON object.
  *
  * @param port - serial port reference
  * @param device - serial device object pointer
  * @param registerList - named PRegister map
- * @param errors - if set, collects device error answers by item id instead of throwing
+ * @param errors - named map of register read errors, cleared before the read
  * @param maxRetries - number of request retries in case of error
+ * @param errorPolicy - error answer handling policy (response timeout always throws)
  */
 void ReadRegisterList(TPort& port,
                       PSerialDevice device,
                       TRPCRegisterList& registerList,
-                      TRPCRegisterErrors* errors = nullptr,
-                      int maxRetries = 0);
+                      TRPCRegisterErrors& errors,
+                      int maxRetries = 0,
+                      ERPCReadErrorPolicy errorPolicy = ERPCReadErrorPolicy::THROW);
 
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
 
