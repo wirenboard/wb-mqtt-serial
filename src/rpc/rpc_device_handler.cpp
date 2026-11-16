@@ -352,8 +352,14 @@ TRPCRegisterList CreateParametersRegisterList(const TDeviceProtocolParams& proto
     return registerList;
 }
 
-void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& registerList, int maxRetries)
+void ReadRegisterList(TPort& port,
+                      PSerialDevice device,
+                      TRPCRegisterList& registerList,
+                      TRPCRegisterErrors& errors,
+                      int maxRetries,
+                      ERPCReadErrorPolicy errorPolicy)
 {
+    errors.clear();
     if (registerList.size() == 0) {
         return;
     }
@@ -366,6 +372,7 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
     size_t index = 0;
     std::string error;
     while (index < registerList.size() && error.empty()) {
+        auto start = index;
         auto first = registerList[index].Register;
         auto range = device->CreateRegisterRange();
         std::string ids;
@@ -394,9 +401,20 @@ void ReadRegisterList(TPort& port, PSerialDevice device, TRPCRegisterList& regis
                 }
                 break;
             } catch (const TSerialDeviceException& e) {
-                if (i == maxRetries) {
-                    error = "Failed to read " + description + ": " + e.what();
+                if (i < maxRetries) {
+                    continue;
                 }
+                for (auto j = start; j < index; ++j) {
+                    errors[registerList[j].Id] = e.what();
+                }
+                if (dynamic_cast<const TResponseTimeoutException*>(&e) == nullptr &&
+                    errorPolicy == ERPCReadErrorPolicy::CONTINUE)
+                {
+                    LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": "
+                              << "Failed to read " << description << ": " << e.what();
+                    continue;
+                }
+                error = "Failed to read " + description + ": " + e.what();
             }
         }
     }
