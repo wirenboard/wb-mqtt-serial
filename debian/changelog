@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.295.0) stable; urgency=medium
+
+  * Add Ridan R-KI 230 (fw 2.3) temperature controller template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 19 Nov 2026 20:03:34 +0300
+
 wb-mqtt-serial (2.294.0) stable; urgency=medium
 
   * Report channel read errors for device/Load RPC
