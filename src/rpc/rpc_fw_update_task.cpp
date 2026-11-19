@@ -358,6 +358,21 @@ TFwDeviceInfo ReadFwDeviceInfo(Modbus::IModbusTraits& traits, TPort& port, uint8
         LOG(Debug) << "Cannot read device model: " << e.what();
     }
 
+    // Read device serial number
+    try {
+        auto sn = Modbus::ReadRegister(traits,
+                                       port,
+                                       slaveId,
+                                       *WbRegisters::GetRegisterConfig(WbRegisters::SN_REGISTER_NAME),
+                                       std::chrono::microseconds(0),
+                                       FW_RESPONSE_TIMEOUT,
+                                       FW_FRAME_TIMEOUT)
+                      .Get<uint64_t>();
+        info.Sn = std::to_string(WbRegisters::GetSnFromRegister(info.DeviceModel, sn));
+    } catch (const std::exception& e) {
+        LOG(Debug) << "Cannot read serial number: " << e.what();
+    }
+
     // Read info for each present component - Cf. firmware_update.py:258 read_component_info()
     for (int compNum: ReadComponentsPresence(traits, port, slaveId)) {
         try {
