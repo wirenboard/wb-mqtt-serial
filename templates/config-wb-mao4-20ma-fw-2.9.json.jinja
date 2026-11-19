@@ -1,5 +1,6 @@
 {# (fw, min, max) of the safety poll timeout: older firmware has an 8-bit register -#}
 {% set SAFETY_TIMER_FW_VARIANTS = [("", 1, 255), ("2.10.2", 1, 65534)] -%}
+{% set LEVEL_ACTION_FW = "2.11.0" -%}
 {% set title_en = title_en | default("WB-MAO4-20mA fw2.9 (4-channel 0-20 mA output module)") -%}
 {% set title_ru = title_ru | default("WB-MAO4-20mA fw2.9 (4-канальный модуль токовых выходов 0-20 мА)") -%}
 {% set device_type = device_type | default("WB-MAO4-20mA-since-fw-2.9") -%}
@@ -253,15 +254,23 @@
                 "condition": "input_{{ch_number + 1}}_mode==0&&{{encoder_disabled_condition}}",
                 "order": 1
             },
+            {% set press_index = loop.index0 -%}
+            {% for action_fw in ["", LEVEL_ACTION_FW] -%}
             {
                 "id": "{{action_bind}}_action_single",
                 "title": "Action",
-                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "address": {{832 + (press_index * 16) + ch_number}},
                 "reg_type": "holding",
-                {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
+                {% if action_fw -%}
+                "fw": "{{ action_fw }}",
+                {% endif -%}
+                "enum": [0, 1, {% if action_fw %}6, {% endif %}2, 3, 4{% if press_type in ["long", "shortlong"] %}, 5{% endif %}],
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
+                    {% if action_fw -%}
+                    "Turn On and Set Level",
+                    {% endif -%}
                     "Toggle",
                     "Decrease Level",
                     "Increase Level"{% if press_type in ["long", "shortlong"] %},
@@ -275,12 +284,18 @@
             {
                 "id": "{{action_bind}}_action_all",
                 "title": "Action",
-                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "address": {{832 + (press_index * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 3, 4],
+                {% if action_fw -%}
+                "fw": "{{ action_fw }}",
+                {% endif -%}
+                "enum": [0, 1, {% if action_fw %}6, {% endif %}3, 4],
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
+                    {% if action_fw -%}
+                    "Turn On and Set Level",
+                    {% endif -%}
                     "Decrease Level",
                     "Increase Level"
                 ],
@@ -288,6 +303,21 @@
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
                 "condition": "{{ action_bind }}_number==100&&{{encoder_disabled_condition}}"
+            },
+            {% endfor -%}
+            {
+                "id": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_level",
+                "title": "Level (%)",
+                "address": {{1800 + (press_index * 20) + ch_number}},
+                "reg_type": "holding",
+                "fw": "{{ LEVEL_ACTION_FW }}",
+                "min": 0.1,
+                "max": 100,
+                "scale": 0.1,
+                "default": 100,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "order": 3,
+                "condition": "(input_{{ch_number + 1}}_mode==0)&&((({{action_bind}}_number>=1)&&({{action_bind}}_number<=4)&&({{action_bind}}_action_single==6))||(({{action_bind}}_number==100)&&({{action_bind}}_action_all==6)))&&{{encoder_disabled_condition}}"
             },
             {% endfor -%}
             {# Dimming step for short presses -#}
@@ -982,6 +1012,7 @@
                 "All Outputs": "Все выходы",
                 "Turn Off": "Выключить",
                 "Turn On": "Включить",
+                "Turn On and Set Level": "Включить и установить уровень",
                 "Toggle": "Переключить",
                 "Stop": "Стоп",
                 "Decrease": "Уменьшение",
