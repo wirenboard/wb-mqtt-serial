@@ -17,6 +17,7 @@ namespace WbRegisters
     const std::string LOCAL_TIME_REGISTER_NAME = "local_time";
 
     PRegisterConfig GetRegisterConfig(const std::string& name);
+    uint32_t GetSnFromRegister(const std::string& deviceModel, uint32_t sn);
 
 } // namespace
 

@@ -15,6 +15,9 @@ EnqueueHoldingReadException()
 EnqueueHoldingRead()
 >> 2A 03 00 C8 00 14 C2 20
 << 2A 03 28 00 4D 00 41 00 50 00 31 00 32 02 45 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 5D C9
+EnqueueHoldingRead()
+>> 2A 03 01 0E 00 02 A2 2F
+<< 2A 03 04 FE 00 30 39 84 CB
 EnqueueDiscreteReadException()
 >> 2A 02 FE 80 00 08 4F D7
 << 2A 82 02 B1 69
