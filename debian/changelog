@@ -8,6 +8,9 @@ wb-mqtt-serial (2.296.0) stable; urgency=medium
   * WB-MDM3 fw 2.12 template: add the input action "Turn On and Set
     Brightness" with a brightness for each press type (holding 1800+,
     firmware 2.13.0) as an fw variant of the action parameters
+  * WB-MAO4 and WB-MAO4-20mA fw 2.9 templates: add the input action "Turn On
+    and Set Level" with a level for each press type (holding 1800+, firmware
+    2.11.0) as an fw variant of the action parameters
 
  -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Thu, 19 Nov 2026 19:10:24 +0700
 
