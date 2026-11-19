@@ -1,3 +1,16 @@
+wb-mqtt-serial (2.295.0) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D fw 3.8 templates: add the input actions "Enable all
+    channels", "Enable all channels and set brightness" and "Enable ... and set
+    brightness" with a brightness for each press type (holding 1300+, firmware
+    3.10.0) as fw variants of the action parameters; a WB-LED switch can also
+    turn on all channels
+  * WB-MDM3 fw 2.12 template: add the input action "Turn On and Set
+    Brightness" with a brightness for each press type (holding 1300+,
+    firmware 2.13.0) as an fw variant of the action parameters
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Thu, 19 Nov 2026 19:10:24 +0700
+
 wb-mqtt-serial (2.294.0) stable; urgency=medium
 
   * Report channel read errors for device/Load RPC
