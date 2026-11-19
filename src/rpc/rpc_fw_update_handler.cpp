@@ -80,6 +80,8 @@ Json::Value BuildFirmwareInfoResponse(const TFwDeviceInfo& deviceInfo,
     result["bootloader_has_update"] = false;
     result["components"] = Json::Value(Json::objectValue);
     result["model"] = deviceInfo.DeviceModel;
+    result["fw_signature"] = deviceInfo.FwSignature;
+    result["sn"] = deviceInfo.Sn;
 
     // Skip non-updatable signatures
     if (deviceInfo.FwSignature.empty() || IsNonUpdatableSignature(deviceInfo.FwSignature)) {

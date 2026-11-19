@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.295.0) stable; urgency=medium
+
+  * Add firmware signature and serial number to fw-update/GetFirmwareInfo RPC response
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 19 Nov 2026 14:02:26 +0300
+
 wb-mqtt-serial (2.294.0) stable; urgency=medium
 
   * Report channel read errors for device/Load RPC
