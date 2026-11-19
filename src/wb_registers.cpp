@@ -1,5 +1,6 @@
 #include "wb_registers.h"
 #include "modbus_common.h"
+#include <regex>
 
 namespace
 {
@@ -80,4 +81,12 @@ PRegisterConfig WbRegisters::GetRegisterConfig(const std::string& name)
         return res->second;
     }
     return nullptr;
+}
+
+uint32_t WbRegisters::GetSnFromRegister(const std::string& deviceModel, uint32_t sn)
+{
+    if (std::regex_match(deviceModel, std::regex("\\S*MAP\\d+\\S*"))) {
+        return sn & 0x01FFFFFF;
+    }
+    return sn;
 }

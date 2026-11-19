@@ -4,7 +4,6 @@
 #include "port/serial_port.h"
 #include "rpc_helpers.h"
 #include "wb_registers.h"
-#include <regex>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -26,14 +25,6 @@ namespace
     const std::string READ_SERIAL_PARAMS_ERROR_ID = "com.wb.serial_driver.device.read_serial_params_error";
     const std::string READ_SN_ERROR_ID = "com.wb.serial_driver.device.read_sn_error";
 
-    uint32_t GetSnFromRegister(const std::string& deviceModel, uint32_t sn)
-    {
-        if (std::regex_match(deviceModel, std::regex("\\S*MAP\\d+\\S*"))) {
-            return sn & 0x01FFFFFF;
-        }
-        return sn;
-    }
-
     void AppendError(Json::Value& errorsJson, const std::string& id, const std::string& message)
     {
         Json::Value errorJson;
@@ -53,7 +44,8 @@ namespace
         std::string stringSn = std::to_string(snFromRegister);
         try {
             deviceJson["device_signature"] = reader.ReadDeviceModel();
-            stringSn = std::to_string(GetSnFromRegister(deviceJson["device_signature"].asString(), snFromRegister));
+            stringSn = std::to_string(
+                WbRegisters::GetSnFromRegister(deviceJson["device_signature"].asString(), snFromRegister));
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_DEVICE_SIGNATURE_ERROR_ID, e.what());
         }

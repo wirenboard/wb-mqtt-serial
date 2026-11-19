@@ -29,6 +29,9 @@ namespace TestRegisters
     const uint16_t DEVICE_MODEL_ADDR = 200;
     const uint16_t DEVICE_MODEL_COUNT = 6;
     const uint16_t DEVICE_MODEL_EXTENDED_COUNT = 20;
+
+    const uint16_t SN_ADDR = 270;
+    const uint16_t SN_COUNT = 2;
 }
 
 // ============================================================
@@ -912,6 +915,7 @@ protected:
         EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                            TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                            EncodeStringAsRegs(model, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+        EnqueueSnRead(12345678);
     }
 
     //! A device without components
@@ -925,6 +929,16 @@ protected:
         EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
                                      FwRegisters::COMPONENTS_PRESENCE_COUNT,
                                      0x02);
+    }
+
+    void EnqueueSnRead(uint32_t sn)
+    {
+        EnqueueHoldingRead(TestRegisters::SN_ADDR,
+                           TestRegisters::SN_COUNT,
+                           {static_cast<int>((sn >> 24) & 0xFF),
+                            static_cast<int>((sn >> 16) & 0xFF),
+                            static_cast<int>((sn >> 8) & 0xFF),
+                            static_cast<int>(sn & 0xFF)});
     }
 
     void EnqueueComponentInfoReads(int number,
@@ -1120,6 +1134,7 @@ TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_COUNT,
                        EncodeStringAsRegs("WB-LED", TestRegisters::DEVICE_MODEL_COUNT));
+    EnqueueSnRead(12345678);
     // No components
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
@@ -1161,6 +1176,7 @@ TEST_F(TFwTaskTest, GetInfoWithComponents)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("WBMWAC-v2", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
 
     // Components presence: bit 0 set = component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -1253,6 +1269,7 @@ TEST_F(TFwTaskTest, GetInfoUnavailableComponent)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("TEST", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -1295,6 +1312,7 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT, modelWithCtrl);
+    EnqueueSnRead(0xFE003039);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -1313,6 +1331,7 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
 
     ASSERT_TRUE(gotResult);
     EXPECT_EQ(resultInfo.DeviceModel, "MAP12E");
+    EXPECT_EQ(resultInfo.Sn, "12345"); // WB-MAP extra bits are dropped
 }
 
 // Third-party devices may answer the FW/bootloader-version register reads with
@@ -1337,6 +1356,7 @@ TEST_F(TFwTaskTest, GetInfoGarbageVersionsSanitized)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("EFAN", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -1376,6 +1396,7 @@ TEST_F(TFwTaskTest, GetInfoGarbageSignatureCleared)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("EFAN", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -2523,6 +2544,7 @@ TEST_F(TFwTaskTest, GetInfoComponentReadError)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("TEST", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -2824,6 +2846,8 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
     EXPECT_TRUE(LastResult["fw_has_update"].asBool());
     EXPECT_TRUE(LastResult["can_update"].asBool());
     EXPECT_EQ(LastResult["model"].asString(), "WB-LED");
+    EXPECT_EQ(LastResult["fw_signature"].asString(), "wbled");
+    EXPECT_EQ(LastResult["sn"].asString(), "12345678");
     EXPECT_EQ(LastResult["available_bootloader"].asString(), "2.0.0");
     EXPECT_TRUE(LastResult["bootloader_has_update"].asBool());
 }
