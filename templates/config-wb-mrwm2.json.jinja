@@ -4,6 +4,15 @@
 {% set SAFETY_ACCORDING_TO_INPUT_FW = "1.26.0" -%}
 {% set TIMER_AUTORESET_FW = "1.27.0" -%}
 {# (fw, max) of the input debounce time -#}
+{#- Output actions in the order of their register values -#}
+{% set OUTPUT_ACTIONS = [("No Action", "Ничего не делать"), ("Turn Off", "Выключить"), ("Turn On", "Включить"), ("Toggle", "Переключить")] -%}
+{#- Mapping-matrix value = 4 * action on close + action on open -#}
+{% set MAPPING_MATRIX_ACTIONS = [] -%}
+{% for on_close in OUTPUT_ACTIONS -%}
+    {% for on_open in OUTPUT_ACTIONS -%}
+        {% set _ = MAPPING_MATRIX_ACTIONS.append((on_close, on_open)) -%}
+    {% endfor -%}
+{% endfor -%}
 {% set DEBOUNCE_FW_VARIANTS = [("", 250), ("1.19.0", 2000)] -%}
 {# (latching, fw) of the output safety behaviour: "according to input state" is only for a latching switch input.
    The latching chain has its own variant without fw: fw variants of a parameter must have the same condition -#}
@@ -32,7 +41,7 @@
                 "id": "g_in{{in_num}}"
             },
             {
-                "title": "Actions for outputs when the input is closed / opened",
+                "title": "Actions For Outputs When The Input Is Closed / Opened",
                 "id": "gg_in{{in_num}}_mapping_matrix_actions",
                 "group": "g_in{{in_num}}"
             },
@@ -177,10 +186,10 @@
                 "enum": [2, 3, 4, 6],
                 "default": 2,
                 "enum_titles": [
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
+                    "Turn Off All Outputs",
+                    "Control Disabled / Frequency Measurement",
+                    "Operate According To Mapping-Matrix",
+                    "Operate According To Button Mapping-Matrix"
                 ],
                 "group": "g_in{{in_num}}",
                 "order": 1
@@ -194,12 +203,12 @@
                 "enum": [0, 1, 2, 3, 4, 6],
                 "default": 1,
                 "enum_titles": [
-                    "Push button",
-                    "Latching switch",
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
+                    "Push Button",
+                    "Latching Switch",
+                    "Turn Off All Outputs",
+                    "Control Disabled / Frequency Measurement",
+                    "Operate According To Mapping-Matrix",
+                    "Operate According To Button Mapping-Matrix"
                 ],
                 "group": "g_in{{in_num}}",
                 "order": 1
@@ -274,25 +283,9 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                 "enum_titles": [
-                    "no action / no action",
-                    "no action / reset",
-                    "no action / set",
-                    "no action / toggle",
-
-                    "reset / no action",
-                    "reset / reset",
-                    "reset / set",
-                    "reset / toggle",
-
-                    "set / no action",
-                    "set / reset",
-                    "set / set",
-                    "set / toggle",
-
-                    "toggle / no action",
-                    "toggle / reset",
-                    "toggle / set",
-                    "toggle / toggle"
+                    {% for on_close, on_open in MAPPING_MATRIX_ACTIONS -%}
+                    "{{ on_close[0] }} / {{ on_open[0] }}"{% if not loop.last %},{% endif %}
+                    {% endfor %}
                 ],
                 "condition": "in{{in_num}}_mode==4"
             },
@@ -309,7 +302,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
             {
@@ -325,7 +318,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
             {
@@ -341,7 +334,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
             {
@@ -357,7 +350,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "enum_titles": ["No Action", "Turn Off", "Turn On", "Toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
             {% endfor -%}
@@ -391,9 +384,9 @@
                 {% endif -%}
                 {% if safety_fw %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "enum_titles": [
-                    "Don't change output state",
-                    "Switch output to safety state"{% if safety_fw %},
-                    "Switch output according to input state"{% endif %}
+                    "No Action",
+                    "Switch Output To Safe State"{% if safety_fw %},
+                    "Switch Output According To Input State"{% endif %}
                 ],
                 "condition": "in{{out_num}}_mode{{ '==' if latching else '!=' }}1"
             },
@@ -408,9 +401,9 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
+                    "Don't Change",
+                    "Disable In Safety Mode",
+                    "Enable Only In Safety Mode"
                 ]
             },
             {% endfor -%}
@@ -434,7 +427,7 @@
                 "reg_type": "holding",
                 {% if any_latching %}"enum": [0, 1, 2],{% else %}"enum": [0, 1],{% endif %}
                 "default": 0,
-                "enum_titles": ["Safe state", "Restore last state"{% if any_latching %}, "According to inputs"{% endif %}],
+                "enum_titles": ["Switch Output To Safe State", "Restore Last State"{% if any_latching %}, "According To Inputs"{% endif %}],
                 "condition": "{{ restore_cond }}",
                 "order": 1,
                 "group": "g_outputs"
@@ -646,7 +639,7 @@
             {% endfor -%}
             {
                 "id": "baud_rate",
-                    "title": "Baud rate",
+                    "title": "Baud Rate",
                     "description": "baud_rate_description",
                     "address": 110,
                     "reg_type": "holding",
@@ -1001,7 +994,13 @@
         "translations": {
             "en": {
                 "WB-MRWM2-template-title": "WB-MRWM2 (2-channel power metering relay)",
-                "outputs_state_after_power_on_description": "Warning! The \"According to inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs.",
+                {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+                "Input {{in_num}} counter": "Input {{in_num}} Counter",
+                "Input {{in_num}} freq": "Input {{in_num}} Frequency",
+                "Input {{in_num}} Shortlong Press Counter": "Input {{in_num}} Short Then Long Press Counter",
+                {% endfor -%}
+
+                "outputs_state_after_power_on_description": "Warning! The \"According To Inputs\" option applies only to inputs in \"Latching Switch\" mode. It will be ignored for all other inputs.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "Serial": "Serial Number",
@@ -1013,7 +1012,7 @@
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
                 "dp_title": "Double Press",
-                "slp_title": "Shortlong Press",
+                "slp_title": "Short Then Long Press",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -1038,8 +1037,8 @@
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} counter": "Счетчик {{in_num}}",
-                "Input {{in_num}} freq": "Частота {{in_num}}",
+                "Input {{in_num}} counter": "Счетчик входа {{in_num}}",
+                "Input {{in_num}} freq": "Частота входа {{in_num}}",
                 "Input {{in_num}} Single Press Counter": "Счетчик одиночных нажатий входа {{in_num}}",
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
@@ -1055,7 +1054,7 @@
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
 
-                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
+                "Actions For Outputs When The Input Is Closed / Opened": "Действия для выходов при замыкании / размыкании входа",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Команда K{{out_num}}",
@@ -1080,44 +1079,27 @@
 
                 "Output Safe State": "Безопасное состояние выходов",
 
-                "no action": "нет действия",
-                "reset": "выключить",
-                "set": "включить",
-                "toggle": "переключить",
+                {% for action in OUTPUT_ACTIONS -%}
+                "{{ action[0] }}": "{{ action[1] }}",
+                {% endfor -%}
+                {% for on_close, on_open in MAPPING_MATRIX_ACTIONS -%}
+                "{{ on_close[0] }} / {{ on_open[0] }}": "{{ on_close[1] }} / {{ on_open[1] | lower }}",
+                {% endfor -%}
+                "Switch Output To Safe State": "Перевести выход в безопасное состояние",
+                "Switch Output According To Input State": "Установить выход согласно состоянию входа",
+                "Restore Last State": "Восстановить последнее состояние",
+                "According To Inputs": "Установить согласно состоянию входов",
 
-                "no action / no action": "нет действия / нет действия",
-                "no action / reset": "нет действия / выключить",
-                "no action / set": "нет действия / включить",
-                "no action / toggle": "нет действия / переключить",
-
-                "reset / no action": "выключить / нет действия",
-                "reset / reset": "выключить / выключить",
-                "reset / set": "выключить / включить",
-                "reset / toggle": "выключить / переключить",
-
-                "set / no action": "включить / нет действия",
-                "set / reset": "включить / выключить",
-                "set / set": "включить / включить",
-                "set / toggle": "включить / переключить",
-
-                "toggle / no action": "переключить / нет действия",
-                "toggle / reset": "переключить / выключить",
-                "toggle / set": "переключить / включить",
-                "toggle / toggle": "переключить / переключить",
-
-                "Push button": "Кнопка без фиксации",
-                "Latching switch": "Переключатель с фиксацией",
-                "Turn off all outputs": "Отключить все выходы",
-                "Control disabled / Frequency measurement": "Управление отключено, вход измеряет частоту",
-                "Operate according to mapping-matrix": "Управлять по mapping-матрице",
-                "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
+                "Push Button": "Кнопка без фиксации",
+                "Latching Switch": "Переключатель с фиксацией",
+                "Turn Off All Outputs": "Отключить все выходы",
+                "Control Disabled / Frequency Measurement": "Управление отключено, вход измеряет частоту",
+                "Operate According To Mapping-Matrix": "Управлять по mapping-матрице",
+                "Operate According To Button Mapping-Matrix": "Управлять по mapping-матрице для кнопок",
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
                 "Outputs State After Power On": "Состояние выходов при подаче питания",
-                "Safe state": "Перевести выход в безопасное состояние",
-                "Restore last state": "Восстановить последнее состояние",
-                "According to inputs": "Установить согласно состоянию входов",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
@@ -1135,13 +1117,10 @@
                 "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
-                "Don't change output state": "Ничего не делать",
-                "Switch output to safety state": "Перевести выход в безопасное состояние",
-                "Switch output according to input state": "Установить выход согласно состоянию входа",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
-                "Don't change": "Не блокировать",
-                "Disable in safety mode": "Блокировать в безопасном режиме",
-                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Don't Change": "Не блокировать",
+                "Disable In Safety Mode": "Блокировать в безопасном режиме",
+                "Enable Only In Safety Mode": "Разрешить только в безопасном режиме",
 
                 "Voltage Protection": "Блокировка по напряжению",
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
@@ -1168,7 +1147,7 @@
                 "Timeout (s)": "Таймаут (с)",
                 "Time (s)": "Время (с)",
 
-                "Baud rate": "Скорость обмена",
+                "Baud Rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "outputs_state_after_power_on_description": "Внимание! Вариант \"Установить согласно состоянию входов\" применим только для входов в режиме \"Переключатель с фиксацией\". Для остальных входов он будет проигнорирован.",
 
