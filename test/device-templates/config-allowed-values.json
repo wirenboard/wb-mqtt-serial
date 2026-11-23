@@ -1,0 +1,35 @@
+{
+    "device_type": "allowed_values",
+    "device": {
+        "name": "allowed values",
+        "id": "allowed values",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "close_time",
+                "title": "Close time",
+                "address": 9996,
+                "min": 0,
+                "max": 600,
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Time"
+                    }
+                ]
+            }
+        ]
+    }
+}

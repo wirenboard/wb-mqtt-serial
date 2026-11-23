@@ -534,3 +534,24 @@ TEST_F(TConfigParserTest, ChannelTitleSchemaValidation)
         }
     }
 }
+
+TEST_F(TConfigParserTest, AllowedValues)
+{
+    auto portConfigs = GetConfig("configs/allowed_values/valid.json")->PortConfigs;
+    ASSERT_EQ(portConfigs.size(), 1);
+    EXPECT_EQ(portConfigs[0]->Devices.size(), 3);
+}
+
+TEST_F(TConfigParserTest, AllowedValuesSchemaValidation)
+{
+    // Values within min and max but outside allowed_values are rejected too
+    const std::vector<std::string> invalidConfigs = {"invalid-fraction", "invalid-above-max"};
+    for (const auto& name: invalidConfigs) {
+        try {
+            GetConfig("configs/allowed_values/" + name + ".json");
+            ADD_FAILURE() << name << " must not pass validation";
+        } catch (const std::exception& e) {
+            EXPECT_NE(std::string(e.what()).find("[close_time]"), std::string::npos) << name << ": " << e.what();
+        }
+    }
+}
