@@ -1,3 +1,15 @@
+wb-mqtt-serial (2.297.0) stable; urgency=medium
+
+  * WB-MWAC template: in the leakage sensor input mode only the action on
+    contact closure is offered, the firmware performs no action on contact
+    opening in this mode since 1.21.0; the actions are in their own group
+    "Actions When Sensor Is Triggered"
+  * WB-MWAC template: the legacy input mode register 5 is no longer written
+    on connect: the firmware has no legacy mode since 1.21.0 and no register
+    since 1.26.0, the write failed with a warning in the log
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 23 Nov 2026 12:01:38 +0300
+
 wb-mqtt-serial (2.296.0) stable; urgency=medium
 
   * Add Ridan R-KI 230 (fw 2.3) temperature controller template
