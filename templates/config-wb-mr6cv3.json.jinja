@@ -644,9 +644,6 @@
             {
                 "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
-                {% if curtain_time_min == 0 -%}
-                "description": "curtain_zero_time_description",
-                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
@@ -676,9 +673,6 @@
             {
                 "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
-                {% if curtain_time_min == 0 -%}
-                "description": "curtain_zero_time_description",
-                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
@@ -1226,7 +1220,6 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
                 "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons.",
-                "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
@@ -1363,7 +1356,6 @@
                 "Time (s)": "Время (с)",
 
                 "Curtains Control": "Управление приводом",
-                "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
                 "No timeout": "Без таймаута",
