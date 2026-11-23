@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.296.0) stable; urgency=medium
+wb-mqtt-serial (2.297.0) stable; urgency=medium
 
   * WB-LED and WB-MRGBW-D fw 3.8 templates: add the input actions "Enable all
     channels", "Enable all channels and set brightness" and "Enable ... and set
@@ -12,7 +12,13 @@ wb-mqtt-serial (2.296.0) stable; urgency=medium
     and Set Level" with a level for each press type (holding 1800+, firmware
     2.11.0) as an fw variant of the action parameters
 
- -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Thu, 19 Nov 2026 19:10:24 +0700
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 23 Nov 2026 16:58:55 +0700
+
+wb-mqtt-serial (2.296.0) stable; urgency=medium
+
+  * Add Ridan R-KI 230 (fw 2.3) temperature controller template
+
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Fri, 20 Nov 2026 13:04:21 +0300
 
 wb-mqtt-serial (2.295.1) stable; urgency=medium
 
