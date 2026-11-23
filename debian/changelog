@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.297.0) stable; urgency=medium
+
+  * Add allowed_values to template parameters
+  * Update WB-MR templates
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 23 Nov 2026 13:10:22 +0300
+
 wb-mqtt-serial (2.296.0) stable; urgency=medium
 
   * Add Ridan R-KI 230 (fw 2.3) temperature controller template
