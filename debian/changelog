@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.248.1-wb110) stable; urgency=medium
+
+  * WB-MAI6 fw 2.4 template: add per-channel thermocouple cold junction
+    temperature offset parameters (holding 0xN412, firmware 2.6.0)
+
+ -- Maxim Toropov <maxim.toropov@wirenboard.com>  Mon, 23 Nov 2026 13:59:34 +0300
+
 wb-mqtt-serial (2.248.1-wb109) stable; urgency=medium
 
   * Fix communication errors with MTDX62-MB
