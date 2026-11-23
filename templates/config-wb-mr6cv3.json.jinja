@@ -45,7 +45,7 @@
                 "id": "g_in{{in_num}}"
             },
             {
-                "title": "Actions for outputs when the input is closed / opened",
+                "title": "Actions For Outputs When The Input Is Closed / Opened",
                 "id": "gg_in{{in_num}}_mapping_matrix_actions",
                 "group": "g_in{{in_num}}"
             },
@@ -201,10 +201,10 @@
                 "enum": [2, 3, 4, 6],
                 "default": 2,
                 "enum_titles": [
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
+                    "Turn Off All Outputs",
+                    "Control Disabled / Frequency Measurement",
+                    "Operate According To Mapping-Matrix",
+                    "Operate According To Button Mapping-Matrix"
                 ],
                 "group": "g_in{{in_num}}",
                 "order": 1
@@ -218,12 +218,12 @@
                 "enum": [0, 1, 2, 3, 4, 6],
                 "default": 1,
                 "enum_titles": [
-                    "Push button",
-                    "Latching switch",
-                    "Turn off all outputs",
-                    "Control disabled / Frequency measurement",
-                    "Operate according to mapping-matrix",
-                    "Operate according to button mapping-matrix"
+                    "Push Button",
+                    "Latching Switch",
+                    "Turn Off All Outputs",
+                    "Control Disabled / Frequency Measurement",
+                    "Operate According To Mapping-Matrix",
+                    "Operate According To Button Mapping-Matrix"
                 ],
                 "group": "g_in{{in_num}}",
                 "order": 1
@@ -480,9 +480,9 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
+                    "Don't Change",
+                    "Disable In Safety Mode",
+                    "Enable Only In Safety Mode"
                 ],
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
@@ -756,16 +756,16 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
+                    "Don't Change",
+                    "Disable In Safety Mode",
+                    "Enable Only In Safety Mode"
                 ],
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             {
                 "id": "baud_rate",
-                    "title": "Baud rate",
+                    "title": "Baud Rate",
                     "description": "baud_rate_description",
                     "address": 110,
                     "reg_type": "holding",
@@ -1197,7 +1197,13 @@
         "translations": {
             "en": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
-                "outputs_state_after_power_on_description": "Warning! The \"According To Inputs\" option applies only to inputs in \"Latching switch\" mode. It will be ignored for all other inputs. The setting does not apply to the outputs used for actuator control: their power-on action is set in the actuator settings",
+                {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+                "Input {{in_num}} counter": "Input {{in_num}} Counter",
+                "Input {{in_num}} freq": "Input {{in_num}} Frequency",
+                "Input {{in_num}} Shortlong Press Counter": "Input {{in_num}} Short Then Long Press Counter",
+                {% endfor -%}
+
+                "outputs_state_after_power_on_description": "Warning! The \"According To Inputs\" option applies only to inputs in \"Latching Switch\" mode. It will be ignored for all other inputs. The setting does not apply to the outputs used for actuator control: their power-on action is set in the actuator settings",
                 "outputs_state_after_power_on_actuators_description": "The setting does not apply to the outputs used for actuator control: their power-on action is set in the actuator settings.",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Serial": "Serial Number",
@@ -1206,12 +1212,12 @@
                 "Minimum MCU Voltage Since Startup": "Min MCU Voltage Since Startup",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "outputs_safe_state_description": "Outputs state after module power on (if the \"Safe state\" option is selected in the \"Outputs State After Power On\" setting) and in the safe mode, if the transition to the safe state is activated",
+                "outputs_safe_state_description": "Outputs state after module power on (if the \"Switch Output To Safe State\" option is selected in the \"Outputs State After Power On\" setting) and in the safe mode, if the transition to the safe state is activated",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
                 "dp_title": "Double Press",
-                "slp_title": "Shortlong Press",
+                "slp_title": "Short Then Long Press",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -1219,7 +1225,7 @@
 
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
-                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons.",
+                "curtains_control_description": "For setup buttons actions select \"Operate According To Button Mapping-Matrix\" mode and configure actions for buttons.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
@@ -1245,8 +1251,8 @@
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} counter": "Счетчик {{in_num}}",
-                "Input {{in_num}} freq": "Частота {{in_num}}",
+                "Input {{in_num}} counter": "Счетчик входа {{in_num}}",
+                "Input {{in_num}} freq": "Частота входа {{in_num}}",
                 "Input {{in_num}} Single Press Counter": "Счетчик одиночных нажатий входа {{in_num}}",
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
@@ -1262,7 +1268,7 @@
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
 
-                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
+                "Actions For Outputs When The Input Is Closed / Opened": "Действия для выходов при замыкании / размыкании входа",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
@@ -1300,12 +1306,12 @@
                 "Restore Last State": "Восстановить последнее состояние",
                 "According To Inputs": "Установить согласно состоянию входов",
 
-                "Push button": "Кнопка без фиксации",
-                "Latching switch": "Переключатель с фиксацией",
-                "Turn off all outputs": "Отключить все выходы",
-                "Control disabled / Frequency measurement": "Управление отключено, вход измеряет частоту",
-                "Operate according to mapping-matrix": "Управлять по mapping-матрице",
-                "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
+                "Push Button": "Кнопка без фиксации",
+                "Latching Switch": "Переключатель с фиксацией",
+                "Turn Off All Outputs": "Отключить все выходы",
+                "Control Disabled / Frequency Measurement": "Управление отключено, вход измеряет частоту",
+                "Operate According To Mapping-Matrix": "Управлять по mapping-матрице",
+                "Operate According To Button Mapping-Matrix": "Управлять по mapping-матрице для кнопок",
 
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
@@ -1334,9 +1340,9 @@
                 "Safety Behaviour": "Действие в безопасном режиме",
 
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
-                "Don't change": "Не блокировать",
-                "Disable in safety mode": "Блокировать в безопасном режиме",
-                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Don't Change": "Не блокировать",
+                "Disable In Safety Mode": "Блокировать в безопасном режиме",
+                "Enable Only In Safety Mode": "Разрешить только в безопасном режиме",
 
                 "Startup Delay (s)": "Задержка включения при подаче питания (с)",
                 "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",
@@ -1374,7 +1380,7 @@
                 {% endfor -%}
                 "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
 
-                "Baud rate": "Скорость обмена",
+                "Baud Rate": "Скорость обмена",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
