@@ -7,6 +7,18 @@ wb-mqtt-serial (2.297.0) stable; urgency=medium
   * WB-MWAC template: the legacy input mode register 5 is no longer written
     on connect: the firmware has no legacy mode since 1.21.0 and no register
     since 1.26.0, the write failed with a warning in the log
+  * WB-MR, WB-MRWM2, WB-MWAC templates: a parameter or channel common to
+    these devices has the same name in all of them (input modes, press and
+    debounce settings, output actions, safety mode and power-on settings,
+    input counter and frequency channels), English names are in Title Case,
+    "Shortlong Press" is "Short Then Long Press"
+  * WB-MRWM2, WB-MWAC templates: output actions are named as in WB-MR
+    ("No Action", "Turn Off", "Turn On", "Toggle"); in WB-MWAC v.2 the
+    Russian action names no longer read as output states
+  * WB-MWAC templates: input modes 4 and 6 are named as in WB-MR, mode 5 of
+    WB-MWAC is "Leakage Sensor" as in WB-MWAC v.2, "Safety Timer" is
+    "Safety Poll Timeout" as in WB-MR; recommended values are removed from
+    the descriptions, the factory value is the parameter default
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 23 Nov 2026 12:01:38 +0300
 
