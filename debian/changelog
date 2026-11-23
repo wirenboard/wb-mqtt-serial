@@ -1,9 +1,25 @@
-wb-mqtt-serial (2.297.0) stable; urgency=medium
+wb-mqtt-serial (2.298.0) stable; urgency=medium
 
   * Add allowed_values to template parameters
   * Update WB-MR templates
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 23 Nov 2026 13:10:22 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 23 Nov 2026 13:51:51 +0300
+
+wb-mqtt-serial (2.297.0) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D fw 3.8 templates: add the input actions "Enable all
+    channels", "Enable all channels and set brightness" and "Enable ... and set
+    brightness" with a brightness for each press type (holding 1800+, firmware
+    3.10.0) as fw variants of the action parameters; a WB-LED switch can also
+    turn on all channels
+  * WB-MDM3 fw 2.12 template: add the input action "Turn On and Set
+    Brightness" with a brightness for each press type (holding 1800+,
+    firmware 2.13.0) as an fw variant of the action parameters
+  * WB-MAO4 and WB-MAO4-20mA fw 2.9 templates: add the input action "Turn On
+    and Set Level" with a level for each press type (holding 1800+, firmware
+    2.11.0) as an fw variant of the action parameters
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 23 Nov 2026 16:58:55 +0700
 
 wb-mqtt-serial (2.296.0) stable; urgency=medium
 
