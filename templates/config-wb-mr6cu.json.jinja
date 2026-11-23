@@ -352,6 +352,19 @@
                 "default": 10.0,
                 "min": {{ curtain_time_min }},
                 "max": 600.0,
+                {% if curtain_time_min == 0 -%}
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Set time"
+                    }
+                ],
+                {% endif -%}
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
@@ -373,6 +386,19 @@
                 "default": 10.0,
                 "min": {{ curtain_time_min }},
                 "max": 600.0,
+                {% if curtain_time_min == 0 -%}
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Set time"
+                    }
+                ],
+                {% endif -%}
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
@@ -752,6 +778,8 @@
                 "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
+                "No timeout": "Без таймаута",
+                "Set time": "Заданное время",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
                 "Power up action": "Действие при подаче питания",
 
