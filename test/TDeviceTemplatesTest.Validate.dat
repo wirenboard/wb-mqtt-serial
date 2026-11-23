@@ -31378,6 +31378,31 @@ pulsar-m-water
 	Consumption  =>  Consumption
 pulsar-water
 	Consumption  =>  Consumption
+ridan-r-ki-230-fw1.5
+	alarm_controller  =>  alarm_controller
+	cmd_start_defrost  =>  cmd_start_defrost
+	di_1  =>  di_1
+	forced_closing  =>  forced_closing
+	forced_cooling  =>  forced_cooling
+	hold_after_defrost  =>  hold_after_defrost
+	light_remote  =>  light_remote
+	main_switch  =>  main_switch
+	model_code  =>  model_code
+	night_setback  =>  night_setback
+	relay_cooling  =>  relay_cooling
+	relay_defrost  =>  relay_defrost
+	relay_fan  =>  relay_fan
+	relay_light  =>  relay_light
+	setpoint_t_effective  =>  setpoint_t_effective
+	setpoint_t_thermostat  =>  setpoint_t_thermostat
+	state_controller  =>  state_controller
+	state_defrost  =>  state_defrost
+	state_night_mode  =>  state_night_mode
+	t_s3  =>  t_s3
+	t_s4  =>  t_s4
+	t_s5  =>  t_s5
+	t_sc  =>  t_sc
+	t_thermostat  =>  t_thermostat
 ridan-r-ki-230-fw2.3
 	alarm_controller  =>  alarm_controller
 	cmd_start_defrost  =>  cmd_start_defrost
