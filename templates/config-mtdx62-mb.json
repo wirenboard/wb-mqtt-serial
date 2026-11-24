@@ -5,6 +5,8 @@
     "name": "MTDX62-MB",
     "id": "mtdx62-mb",
     "force_frame_timeout": true,
+    "frame_timeout_ms": 3,
+    "max_read_registers": 0,
     "groups": [
       {
         "title": "general",

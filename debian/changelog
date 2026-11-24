@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.268.0-wb108) stable; urgency=medium
+
+  * Faster polling of MTDX62-MB, the presence channel updates without
+    a delay of several seconds
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 09:18:49 +0000
+
 wb-mqtt-serial (2.268.0-wb107) stable; urgency=medium
 
   * WB-MAI6 fw 2.4 template: add per-channel thermocouple cold junction
