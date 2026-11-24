@@ -3,7 +3,7 @@ wb-mqtt-serial (2.297.3) stable; urgency=medium
   * Faster polling of MTDX62-MB, the presence channel updates without
     a delay of several seconds
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 09:18:49 +0000
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 14:21:59 +0500
 
 wb-mqtt-serial (2.297.2) stable; urgency=medium
 
