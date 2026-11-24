@@ -1840,11 +1840,10 @@ protected:
 
     PFwUpdateState MakeState()
     {
-        return std::make_shared<TFwUpdateState>(
-            [this](const std::string& topic, const std::string& payload, bool retain) {
-                PublishLog.push_back({topic, payload, retain});
-            },
-            "/test/state");
+        return std::make_shared<TFwUpdateState>([this](const std::string& topic,
+                                                       const std::string& payload,
+                                                       bool retain) { PublishLog.push_back({topic, payload, retain}); },
+                                                "/test/state");
     }
 
     // Call the free function BuildFirmwareInfoResponse directly
