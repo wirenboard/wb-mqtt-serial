@@ -268,6 +268,28 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
                                           WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     try {
+        if (request.isMember("device_id")) {
+            Downloader->PrefetchReleaseIndexes();
+            SerialClientTaskRunner.RunTask(request, [&](PSerialDevice device, PDeviceParametersCache) {
+                if (!device) {
+                    throw std::runtime_error("Device not found: " + request["device_id"].asString());
+                }
+                auto protocol = device->Protocol()->GetName();
+                if (protocol != "modbus" && protocol != "modbus-tcp") {
+                    throw std::runtime_error("The device's protocol is not supported");
+                }
+                return std::make_shared<TFwGetFirmwareInfoTask>(static_cast<uint8_t>(GetModbusSlaveId(*device)),
+                                                                protocol,
+                                                                ReleaseSuite,
+                                                                TPortSettings(),
+                                                                device,
+                                                                Downloader,
+                                                                onResult,
+                                                                onError);
+            });
+            return;
+        }
+
         auto params = ParseRequestParams(request);
 
         if (State->HasActiveUpdate(params.SlaveId, GetRPCPortDescription(params.PortSettings))) {
@@ -281,6 +303,7 @@ void TRPCFwUpdateHandler::GetFirmwareInfo(const Json::Value& request,
                                                              params.Protocol,
                                                              ReleaseSuite,
                                                              params.PortSettings,
+                                                             nullptr,
                                                              Downloader,
                                                              std::move(onResult),
                                                              onError);

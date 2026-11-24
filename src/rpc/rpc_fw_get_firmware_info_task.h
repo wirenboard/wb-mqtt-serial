@@ -16,6 +16,7 @@ public:
                            const std::string& protocol,
                            const std::string& releaseSuite,
                            const TPortSettings& portSettings,
+                           PSerialDevice deviceFromConfig,
                            std::shared_ptr<TFwDownloader> downloader,
                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
@@ -29,7 +30,10 @@ private:
     std::string Protocol;
     std::string ReleaseSuite;
     TPortSettings PortSettings;
+    PSerialDevice DeviceFromConfig;
     std::shared_ptr<TFwDownloader> Downloader;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;
+
+    Json::Value ReadFirmwareInfo(PFeaturePort port);
 };
