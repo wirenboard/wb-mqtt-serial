@@ -9,7 +9,11 @@
 class TFeaturePort: public TPort
 {
 public:
-    TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge = false, bool fastModbusDisabled = false);
+    TFeaturePort(PPort basePort,
+                 bool modbusTcp,
+                 bool connectedToMge = false,
+                 bool fastModbusDisabled = false,
+                 bool tcp = false);
 
     // TPort interface
 
@@ -38,6 +42,7 @@ public:
     PPort GetBasePort() const;
 
     bool IsModbusTcp() const;
+    bool IsTcp() const;
 
     /**
      * @brief Returns true if Fast Modbus is allowed on the port: it is not disabled in config
@@ -49,6 +54,7 @@ private:
     PPort BasePort;
     bool ModbusTcp;
     bool FastModbus;
+    bool Tcp;
 };
 
 using PFeaturePort = std::shared_ptr<TFeaturePort>;
