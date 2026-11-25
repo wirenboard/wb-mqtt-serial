@@ -7,8 +7,7 @@
 TFwGetFirmwareInfoTask::TFwGetFirmwareInfoTask(uint8_t slaveId,
                                                const std::string& protocol,
                                                const std::string& releaseSuite,
-                                               const TPortSettings& portSettings,
-                                               PSerialDevice deviceFromConfig,
+                                               const std::optional<TPortSettings>& portSettings,
                                                std::shared_ptr<TFwDownloader> downloader,
                                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
@@ -16,7 +15,6 @@ TFwGetFirmwareInfoTask::TFwGetFirmwareInfoTask(uint8_t slaveId,
       Protocol(protocol),
       ReleaseSuite(releaseSuite),
       PortSettings(portSettings),
-      DeviceFromConfig(std::move(deviceFromConfig)),
       Downloader(std::move(downloader)),
       OnResult(std::move(onResult)),
       OnError(std::move(onError))
@@ -36,10 +34,10 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
         Json::Value result;
-        if (DeviceFromConfig) {
+        if (PortSettings) {
+            TSerialPortSettingsGuard settingsGuard(port, GetRPCPortConnectionSettings(*PortSettings));
             result = ReadFirmwareInfo(port);
         } else {
-            TSerialPortSettingsGuard settingsGuard(port, GetRPCPortConnectionSettings(PortSettings));
             result = ReadFirmwareInfo(port);
         }
         if (OnResult) {
@@ -63,8 +61,8 @@ Json::Value TFwGetFirmwareInfoTask::ReadFirmwareInfo(PFeaturePort port)
     auto traits = MakeModbusTraits(Protocol);
     auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
     auto updatable = true;
-    auto tcpPort = DeviceFromConfig ? std::dynamic_pointer_cast<TTcpPort>(port->GetBasePort()) != nullptr
-                                    : std::holds_alternative<TFramedTcpPortSettings>(PortSettings);
+    auto tcpPort = PortSettings ? std::holds_alternative<TFramedTcpPortSettings>(*PortSettings)
+                                : dynamic_cast<const TTcpPort*>(port->GetBasePort().get()) != nullptr;
     if (RequiresDefaultPortSettings(tcpPort, Protocol, info.CanPreservePortSettings)) {
         updatable = HasDefaultPortSettings(*traits, *port, SlaveId);
     }
