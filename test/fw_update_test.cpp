@@ -2615,6 +2615,11 @@ public:
         AccessHandler = std::make_unique<TSerialClientDeviceAccessHandler>(nullptr);
     }
 
+    void SetTcpPort()
+    {
+        Port = std::make_shared<TFeaturePort>(SerialPort, false, false, false, true);
+    }
+
     void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override
     {
         SubmittedTasks.push_back({portSettings, task});
@@ -2879,6 +2884,7 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
 //! Such a device would be lost after rebooting to a bootloader which starts on 9600 8N2
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSettings)
 {
+    TaskRunner->SetTcpPort();
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
@@ -2895,6 +2901,7 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSett
 //! The same device on the factory settings stays reachable in the bootloader
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithFactoryPortSettings)
 {
+    TaskRunner->SetTcpPort();
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);

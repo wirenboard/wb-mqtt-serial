@@ -61,9 +61,7 @@ Json::Value TFwGetFirmwareInfoTask::ReadFirmwareInfo(PFeaturePort port)
     auto traits = MakeModbusTraits(Protocol);
     auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
     auto updatable = true;
-    auto tcpPort = PortSettings ? std::holds_alternative<TFramedTcpPortSettings>(*PortSettings)
-                                : dynamic_cast<const TTcpPort*>(port->GetBasePort().get()) != nullptr;
-    if (RequiresDefaultPortSettings(tcpPort, Protocol, info.CanPreservePortSettings)) {
+    if (RequiresDefaultPortSettings(port->IsTcp(), Protocol, info.CanPreservePortSettings)) {
         updatable = HasDefaultPortSettings(*traits, *port, SlaveId);
     }
     return BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite, updatable, ENetworkAccess::CacheOnly);
