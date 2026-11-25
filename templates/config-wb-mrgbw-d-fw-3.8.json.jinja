@@ -1,6 +1,7 @@
 {# Button actions set by the firmware on a settings reset (button_controls_init_default_settings) -#}
 {% set FACTORY_BUTTON_ACTIONS = {1: {"sp": 12297, "lp": 45072}, 2: {"sp": 36878, "lp": 36878}, 3: {"sp": 12291, "lp": 45059}} -%}
 {% set INPUTS_NUMBER = 3 -%}
+{% set LEVEL_ACTIONS_FW = "3.10.0" -%}
 {% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
 {% set ENCODERS_NUMBER = 1 -%}
 {# UI titles: unified with WB-LED / WB-MDM3 / WB-MAO4 -#}
@@ -901,1612 +902,180 @@
                 "condition": "{{conditions[loop.index0]}}"
             },
             {% endfor -%}
+            {% set dimmer_mode = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512, 768] -%}
+            {% set name_actions = ["sp", "lp", "dp", "slp"] -%}
+            {% set action_code =
+                [
+                    0, 16384, 4096, 4097, 4098, 4099, 4100, 4101, 4102, 4103, 4104, 4105, 4106, 8192, 8193, 8194, 8195, 8196, 8197, 8198, 8199, 8200, 8201, 8202, 12288, 12289, 12290, 12291, 12292, 12293, 12294, 12295,
+                    12296, 12297, 12298, 36864, 36865, 36866, 36867, 36868, 36869, 36870, 36871, 36872, 36873, 36874, 36875, 36876, 36877, 36878, 36879, 36880, 36881, 40960, 40961, 40962, 40963, 40964, 40965, 40966,
+                    40967, 40968, 40969, 40970, 40971, 40972, 40973, 40974, 40975, 40976, 40977, 45056, 45057, 45058, 45059, 45060, 45061, 45062, 45063, 45064, 45065, 45066, 45067, 45068, 45069, 45070, 45071, 45072, 45073,
+                    4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075,
+                    20480, 24576, 24577, 24578, 24579, 24580, 24581, 24582, 24583, 24584, 24585, 24587, 28672
+                ]
+            -%}
+            {% set action_title =
+                [
+                    "no_act_title", "all_off_act_title", "off_ch1_act_title", "off_ch2_act_title", "off_ch3_act_title", "off_ch4_act_title", "off_ch12_act_title", "off_ch34_act_title", "off_ch1234_act_title", "off_cct1_act_title",
+                    "off_cct2_act_title", "off_rgb_act_title", "off_hue_change_act_title", "on_ch1_act_title", "on_ch2_act_title", "on_ch3_act_title", "on_ch4_act_title", "on_ch12_act_title", "on_ch34_act_title", "on_ch1234_act_title",
+                    "on_cct1_act_title", "on_cct2_act_title", "on_rgb_act_title", "on_hue_change_act_title", "tg_ch1_act_title", "tg_ch2_act_title", "tg_ch3_act_title", "tg_ch4_act_title", "tg_ch12_act_title", "tg_ch34_act_title",
+                    "tg_ch1234_act_title", "tg_cct1_act_title", "tg_cct2_act_title", "tg_rgb_act_title", "tg_hue_change_act_title", "inc_ch1_act_title", "inc_ch2_act_title", "inc_ch3_act_title", "inc_ch4_act_title", "inc_ch12_act_title",
+                    "inc_ch34_act_title", "inc_ch1234_act_title", "inc_temp_cct1_act_title", "inc_br_cct1_act_title", "inc_temp_cct2_act_title", "inc_br_cct2_act_title", "inc_r_act_title", "inc_g_act_title", "inc_b_act_title",
+                    "inc_h_act_title", "inc_s_act_title", "inc_v_act_title", "inc_hue_ch_time_act_title", "dec_ch1_act_title", "dec_ch2_act_title", "dec_ch3_act_title", "dec_ch4_act_title", "dec_ch12_act_title", "dec_ch34_act_title",
+                    "dec_ch1234_act_title",  "dec_temp_cct1_act_title", "dec_br_cct1_act_title", "dec_temp_cct2_act_title", "dec_br_cct2_act_title", "dec_r_act_title", "dec_g_act_title", "dec_b_act_title", "dec_h_act_title",
+                    "dec_s_act_title", "dec_v_act_title",  "dec_hue_ch_time_act_title", "inc_dec_ch1_act_title", "inc_dec_ch2_act_title", "inc_dec_ch3_act_title", "inc_dec_ch4_act_title", "inc_dec_ch12_act_title",
+                    "inc_dec_ch34_act_title", "inc_dec_ch1234_act_title",  "inc_dec_temp_cct1_act_title", "inc_dec_br_cct1_act_title", "inc_dec_temp_cct2_act_title", "inc_dec_br_cct2_act_title", "inc_dec_r_act_title",
+                    "inc_dec_g_act_title", "inc_dec_b_act_title", "inc_dec_h_act_title",  "inc_dec_s_act_title", "inc_dec_v_act_title", "inc_dec_hue_ch_time_act_title",
+                    "off_cct1_cct2_act_title", "on_cct1_cct2_act_title", "tg_cct1_cct2_act_title", "inc_temp_cct1_cct2_act_title", "inc_br_cct1_cct2_act_title",
+                    "dec_temp_cct1_cct2_act_title", "dec_br_cct1_cct2_act_title", "inc_dec_temp_cct1_cct2_act_title", "inc_dec_br_cct1_cct2_act_title",
+                    "all_on_act_title", "on_level_ch1_act_title", "on_level_ch2_act_title", "on_level_ch3_act_title", "on_level_ch4_act_title",
+                    "on_level_ch12_act_title", "on_level_ch34_act_title", "on_level_ch1234_act_title", "on_level_cct1_act_title",
+                    "on_level_cct2_act_title", "on_level_rgb_act_title", "on_level_cct1_cct2_act_title", "all_on_level_act_title"
+                ]
+            -%}
+            {% set enum = [
+                [
+                    [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291, 36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963],
+                    [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291, 36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058, 45059],
+                    [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291, 36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963],
+                    [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291, 36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058, 45059]
+                ],
+                [
+                    [0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867, 40964, 40962, 40963],
+                    [0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867, 40964, 40962, 40963, 45060, 45058, 45059],
+                    [0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867, 40964, 40962, 40963],
+                    [0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867, 40964, 40962, 40963, 45060, 45058, 45059]
+                ],
+                [
+                    [0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866, 36867, 40967, 40968, 40962, 40963],
+                    [0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866, 36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059],
+                    [0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866, 36867, 40967, 40968, 40962, 40963],
+                    [0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866, 36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059]
+                ],
+                [
+                    [0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869, 40960, 40961, 40965],
+                    [0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869, 40960, 40961, 40965, 45056, 45057, 45061],
+                    [0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869, 40960, 40961, 40965],
+                    [0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869, 40960, 40961, 40965, 45056, 45057, 45061]
+                ],
+                [
+                    [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
+                    [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060, 45061],
+                    [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
+                    [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060, 45061]
+                ],
+                [
+                    [0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968, 40965],
+                    [0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968, 40965, 45063, 45064, 45061],
+                    [0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968, 40965],
+                    [0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968, 40965, 45063, 45064, 45061]
+                ],
+                [
+                    [0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873, 36874, 40960, 40961, 40969, 40970],
+                    [0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873, 36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066],
+                    [0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873, 36874, 40960, 40961, 40969, 40970],
+                    [0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873, 36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066]
+                ],
+                [
+                    [0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969, 40970],
+                    [0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969, 40970, 45060, 45065, 45066],
+                    [0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969, 40970],
+                    [0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969, 40970, 45060, 45065, 45066]
+                ],
+                [
+                    [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970],
+                    [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970, 45063, 45064, 45065, 45066],
+                    [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970],
+                    [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970, 45063, 45064, 45065, 45066]
+                ],
+                [
+                    [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977],
+                    [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977, 45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073],
+                    [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977],
+                    [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977, 45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073]
+                ],
+                [
+                    [0, 16384, 4102, 8198, 12294, 36870, 40966],
+                    [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
+                    [0, 16384, 4102, 8198, 12294, 36870, 40966],
+                    [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062]
+                ],
+                [
+                    [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979],
+                    [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075],
+                    [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979],
+                    [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075]
+                ]
+            ] -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
             {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [3] else 0 }},
-                "condition": "(dimmer_mode==0){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
-                    36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [3] else 0 }},
-                "condition": "(dimmer_mode==0){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
-                    36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058,
-                    45059
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    "inc_dec_ch1_act_title",
-                    "inc_dec_ch2_act_title",
-                    "inc_dec_ch3_act_title",
-                    "inc_dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==0){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
-                    36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==0){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
-                    36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058,
-                    45059
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    "inc_dec_ch1_act_title",
-                    "inc_dec_ch2_act_title",
-                    "inc_dec_ch3_act_title",
-                    "inc_dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [3] else 0 }},
-                "condition": "(dimmer_mode==1){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
-                    40964, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch12_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-                        {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [3] else 0 }},
-                "condition": "(dimmer_mode==1){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
-                    40964, 40962, 40963, 45060, 45058, 45059
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch12_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    "inc_dec_ch12_act_title",
-                    "inc_dec_ch3_act_title",
-                    "inc_dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==1){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
-                    40964, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch12_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==1){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
-                    40964, 40962, 40963, 45060, 45058, 45059
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch12_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    "inc_dec_ch12_act_title",
-                    "inc_dec_ch3_act_title",
-                    "inc_dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [3] else 0 }},
-                "condition": "(dimmer_mode==2){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
-                    36867, 40967, 40968, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_cct1_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [3] else 0 }},
-                "condition": "(dimmer_mode==2){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
-                    36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_cct1_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    "inc_dec_temp_cct1_act_title",
-                    "inc_dec_br_cct1_act_title",
-                    "inc_dec_ch3_act_title",
-                    "inc_dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==2){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
-                    36867, 40967, 40968, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_cct1_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==2){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
-                    36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_cct1_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    "inc_dec_temp_cct1_act_title",
-                    "inc_dec_br_cct1_act_title",
-                    "inc_dec_ch3_act_title",
-                    "inc_dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==16){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
-                    40960, 40961, 40965
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch34_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==16){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
-                    40960, 40961, 40965, 45056, 45057, 45061
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch34_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch34_act_title",
-                    "inc_dec_ch1_act_title",
-                    "inc_dec_ch2_act_title",
-                    "inc_dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==16){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
-                    40960, 40961, 40965
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch34_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==16){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
-                    40960, 40961, 40965, 45056, 45057, 45061
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch34_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch34_act_title",
-                    "inc_dec_ch1_act_title",
-                    "inc_dec_ch2_act_title",
-                    "inc_dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==17){{enc_cond}}",
-                "enum": [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch34_act_title",
-                    "on_ch12_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==17){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060,
-                    45061
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch34_act_title",
-                    "on_ch12_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch34_act_title",
-                    "inc_dec_ch12_act_title",
-                    "inc_dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==17){{enc_cond}}",
-                "enum": [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch34_act_title",
-                    "on_ch12_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==17){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060,
-                    45061
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_ch34_act_title",
-                    "on_ch12_act_title",
-                    "on_ch34_act_title",
-                    "tg_ch12_act_title",
-                    "tg_ch34_act_title",
-                    "inc_ch12_act_title",
-                    "inc_ch34_act_title",
-                    "dec_ch12_act_title",
-                    "dec_ch34_act_title",
-                    "inc_dec_ch12_act_title",
-                    "inc_dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==18){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
-                    40965
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch34_act_title",
-                    "on_cct1_act_title",
-                    "on_ch34_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch34_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch34_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==18){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
-                    40965, 45063, 45064, 45061
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch34_act_title",
-                    "on_cct1_act_title",
-                    "on_ch34_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch34_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch34_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch34_act_title",
-                    "inc_dec_temp_cct1_act_title",
-                    "inc_dec_br_cct1_act_title",
-                    "inc_dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==18){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
-                    40965
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch34_act_title",
-                    "on_cct1_act_title",
-                    "on_ch34_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch34_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch34_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==18){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
-                    40965, 45063, 45064, 45061
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_ch34_act_title",
-                    "on_cct1_act_title",
-                    "on_ch34_act_title",
-                    "tg_cct1_act_title",
-                    "tg_ch34_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_ch34_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_ch34_act_title",
-                    "inc_dec_temp_cct1_act_title",
-                    "inc_dec_br_cct1_act_title",
-                    "inc_dec_ch34_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==32){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
-                    36874, 40960, 40961, 40969, 40970
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_cct2_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==32){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
-                    36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_cct2_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title",
-                    "inc_dec_ch1_act_title",
-                    "inc_dec_ch2_act_title",
-                    "inc_dec_temp_cct2_act_title",
-                    "inc_dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==32){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
-                    36874, 40960, 40961, 40969, 40970
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_cct2_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==32){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
-                    36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_cct2_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title",
-                    "inc_dec_ch1_act_title",
-                    "inc_dec_ch2_act_title",
-                    "inc_dec_temp_cct2_act_title",
-                    "inc_dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==33){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
-                    40970
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_cct2_act_title",
-                    "on_ch12_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch12_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch12_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch12_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==33){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
-                    40970, 45060, 45065, 45066
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_cct2_act_title",
-                    "on_ch12_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch12_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch12_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch12_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title",
-                    "inc_dec_ch12_act_title",
-                    "inc_dec_temp_cct2_act_title",
-                    "inc_dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==33){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
-                    40970
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_cct2_act_title",
-                    "on_ch12_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch12_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch12_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch12_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==33){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
-                    40970, 45060, 45065, 45066
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch12_act_title",
-                    "off_cct2_act_title",
-                    "on_ch12_act_title",
-                    "on_cct2_act_title",
-                    "tg_ch12_act_title",
-                    "tg_cct2_act_title",
-                    "inc_ch12_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_ch12_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title",
-                    "inc_dec_ch12_act_title",
-                    "inc_dec_temp_cct2_act_title",
-                    "inc_dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==34){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
-                    40968, 40969, 40970
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_cct2_act_title",
-                    "on_cct1_act_title",
-                    "on_cct2_act_title",
-                    "tg_cct1_act_title",
-                    "tg_cct2_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==34){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
-                    40968, 40969, 40970, 45063, 45064, 45065, 45066
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_cct2_act_title",
-                    "on_cct1_act_title",
-                    "on_cct2_act_title",
-                    "tg_cct1_act_title",
-                    "tg_cct2_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title",
-                    "inc_dec_temp_cct1_act_title",
-                    "inc_dec_br_cct1_act_title",
-                    "inc_dec_temp_cct2_act_title",
-                    "inc_dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==34){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
-                    40968, 40969, 40970
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_cct2_act_title",
-                    "on_cct1_act_title",
-                    "on_cct2_act_title",
-                    "tg_cct1_act_title",
-                    "tg_cct2_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==34){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
-                    40968, 40969, 40970, 45063, 45064, 45065, 45066
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_act_title",
-                    "off_cct2_act_title",
-                    "on_cct1_act_title",
-                    "on_cct2_act_title",
-                    "tg_cct1_act_title",
-                    "tg_cct2_act_title",
-                    "inc_temp_cct1_act_title",
-                    "inc_br_cct1_act_title",
-                    "inc_temp_cct2_act_title",
-                    "inc_br_cct2_act_title",
-                    "dec_temp_cct1_act_title",
-                    "dec_br_cct1_act_title",
-                    "dec_temp_cct2_act_title",
-                    "dec_br_cct2_act_title",
-                    "inc_dec_temp_cct1_act_title",
-                    "inc_dec_br_cct1_act_title",
-                    "inc_dec_temp_cct2_act_title",
-                    "inc_dec_br_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["sp"] if in_num in [1, 2, 3] else 0 }},
-                "condition": "(dimmer_mode==256){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
-                    36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
-                    40963, 40977
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_rgb_act_title",
-                    "off_ch4_act_title",
-                    "off_hue_change_act_title",
-                    "on_rgb_act_title",
-                    "on_ch4_act_title",
-                    "on_hue_change_act_title",
-                    "tg_rgb_act_title",
-                    "tg_ch4_act_title",
-                    "tg_hue_change_act_title",
-                    "inc_r_act_title",
-                    "inc_g_act_title",
-                    "inc_b_act_title",
-                    "inc_h_act_title",
-                    "inc_s_act_title",
-                    "inc_v_act_title",
-                    "inc_ch4_act_title",
-                    "inc_hue_ch_time_act_title",
-                    "dec_r_act_title",
-                    "dec_g_act_title",
-                    "dec_b_act_title",
-                    "dec_h_act_title",
-                    "dec_s_act_title",
-                    "dec_v_act_title",
-                    "dec_ch4_act_title",
-                    "dec_hue_ch_time_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": {{ FACTORY_BUTTON_ACTIONS[in_num]["lp"] if in_num in [1, 2, 3] else 0 }},
-                "condition": "(dimmer_mode==256){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
-                    36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
-                    40963, 40977, 45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_rgb_act_title",
-                    "off_ch4_act_title",
-                    "off_hue_change_act_title",
-                    "on_rgb_act_title",
-                    "on_ch4_act_title",
-                    "on_hue_change_act_title",
-                    "tg_rgb_act_title",
-                    "tg_ch4_act_title",
-                    "tg_hue_change_act_title",
-                    "inc_r_act_title",
-                    "inc_g_act_title",
-                    "inc_b_act_title",
-                    "inc_h_act_title",
-                    "inc_s_act_title",
-                    "inc_v_act_title",
-                    "inc_ch4_act_title",
-                    "inc_hue_ch_time_act_title",
-                    "dec_r_act_title",
-                    "dec_g_act_title",
-                    "dec_b_act_title",
-                    "dec_h_act_title",
-                    "dec_s_act_title",
-                    "dec_v_act_title",
-                    "dec_ch4_act_title",
-                    "dec_hue_ch_time_act_title",
-                    "inc_dec_r_act_title",
-                    "inc_dec_g_act_title",
-                    "inc_dec_b_act_title",
-                    "inc_dec_h_act_title",
-                    "inc_dec_s_act_title",
-                    "inc_dec_v_act_title",
-                    "inc_dec_ch4_act_title",
-                    "inc_dec_hue_ch_time_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==256){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
-                    36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
-                    40963, 40977
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_rgb_act_title",
-                    "off_ch4_act_title",
-                    "off_hue_change_act_title",
-                    "on_rgb_act_title",
-                    "on_ch4_act_title",
-                    "on_hue_change_act_title",
-                    "tg_rgb_act_title",
-                    "tg_ch4_act_title",
-                    "tg_hue_change_act_title",
-                    "inc_r_act_title",
-                    "inc_g_act_title",
-                    "inc_b_act_title",
-                    "inc_h_act_title",
-                    "inc_s_act_title",
-                    "inc_v_act_title",
-                    "inc_ch4_act_title",
-                    "inc_hue_ch_time_act_title",
-                    "dec_r_act_title",
-                    "dec_g_act_title",
-                    "dec_b_act_title",
-                    "dec_h_act_title",
-                    "dec_s_act_title",
-                    "dec_v_act_title",
-                    "dec_ch4_act_title",
-                    "dec_hue_ch_time_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==256){{enc_cond}}",
-                "enum": [
-                    0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
-                    36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
-                    40963, 40977, 45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_rgb_act_title",
-                    "off_ch4_act_title",
-                    "off_hue_change_act_title",
-                    "on_rgb_act_title",
-                    "on_ch4_act_title",
-                    "on_hue_change_act_title",
-                    "tg_rgb_act_title",
-                    "tg_ch4_act_title",
-                    "tg_hue_change_act_title",
-                    "inc_r_act_title",
-                    "inc_g_act_title",
-                    "inc_b_act_title",
-                    "inc_h_act_title",
-                    "inc_s_act_title",
-                    "inc_v_act_title",
-                    "inc_ch4_act_title",
-                    "inc_hue_ch_time_act_title",
-                    "dec_r_act_title",
-                    "dec_g_act_title",
-                    "dec_b_act_title",
-                    "dec_h_act_title",
-                    "dec_s_act_title",
-                    "dec_v_act_title",
-                    "dec_ch4_act_title",
-                    "dec_hue_ch_time_act_title",
-                    "inc_dec_r_act_title",
-                    "inc_dec_g_act_title",
-                    "inc_dec_b_act_title",
-                    "inc_dec_h_act_title",
-                    "inc_dec_s_act_title",
-                    "inc_dec_v_act_title",
-                    "inc_dec_ch4_act_title",
-                    "inc_dec_hue_ch_time_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==512){{enc_cond}}",
-                "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1234_act_title",
-                    "on_ch1234_act_title",
-                    "tg_ch1234_act_title",
-                    "inc_ch1234_act_title",
-                    "dec_ch1234_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==512){{enc_cond}}",
-                "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1234_act_title",
-                    "on_ch1234_act_title",
-                    "tg_ch1234_act_title",
-                    "inc_ch1234_act_title",
-                    "dec_ch1234_act_title",
-                    "inc_dec_ch1234_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==512){{enc_cond}}",
-                "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1234_act_title",
-                    "on_ch1234_act_title",
-                    "tg_ch1234_act_title",
-                    "inc_ch1234_act_title",
-                    "dec_ch1234_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==512){{enc_cond}}",
-                "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_ch1234_act_title",
-                    "on_ch1234_act_title",
-                    "tg_ch1234_act_title",
-                    "inc_ch1234_act_title",
-                    "dec_ch1234_act_title",
-                    "inc_dec_ch1234_act_title"
-                ]
-            },
-
-            {#- 2CCT -#}
-            {
-                "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_sp_action",
-                "title": "sp_title",
-                "order": 0,
-                "address": {{1000 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==768){{enc_cond}}",
-                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_cct2_act_title",
-                    "on_cct1_cct2_act_title",
-                    "tg_cct1_cct2_act_title",
-                    "inc_temp_cct1_cct2_act_title",
-                    "inc_br_cct1_cct2_act_title",
-                    "dec_temp_cct1_cct2_act_title",
-                    "dec_br_cct1_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_lp_action",
-                "title": "lp_title",
-                "order": 0,
-                "address": {{1020 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==768){{enc_cond}}",
-                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_cct2_act_title",
-                    "on_cct1_cct2_act_title",
-                    "tg_cct1_cct2_act_title",
-                    "inc_temp_cct1_cct2_act_title",
-                    "inc_br_cct1_cct2_act_title",
-                    "dec_temp_cct1_cct2_act_title",
-                    "dec_br_cct1_cct2_act_title",
-                    "inc_dec_temp_cct1_cct2_act_title",
-                    "inc_dec_br_cct1_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_dp_action",
-                "title": "dp_title",
-                "order": 0,
-                "address": {{1040 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==768){{enc_cond}}",
-                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_cct2_act_title",
-                    "on_cct1_cct2_act_title",
-                    "tg_cct1_cct2_act_title",
-                    "inc_temp_cct1_cct2_act_title",
-                    "inc_br_cct1_cct2_act_title",
-                    "dec_temp_cct1_cct2_act_title",
-                    "dec_br_cct1_cct2_act_title"
-                ]
-            },
-            {
-                "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_slp_action",
-                "title": "slp_title",
-                "order": 0,
-                "address": {{1060 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==768){{enc_cond}}",
-                "enum": [0, 16384, 4107, 8203, 12299, 36882, 36883, 40978, 40979, 45074, 45075],
-                "enum_titles": [
-                    "no_act_title",
-                    "all_off_act_title",
-                    "off_cct1_cct2_act_title",
-                    "on_cct1_cct2_act_title",
-                    "tg_cct1_cct2_act_title",
-                    "inc_temp_cct1_cct2_act_title",
-                    "inc_br_cct1_cct2_act_title",
-                    "dec_temp_cct1_cct2_act_title",
-                    "dec_br_cct1_cct2_act_title",
-                    "inc_dec_temp_cct1_cct2_act_title",
-                    "inc_dec_br_cct1_cct2_act_title"
-                ]
-            },
-            {#- #}
-
+            {% for dimmer_mode_number in range(12) -%}
+            {% for name in range(4) -%}
+            {% set factory_action = FACTORY_BUTTON_ACTIONS.get(in_num, {}).get(name_actions[name], 0) -%}
+            {% set base_enum = enum[dimmer_mode_number][name] -%}
+            {% set level_enum = [] -%}
+            {% for code in base_enum -%}
+            {% set _ = level_enum.append(code) -%}
+            {% if code == 16384 -%}
+            {% set _ = level_enum.append(20480) -%}
+            {% set _ = level_enum.append(28672) -%}
+            {% endif -%}
+            {% if (code >= 8192) and (code < 12288) and (code != 8202) -%}
+            {% set _ = level_enum.append(code + 16384) -%}
+            {% endif -%}
             {% endfor -%}
+            {% for action_fw, action_enum in [("", base_enum), (LEVEL_ACTIONS_FW, level_enum)] -%}
+            {
+                "id": "in{{in_num}}_{{name_actions[name]}}",
+                "group": "gg_in_{{in_num}}_{{name_actions[name]}}_action",
+                "title": "{{name_actions[name]}}_title",
+                "order": 0,
+                "address": {{1000 + in_num - 1 + name * 20}},
+                "reg_type": "holding",
+                {% if action_fw -%}
+                "fw": "{{ action_fw }}",
+                {% endif -%}
+                "default": {{ factory_action if factory_action in base_enum else 0 }},
+                "condition": "(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}){{enc_cond}}",
+                "enum": {{ action_enum }},
+                "enum_titles": [
+                    {% for i_enum in action_enum -%}
+                    {% for i_action in action_code -%}
+                    {% if i_action == i_enum -%}
+                        "{{ action_title[loop.index0] }}"
+                    {%- endif -%}
+                    {%- endfor -%}
+                    {%- if not loop.last -%}
+                    ,
+                    {% endif -%}
+                    {% endfor %}
+                ]
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {% endfor -%}
+            {% endfor -%}
+
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set cond_enc_num = ((in_num - 1) // 2) + 1 -%}
+            {% set enc_cond = '&&(encoder_' ~ cond_enc_num ~ '_mode==0)' if (cond_enc_num <= ENCODERS_NUMBER) else '' -%}
+            {% for name in ["sp", "lp", "dp", "slp"] -%}
+            {
+                "id": "in{{in_num}}_{{name}}_level",
+                "group": "gg_in_{{in_num}}_{{name}}_action",
+                "title": "Brightness (%)",
+                "order": 1,
+                "address": {{1800 + in_num - 1 + loop.index0 * 20}},
+                "reg_type": "holding",
+                "fw": "{{ LEVEL_ACTIONS_FW }}",
+                "default": 100,
+                "condition": "((in{{in_num}}_{{name}}>=24576)&&(in{{in_num}}_{{name}}<=28672){{enc_cond}})",
+                "min": 1,
+                "max": 100
+            },
+            {% endfor -%}
+            {% endfor -%}
+
 
             {#- Dimming step for single and double presses -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
@@ -3428,9 +1997,12 @@
 
                 "no_act_title": "Nothing",
                 "all_off_act_title": "Disable all channles",
+                "all_on_act_title": "Enable all channels",
+                "all_on_level_act_title": "Enable all channels and set brightness",
                 {% for ch_number, ch_name in CHANNELS  -%}
                 "off_ch{{ch_number}}_act_title": "Disable channel {{ch_number}} ({{ch_name}})",
                 "on_ch{{ch_number}}_act_title": "Enable channel {{ch_number}} ({{ch_name}})",
+                "on_level_ch{{ch_number}}_act_title": "Enable channel {{ch_number}} ({{ch_name}}) and set brightness",
                 "tg_ch{{ch_number}}_act_title": "Toggle channel {{ch_number}} ({{ch_name}})",
                 "inc_ch{{ch_number}}_act_title": "Increase brightness of channel {{ch_number}} ({{ch_name}})",
                 "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}} ({{ch_name}})",
@@ -3438,6 +2010,7 @@
                 {% endfor %}
                 "off_ch12_act_title": "Disable channels 1, 2 (B, R)",
                 "on_ch12_act_title": "Enable channels 1, 2 (B, R)",
+                "on_level_ch12_act_title": "Enable channels 1, 2 (B, R) and set brightness",
                 "tg_ch12_act_title": "Toggle channels 1, 2 (B, R)",
                 "inc_ch12_act_title": "Increase brightness of channels 1, 2 (B, R)",
                 "dec_ch12_act_title": "Decrease brightness of channels 1, 2 (B, R)",
@@ -3445,6 +2018,7 @@
 
                 "off_ch34_act_title": "Disable channels 3, 4 (G, W)",
                 "on_ch34_act_title": "Enable channels 3, 4 (G, W)",
+                "on_level_ch34_act_title": "Enable channels 3, 4 (G, W) and set brightness",
                 "tg_ch34_act_title": "Toggle channels 3, 4 (G, W)",
                 "inc_ch34_act_title": "Increase brightness of channels 3, 4 (G, W)",
                 "dec_ch34_act_title": "Decrease brightness of channels 3, 4 (G, W)",
@@ -3452,6 +2026,7 @@
 
                 "off_cct1_act_title": "Disable CCT1",
                 "on_cct1_act_title": "Enable CCT1",
+                "on_level_cct1_act_title": "Enable CCT1 and set brightness",
                 "tg_cct1_act_title": "Toggle CCT1",
                 "inc_temp_cct1_act_title": "Increase temperature of CCT1",
                 "inc_br_cct1_act_title": "Increase brightness of CCT1",
@@ -3462,6 +2037,7 @@
 
                 "off_cct2_act_title": "Disable CCT2",
                 "on_cct2_act_title": "Enable CCT2",
+                "on_level_cct2_act_title": "Enable CCT2 and set brightness",
                 "tg_cct2_act_title": "Toggle CCT2",
                 "inc_temp_cct2_act_title": "Increase temperature of CCT2",
                 "inc_br_cct2_act_title": "Increase brightness of CCT2",
@@ -3472,6 +2048,7 @@
 
                 "off_cct1_cct2_act_title": "Disable CCT1, CCT2",
                 "on_cct1_cct2_act_title": "Enable CCT1, CCT2",
+                "on_level_cct1_cct2_act_title": "Enable CCT1, CCT2 and set brightness",
                 "tg_cct1_cct2_act_title": "Toggle CCT1, CCT2",
                 "inc_temp_cct1_cct2_act_title": "Increase temperature of CCT1, CCT2",
                 "inc_br_cct1_cct2_act_title": "Increase brightness of CCT1, CCT2",
@@ -3483,6 +2060,7 @@
                 "off_rgb_act_title": "Disable RGB",
                 "off_hue_change_act_title": "Disable hue changing",
                 "on_rgb_act_title": "Enable RGB",
+                "on_level_rgb_act_title": "Enable RGB and set brightness",
                 "on_hue_change_act_title": "Enable hue changing",
                 "tg_rgb_act_title": "Toggle RGB",
                 "tg_hue_change_act_title": "Toggle hue changing",
@@ -3510,6 +2088,7 @@
 
                 "off_ch1234_act_title": "Disable channels 1, 2, 3, 4",
                 "on_ch1234_act_title": "Enable channels 1, 2, 3, 4",
+                "on_level_ch1234_act_title": "Enable channels 1, 2, 3, 4 and set brightness",
                 "tg_ch1234_act_title": "Toggle channels 1, 2, 3, 4",
                 "inc_ch1234_act_title": "Increase brightness of channels 1, 2, 3, 4",
                 "dec_ch1234_act_title": "Decrease brightness of channels 1, 2, 3, 4",
@@ -3638,9 +2217,13 @@
 
                 "no_act_title": "Нет действия",
                 "all_off_act_title": "Выключить все каналы",
+                "all_on_act_title": "Включить все каналы",
+                "all_on_level_act_title": "Включить все каналы и установить яркость",
+                "Brightness (%)": "Яркость (%)",
                 {% for ch_number, ch_name in CHANNELS  -%}
                 "off_ch{{ch_number}}_act_title": "Выключить канал {{ch_number}} ({{ch_name}})",
                 "on_ch{{ch_number}}_act_title": "Включить канал {{ch_number}} ({{ch_name}})",
+                "on_level_ch{{ch_number}}_act_title": "Включить канал {{ch_number}} ({{ch_name}}) и установить яркость",
                 "tg_ch{{ch_number}}_act_title": "Переключить канал {{ch_number}} ({{ch_name}})",
                 "inc_ch{{ch_number}}_act_title": "Увеличить яркость канала {{ch_number}} ({{ch_name}})",
                 "dec_ch{{ch_number}}_act_title": "Уменьшить яркость канала {{ch_number}} ({{ch_name}})",
@@ -3648,6 +2231,7 @@
                 {% endfor %}
                 "off_ch12_act_title": "Выключить каналы 1 и 2 (B, R)",
                 "on_ch12_act_title": "Включить каналы 1 и 2 (B, R)",
+                "on_level_ch12_act_title": "Включить каналы 1 и 2 (B, R) и установить яркость",
                 "tg_ch12_act_title": "Переключить каналы 1 и 2 (B, R)",
                 "inc_ch12_act_title": "Увеличить яркость каналов 1 и 2 (B, R)",
                 "dec_ch12_act_title": "Уменьшить яркость каналов 1 и 2 (B, R)",
@@ -3655,6 +2239,7 @@
 
                 "off_ch34_act_title": "Выключить каналы 3 и 4 (G, W)",
                 "on_ch34_act_title": "Включить каналы 3 и 4 (G, W)",
+                "on_level_ch34_act_title": "Включить каналы 3 и 4 (G, W) и установить яркость",
                 "tg_ch34_act_title": "Переключить каналы 3 и 4 (G, W)",
                 "inc_ch34_act_title": "Увеличить яркость каналов 3 и 4 (G, W)",
                 "dec_ch34_act_title": "Уменьшить яркость каналов 3 и 4 (G, W)",
@@ -3662,6 +2247,7 @@
 
                 "off_cct1_act_title": "Выключить CCT1",
                 "on_cct1_act_title": "Включить CCT1",
+                "on_level_cct1_act_title": "Включить CCT1 и установить яркость",
                 "tg_cct1_act_title": "Переключить CCT1",
                 "inc_temp_cct1_act_title": "Увеличить цветовую температуру CCT1",
                 "inc_br_cct1_act_title": "Увеличить яркость CCT1",
@@ -3672,6 +2258,7 @@
 
                 "off_cct2_act_title": "Выключить CCT2",
                 "on_cct2_act_title": "Включить CCT2",
+                "on_level_cct2_act_title": "Включить CCT2 и установить яркость",
                 "tg_cct2_act_title": "Переключить CCT2",
                 "inc_temp_cct2_act_title": "Увеличить цветовую температуру CCT2",
                 "inc_br_cct2_act_title": "Увеличить яркость CCT2",
@@ -3682,6 +2269,7 @@
 
                 "off_cct1_cct2_act_title": "Выключить CCT1 и CCT2",
                 "on_cct1_cct2_act_title": "Включить CCT1 и CCT2",
+                "on_level_cct1_cct2_act_title": "Включить CCT1 и CCT2 и установить яркость",
                 "tg_cct1_cct2_act_title": "Переключить CCT1 и CCT2",
                 "inc_temp_cct1_cct2_act_title": "Увеличить цветовую температуру CCT1 и CCT2",
                 "inc_br_cct1_cct2_act_title": "Увеличить яркость CCT1 и CCT2",
@@ -3693,6 +2281,7 @@
                 "off_rgb_act_title": "Выключить RGB",
                 "off_hue_change_act_title": "Выключить непрерывное изменение оттенка (HSV-H)",
                 "on_rgb_act_title": "Включить RGB",
+                "on_level_rgb_act_title": "Включить RGB и установить яркость",
                 "on_hue_change_act_title": "Включить непрерывное изменение оттенка (HSV-H)",
                 "tg_rgb_act_title": "Переключить RGB",
                 "tg_hue_change_act_title": "Переключить непрерывное изменение оттенка (HSV-H)",
@@ -3720,6 +2309,7 @@
 
                 "off_ch1234_act_title": "Выключить каналы 1, 2, 3, 4",
                 "on_ch1234_act_title": "Включить каналы 1, 2, 3, 4",
+                "on_level_ch1234_act_title": "Включить каналы 1, 2, 3, 4 и установить яркость",
                 "tg_ch1234_act_title": "Переключить каналы 1, 2, 3, 4",
                 "inc_ch1234_act_title": "Увеличить яркость каналов 1, 2, 3, 4",
                 "dec_ch1234_act_title": "Уменьшить яркость каналов 1, 2, 3, 4",

@@ -5,10 +5,11 @@
 
 #define LOG(logger) ::logger.Log() << "[port] "
 
-TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge, bool fastModbusDisabled)
+TFeaturePort::TFeaturePort(PPort basePort, bool modbusTcp, bool connectedToMge, bool fastModbusDisabled, bool tcp)
     : BasePort(basePort),
       ModbusTcp(modbusTcp),
-      FastModbus((!modbusTcp || connectedToMge) && !fastModbusDisabled)
+      FastModbus((!modbusTcp || connectedToMge) && !fastModbusDisabled),
+      Tcp(modbusTcp || tcp)
 {}
 
 void TFeaturePort::Open()
@@ -95,6 +96,11 @@ bool TFeaturePort::IsModbusTcp() const
     return ModbusTcp;
 }
 
+bool TFeaturePort::IsTcp() const
+{
+    return Tcp;
+}
+
 bool TFeaturePort::SupportsFastModbus() const
 {
     return FastModbus;
@@ -112,7 +118,8 @@ PFeaturePort DefaultPortFactory(const TFeaturePortSettings& settings)
         return std::make_shared<TFeaturePort>(std::make_shared<TTcpPort>(*tcpPort),
                                               tcpPort->ModbusTcp,
                                               settings.ConnectedToMge,
-                                              settings.FastModbusDisabled);
+                                              settings.FastModbusDisabled,
+                                              true);
     }
     return std::make_shared<TFeaturePort>(std::make_shared<TSerialPort>(std::get<TSerialPortSettings>(settings.Port)),
                                           false,

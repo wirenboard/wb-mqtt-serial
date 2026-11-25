@@ -7,7 +7,7 @@
 TFwGetFirmwareInfoTask::TFwGetFirmwareInfoTask(uint8_t slaveId,
                                                const std::string& protocol,
                                                const std::string& releaseSuite,
-                                               const TPortSettings& portSettings,
+                                               const std::optional<TPortSettings>& portSettings,
                                                std::shared_ptr<TFwDownloader> downloader,
                                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
@@ -33,20 +33,13 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(*port, nullptr);
-        TSerialPortSettingsGuard settingsGuard(port, GetRPCPortConnectionSettings(PortSettings));
-        port->SkipNoise();
-
-        auto traits = MakeModbusTraits(Protocol);
-        auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
-        auto updatable = true;
-        if (RequiresDefaultPortSettings(std::holds_alternative<TFramedTcpPortSettings>(PortSettings),
-                                        Protocol,
-                                        info.CanPreservePortSettings))
-        {
-            updatable = HasDefaultPortSettings(*traits, *port, SlaveId);
+        Json::Value result;
+        if (PortSettings) {
+            TSerialPortSettingsGuard settingsGuard(port, GetRPCPortConnectionSettings(*PortSettings));
+            result = ReadFirmwareInfo(port);
+        } else {
+            result = ReadFirmwareInfo(port);
         }
-        auto result = BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite, updatable, ENetworkAccess::CacheOnly);
-
         if (OnResult) {
             OnResult(result);
         }
@@ -60,4 +53,16 @@ ISerialClientTask::TRunResult TFwGetFirmwareInfoTask::Run(PFeaturePort port,
         }
     }
     return ISerialClientTask::TRunResult::OK;
+}
+
+Json::Value TFwGetFirmwareInfoTask::ReadFirmwareInfo(PFeaturePort port)
+{
+    port->SkipNoise();
+    auto traits = MakeModbusTraits(Protocol);
+    auto info = ReadFwDeviceInfo(*traits, *port, SlaveId);
+    auto updatable = true;
+    if (RequiresDefaultPortSettings(port->IsTcp(), Protocol, info.CanPreservePortSettings)) {
+        updatable = HasDefaultPortSettings(*traits, *port, SlaveId);
+    }
+    return BuildFirmwareInfoResponse(info, *Downloader, ReleaseSuite, updatable, ENetworkAccess::CacheOnly);
 }

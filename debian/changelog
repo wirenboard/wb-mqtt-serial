@@ -1,8 +1,68 @@
-wb-mqtt-serial (2.297.0) stable; urgency=medium
+wb-mqtt-serial (2.299.0) stable; urgency=medium
 
   * Add Ridan R-KI 230 (fw 1.5-2.2) temperature controller template
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Mon, 23 Nov 2026 12:34:23 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 25 Nov 2026 12:00:00 +0300
+
+wb-mqtt-serial (2.298.0) stable; urgency=medium
+
+  * Add device_id parameter to fw-update/GetFirmwareInfo RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 24 Nov 2026 19:31:34 +0300
+
+wb-mqtt-serial (2.297.3) stable; urgency=medium
+
+  * Faster polling of MTDX62-MB, the presence channel updates without
+    a delay of several seconds
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 14:21:59 +0500
+
+wb-mqtt-serial (2.297.2) stable; urgency=medium
+
+  * Custom channels in the web interface: the string size field is shown for
+    the string8 format too
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 11:00:00 +0500
+
+wb-mqtt-serial (2.297.1) stable; urgency=medium
+
+  * WB-MWAC template: in the leakage sensor input mode only the action on
+    contact closure is offered, the firmware performs no action on contact
+    opening in this mode since 1.21.0; the actions are in their own group
+    "Actions When Sensor Is Triggered"
+  * WB-MWAC template: the legacy input mode register 5 is no longer written
+    on connect: the firmware has no legacy mode since 1.21.0 and no register
+    since 1.26.0, the write failed with a warning in the log
+  * WB-MR, WB-MRWM2, WB-MWAC templates: a parameter or channel common to
+    these devices has the same name in all of them (input modes, press and
+    debounce settings, output actions, safety mode and power-on settings,
+    input counter and frequency channels), English names are in Title Case,
+    "Shortlong Press" is "Short Then Long Press"
+  * WB-MRWM2, WB-MWAC templates: output actions are named as in WB-MR
+    ("No Action", "Turn Off", "Turn On", "Toggle"); in WB-MWAC v.2 the
+    Russian action names no longer read as output states
+  * WB-MWAC templates: input modes 4 and 6 are named as in WB-MR, mode 5 of
+    WB-MWAC is "Leakage Sensor" as in WB-MWAC v.2, "Safety Timer" is
+    "Safety Poll Timeout" as in WB-MR; recommended values are removed from
+    the descriptions, the factory value is the parameter default
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 23 Nov 2026 16:01:38 +0300
+
+wb-mqtt-serial (2.297.0) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D fw 3.8 templates: add the input actions "Enable all
+    channels", "Enable all channels and set brightness" and "Enable ... and set
+    brightness" with a brightness for each press type (holding 1800+, firmware
+    3.10.0) as fw variants of the action parameters; a WB-LED switch can also
+    turn on all channels
+  * WB-MDM3 fw 2.12 template: add the input action "Turn On and Set
+    Brightness" with a brightness for each press type (holding 1800+,
+    firmware 2.13.0) as an fw variant of the action parameters
+  * WB-MAO4 and WB-MAO4-20mA fw 2.9 templates: add the input action "Turn On
+    and Set Level" with a level for each press type (holding 1800+, firmware
+    2.11.0) as an fw variant of the action parameters
+
+ -- Nikolay Oleinik <nikolay.oleinik@wirenboard.com>  Mon, 23 Nov 2026 16:58:55 +0700
 
 wb-mqtt-serial (2.296.0) stable; urgency=medium
 

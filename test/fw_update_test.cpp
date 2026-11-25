@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "devices/modbus_device.h"
 #include "rpc/rpc_fw_downloader.h"
 #include "rpc/rpc_fw_update_handler.h"
 #include "rpc/rpc_fw_update_helpers.h"
@@ -2614,6 +2615,11 @@ public:
         AccessHandler = std::make_unique<TSerialClientDeviceAccessHandler>(nullptr);
     }
 
+    void SetTcpPort()
+    {
+        Port = std::make_shared<TFeaturePort>(SerialPort, false, false, false, true);
+    }
+
     void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override
     {
         SubmittedTasks.push_back({portSettings, task});
@@ -2621,6 +2627,19 @@ public:
             task->Run(Port, *AccessHandler, EmptyDeviceList);
         }
     }
+
+    void RunTask(const Json::Value& request, const TMakeTaskFn& makeTask) override
+    {
+        auto device = ConfigDevice && ConfigDevice->DeviceConfig()->Id == request["device_id"].asString() ? ConfigDevice
+                                                                                                          : nullptr;
+        auto task = makeTask(device, nullptr);
+        if (Port) {
+            task->Run(Port, *AccessHandler, EmptyDeviceList);
+        }
+    }
+
+    //! The device of the config the tasks for a device_id are looked up in
+    PSerialDevice ConfigDevice;
 
     struct SubmittedTask
     {
@@ -2755,6 +2774,16 @@ protected:
         }
     }
 
+    void SetConfigDevice(const std::string& deviceId)
+    {
+        TModbusDeviceConfig config;
+        config.CommonConfig = std::make_shared<TDeviceConfig>("modbus", std::to_string(SLAVE_ID), "modbus");
+        config.CommonConfig->Id = deviceId;
+        TaskRunner->ConfigDevice = std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
+                                                                   config,
+                                                                   DeviceFactory.GetProtocol("modbus"));
+    }
+
     // --- Friend-access wrappers for private handler methods ---
 
     void CallGetFirmwareInfo(const Json::Value& request)
@@ -2855,6 +2884,7 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
 //! Such a device would be lost after rebooting to a bootloader which starts on 9600 8N2
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSettings)
 {
+    TaskRunner->SetTcpPort();
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
@@ -2871,6 +2901,7 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSett
 //! The same device on the factory settings stays reachable in the bootloader
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithFactoryPortSettings)
 {
+    TaskRunner->SetTcpPort();
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
@@ -2940,6 +2971,40 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoBadRequest)
     ASSERT_FALSE(GotResult);
     ASSERT_TRUE(GotError);
     EXPECT_NE(LastErrorMsg.find("slave_id"), std::string::npos);
+}
+
+//! The port of a config device keeps its settings, the factory ones are not applied
+TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoByDeviceId)
+{
+    SerialPort->LogSerialPortSettings(true);
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetConfigDevice("wb-led_42");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+
+    Json::Value request;
+    request["device_id"] = "wb-led_42";
+    CallGetFirmwareInfo(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_EQ(LastResult["fw"].asString(), "3.6.1");
+    EXPECT_EQ(LastResult["fw_signature"].asString(), "wbled");
+    EXPECT_EQ(LastResult["sn"].asString(), "12345678");
+    EXPECT_TRUE(LastResult["can_update"].asBool());
+}
+
+TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoByUnknownDeviceId)
+{
+    SetConfigDevice("wb-led_42");
+
+    Json::Value request;
+    request["device_id"] = "wb-led_43";
+    CallGetFirmwareInfo(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("wb-led_43"), std::string::npos);
 }
 
 // ---- ClearError tests ----
