@@ -123,6 +123,15 @@ TEST_F(TDeviceTemplatesTest, InvalidParameterName)
     EXPECT_THROW(templateMap.GetTemplate("tpl1_parameters_object_invalid_name")->GetTemplate(), std::runtime_error);
 }
 
+TEST_F(TDeviceTemplatesTest, AllowedValuesWithOtherConstraints)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_NO_THROW(templateMap.GetTemplate("allowed_values")->GetTemplate());
+    EXPECT_THROW(templateMap.GetTemplate("allowed_values_with_min_max")->GetTemplate(), std::runtime_error);
+    EXPECT_THROW(templateMap.GetTemplate("allowed_values_with_enum")->GetTemplate(), std::runtime_error);
+}
+
 TEST_F(TDeviceTemplatesTest, InvalidCondition)
 {
     TTemplateMap templateMap(GetTemplatesSchema());
