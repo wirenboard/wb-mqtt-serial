@@ -11,6 +11,10 @@ public:
 
     //! Run a task on the port, whether the driver polls it or not
     virtual void RunTask(const TPortSettings& portSettings, PSerialClientTask task) = 0;
+
+    //! Adds the task to the client of the config device or the port of the request
+    //! @throws TRPCException with "config-busy" during a configuration or template change and after the service stop
+    virtual void RunTask(const Json::Value& request, const TMakeTaskFn& makeTask) = 0;
 };
 
 class TSerialClientTaskRunner: public ITaskRunner
@@ -22,10 +26,7 @@ public:
     //! @throws TRPCException with "config-busy" during a configuration or template change and after the service stop
     void SetPoll(const Json::Value& request, bool poll);
 
-    //! Adds the task to the client of the config device or the port of the request
-    //! @throws TRPCException with "config-busy" during a configuration or template change and after the service stop
-    void RunTask(const Json::Value& request, const TMakeTaskFn& makeTask);
-
+    void RunTask(const Json::Value& request, const TMakeTaskFn& makeTask) override;
     void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override;
 
 private:

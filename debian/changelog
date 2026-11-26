@@ -1,9 +1,30 @@
-wb-mqtt-serial (2.298.0) stable; urgency=medium
+wb-mqtt-serial (2.299.0) stable; urgency=medium
 
   * Add allowed_values to template parameters
   * Update WB-MR templates
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 23 Nov 2026 20:21:30 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Nov 2026 11:26:07 +0300
+
+wb-mqtt-serial (2.298.0) stable; urgency=medium
+
+  * Add device_id parameter to fw-update/GetFirmwareInfo RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 24 Nov 2026 19:31:34 +0300
+
+wb-mqtt-serial (2.297.3) stable; urgency=medium
+
+  * Faster polling of MTDX62-MB, the presence channel updates without
+    a delay of several seconds
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 14:21:59 +0500
+
+wb-mqtt-serial (2.297.2) stable; urgency=medium
+
+  * Custom channels in the web interface: the string size field is shown for
+    the string8 format too
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 11:00:00 +0500
+>>>>>>> origin/master
 
 wb-mqtt-serial (2.297.1) stable; urgency=medium
 

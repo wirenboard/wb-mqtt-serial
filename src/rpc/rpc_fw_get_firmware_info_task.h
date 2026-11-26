@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <string>
 
 #include <wblib/rpc.h>
@@ -15,7 +16,7 @@ public:
     TFwGetFirmwareInfoTask(uint8_t slaveId,
                            const std::string& protocol,
                            const std::string& releaseSuite,
-                           const TPortSettings& portSettings,
+                           const std::optional<TPortSettings>& portSettings,
                            std::shared_ptr<TFwDownloader> downloader,
                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
@@ -28,8 +29,10 @@ private:
     uint8_t SlaveId;
     std::string Protocol;
     std::string ReleaseSuite;
-    TPortSettings PortSettings;
+    std::optional<TPortSettings> PortSettings;
     std::shared_ptr<TFwDownloader> Downloader;
     WBMQTT::TMqttRpcServer::TResultCallback OnResult;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError;
+
+    Json::Value ReadFirmwareInfo(PFeaturePort port);
 };

@@ -542,7 +542,7 @@
           "propertyOrder": 25,
           "options": {
             "dependencies": {
-              "format": "string"
+              "format": ["string", "string8"]
             },
             "wb": {
               "show_editor": true,
