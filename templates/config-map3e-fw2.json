@@ -53,6 +53,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "l1",
                 "order": 1
@@ -98,6 +99,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "l2",
                 "order": 1
@@ -143,6 +145,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "l3",
                 "order": 1

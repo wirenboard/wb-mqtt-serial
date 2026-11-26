@@ -92,6 +92,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel1_l1",
                 "order": 1
@@ -125,6 +126,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel1_l2",
                 "order": 1
@@ -158,6 +160,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel1_l3",
                 "order": 1
@@ -191,6 +194,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel2_l1",
                 "order": 1
@@ -224,6 +228,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel2_l2",
                 "order": 1
@@ -257,6 +262,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel2_l3",
                 "order": 1
@@ -290,6 +296,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel3_l1",
                 "order": 1
@@ -323,6 +330,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel3_l2",
                 "order": 1
@@ -356,6 +364,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel3_l3",
                 "order": 1
@@ -389,6 +398,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel4_l1",
                 "order": 1
@@ -422,6 +432,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel4_l2",
                 "order": 1
@@ -455,6 +466,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "default": 0,
                 "group": "channel4_l3",
                 "order": 1

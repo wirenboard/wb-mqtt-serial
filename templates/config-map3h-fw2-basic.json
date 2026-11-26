@@ -45,6 +45,7 @@
                 "default": 0,
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "group": "l1",
                 "order": 1
             },
@@ -78,6 +79,7 @@
                 "default": 0,
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "group": "l2",
                 "order": 1
             },
@@ -111,6 +113,7 @@
                 "default": 0,
                 "format": "u16",
                 "min": 0,
+                "max": 39000,
                 "group": "l3",
                 "order": 1
             },

@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.299.2) stable; urgency=medium
+
+  * WB-MAP: the CT turns parameters are limited to 39000. A larger value
+    overflows the current gain of the measuring chip, and since firmware
+    2.16.0 the device ignores it
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 26 Nov 2026 12:47:29 +0300
+
 wb-mqtt-serial (2.299.1) stable; urgency=medium
 
   * Fix default config for Wiren Board 8.4
