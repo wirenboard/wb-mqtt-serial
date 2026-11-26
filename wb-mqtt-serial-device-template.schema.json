@@ -91,6 +91,34 @@
       }
     },
 
+    "allowed_value": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": ["value", "title"],
+          "not": { "anyOf": [{ "required": ["min"] }, { "required": ["max"] }] }
+        },
+        {
+          "required": ["min", "max", "title"],
+          "not": { "required": ["value"] }
+        }
+      ]
+    },
+
     "parameter": {
       "allOf": [
         {
@@ -119,6 +147,11 @@
             "max": {
               "type": "number"
             },
+            "allowed_values": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/allowed_value" },
+              "minItems": 1
+            },
             "order": {
               "type": "integer"
             },
@@ -142,6 +175,20 @@
               "required": ["readonly"]
             }
           ]
+        },
+        {
+          "dependencies": {
+            "allowed_values": {
+              "not": {
+                "anyOf": [
+                  { "required": ["enum"] },
+                  { "required": ["enum_titles"] },
+                  { "required": ["min"] },
+                  { "required": ["max"] }
+                ]
+              }
+            }
+          }
         },
         { "$ref": "#/definitions/group_condition" }
       ]

@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.299.0) stable; urgency=medium
+
+  * Add allowed_values to template parameters
+  * Update WB-MR templates
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Nov 2026 11:26:07 +0300
+
 wb-mqtt-serial (2.298.0) stable; urgency=medium
 
   * Add device_id parameter to fw-update/GetFirmwareInfo RPC
