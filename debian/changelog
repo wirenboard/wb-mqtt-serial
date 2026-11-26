@@ -24,7 +24,6 @@ wb-mqtt-serial (2.297.2) stable; urgency=medium
     the string8 format too
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Nov 2026 11:00:00 +0500
->>>>>>> origin/master
 
 wb-mqtt-serial (2.297.1) stable; urgency=medium
 

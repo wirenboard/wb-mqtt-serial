@@ -16,8 +16,6 @@
                 "id": "close_time",
                 "title": "Close time",
                 "address": 9996,
-                "min": 0,
-                "max": 600,
                 "allowed_values": [
                     {
                         "value": 0,

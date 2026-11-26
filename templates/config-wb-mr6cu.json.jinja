@@ -347,8 +347,6 @@
                 {% endif -%}
                 "scale": 0.1,
                 "default": 10.0,
-                "min": {{ curtain_time_min }},
-                "max": 600.0,
                 {% if curtain_time_min == 0 -%}
                 "allowed_values": [
                     {
@@ -361,6 +359,9 @@
                         "title": "Set time"
                     }
                 ],
+                {% else -%}
+                "min": {{ curtain_time_min }},
+                "max": 600.0,
                 {% endif -%}
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
@@ -378,8 +379,6 @@
                 {% endif -%}
                 "scale": 0.1,
                 "default": 10.0,
-                "min": {{ curtain_time_min }},
-                "max": 600.0,
                 {% if curtain_time_min == 0 -%}
                 "allowed_values": [
                     {
@@ -392,6 +391,9 @@
                         "title": "Set time"
                     }
                 ],
+                {% else -%}
+                "min": {{ curtain_time_min }},
+                "max": 600.0,
                 {% endif -%}
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"

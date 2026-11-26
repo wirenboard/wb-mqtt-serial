@@ -1,0 +1,35 @@
+{
+    "device_type": "allowed_values_with_enum",
+    "device": {
+        "name": "allowed values with enum",
+        "id": "allowed values with enum",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "close_time",
+                "title": "Close time",
+                "address": 9996,
+                "enum": [0, 1],
+                "enum_titles": ["No timeout", "1 s"],
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Time"
+                    }
+                ]
+            }
+        ]
+    }
+}

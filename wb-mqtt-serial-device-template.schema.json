@@ -176,6 +176,20 @@
             }
           ]
         },
+        {
+          "dependencies": {
+            "allowed_values": {
+              "not": {
+                "anyOf": [
+                  { "required": ["enum"] },
+                  { "required": ["enum_titles"] },
+                  { "required": ["min"] },
+                  { "required": ["max"] }
+                ]
+              }
+            }
+          }
+        },
         { "$ref": "#/definitions/group_condition" }
       ]
     },
