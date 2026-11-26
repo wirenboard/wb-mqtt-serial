@@ -1,0 +1,14 @@
+{
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "devices": [
+                {
+                    "device_type": "allowed_values",
+                    "slave_id": 1,
+                    "close_time": 0.5
+                }
+            ]
+        }
+    ]
+}

@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "devices/modbus_device.h"
 #include "rpc/rpc_fw_downloader.h"
 #include "rpc/rpc_fw_update_handler.h"
 #include "rpc/rpc_fw_update_helpers.h"
@@ -29,6 +30,9 @@ namespace TestRegisters
     const uint16_t DEVICE_MODEL_ADDR = 200;
     const uint16_t DEVICE_MODEL_COUNT = 6;
     const uint16_t DEVICE_MODEL_EXTENDED_COUNT = 20;
+
+    const uint16_t SN_ADDR = 270;
+    const uint16_t SN_COUNT = 2;
 }
 
 // ============================================================
@@ -912,6 +916,7 @@ protected:
         EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                            TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                            EncodeStringAsRegs(model, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+        EnqueueSnRead(12345678);
     }
 
     //! A device without components
@@ -925,6 +930,16 @@ protected:
         EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR,
                                      FwRegisters::COMPONENTS_PRESENCE_COUNT,
                                      0x02);
+    }
+
+    void EnqueueSnRead(uint32_t sn)
+    {
+        EnqueueHoldingRead(TestRegisters::SN_ADDR,
+                           TestRegisters::SN_COUNT,
+                           {static_cast<int>((sn >> 24) & 0xFF),
+                            static_cast<int>((sn >> 16) & 0xFF),
+                            static_cast<int>((sn >> 8) & 0xFF),
+                            static_cast<int>(sn & 0xFF)});
     }
 
     void EnqueueComponentInfoReads(int number,
@@ -1120,6 +1135,7 @@ TEST_F(TFwTaskTest, GetInfoBootloaderReadFails)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_COUNT,
                        EncodeStringAsRegs("WB-LED", TestRegisters::DEVICE_MODEL_COUNT));
+    EnqueueSnRead(12345678);
     // No components
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
@@ -1161,6 +1177,7 @@ TEST_F(TFwTaskTest, GetInfoWithComponents)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("WBMWAC-v2", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
 
     // Components presence: bit 0 set = component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -1253,6 +1270,7 @@ TEST_F(TFwTaskTest, GetInfoUnavailableComponent)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("TEST", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -1295,6 +1313,7 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
     EnqueueHoldingReadException(FwRegisters::BOOTLOADER_VERSION_ADDR, FwRegisters::BOOTLOADER_VERSION_COUNT, 0x02);
     EnqueueHoldingReadException(FwRegisters::REBOOT_PRESERVE_PORT_SETTINGS_ADDR, 1, 0x02);
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR, TestRegisters::DEVICE_MODEL_EXTENDED_COUNT, modelWithCtrl);
+    EnqueueSnRead(0xFE003039);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -1313,6 +1332,7 @@ TEST_F(TFwTaskTest, GetInfoDeviceModelCleanup)
 
     ASSERT_TRUE(gotResult);
     EXPECT_EQ(resultInfo.DeviceModel, "MAP12E");
+    EXPECT_EQ(resultInfo.Sn, "12345"); // WB-MAP extra bits are dropped
 }
 
 // Third-party devices may answer the FW/bootloader-version register reads with
@@ -1337,6 +1357,7 @@ TEST_F(TFwTaskTest, GetInfoGarbageVersionsSanitized)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("EFAN", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -1376,6 +1397,7 @@ TEST_F(TFwTaskTest, GetInfoGarbageSignatureCleared)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("EFAN", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
     EnqueueDiscreteReadException(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, 0x02);
 
     TFwDeviceInfo resultInfo;
@@ -2523,6 +2545,7 @@ TEST_F(TFwTaskTest, GetInfoComponentReadError)
     EnqueueHoldingRead(TestRegisters::DEVICE_MODEL_ADDR,
                        TestRegisters::DEVICE_MODEL_EXTENDED_COUNT,
                        EncodeStringAsRegs("TEST", TestRegisters::DEVICE_MODEL_EXTENDED_COUNT));
+    EnqueueSnRead(12345678);
 
     // Component 0 present
     EnqueueDiscreteRead(FwRegisters::COMPONENTS_PRESENCE_ADDR, FwRegisters::COMPONENTS_PRESENCE_COUNT, {0x01});
@@ -2592,6 +2615,11 @@ public:
         AccessHandler = std::make_unique<TSerialClientDeviceAccessHandler>(nullptr);
     }
 
+    void SetTcpPort()
+    {
+        Port = std::make_shared<TFeaturePort>(SerialPort, false, false, false, true);
+    }
+
     void RunTask(const TPortSettings& portSettings, PSerialClientTask task) override
     {
         SubmittedTasks.push_back({portSettings, task});
@@ -2599,6 +2627,19 @@ public:
             task->Run(Port, *AccessHandler, EmptyDeviceList);
         }
     }
+
+    void RunTask(const Json::Value& request, const TMakeTaskFn& makeTask) override
+    {
+        auto device = ConfigDevice && ConfigDevice->DeviceConfig()->Id == request["device_id"].asString() ? ConfigDevice
+                                                                                                          : nullptr;
+        auto task = makeTask(device, nullptr);
+        if (Port) {
+            task->Run(Port, *AccessHandler, EmptyDeviceList);
+        }
+    }
+
+    //! The device of the config the tasks for a device_id are looked up in
+    PSerialDevice ConfigDevice;
 
     struct SubmittedTask
     {
@@ -2733,6 +2774,16 @@ protected:
         }
     }
 
+    void SetConfigDevice(const std::string& deviceId)
+    {
+        TModbusDeviceConfig config;
+        config.CommonConfig = std::make_shared<TDeviceConfig>("modbus", std::to_string(SLAVE_ID), "modbus");
+        config.CommonConfig->Id = deviceId;
+        TaskRunner->ConfigDevice = std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
+                                                                   config,
+                                                                   DeviceFactory.GetProtocol("modbus"));
+    }
+
     // --- Friend-access wrappers for private handler methods ---
 
     void CallGetFirmwareInfo(const Json::Value& request)
@@ -2824,6 +2875,8 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
     EXPECT_TRUE(LastResult["fw_has_update"].asBool());
     EXPECT_TRUE(LastResult["can_update"].asBool());
     EXPECT_EQ(LastResult["model"].asString(), "WB-LED");
+    EXPECT_EQ(LastResult["fw_signature"].asString(), "wbled");
+    EXPECT_EQ(LastResult["sn"].asString(), "12345678");
     EXPECT_EQ(LastResult["available_bootloader"].asString(), "2.0.0");
     EXPECT_TRUE(LastResult["bootloader_has_update"].asBool());
 }
@@ -2831,6 +2884,7 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoNormal)
 //! Such a device would be lost after rebooting to a bootloader which starts on 9600 8N2
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSettings)
 {
+    TaskRunner->SetTcpPort();
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
@@ -2847,6 +2901,7 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithOwnPortSett
 //! The same device on the factory settings stays reachable in the bootloader
 TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoOverSerialOverTcpWithFactoryPortSettings)
 {
+    TaskRunner->SetTcpPort();
     SetupReleasesYaml();
     SetupBootloaderInfo();
     EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED", false);
@@ -2916,6 +2971,40 @@ TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoBadRequest)
     ASSERT_FALSE(GotResult);
     ASSERT_TRUE(GotError);
     EXPECT_NE(LastErrorMsg.find("slave_id"), std::string::npos);
+}
+
+//! The port of a config device keeps its settings, the factory ones are not applied
+TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoByDeviceId)
+{
+    SerialPort->LogSerialPortSettings(true);
+    SetupReleasesYaml();
+    SetupBootloaderInfo();
+    SetConfigDevice("wb-led_42");
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+
+    Json::Value request;
+    request["device_id"] = "wb-led_42";
+    CallGetFirmwareInfo(request);
+
+    ASSERT_TRUE(GotResult);
+    ASSERT_FALSE(GotError);
+    EXPECT_EQ(LastResult["fw"].asString(), "3.6.1");
+    EXPECT_EQ(LastResult["fw_signature"].asString(), "wbled");
+    EXPECT_EQ(LastResult["sn"].asString(), "12345678");
+    EXPECT_TRUE(LastResult["can_update"].asBool());
+}
+
+TEST_F(FwHandlerIntegrationTest, GetFirmwareInfoByUnknownDeviceId)
+{
+    SetConfigDevice("wb-led_42");
+
+    Json::Value request;
+    request["device_id"] = "wb-led_43";
+    CallGetFirmwareInfo(request);
+
+    ASSERT_FALSE(GotResult);
+    ASSERT_TRUE(GotError);
+    EXPECT_NE(LastErrorMsg.find("wb-led_43"), std::string::npos);
 }
 
 // ---- ClearError tests ----
@@ -3141,6 +3230,36 @@ TEST_F(FwHandlerIntegrationTest, UpdateReportsResponseTimeout)
 
     auto devices = ParseLastPublishedState()["devices"];
     ASSERT_EQ(devices.size(), 1u);
+    EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.device.response_timeout_error");
+}
+
+//! The bootloader record is already removed, the error must go to the firmware one
+TEST_F(FwHandlerIntegrationTest, UpdateBootloaderReportsFirmwareRestoreError)
+{
+    SetupReleasesYaml();
+    SetupBootloaderInfo("wbled", "2.0.0");
+    std::vector<uint8_t> wbfwData(168, 0xBB);
+    FakeHttp->SetBinaryResponse("https://fw-releases.wirenboard.com/boot/by-signature/wbled/main/2.0.0.wbfw", wbfwData);
+    SetupFirmwareDownload("wbled", "bullseye", "3.8.0");
+
+    EnqueueBasicGetInfoResponses("wbled", "3.6.1", "1.5.0", "WB-LED");
+    EnqueueFlashExpectations(true, true, 0xBB);
+    std::vector<int> infoData(32, 0xAA);
+    EnqueueWriteMultipleRegistersNoResponse(FwRegisters::FW_INFO_BLOCK_ADDR,
+                                            FwRegisters::FW_INFO_BLOCK_COUNT,
+                                            infoData);
+
+    auto request = MakeRequest();
+    request["type"] = "bootloader";
+
+    CallUpdate(request);
+
+    ASSERT_TRUE(GotResult);
+    EXPECT_FALSE(GetUpdateInProgress());
+
+    auto devices = ParseLastPublishedState()["devices"];
+    ASSERT_EQ(devices.size(), 1u);
+    EXPECT_EQ(devices[0]["type"].asString(), "firmware");
     EXPECT_EQ(devices[0]["error"]["id"].asString(), "com.wb.serial_driver.device.response_timeout_error");
 }
 

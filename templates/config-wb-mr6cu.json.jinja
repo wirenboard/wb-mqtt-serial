@@ -339,9 +339,6 @@
             {
                 "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
-                {% if curtain_time_min == 0 -%}
-                "description": "curtain_zero_time_description",
-                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
@@ -350,8 +347,22 @@
                 {% endif -%}
                 "scale": 0.1,
                 "default": 10.0,
+                {% if curtain_time_min == 0 -%}
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Set time"
+                    }
+                ],
+                {% else -%}
                 "min": {{ curtain_time_min }},
                 "max": 600.0,
+                {% endif -%}
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
@@ -360,9 +371,6 @@
             {
                 "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
-                {% if curtain_time_min == 0 -%}
-                "description": "curtain_zero_time_description",
-                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
@@ -371,8 +379,22 @@
                 {% endif -%}
                 "scale": 0.1,
                 "default": 10.0,
+                {% if curtain_time_min == 0 -%}
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Set time"
+                    }
+                ],
+                {% else -%}
                 "min": {{ curtain_time_min }},
                 "max": 600.0,
+                {% endif -%}
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
@@ -424,7 +446,7 @@
             {% endfor -%}
             {
                 "id": "baud_rate",
-                "title": "Baud rate",
+                "title": "Baud Rate",
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
@@ -690,8 +712,7 @@
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
 
-                "curtains_control_description": "For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons.",
-                "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
+                "curtains_control_description": "For setup buttons actions select \"Operate According To Button Mapping-Matrix\" mode and configure actions for buttons.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
@@ -752,6 +773,8 @@
                 "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
+                "No timeout": "Без таймаута",
+                "Set time": "Заданное время",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
                 "Power up action": "Действие при подаче питания",
 
@@ -782,9 +805,8 @@
                 {% endfor -%}
 
                 "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
-                "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
-                "Baud rate": "Скорость обмена",
+                "Baud Rate": "Скорость обмена",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",

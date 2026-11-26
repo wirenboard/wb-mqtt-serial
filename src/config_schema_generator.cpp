@@ -20,7 +20,8 @@ namespace
     //      "type": "number",
     //      "minimum": MIN,
     //      "maximum": MAX,
-    //      "enum": [ ... ]
+    //      "enum": [ ... ],
+    //      "anyOf": [ { "enum": [ VALUE ] }, { "minimum": MIN, "maximum": MAX }, ... ]
     //  }
     Json::Value MakeParameterSchema(const Json::Value& setupRegister)
     {
@@ -29,6 +30,20 @@ namespace
         SetIfExists(r, "enum", setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");
+
+        if (setupRegister.isMember("allowed_values")) {
+            auto& anyOf = MakeArray("anyOf", r);
+            for (const auto& allowedValue: setupRegister["allowed_values"]) {
+                auto& item = Append(anyOf);
+                if (allowedValue.isMember("value")) {
+                    MakeArray("enum", item).append(allowedValue["value"]);
+                } else {
+                    item["minimum"] = allowedValue["min"];
+                    item["maximum"] = allowedValue["max"];
+                }
+            }
+        }
+
         return r;
     }
 

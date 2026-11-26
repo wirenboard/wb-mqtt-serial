@@ -57,6 +57,7 @@ struct TFwDeviceInfo
     // Only low bytes of the model registers are used, so 0x02 which some WB-MAP firmwares
     // put into high bytes is dropped: "MAP12E", not "MAP12\x02E"
     std::string DeviceModel;
+    std::string Sn;
 
     struct TComponentInfo
     {

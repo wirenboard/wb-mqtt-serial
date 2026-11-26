@@ -31,7 +31,8 @@ namespace
             Json::Value conditionValues(rpcRequest->Parameters);
             auto registerList =
                 rpcRequest->GetConditionParametersRegisterList(channelDeclarations, parameterDeclarations);
-            ReadRegisterList(*port, rpcRequest->Device, registerList);
+            TRPCRegisterErrors errors;
+            ReadRegisterList(*port, rpcRequest->Device, registerList, errors);
             MarkUnsupportedRegisterItems(*port, *rpcRequest, registerList);
             MergeRegisterListValues(registerList, conditionValues);
 

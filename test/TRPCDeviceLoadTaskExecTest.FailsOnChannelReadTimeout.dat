@@ -1,0 +1,13 @@
+Open()
+Sleep(20000)
+read continuous read state()
+>> 01 03 00 72 00 01 24 11
+<< 01 03 02 00 00 B8 44
+enable continuous read()
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11
+read mode()
+>> 01 03 00 64 00 01 C5 D5
+<< 01 03 02 00 00 B8 44
+read Always Visible, no answer()
+>> 01 04 00 C8 00 01 B0 34
