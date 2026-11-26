@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.299.2) stable; urgency=medium
+
+  * Update LICENSE: Wiren Board as the copyright holder,
+    2014 as the first publication year, use restricted to Wiren Board equipment
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 26 Nov 2026 18:14:18 +0300
+
 wb-mqtt-serial (2.299.1) stable; urgency=medium
 
   * Fix default config for Wiren Board 8.4
