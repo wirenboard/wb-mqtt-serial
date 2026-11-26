@@ -5,6 +5,8 @@
         "name": "Ридан Р-КИ 230",
         "id": "ridan_r_ki_230",
         "force_frame_timeout": true,
+        "frame_timeout_ms": 0,
+        "max_read_registers": 0,
         "groups": [
             {
                 "id": "g_status"

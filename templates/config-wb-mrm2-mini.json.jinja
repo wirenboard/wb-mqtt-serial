@@ -630,17 +630,28 @@
             {
                 "id": "curtain{{curtain_num}}_open_time",
                 "title": "Open time (s)",
-                {% if curtain_time_min == 0 -%}
-                "description": "curtain_zero_time_description",
-                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "fw": "{{ curtain_time_fw }}",
                 "scale": 0.1,
                 "default": 10.0,
+                {% if curtain_time_min == 0 -%}
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Set time"
+                    }
+                ],
+                {% else -%}
                 "min": {{ curtain_time_min }},
                 "max": 600.0,
+                {% endif -%}
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
@@ -649,17 +660,28 @@
             {
                 "id": "curtain{{curtain_num}}_close_time",
                 "title": "Close time (s)",
-                {% if curtain_time_min == 0 -%}
-                "description": "curtain_zero_time_description",
-                {% endif -%}
                 "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "fw": "{{ curtain_time_fw }}",
                 "scale": 0.1,
                 "default": 10.0,
+                {% if curtain_time_min == 0 -%}
+                "allowed_values": [
+                    {
+                        "value": 0,
+                        "title": "No timeout"
+                    },
+                    {
+                        "min": 1,
+                        "max": 600,
+                        "title": "Set time"
+                    }
+                ],
+                {% else -%}
                 "min": {{ curtain_time_min }},
                 "max": 600.0,
+                {% endif -%}
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
@@ -1096,7 +1118,6 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
                 "curtains_control_description": "For setup buttons actions select \"Operate According To Button Mapping-Matrix\" mode and configure actions for buttons.",
-                "curtain_zero_time_description": "Zero means the output is on without timeout (until manually turned off), any values > 0 and < 1 will be ignored.",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
@@ -1211,6 +1232,8 @@
                 "Curtains Control": "Управление приводом",
                 "Open time (s)": "Время открытия (с)",
                 "Close time (s)": "Время закрытия (с)",
+                "No timeout": "Без таймаута",
+                "Set time": "Заданное время",
                 "Dead time (ms)": "Пауза при смене направления (мс)",
                 "Power up action": "Действие при подаче питания",
 
@@ -1224,7 +1247,6 @@
                 "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
                 {% endfor -%}
                 "curtains_control_description": "Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
-                "curtain_zero_time_description": "Ноль означает, что выход будет включен без таймаута (до выключения его вручную), а любые значения > 0 и < 1 будут проигнорированы.",
 
                 "Startup Delay (s)": "Задержка включения при подаче питания (с)",
                 "Restart Delay (s)": "Задержка повторного включения выхода после его отключения (с)",

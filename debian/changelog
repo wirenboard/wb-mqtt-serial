@@ -1,8 +1,21 @@
-wb-mqtt-serial (2.299.0) stable; urgency=medium
+wb-mqtt-serial (2.300.0) stable; urgency=medium
 
   * Add Ridan R-KI 230 (fw 1.5-2.2) temperature controller template
 
- -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Tue, 25 Nov 2026 12:00:00 +0300
+ -- Ilya Tikhonyuk <ilya.tikhonyuk@wirenboard.com>  Thu, 26 Nov 2026 14:00:00 +0300
+
+wb-mqtt-serial (2.299.1) stable; urgency=medium
+
+  * Fix default config for Wiren Board 8.4
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 26 Nov 2026 13:30:00 +0400
+
+wb-mqtt-serial (2.299.0) stable; urgency=medium
+
+  * Add allowed_values to template parameters
+  * Update WB-MR templates
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Nov 2026 11:26:07 +0300
 
 wb-mqtt-serial (2.298.0) stable; urgency=medium
 
