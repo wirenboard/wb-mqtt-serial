@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.298.1) stable; urgency=medium
+
+  * Fix default config for Wiren Board 8.4
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 26 Nov 2026 12:30:00 +0400
+
 wb-mqtt-serial (2.298.0) stable; urgency=medium
 
   * Add device_id parameter to fw-update/GetFirmwareInfo RPC
