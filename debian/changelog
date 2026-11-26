@@ -2,7 +2,12 @@ wb-mqtt-serial (2.299.2) stable; urgency=medium
 
   * WB-MAP: the CT turns parameters are limited to 39000. A larger value
     overflows the current gain of the measuring chip, and since firmware
-    2.16.0 the device ignores it
+    2.16.0 the device ignores it. A config with a larger value fails
+    validation, and the driver doesn't poll until the value is fixed
+  * WB-MAP3ET: the default CT turns and phase delay are 2000 and 120, as the
+    device has them from the factory
+  * WB-MAP: the same Russian names for the peak and three-phase total
+    channels in the MAP3E, MAP3ET, MAP3EV, MAP6S and MAP12E templates
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 26 Nov 2026 12:47:29 +0300
 
